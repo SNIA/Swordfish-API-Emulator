@@ -1,0 +1,86 @@
+14:23:22 05-09-17 - Storage Services File Service - INFO    : PASS: GET of DataProtectionLoSCapabilities successful (response below)
+ {
+  "Name": "DataProtectionLoSCapabilites", 
+  "SupportedRecoveryGeographicObjectives": [
+    "Server", 
+    "Rack", 
+    "RackGroup", 
+    "Row", 
+    "DataCenter", 
+    "Region"
+  ], 
+  "SupportedRecoveryPointObjectiveSeconds": [
+    "PT0S", 
+    "PT4S", 
+    "PT1M", 
+    "PT1H"
+  ], 
+  "SupportedRecoveryTimeObjectives": [
+    "Immediate", 
+    "Online", 
+    "Nearline", 
+    "Offline"
+  ], 
+  "SupportedReplicaTypes": [
+    "Mirror", 
+    "Clone", 
+    "Delta"
+  ], 
+  "SupportsIsolated": true
+}
+
+14:23:22 05-09-17 - Storage Services File Service - INFO    : PASS: GET of DataSecurityLoSCapabilities successful (response below)
+ {
+  "Name": "DataSecurityLoSCapabilities", 
+  "SupportedAntivirusEngineProviders": [], 
+  "SupportedAntivirusScanPolicies": [], 
+  "SupportedDataSecurityLinesOfService": [
+    {
+      "AntivirusEngineProvider": null, 
+      "AntivirusScanPolicies": [], 
+      "ChannelEncryptionStrength": "Bits_128", 
+      "DataSanitizationPolicy": "CryptographicErase", 
+      "HostAuthenticationType": "Ticket", 
+      "MediaEncryptionStrength": "Bits_256", 
+      "SecureChannelProtocol": "TLS", 
+      "UserAuthenticationType": "Password"
+    }
+  ]
+}
+
+14:23:22 05-09-17 - Storage Services File Service - INFO    : PASS: GET of DataStorageLoSCapabilities successful (response below)
+ {
+  "Name": "DataStorageLoSCapabilities", 
+  "SupportedAccessCapabilities": [
+    "Read", 
+    "Write"
+  ], 
+  "SupportedDataStorageLinesOfService": [
+    {
+      "ProvisioningPolicy": "Thin", 
+      "RecoveryTimeObjective": 0, 
+      "SpaceEfficient": true
+    }
+  ], 
+  "SupportedRecoveryTimeObjectives": [
+    "Immediate", 
+    "Online", 
+    "Nearline", 
+    "Offline"
+  ]
+}
+
+14:23:22 05-09-17 - Storage Services File Service - INFO    : PASS: GET of FileSystems successful (response below)
+ {
+  "Members": [
+    {
+      "@odata.id": "/redfish/v1/StorageServices/FileService/FileSystems/FS1"
+    }
+  ], 
+  "Name": "FileSystems"
+}
+
+14:23:22 05-09-17 - Storage Services File Service - ERROR   : Request Failed:
+{
+    "message": "Internal Server Error"
+}

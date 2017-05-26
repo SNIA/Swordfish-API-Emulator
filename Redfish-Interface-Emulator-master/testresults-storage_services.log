@@ -1,5 +1,0 @@
-14:23:22 05-09-17 - Storage services - ERROR   : Request Failed:
-{
-    "Status": 404, 
-    "Message": "Attribute Does Not Exist"
-}

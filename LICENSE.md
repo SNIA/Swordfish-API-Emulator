@@ -6,7 +6,7 @@ other rights are granted by DMTF. This software might be subject to other rights
 
 ### Copyrights.
 
-Copyright (c) 2016, Contributing Member(s) of Distributed Management Task Force,
+Copyright (c) 2017, Contributing Member(s) of Distributed Management Task Force,
 Inc.. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,

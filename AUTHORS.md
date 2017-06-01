@@ -1,11 +1,9 @@
 # Original Contribution:
-* Kevin Midkiff - Intel Corporation
-* John Leung - Intel Corporation
-* Manasa Kalburgi - Intel Corporation
-* Bartosz Furtak - Intel Corporation
+* Naresh Kumar Terli - PeopleTech Groups
+* Sagar Gale - PeopleTech Groups
 
 # Other Key Contributions:
-* George Clement - Intel Corporation
+* Prasanth Desireddy - PeopleTech Groups
 
 append new contributions to the bottom
 

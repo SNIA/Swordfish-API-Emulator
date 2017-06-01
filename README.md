@@ -1,4 +1,4 @@
-Copyright 2016 Distributed Management Task Force, Inc. All rights reserved.
+Copyright 2017 Distributed Management Task Force, Inc. All rights reserved.
 # Redfish Interface Emulator
 The Redfish Interface Emulator that can emulator a Redfish interface resources as static or dynamically.
 

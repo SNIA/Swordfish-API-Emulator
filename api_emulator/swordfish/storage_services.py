@@ -1,11 +1,11 @@
-# Copyright Notice:
+# Copyright Notice:SNIA
 # Copyright 2017 Distributed Management Task Force, Inc. All rights reserved.
 # License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-Interface-Emulator/LICENSE.md
 
 # Storage Services Module
 
 
-import json
+import json, os
 import traceback
 
 from flask import jsonify, request
@@ -333,6 +333,34 @@ class ClientEndpointGroupsCollectionAPI(Resource):
             return {"error": "Unable read file because of following error::{}".format(e)}, 500
 
         return jsonify(data)
+		
+    def put(self, storage_service):
+        path = '{}{}{}/{}{}'.format(self.root, self.storage_services, storage_service,
+                                       self.client_end_point_group, 'index.json')
+        try:
+            # Read json from file.
+            with open(path, 'r') as client_end_point_group_json:
+                data = json.load(client_end_point_group_json)
+                client_end_point_group_json.close()
+
+            request_data = json.loads(request.data)
+
+            if request_data:
+                # Update the keys of payload in json file.
+                for key, value in request_data.items():
+                    if key in data and data[key]:
+                        data[key] = value
+
+            # Write the updated json to file.
+            with open(path, 'w') as f:
+                json.dump(data, f)
+                f.close()
+
+        except Exception as e:
+            return {"error": "Unable read file because of following error::{}".format(e)}, 500
+
+        json_data = self.get(storage_service)
+        return json_data
 
 
 class ClientEndpointGroupsAPI(Resource):
@@ -377,11 +405,11 @@ class ClientEndpointGroupsAPI(Resource):
                 data = json.load(client_end_point_group_json)
                 client_end_point_group_json.close()
 
-            request_json = request.json
+            request_data = json.loads(request.data)
 
-            if request_json:
+            if request_data:
                 # Update the keys of payload in json file.
-                for key, value in request_json.items():
+                for key, value in request_data.items():
                     if key in data and data[key]:
                         data[key] = value
 
@@ -434,6 +462,34 @@ class ServerEndpointGroupsCollectionAPI(Resource):
             return {"error": "Unable read file because of following error::{}".format(e)}, 500
 
         return jsonify(data)
+		
+	def put(self, storage_service):
+		path = '{}{}{}/{}{}'.format(self.root, self.storage_services, storage_service,
+                                       self.server_end_point_group, 'index.json')
+        try:
+            # Read json from file.
+            with open(path, 'r') as server_end_point_group_json:
+                data = json.load(server_end_point_group_json)
+                server_end_point_group_json.close()
+
+            request_data = json.loads(request.data)
+
+            if request_data:
+                # Update the keys of payload in json file.
+                for key, value in request_data.items():
+                    if key in data and data[key]:
+                        data[key] = value
+
+            # Write the updated json to file.
+            with open(path, 'w') as f:
+                json.dump(data, f)
+                f.close()
+
+        except Exception as e:
+            return {"error": "Unable read file because of following error::{}".format(e)}, 500
+
+        json_data = self.get(storage_service)
+        return json_data
 
 
 class ServerEndpointGroupsAPI(Resource):
@@ -477,11 +533,11 @@ class ServerEndpointGroupsAPI(Resource):
                 data = json.load(server_end_point_group_json)
                 server_end_point_group_json.close()
 
-            request_json = request.json
+            request_data = json.loads(request.data)
 
-            if request_json:
+            if request_data:
                 # Update the keys of payload in json file.
-                for key, value in request_json.items():
+                for key, value in request_data.items():
                     if key in data and data[key]:
                         data[key] = value
 
@@ -632,11 +688,11 @@ class ClassesOfServiceAPI(Resource):
                 data = json.load(class_of_service_json)
                 class_of_service_json.close()
 
-            request_json = request.json
+            request_data = json.loads(request.data)
 
-            if request_json:
+            if request_data:
                 # Update the keys of payload in json file.
-                for key, value in request_json.items():
+                for key, value in request_data.items():
                     if key in data and data[key]:
                         data[key] = value
 
@@ -689,8 +745,35 @@ class ClassOfServiceCollectionAPI(Resource):
 
         return jsonify(data)
 
-    def put(self):
-        pass
+    def put(self, storage_service):
+        path = '{}{}{}/{}{}'.format(self.root, self.storage_services, storage_service,
+                                   self.classes_of_service, 'Index.json')
+        try:
+            # Read json from file.
+            with open(path, 'r') as class_of_service_json:
+                data = json.load(class_of_service_json)
+                class_of_service_json.close()
+
+            request_data = json.loads(request.data)
+
+            if request_data:
+                # Update the keys of payload in json file.
+                for key, value in request_data.items():
+                    if key in data and data[key]:
+
+                        data[key] = value
+
+            # Write the updated json to file.
+            with open(path, 'w') as f:
+                json.dump(data, f)
+                f.close()
+
+        except Exception as e:
+            return {"error": "Unable read file because of following error::{}".format(e)}, 500
+
+        json_data = self.get(storage_service)
+        return json_data
+
 
     def delete(self):
         pass
@@ -744,11 +827,11 @@ class DataProtectionLoSCapabilitiesAPI(Resource):
                 data = json.load(data_protection_los_capabilities_json)
                 data_protection_los_capabilities_json.close()
 
-            request_json = request.json
+            request_data = json.loads(request.data)
 
-            if request_json:
+            if request_data:
                 # Update the keys of payload in json file.
-                for key, value in request_json.items():
+                for key, value in request_data.items():
                     if key in data and data[key]:
                         data[key] = value
 
@@ -813,11 +896,11 @@ class DataSecurityLoSCapabilitiesAPI(Resource):
                 data = json.load(data_security_los_capabilities_json)
                 data_security_los_capabilities_json.close()
 
-            request_json = request.json
+            request_data = json.loads(request.data)
 
-            if request_json:
+            if request_data:
                 # Update the keys of payload in json file.
-                for key, value in request_json.items():
+                for key, value in request_data.items():
                     if key in data and data[key]:
                         data[key] = value
 
@@ -831,7 +914,6 @@ class DataSecurityLoSCapabilitiesAPI(Resource):
 
         json_data = self.get(storage_service)
         return json_data
-
 
     def delete(self):
         pass
@@ -879,11 +961,11 @@ class DataStorageLoSCapabilitiesAPI(Resource):
                 data = json.load(data_storage_los_capabilities_json)
                 data_storage_los_capabilities_json.close()
 
-            request_json = request.json
+            request_data = json.loads(request.data)
 
             if request_json:
                 # Update the keys of payload in json file.
-                for key, value in request_json.items():
+                for key, value in request_data.items():
                     if key in data and data[key]:
                         data[key] = value
 
@@ -944,11 +1026,11 @@ class IOConnectivityLoSCapabilitiesAPI(Resource):
                 data = json.load(ioconnectivity_los_capabilities_json)
                 ioconnectivity_los_capabilities_json.close()
 
-            request_json = request.json
+            request_data = json.loads(request.data)
 
-            if request_json:
+            if request_data:
                 # Update the keys of payload in json file.
-                for key, value in request_json.items():
+                for key, value in request_data.items():
                     if key in data and data[key]:
                         data[key] = value
 
@@ -1012,11 +1094,11 @@ class IOPerformanceLoSCapabilitiesAPI(Resource):
                 data = json.load(ioperformance_los_capabilities_json)
                 ioperformance_los_capabilities_json.close()
 
-            request_json = request.json
+            request_data = json.loads(request.data)
 
-            if request_json:
+            if request_data:
                 # Update the keys of payload in json file.
-                for key, value in request_json.items():
+                for key, value in request_data.items():
                     if key in data and data[key]:
                         data[key] = value
 
@@ -1078,8 +1160,33 @@ class VolumesCollectionAPI(Resource):
         return jsonify(data)
 
 
-    def put(self):
-        pass
+    def put(self, storage_service):
+        path = '{}{}{}/{}{}'.format(self.root, self.storage_services, storage_service,
+                                       self.volumes, 'index.json')
+        try:
+            # Read json from file.
+            with open(path, 'r') as volumes_json:
+                data = json.load(volumes_json)
+                volumes_json.close()
+
+            request_data = json.loads(request.data)
+
+            if request_data:
+                # Update the keys of payload in json file.
+                for key, value in request_data.items():
+                    if key in data and data[key]:
+                        data[key] = value
+
+            # Write the updated json to file.
+            with open(path, 'w') as f:
+                json.dump(data, f)
+                f.close()
+
+        except Exception as e:
+            return {"error": "Unable read file because of following error::{}".format(e)}, 500
+
+        json_data = self.get(storage_service)
+        return json_data
 
 
     def delete(self):
@@ -1185,11 +1292,11 @@ class VolumesAPI(Resource):
                 data = json.load(volumes_json)
                 volumes_json.close()
 
-            request_json = request.json
+            request_data = json.loads(request.data)
 
-            if request_json:
+            if request_data:
                 # Update the keys of payload in json file.
-                for key, value in request_json.items():
+                for key, value in request_data.items():
                     if key in data and data[key]:
                         data[key] = value
 
@@ -1320,7 +1427,7 @@ class FileSystemsCollectionAPI(Resource):
     def __init__(self):
         self.root = PATHS['Root']
         self.storage_services = PATHS['StorageServices']['path']
-        self.file_systems = PATHS['StorageServices']['file_system']
+        self.file_systems = PATHS['StorageServices']['file_systems']
 
     def get(self, storage_service):
         path = '{}{}{}/{}{}'.format(self.root, self.storage_services, storage_service,
@@ -1354,14 +1461,60 @@ class FileSystemsCollectionAPI(Resource):
 
         return jsonify(data)
 
-    def put(self):
-        pass
+    def put(self, storage_service):
+        path = '{}{}{}/{}{}'.format(self.root, self.storage_services, storage_service,
+                                       self.file_systems, 'index.json')
+        try:
+            # Read json from file.
+            with open(path, 'r') as file_systems_json:
+                data = json.load(file_systems_json)
+                file_systems_json.close()
+
+            request_data = json.loads(request.data)
+
+            if request_data:
+                # Update the keys of payload in json file.
+                for key, value in request_data.items():
+                    if key in data and data[key]:
+                        data[key] = value
+
+            # Write the updated json to file.
+            with open(path, 'w') as f:
+                json.dump(data, f)
+                f.close()
+
+        except Exception as e:
+            return {"error": "Unable read file because of following error::{}".format(e)}, 500
+
+        json_data = self.get(storage_service)
+        return json_data
 
     def delete(self):
         pass
+class FileSystemsChildAPI(Resource):
 
+    def __init__(self):
+        self.root = PATHS['Root']
+        self.storage_services = PATHS['StorageServices']['path']
+        self.file_systems = PATHS['StorageServices']['file_systems']
+
+    def get(self, storage_service, file_systems, values):
+        path = '{}{}{}/{}{}/{}/{}'.format(self.root, self.storage_services, storage_service,
+                                       self.file_systems, file_systems, values, 'index.json')
+
+        try:
+            file_systems_json = open(path)
+            data = json.load(file_systems_json)
+        except Exception as e:
+            traceback.print_exc()
+            return {"error": "Unable read file because of following error::{}".format(e)}, 500
+
+        return jsonify(data)
+		
+		
 
 class FileSystemsAPI(Resource):
+
     def __init__(self):
         self.root = PATHS['Root']
         self.storage_services = PATHS['StorageServices']['path']
@@ -1447,11 +1600,11 @@ class FileSystemsAPI(Resource):
                 data = json.load(file_systems_json)
                 file_systems_json.close()
 
-            request_json = request.json
+            request_data = json.loads(request.data)
 
-            if request_json:
+            if request_data:
                 # Update the keys of payload in json file.
-                for key, value in request_json.items():
+                for key, value in request_data.items():
                     if key in data and data[key]:
                         data[key] = value
 
@@ -1465,6 +1618,30 @@ class FileSystemsAPI(Resource):
 
         json_data = self.get(storage_service, file_systems)
         return json_data
+
+    def post(self, storage_service, file_systems):
+        #create folder  
+        path = '{}{}{}/{}{}'.format(self.root, self.storage_services, storage_service,
+                                           self.file_systems, file_systems)
+        try:
+            os.mkdir(path)
+            data = json.loads(request.data)
+            with open(path+"/index.json", "w") as fd:
+                json.dump(data, fd)
+            
+            # add entry of new filesystem
+            
+            modifieddata = {}
+            with open(path+"/../index.json") as pdata:
+                modifieddata = json.loads(pdata.read())
+                modifieddata["Members"].append({"@odata.id":modifieddata["@odata.id"]+"/"+file_systems})
+                
+            with open(path+"/../index.json","w") as file_systems_json:  
+             #   print "in write",pdata            
+                json.dump(modifieddata, file_systems_json)
+            return modifieddata
+        except Exception as e:
+             return {"error": "Unable create file because of following error::{}".format(e)}, 500
 
     def delete(self):
         pass

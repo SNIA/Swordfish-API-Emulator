@@ -1,11 +1,18 @@
+# Copyright Notice:SNIA
+# Copyright 2017 Distributed Management Task Force, Inc. All rights reserved.
+# License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-Interface-Emulator/LICENSE.md
+
+
 
 PATHS = {
-    'Root': '../Redfish-Interface-Emulator-master/Resources/',
+    'Root': 'Resources/',
+#
     'Chassis': {
         'path': 'Chassis/',
         'power': 'Power/',
         'thermal': 'Thermal'
     },
+    
     'StorageServices': {
         'path': 'StorageServices/',
         'storage_groups': 'StorageGroups/',
@@ -21,7 +28,7 @@ PATHS = {
         'ioconnectivity_los_capabilities': 'IOConnectivityLoSCapabilities/',
         'ioperformance_los_capabilities': 'IOPerformanceLoSCapabilities/',
         'endpoints': 'Endpoints/',
-        'file_system': 'FileSystems/'
+        'file_systems': 'FileSystems/'
 
     },
 

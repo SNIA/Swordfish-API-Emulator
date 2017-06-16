@@ -1,4 +1,4 @@
-# Copyright Notice:
+# Copyright Notice:SNIA
 # Copyright 2017 Distributed Management Task Force, Inc. All rights reserved.
 # License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-Interface-Emulator/LICENSE.md
 
@@ -12,8 +12,8 @@ from threading import Thread
 
 import g
 # from api_emulator.redfish.storage_services import StorageServicesCollectionAPI, StorageServicesAPI, \
-#     StorageGroupsCollectionAPI, StorageGroupsAPI, StoragePoolsCollectionAPI, StoragePoolsAPI, \
-#     ClientEndpointGroupsCollectionAPI, ClientEndpointGroupsAPI, ServerEndpointGroupsCollectionAPI, \
+#     StorageGroupsCollectionAPI, StorageGroupsAPI, StoragePoolsCollectionAPI, StoragePoolsAPI, ClassesOfServiceAPI\
+#     ClientEndpointGroupsCollectionAPI, ClientEndpointGroupsAPI, ServerEndpointGroupsCollectionAPI, ClassOfServiceCollectionAPI, \
 #     ServerEndpointGroupsAPI, DrivesCollectionAPI, DrivesAPI,SystemDetaislAPI,StoragePoolChildAPI,ClassesOfServiceChildAPI,VolumesChildAPI
 from api_emulator.redfish.storage_services import *
 from . import utils
@@ -22,8 +22,8 @@ from .resource_dictionary import ResourceDictionary
 from .static_loader import load_static
 from .redfish.computer_system import ComputerSystem
 from .redfish.computer_systems import ComputerSystemCollection
-#from .redfish.chassis import ChassisCollection
-from .exceptions import CreatePooledNodeError, RemovePooledNodeError, EventSubscriptionError
+#from .redfish.chassis import ChassisCo/StorageServices/FileServicellection
+#from .exceptions import CreatePoole/StorageServices/FileServicedNodeError, RemovePooledNodeError, EventSubscriptionError
 from .redfish.event_service import EventService, Subscriptions
 from .redfish.event import Event
 
@@ -69,6 +69,7 @@ class ResourceManager(object):
         self.SessionService = load_static('SessionService', 'redfish', mode, rest_base, self.resource_dictionary)
         self.Systems = load_static('Systems', 'redfish', mode, rest_base, self.resource_dictionary)
         self.TaskService = load_static('TaskService', 'redfish', mode, rest_base, self.resource_dictionary)
+        self.StorageSystems = load_static('StorageSystems', 'redfish', mode, rest_base, self.resource_dictionary)
 
         # Load dynamic resources (flask-restful method)
         #
@@ -76,8 +77,8 @@ class ResourceManager(object):
         # - populate with a single chassis with Id=Test2
         g.api.add_resource(ChassisCollectionAPI, '/redfish/v1/Chassis/')
         g.api.add_resource(ChassisAPI,   '/redfish/v1/Chassis/<string:ident>')
-#        config = CreateChassis()
-#        out = config.put('Chassis2')
+        #config = CreateChassis()
+        #out = config.put('Chassis2')
 
         g.api.add_resource(PCIeSwitchesAPI, '/redfish/v1/PCIeSwitches/')
         g.api.add_resource(PCIeSwitchAPI,   '/redfish/v1/PCIeSwitches/<string:ident>')
@@ -85,68 +86,69 @@ class ResourceManager(object):
         g.api.add_resource(StorageServicesCollectionAPI, '/redfish/v1/StorageServices/')
         g.api.add_resource(StorageServicesAPI, '/redfish/v1/StorageServices/<string:storage_service>')
         g.api.add_resource(StorageGroupsCollectionAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/StorageGroups')
+                            '/redfish/v1/StorageServices/<string:storage_service>/StorageGroups')
         g.api.add_resource(StorageGroupsAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/StorageGroups/<string:storage_group>')
+                            '/redfish/v1/StorageServices/<string:storage_service>/StorageGroups/<string:storage_group>')
         g.api.add_resource(StoragePoolsCollectionAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/StoragePools')
+                            '/redfish/v1/StorageServices/<string:storage_service>/StoragePools')
         g.api.add_resource(StoragePoolsAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/StoragePools/<string:storage_pool>')
-
-	g.api.add_resource(StoragePoolChildAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/StoragePools/<string:storage_pool>/<string:values>')
+                            '/redfish/v1/StorageServices/<string:storage_service>/StoragePools/<string:storage_pool>')
+        g.api.add_resource(StoragePoolChildAPI,
+                            '/redfish/v1/StorageServices/<string:storage_service>/StoragePools/<string:storage_pool>/<string:values>')
         g.api.add_resource(ClientEndpointGroupsCollectionAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/ClientEndpointGroups')
+                            '/redfish/v1/StorageServices/<string:storage_service>/ClientEndpointGroups')
         g.api.add_resource(ClientEndpointGroupsAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/ClientEndpointGroups/<string:client_end_point_group>')
+                            '/redfish/v1/StorageServices/<string:storage_service>/ClientEndpointGroups/<string:client_end_point_group>')
         g.api.add_resource(ServerEndpointGroupsCollectionAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/ServerEndpointGroups')
+                            '/redfish/v1/StorageServices/<string:storage_service>/ServerEndpointGroups')
         g.api.add_resource(ServerEndpointGroupsAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/ServerEndpointGroups/<string:server_end_point_group>')
+                            '/redfish/v1/StorageServices/<string:storage_service>/ServerEndpointGroups/<string:server_end_point_group>')
         g.api.add_resource(DrivesCollectionAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/Drives')
+                            '/redfish/v1/StorageServices/<string:storage_service>/Drives')
         g.api.add_resource(DrivesAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/Drives/<string:drive>')
+                            '/redfish/v1/StorageServices/<string:storage_service>/Drives/<string:drive>')
 
         g.api.add_resource(ClassOfServiceCollectionAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/ClassesOfService')
+                            '/redfish/v1/StorageServices/<string:storage_service>/ClassesOfService')
         g.api.add_resource(ClassesOfServiceAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/ClassesOfService/<string:classes_of_service>')
-	g.api.add_resource(ClassesOfServiceChildAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/ClassesOfService/<string:classes_of_service>/<string:values>')
+                            '/redfish/v1/StorageServices/<string:storage_service>/ClassesOfService/<string:classes_of_service>')
+        g.api.add_resource(ClassesOfServiceChildAPI,
+                            '/redfish/v1/StorageServices/<string:storage_service>/ClassesOfService/<string:classes_of_service>/<string:values>')
         g.api.add_resource(DataProtectionLoSCapabilitiesAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/DataProtectionLoSCapabilities')
+                            '/redfish/v1/StorageServices/<string:storage_service>/DataProtectionLoSCapabilities')
         g.api.add_resource(DataSecurityLoSCapabilitiesAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/DataSecurityLoSCapabilities')
+                            '/redfish/v1/StorageServices/<string:storage_service>/DataSecurityLoSCapabilities')
 
         g.api.add_resource(DataStorageLoSCapabilitiesAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/DataStorageLoSCapabilities')
+                            '/redfish/v1/StorageServices/<string:storage_service>/DataStorageLoSCapabilities')
 
         g.api.add_resource(IOConnectivityLoSCapabilitiesAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/IOConnectivityLoSCapabilities')
+                            '/redfish/v1/StorageServices/<string:storage_service>/IOConnectivityLoSCapabilities')
 
         g.api.add_resource(IOPerformanceLoSCapabilitiesAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/IOPerformanceLoSCapabilities')
+                            '/redfish/v1/StorageServices/<string:storage_service>/IOPerformanceLoSCapabilities')
 
         g.api.add_resource(VolumesCollectionAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/Volumes')
+                            '/redfish/v1/StorageServices/<string:storage_service>/Volumes')
         g.api.add_resource(VolumesAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/Volumes/<string:volumes>')
-	g.api.add_resource(VolumesChildAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/Volumes/<string:volumes>/<string:values>')
+                            '/redfish/v1/StorageServices/<string:storage_service>/Volumes/<string:volumes>')
+        g.api.add_resource(VolumesChildAPI,
+                            '/redfish/v1/StorageServices/<string:storage_service>/Volumes/<string:volumes>/<string:values>')
         g.api.add_resource(EndpointsCollectionAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/Endpoints')
+                            '/redfish/v1/StorageServices/<string:storage_service>/Endpoints')
         g.api.add_resource(EndpointsAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/Endpoints/<string:endpoints>')
+                            '/redfish/v1/StorageServices/<string:storage_service>/Endpoints/<string:endpoints>')
 
         g.api.add_resource(FileSystemsCollectionAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/FileSystems')
+                            '/redfish/v1/StorageServices/<string:storage_service>/FileSystems')
         g.api.add_resource(FileSystemsAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/FileSystems/<string:file_systems>')
-	g.api.add_resource(SystemDetaislAPI,
-                           '/redfish/v1/get_system_details')
-	g.api.add_resource(SystemMemoryDetaislAPI,
-                           '/redfish/v1/get_system_memory_deatils')
+                            '/redfish/v1/StorageServices/<string:storage_service>/FileSystems/<string:file_systems>')
+        g.api.add_resource(FileSystemsChildAPI,
+                            '/redfish/v1/StorageServices/<string:storage_service>/FileSystems/<string:file_systems>/<string:values>')
+        g.api.add_resource(SystemDetaislAPI,
+                            '/redfish/v1/get_system_details')
+        g.api.add_resource(SystemMemoryDetaislAPI,
+                            '/redfish/v1/get_system_memory_deatils')
 
 
         # Load dynamic resources (flask method).
@@ -200,12 +202,11 @@ class ResourceManager(object):
                 'SessionService': {'@odata.id': self.rest_base + 'SessionService'},
                 'AccountService': {'@odata.id': self.rest_base + 'AccountService'},
                 'EventService': {'@odata.id': self.rest_base + 'EventService'},
-		        'StorageServices': {'@odata.id': self.rest_base + 'StorageServices'},
+                'StorageServices': {'@odata.id': self.rest_base + 'StorageServices'},
+                'StorageSystems': {'@odata.id': self.rest_base + 'StorageSystems'},
                 'Registries': {'@odata.id': self.rest_base + 'Registries'},
-                'Systems':{'@odata.id':self.rest_base+'Systems'}
-		
+                'Systems': {'@odata.id': self.rest_base + 'Systems'}
              }
-		
         }
 
         return config

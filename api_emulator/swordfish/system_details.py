@@ -7,7 +7,7 @@ import psutil
 from constants import PATHS
 
 
-class SystemDetaislAPI(Resource):
+class SystemDetailsAPI(Resource):
     def get(self):
         details = psutil.virtual_memory()
         data = {
@@ -20,7 +20,7 @@ class SystemDetaislAPI(Resource):
         return jsonify(data)
 
 
-class SystemMemoryDetaislAPI(Resource):
+class SystemMemoryDetailsAPI(Resource):
 
     def __init__(self):
         self.root = PATHS['Root']
@@ -42,7 +42,7 @@ class SystemMemoryDetaislAPI(Resource):
             c['remaining'] = c['total'] - c['consumed']
 
         except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
+            return {"error": "Unable to read file because of following error::{}".format(e)}, 500
 
         return jsonify(c)
 
@@ -63,7 +63,7 @@ class AddServiceAPI(Resource):
                 add_service_json.close()
 
         except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
+            return {"error": "Unable to read file because of following error::{}".format(e)}, 500
 
         return jsonify(data)    
 
@@ -89,51 +89,9 @@ class AddServiceAPI(Resource):
 
                    
         except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
+            return {"error": "Unable to read file because of following error::{}".format(e)}, 500
 
         return jsonify(pdata)
-
-
-class JsonDataFilterAPI(Resource):
-
-        def __init__(self):
-            self.root = PATHS['Root']
-	
-        def get(self):
-	
-            path = '{}StorageServices/1/Volumes/4/index.json'.format(PATHS['Root'])
-            print path
-        
-        
-            try:
-                with open(path, 'r') as add_service_json:
-                    data = json.load(add_service_json)
-                    add_service_json.close()
-                
-
-                finalcapacity = {}
-                if data.get('Capacity'):  
-                    if type(data.get('Capacity')) is list:
-                        for key,val in (data['Capacity'][0]['Data']).iteritems():
-                            finalcapacity["Capacity_Data_"+key] = val 
-                    else:
-                        for key,val in (data['Capacity']['Data']).iteritems():
-                            finalcapacity["Capacity_Data_"+key] = val 
-                print finalcapacity
-                if data.get('CapacitySources'):  
-                    if type(data.get('CapacitySources')) is list:
-                        for key,val in (data['CapacitySources'][0]['ProvidedCapacity']).iteritems():
-                            finalcapacity["CapacitySources_ProvidedCapacity_"+key] = val 
-                    else:
-                        for key,val in (data['CapacitySources']['ProvidedCapacity']).iteritems():
-                            finalcapacity["CapacitySources_ProvidedCapacity_"+key] = val 
-                print finalcapacity
-            except Exception as e:
-                return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-            return jsonify(finalcapacity)
-	
-    
 
 
 

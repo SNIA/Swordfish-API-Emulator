@@ -14,7 +14,7 @@ import g
 # from api_emulator.redfish.storage_services import StorageServicesCollectionAPI, StorageServicesAPI, \
 #     StorageGroupsCollectionAPI, StorageGroupsAPI, StoragePoolsCollectionAPI, StoragePoolsAPI, ClassesOfServiceAPI\
 #     ClientEndpointGroupsCollectionAPI, ClientEndpointGroupsAPI, ServerEndpointGroupsCollectionAPI, ClassOfServiceCollectionAPI, \
-#     ServerEndpointGroupsAPI, DrivesCollectionAPI, DrivesAPI,SystemDetaislAPI,StoragePoolChildAPI,ClassesOfServiceChildAPI,VolumesChildAPI,StorageSubsystemsAPI
+#     ServerEndpointGroupsAPI, DrivesCollectionAPI, DrivesAPI,SystemDetailsAPI,StoragePoolChildAPI,ClassesOfServiceChildAPI,VolumesChildAPI,StorageSubsystemsAPI
 from api_emulator.redfish.storage_services import *
 from . import utils
 from .resource_dictionary import ResourceDictionary
@@ -29,8 +29,7 @@ from .redfish.event import Event
 
 from .redfish.chassis_api import ChassisCollectionAPI, ChassisAPI, CreateChassis
 from .redfish.pcie_switch_api import PCIeSwitchesAPI, PCIeSwitchAPI
-from api_emulator.redfish.system_details import SystemDetaislAPI, SystemMemoryDetaislAPI, AddServiceAPI, JsonDataFilterAPI
-
+from api_emulator.redfish.system_details import SystemDetailsAPI, SystemMemoryDetailsAPI, AddServiceAPI
 
 
 class ResourceManager(object):
@@ -67,7 +66,7 @@ class ResourceManager(object):
         #self.EventService = load_static('EventService', 'redfish', mode, rest_base, self.resource_dictionary)
         self.Registries = load_static('Registries', 'redfish', mode, rest_base, self.resource_dictionary)
         self.SessionService = load_static('SessionService', 'redfish', mode, rest_base, self.resource_dictionary)
-	self.StorageSystems = load_static('StorageSystems', 'redfish', mode, rest_base, self.resource_dictionary)
+        self.StorageSystems = load_static('StorageSystems', 'redfish', mode, rest_base, self.resource_dictionary)
         self.Systems = load_static('Systems', 'redfish', mode, rest_base, self.resource_dictionary)
         self.TaskService = load_static('TaskService', 'redfish', mode, rest_base, self.resource_dictionary)
 
@@ -147,15 +146,14 @@ class ResourceManager(object):
                             '/redfish/v1/StorageServices/<string:storage_service>/FileSystems/<string:file_systems>')
         g.api.add_resource(FileSystemsChildAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/FileSystems/<string:file_systems>/<string:values>')
-        g.api.add_resource(SystemDetaislAPI,
+        g.api.add_resource(SystemDetailsAPI,
                             '/redfish/v1/get_system_details')
 	
-        g.api.add_resource(SystemMemoryDetaislAPI,
-                            '/redfish/v1/get_system_memory_deatils')
+        g.api.add_resource(SystemMemoryDetailsAPI,
+                            '/redfish/v1/get_system_memory_details')
 	g.api.add_resource(AddServiceAPI,
                             '/redfish/v1/get_addservice')
-		g.api.add_resource(JsonDataFilterAPI,
-                            '/redfish/v1/get_json_data')
+        
 
 
 

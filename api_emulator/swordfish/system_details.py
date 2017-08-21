@@ -4,7 +4,7 @@ from flask import jsonify, request
 from flask.ext.restful import Resource
 import psutil
 
-from constants import PATHS
+from .constants import PATHS
 
 
 class SystemDetailsAPI(Resource):

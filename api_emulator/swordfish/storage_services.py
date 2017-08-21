@@ -7,12 +7,12 @@
 
 import json, os
 import traceback
-import urllib2
+import urllib3
 
 from flask import jsonify, request
 from flask.ext.restful import Resource
 
-from constants import *
+from .constants import *
 
 
 class StorageServicesCollectionAPI(Resource):
@@ -1252,7 +1252,7 @@ class VolumesAPI(Resource):
                                        self.volumes, 'volumes_schemaupdate.json')									   
         else:            
             path = '{}{}{}/{}{}/{}'.format(self.root, self.storage_services, storage_service, self.volumes, volumes, 'index.json')
-            print path
+            print(path)
         list_of_keys = ['AccessCapabilities', 'Actions', 'AllocatedPools', 'BlockSizeBytes', 'Capacity',
                         'CapacityBytes', 'CapacitySources',
                         'Description', 'Encrypted', 'EncryptionTypes', 'Id', 'Identifiers', 'Links',
@@ -1630,7 +1630,7 @@ class FileSystemsAPI(Resource):
         else:
             
             path = '{}{}{}/{}{}/{}'.format(self.root, self.storage_services, storage_service, self.file_systems, file_systems, 'index.json')
-            print path
+            print(path)
 
 
         list_of_keys = ['AccessCapabilities', 'BlockSizeBytes', 'Capacity', 'CapacitySources', 'CasePreserved',

@@ -27,7 +27,7 @@ from .redfish.computer_systems import ComputerSystemCollection
 from .redfish.event_service import EventService, Subscriptions
 from .redfish.event import Event
 
-from .redfish.chassis_api import ChassisCollectionAPI, ChassisAPI, CreateChassis
+from .redfish.Chassis_api import ChassisCollectionAPI, ChassisAPI, CreateChassis
 from .redfish.pcie_switch_api import PCIeSwitchesAPI, PCIeSwitchAPI
 from api_emulator.redfish.system_details import SystemDetailsAPI, SystemMemoryDetailsAPI, AddServiceAPI
 
@@ -126,7 +126,7 @@ class ResourceManager(object):
 
         g.api.add_resource(IOPerformanceLoSCapabilitiesAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/IOPerformanceLoSCapabilities')
-	g.api.add_resource(StorageSubsystemsAPI,
+		g.api.add_resource(StorageSubsystemsAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/StorageSubsystems')
 
         g.api.add_resource(VolumesCollectionAPI,
@@ -151,7 +151,7 @@ class ResourceManager(object):
 	
         g.api.add_resource(SystemMemoryDetailsAPI,
                             '/redfish/v1/get_system_memory_details')
-	g.api.add_resource(AddServiceAPI,
+		g.api.add_resource(AddServiceAPI,
                             '/redfish/v1/get_addservice')
         
 
@@ -396,9 +396,9 @@ class EventWorker(Thread):
 
     def run(self):
         try:
-            request = urllib2.Request(self.dest_uri)
+            request = urllib3.Request(self.dest_uri)
             request.add_header('Content-Type', 'application/json')
-            urllib2.urlopen(request, json.dumps(self.event.configuration), 15)
+            urllib3.urlopen(request, json.dumps(self.event.configuration), 15)
         except Exception:
             pass
 

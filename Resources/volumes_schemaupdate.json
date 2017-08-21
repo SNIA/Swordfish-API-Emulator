@@ -1,0 +1,87 @@
+{
+  "@Redfish.Copyright": "Copyright 2014-2016 SNIA. All rights reserved.",
+  "@odata.context": "/redfish/v1/$metadata#Volume.Volume",
+  "@odata.id": "/redfish/v1/StorageServices/1/Volumes/volumes_schemaupdate.json",
+  "@odata.type": "#Volume_1_0_0.Volume",
+  "Name": "root",
+  "Id": "volumes_schemaupdate.json",
+  "Description": "",
+  "Identifiers": [
+    {
+      "DurableNameFormat": "NAA6",
+      "DurableName": "65456765456761001244076100123487"
+    }
+  ],
+  "Manufacturer": "SuperDuperSSD",
+  "Model": "Drive Model string",
+  "Status": {
+    "State": "Enabled",
+    "Health": "OK"
+  },
+  "AccessCapabilities": [
+    "Read",
+    "Write",
+    "Append",
+    "Streaming"
+  ],
+  "BlockSizeBytes": 512,
+  "LowSpaceWarningThresholdPercent": [
+    70,
+    80,
+    90,
+    null,
+    null
+  ],
+  "CapacitySources": [
+    {
+      "ConsumedBytes": 0,
+      "AllocatedBytes": 10737418240,
+      "GuaranteedBytes": 536870912,
+      "ProvisionedBytes": 1099511627776,
+      "Links": {
+        "ClassOfService": {
+          "@odata.id": "/redfish/v1/StorageServices/1/ClassesOfService/SilverBoston"
+        },
+        "ProvidingPool": {
+            "Members": [{"@odata.id": "/redfish/v1/StorageServices/1/StoragePools/SpecialPool"}]
+        },
+        "StorageGroups": {
+		"@odata.id": "/redfish/v1/StorageServices/1/Volumes/5/StorageGroups"
+       },
+        "ProvidingVolume": null,
+        "AllocatedPools": null
+        
+        }
+    }],
+  
+  "Capacity":[
+     {
+    "Data": {
+      "ConsumedBytes": 0,
+      "AllocatedBytes": 10737418240,
+      "GuaranteedBytes": 536870912,
+      "ProvisionedBytes": 1099511627776
+    },
+    "Metadata": {
+      "ConsumedBytes": 536870912,
+      "AllocatedBytes": 536870912
+    },
+    "Snapshots": {
+      "ConsumedBytes": 0,
+      "AllocatedBytes": 21474836480,
+      "GuaranteedBytes": 536870912,
+      "ProvisionedBytes": 2199023255552
+    }
+  }
+],
+  "ReplicaInfos": [{
+	"ReplicaState": "Synchronized",
+	"ReplicaProgressStatus": "Completed",
+	"ReplicaRole": "Target",
+	"@odata.id": {
+	  "Replica": "https://10.1.22.18/redfish/v1/StorageServices/X/Volume/A1x2"
+	}
+  }]
+  
+ 
+}

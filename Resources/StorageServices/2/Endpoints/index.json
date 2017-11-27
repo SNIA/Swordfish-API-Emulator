@@ -1,0 +1,20 @@
+{
+  "@Redfish.Copyright": "Copyright 2015-2016 SNIA. All rights reserved.",
+  "@odata.context": "/redfish/v1/$metadata#StorageServices/2/Endpoints",
+  "@odata.id": "/redfish/v1/StorageServices/2/Endpoints",
+  "@odata.type": "#EndpointCollection.v1_0_0.EndpointCollection",
+  "Name": "Endpoints",
+  "Permissions":[
+		{"Read": "True"},
+		{"Write": "False"}
+  ],
+  "Members@odata.count": 2,
+  "Members": [
+    {
+      "@odata.id": "/redfish/v1/StorageServices/2/Endpoints/1"
+    },
+    {
+      "@odata.id": "/redfish/v1/StorageServices/2/Endpoints/2"
+    }
+  ]
+}

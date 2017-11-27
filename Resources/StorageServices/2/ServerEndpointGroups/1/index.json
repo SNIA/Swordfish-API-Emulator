@@ -1,0 +1,15 @@
+{
+  "@Redfish.Copyright": "Copyright 2015-2016 SNIA. All rights reserved.",
+  "@odata.context": "/redfish/v1/$metadata#StorageServices/2/ServerEndpointGroups/1",
+  "@odata.id": "/redfish/v1/StorageServices/2/ServerEndpointGroups/1",
+  "@odata.type": "#EndpointGroup.v1_0_0.EndpointGroup",
+  "Name": "Server/Target EP group",
+  "Description": "Group of target endpoints for 2",
+  "GroupType": "Server",
+  "AccessState": "Optimized",
+  "EndpointGroupIdentifier": 3,
+  "Preferred": true,
+  "Endpoints": {
+    "Members": [{"@odata.id": "/redfish/v1/StorageServices/2/Endpoints/1"}]
+   }
+}

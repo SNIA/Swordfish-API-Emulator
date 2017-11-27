@@ -1,0 +1,89 @@
+{
+    "@Redfish.Copyright": "Copyright 2014-2016 SNIA. All rights reserved.", 
+    "@odata.context": "/redfish/v1/$metadata#Volume.Volume", 
+    "@odata.id": "/redfish/v1/StorageServices/1/Volumes/8", 
+    "@odata.type": "#VolumeCollection_1_0_0.VolumeCollection", 
+    "AccessCapabilities": [
+        "Read", 
+        "Write", 
+        "Append", 
+        "Streaming"
+    ], 
+    "BlockSizeBytes": 512, 
+    "Capacity": [
+        {
+            "Data": {
+                "AllocatedBytes": 10737418240, 
+                "ConsumedBytes": 0, 
+                "GuaranteedBytes": 536870912, 
+                "ProvisionedBytes": 1099511627776
+            }, 
+            "Metadata": {
+                "AllocatedBytes": 536870912, 
+                "ConsumedBytes": 536870912
+            }, 
+            "Snapshots": {
+                "AllocatedBytes": 21474836480, 
+                "ConsumedBytes": 0, 
+                "GuaranteedBytes": 536870912, 
+                "ProvisionedBytes": 2199023255552
+            }
+        }
+    ], 
+    "CapacitySources": [
+        {
+            "AllocatedBytes": 10737418240, 
+            "ConsumedBytes": 0, 
+            "GuaranteedBytes": 536870912, 
+            "Links": {
+                "AllocatedPools": null, 
+                "ClassOfService": {
+                    "@odata.id": "/redfish/v1/StorageServices/1/ClassesOfService/SilverBoston"
+                }, 
+                "ProvidingPool": {
+                    "Members": [
+                        {
+                            "@odata.id": "/redfish/v1/StorageServices/1/StoragePools/SpecialPool"
+                        }
+                    ]
+                }, 
+                "ProvidingVolume": null, 
+                "StorageGroups": {
+                    "@odata.id": "/redfish/v1/StorageServices/1/Volumes/8/StorageGroups"
+                }
+            }, 
+            "ProvisionedBytes": 1099511627776
+        }
+    ], 
+    "Description": "", 
+    "Id": "8", 
+    "Identifiers": [
+        {
+            "DurableName": "65456765456761001244076100123487", 
+            "DurableNameFormat": "NAA6"
+        }
+    ], 
+    "LowSpaceWarningThresholdPercent": [
+        70, 
+        80, 
+        90
+    ], 
+    "Manufacturer": "SuperDuperSSD", 
+    "Members@odata.count": 6, 
+    "Model": "Drive Model string", 
+    "Name": "Volumes", 
+    "ReplicaInfos": [
+        {
+            "@odata.id": {
+                "Replica": "/redfish/v1/StorageServices/1/Volumes/8"
+            }, 
+            "ReplicaProgressStatus": "Completed", 
+            "ReplicaRole": "Target", 
+            "ReplicaState": "Synchronized"
+        }
+    ], 
+    "Status": {
+        "Health": "OK", 
+        "State": "Enabled"
+    }
+}

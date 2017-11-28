@@ -154,6 +154,7 @@ class EndpointsCollectionAPI(Resource):
             path1 = os.path.join(self.root, self.storage_services, storage_service, self.endpoints, jdata[len(jdata)-1])
             shutil.rmtree(path1)
             pdata['Members'].remove(data)
+            pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
            
 
             with open(path,"w") as jdata:                

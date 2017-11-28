@@ -39,16 +39,12 @@ from .resource_dictionary import ResourceDictionary
 from .static_loader import load_static
 from .redfish.computer_system import ComputerSystem
 from .redfish.computer_systems import ComputerSystemCollection
-#from .redfish.chassis import ChassisCo/StorageServices/FileServicellection
-#from .exceptions import CreatePoole/StorageServices/FileServicedNodeError, RemovePooledNodeError, EventSubscriptionError
 from .redfish.event_service import EventService, Subscriptions
 from .redfish.event import Event
 
 from .redfish.chassis_api import ChassisCollectionAPI, ChassisAPI, CreateChassis
 from .redfish.pcie_switch_api import PCIeSwitchesAPI, PCIeSwitchAPI
-#from api_emulator.redfish.system_details import SystemDetailsAPI, SystemMemoryDetailsAPI, AddServiceAPI, JsonDataFilterAPI
-#from api_emulator.redfish.json_pbi import JsonVolDataAPI, JsonFSDataAPI, JsonSPDataAPI
-#from api_emulator.redfish.json_details import JsonVolumesDataFilterAPI, JsonFSDataFilterAPI
+
 
 
 class ResourceManager(object):
@@ -112,15 +108,7 @@ class ResourceManager(object):
         g.api.add_resource(StoragePoolsAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/StoragePools/<string:storage_pools>')
         g.api.add_resource(StoragePoolsChildAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/StoragePools/<string:storage_pools>/<string:values>')
-        #g.api.add_resource(ClientEndpointGroupsCollectionAPI,
-        #                    '/redfish/v1/StorageServices/<string:storage_service>/ClientEndpointGroups')
-        #g.api.add_resource(ClientEndpointGroupsAPI,
-        #                    '/redfish/v1/StorageServices/<string:storage_service>/ClientEndpointGroups/<string:client_end_point_group>')
-        #g.api.add_resource(ServerEndpointGroupsCollectionAPI,
-        #                    '/redfish/v1/StorageServices/<string:storage_service>/ServerEndpointGroups')
-        #g.api.add_resource(ServerEndpointGroupsAPI,
-        #                    '/redfish/v1/StorageServices/<string:storage_service>/ServerEndpointGroups/<string:server_end_point_group>')
+                            '/redfish/v1/StorageServices/<string:storage_service>/StoragePools/<string:storage_pools>/<string:values>')        
         g.api.add_resource(DrivesCollectionAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/Drives')
         g.api.add_resource(DrivesAPI,
@@ -130,8 +118,7 @@ class ResourceManager(object):
                             '/redfish/v1/StorageServices/<string:storage_service>/ClassesOfService')
         g.api.add_resource(ClassesOfServiceAPI,
                            '/redfish/v1/StorageServices/<string:storage_service>/ClassesOfService/<string:classes_of_service>')
-        #g.api.add_resource(ClassesOfServiceChildAPI,
-        #                    '/redfish/v1/StorageServices/<string:storage_service>/ClassesOfService/<string:classes_of_service>/<string:values>')
+        
         g.api.add_resource(DataProtectionLoSCapabilitiesAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/DataProtectionLoSCapabilities')
         g.api.add_resource(DataSecurityLoSCapabilitiesAPI,
@@ -171,26 +158,7 @@ class ResourceManager(object):
         g.api.add_resource(VolumesChildAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/Volumes/<string:volumes>/<string:values>')
         
-        """g.api.add_resource(AddServiceAPI,
-                            '/redfish/v1/get_addservice')
-        g.api.add_resource(JsonVolumesDataFilterAPI,
-                            '/redfish/v1/get_json_service')
-        g.api.add_resource(JsonFSDataFilterAPI,
-                            '/redfish/v1/get_json_fs_service')
-        g.api.add_resource(JsonDataFilterAPI,
-                            '/redfish/v1/get_json_dataa')
-        g.api.add_resource(JsonVolDataAPI,
-                            '/redfish/v1/get_json_volumes_data')
-        g.api.add_resource(JsonFSDataAPI,
-                            '/redfish/v1/get_json_filesystem_data')
-        g.api.add_resource(JsonSPDataAPI,
-                            '/redfish/v1/get_json_SP_data')
-        g.api.add_resource(SystemDetailsAPI,
-                            '/redfish/v1/get_system_details')
-    
-        g.api.add_resource(SystemMemoryDetailsAPI,
-                            '/redfish/v1/get_system_memory_details')
-"""
+
 
 
 

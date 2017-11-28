@@ -162,7 +162,8 @@ class StorageGroupsCollectionAPI(Resource):
             shutil.rmtree(path1)
             print path1
             pdata['Members'].remove(data)
-            print data
+            pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
+            
            
 
             with open(path,"w") as jdata:                

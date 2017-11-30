@@ -1,9 +1,9 @@
 The Storage Networking Industry Association (SNIA) grants rights under copyright in this software on the terms of the BSD 3-Clause License as set forth below; no other rights are granted by SNIA. This software might be subject to other rights (such as patent rights) of other parties.
 
 ## Copyrights.
-Copyright 2016 Storage Networking Industry Association (SNIA), USA. All rights reserved.  For full SNIA copyright terms, please see http://www.snia.org/about/corporate_info/copyright 
+Copyright 2016-2017 Storage Networking Industry Association (SNIA), USA. All rights reserved.  For full SNIA copyright terms, please see http://www.snia.org/about/corporate_info/copyright 
 
-Copyright (c) 2016, Storage Networking Industry Association (SNIA)
+Copyright (c) 2016-2017, Storage Networking Industry Association (SNIA)
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

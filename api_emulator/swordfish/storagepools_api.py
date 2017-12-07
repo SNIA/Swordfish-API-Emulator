@@ -7,12 +7,12 @@
 import g, os, json
 import shutil
 
-import logging, urllib2
+import logging, urllib3
 import sys, traceback
 from flask import Flask, request, make_response, render_template, jsonify
 from flask_restful import Resource
 from api_emulator.utils import update_collections_json
-from constants import *
+from .constants import *
 
 from .templates.storagepools import get_StoragePools_instance
 
@@ -126,7 +126,7 @@ class StoragePoolsAPI(Resource):
     def delete(self,storage_service, storage_pools):
         
         path = os.path.join(self.root, self.storage_services, storage_service, self.storage_pools, storage_pools, 'index.json')
-        print path            
+        print (path)            
         
         try:
             with open(path,"r") as pdata:

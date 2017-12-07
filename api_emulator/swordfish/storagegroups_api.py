@@ -10,12 +10,12 @@ import shutil
 
 import logging
 import g
-import urllib2
+import urllib3
 
 from flask import jsonify, request
 from flask_restful import Resource
 from api_emulator.utils import update_collections_json
-from constants import *
+from .constants import *
 from .templates.storagegroups import get_StorageGroups_instance
 
 members =[]
@@ -95,7 +95,7 @@ class StorageGroupsAPI(Resource):
     def delete(self,storage_service, storage_groups):
         
         path = os.path.join(self.root, self.storage_services, storage_service, self.storage_groups, storage_groups, 'index.json')
-        print path            
+        print (path)            
         
         try:
             with open(path,"r") as pdata:
@@ -147,7 +147,7 @@ class StorageGroupsCollectionAPI(Resource):
         pass
 
     def delete(self, storage_service):
-        print "nklnklndkl"
+        print ("nklnklndkl")
         path = os.path.join(self.root, self.storage_services, storage_service, self.storage_groups, 'index.json')
                     
         
@@ -157,10 +157,10 @@ class StorageGroupsCollectionAPI(Resource):
                 
             data = json.loads(request.data)
             jdata = data["@odata.id"].split('/')
-            print data
+            print (data)
             path1 = os.path.join(self.root, self.storage_services, storage_service, self.storage_groups, jdata[len(jdata)-1])
             shutil.rmtree(path1)
-            print path1
+            print (path1)
             pdata['Members'].remove(data)
             pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
             

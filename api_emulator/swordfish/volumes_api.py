@@ -8,13 +8,13 @@ import json, os
 import traceback
 import logging
 import g
-import urllib2
+import urllib3
 import shutil
 
 from flask import jsonify, request
 from flask_restful import Resource
 from api_emulator.utils import update_collections_json
-from constants import *
+from .constants import *
 from .templates.volumes import get_Volumes_instance
 from .storagegroups_api import StorageGroupsAPI, CreateStorageGroups
 
@@ -126,7 +126,7 @@ class VolumesAPI(Resource):
     def delete(self,storage_service,  volumes):
         
         path = os.path.join(self.root, self.storage_services, storage_service, self.volumes, volumes, 'index.json')
-        print path            
+        print (path)            
         
         try:
             with open(path,"r") as pdata:

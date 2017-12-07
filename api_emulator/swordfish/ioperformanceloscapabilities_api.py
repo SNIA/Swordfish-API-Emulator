@@ -10,12 +10,12 @@ import shutil
 import traceback
 import logging
 import g
-import urllib2
+import urllib3
 
 from flask import jsonify, request
 from flask.ext.restful import Resource
 from api_emulator.utils import update_collections_json
-from constants import *
+from .constants import *
 from .templates.ioperformanceloscapabilities import get_IOPerformanceLoSCapabilities_instance
 
 members =[]
@@ -45,12 +45,12 @@ class IOPerformanceLoSCapabilitiesAPI(Resource):
         try:
             ioperformance_los_capabilities_json = open(path)
             data = json.load(ioperformance_los_capabilities_json)
-            print data
+            print (data)
         except Exception as e:
             traceback.print_exc()
             raise Exception("Unable read file because of following error::{}".format(e))
         return jsonify(data)
-        print data
+        print (data)
 
     def put(self, storage_service):
         path = os.path.join(self.root, self.storage_services, storage_service,
@@ -101,7 +101,7 @@ class CreateIOPerformanceLoSCapabilities (Resource):
             if not os.path.exists(path):
                 os.mkdir(path)
             else: 
-                print "ihuh"
+                print ("ihuh")
             wildcards = {'s_id':storage_service,'rb': g.rest_base}
                 
             config=get_IOPerformanceLoSCapabilities_instance(wildcards)

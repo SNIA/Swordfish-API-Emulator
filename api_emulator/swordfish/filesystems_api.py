@@ -8,14 +8,14 @@ import json, os
 import traceback
 import logging
 import g
-import urllib2
+import urllib3
 import shutil
 
 
 from flask import jsonify, request
 from flask.ext.restful import Resource
 from api_emulator.utils import update_collections_json
-from constants import *
+from .constants import *
 from .templates.filesystems import get_FileSystems_instance
 
 members =[]
@@ -120,12 +120,12 @@ class FileSystemsAPI(Resource):
 
     # HTTP DELETE
     def delete(self,storage_service, file_systems):
-        print "rklnr"
+        print ("rklnr")
         path = os.path.join(self.root, self.storage_services, storage_service, self.file_systems, file_systems, 'index.json')
-        print path            
+        print (path)            
         
         try:
-            print "nod"
+            print ("nod")
             with open(path,"r") as pdata:
                 pdata = json.load(pdata)
                 

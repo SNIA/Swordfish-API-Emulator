@@ -7,7 +7,7 @@
 # Collection API  GET, POST
 # Singleton  API  GET, PUT, PATCH, DELETE
 
-import g, json, urllib2
+import g, json, urllib3
 import shutil
 
 import sys, traceback
@@ -163,7 +163,7 @@ class StorageServicesAPI(Resource):
     def delete(self,storage_service):
         
         path = os.path.join(self.root, self.storage_services, storage_service, 'index.json')
-        print path            
+        print (path)            
         
         try:
             with open(path,"r") as pdata:

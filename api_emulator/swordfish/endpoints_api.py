@@ -9,12 +9,12 @@ import shutil
 import traceback
 import logging
 import g
-import urllib2
+import urllib3
 
 from flask import jsonify, request
 from flask.ext.restful import Resource
 from api_emulator.utils import update_collections_json
-from constants import *
+from .constants import *
 from .templates.endpoints import get_Endpoints_instance
 
 members =[]
@@ -92,7 +92,7 @@ class EndpointsAPI(Resource):
     def delete(self,storage_service, endpoints):
         
         path = create_path(self.root, self.storage_services, storage_service, self.endpoints, endpoints, 'index.json')
-        print path            
+        print (path)            
         
         try:
             with open(path,"r") as pdata:

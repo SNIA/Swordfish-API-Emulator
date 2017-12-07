@@ -9,12 +9,12 @@ import logging
 import shutil
 
 import g
-import urllib2
+import urllib3
 
 from flask import jsonify, request
 from flask.ext.restful import Resource
 from api_emulator.utils import update_collections_json
-from constants import *
+from .constants import *
 from .templates.drives import get_Drives_instance
 
 members =[]
@@ -115,7 +115,7 @@ class DrivesAPI(Resource):
     def delete(self,storage_service, drives):
         
         path = os.path.join(self.root, self.storage_services, storage_service, self.drives, drives, 'index.json')
-        print path            
+        print (path)            
         
         try:
             with open(path,"r") as pdata:

@@ -1,0 +1,27 @@
+{
+  "@Redfish.Copyright": "Copyright 2015-2016 SNIA. All rights reserved.",
+  "@odata.context": "/redfish/v1/$metadata#StorageServices/2/Volumes",
+  "@odata.id": "/redfish/v1/StorageServices/2/Volumes",
+  "@odata.type": "#VolumeCollection_1_0_0.VolumeCollection",
+  "Name": "Volumes",
+  "Members@odata.count": 4,
+  "Permissions":[
+		{"Read": "True"},
+		{"Write": "True"}
+  ],
+
+  "Members": [
+    {
+      "@odata.id": "/redfish/v1/StorageServices/2/Volumes/1"
+    },
+    {
+      "@odata.id": "/redfish/v1/StorageServices/2/Volumes/2"
+    },
+    {
+      "@odata.id": "/redfish/v1/StorageServices/2/Volumes/3"
+    },
+    {
+      "@odata.id": "/redfish/v1/StorageServices/2/Volumes/4"
+    }
+  ]
+}

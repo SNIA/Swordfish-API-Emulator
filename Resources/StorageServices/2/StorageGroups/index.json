@@ -1,0 +1,16 @@
+{
+  "@Redfish.Copyright": "Copyright 2014-2016 SNIA. All rights reserved.",
+  "@odata.context": "/redfish/v1/$metadata#StorageServices/2/StorageGroups",
+  "@odata.id": "/redfish/v1/StorageServices/2/StorageGroups",
+  "@odata.type": "#StorageGroupCollection.v1_0_0.StorageGroupCollection",
+  "Name": "StorageGroups",
+  "Permissions":[
+		{"Read": "True"},
+		{"Write": "False"}
+  ],
+  "Members@odata.count": 2,
+  "Members":[
+        {"@odata.id": "/redfish/v1/StorageServices/2/StorageGroups/1"},
+        {"@odata.id": "/redfish/v1/StorageServices/2/StorageGroups/2"}
+  ]
+}

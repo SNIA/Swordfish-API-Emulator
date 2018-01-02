@@ -1,0 +1,31 @@
+{
+  "@Redfish.Copyright": "Copyright 2015-2016 SNIA. All rights reserved.",
+  "@odata.context": "/redfish/v1/$metadata#StorageServices/2/StoragePools/BasePool",
+  "@odata.id": "/redfish/v1/StorageServices/2/StoragePools/BasePool",
+  "@odata.type": "#StoragePool_1_0_0.StoragePool",
+  "Id": "BasePool",
+  "Name": "BasePool",
+  "Description": "Base storage pool",
+  "BlockSizeBytes": 512,
+  "Capacity": {
+    "Data": {
+      "AllocatedBytes": 10995116277760,
+      "ConsumedBytes": 10995116277760
+    }
+  },
+  "Status": {
+    "State": "Enabled",
+    "Health": "OK",
+    "HealthRollUp": "Degraded"
+  },
+  "AllocatedPools": [],
+  "AllocatedVolumes": {
+    "Members":[{"@odata.id": "/redfish/v1/StorageServices/2/Volumes/1"}]
+  },
+  "SourceDevices": null,
+  "SourcePools": null,
+  "SourceVolumes": null,
+  "ClassesOfService": null,
+  "Links": {
+  }
+}

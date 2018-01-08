@@ -15,8 +15,6 @@ Dynamic emulation requires coding two files for each resource model: <resource\>
 If a resource needs to be present at ServiceRoot, the ./api\_emulator/resource_manager.py file need to be modified.
 
 
-
-
 # Swordfish Installation Steps:
 
 1. Create an installation directory to install code, install python and create virtual Environment.
@@ -24,9 +22,8 @@ If a resource needs to be present at ServiceRoot, the ./api\_emulator/resource_m
 3. Open the Swordfish-API-Emulator files.
   -> copy the swordfish /api_emulator/swordfish files into redfish/api_emulator/redfish directory.
   -> copy the Swordfish-API-Emulator/api_emulator files into Redfish-Interface-Emulator/api_emulator directory(resource_manager.py and util.py files)
-4. After Third step is completed, install all the dependencies and modules needed by Redfish-Interface-Emulator and Swordfish-API-Emulator
-
-
-After completing all the above steps , the Swordfish API Emulator should be fully installed, and it should be possible to run it by entering “python emulator.py” at a command prompt.
+4.install all the dependencies and modules needed by Redfish-Interface-Emulator and Swordfish-API-Emulator
+5.open command prompt from directory `Swordfish API Emulator` and run the following command <br/>
+       `python emulator.py`  
 
 

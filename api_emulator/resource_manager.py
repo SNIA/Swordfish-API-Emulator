@@ -68,7 +68,7 @@ from .redfish.computer_systems import ComputerSystemCollection
 from .redfish.event_service import EventService, Subscriptions
 from .redfish.event import Event
 
-from .redfish.chassis_api import ChassisCollectionAPI, ChassisAPI, CreateChassis
+from .redfish.Chassis_api import ChassisCollectionAPI, ChassisAPI, CreateChassis
 from .redfish.pcie_switch_api import PCIeSwitchesAPI, PCIeSwitchAPI
 
 

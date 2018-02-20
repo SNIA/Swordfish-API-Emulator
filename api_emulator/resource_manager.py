@@ -1,32 +1,6 @@
-"""/* 
- * Copyright (c) 2017, The Storage Networking Industry Association.
- *  
- * Redistribution and use in source and binary forms, with or without 
- * modification, are permitted provided that the following conditions are met:
- *  
- * Redistributions of source code must retain the above copyright notice, 
- * this list of conditions and the following disclaimer.
- *  
- * Redistributions in binary form must reproduce the above copyright notice, 
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution.
- *  
- * Neither the name of The Storage Networking Industry Association (SNIA) nor 
- * the names of its contributors may be used to endorse or promote products 
- * derived from this software without specific prior written permission.
- *  
- *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
- *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- *  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
- *  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
- *  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
- *  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
- *  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS  
- *  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
- *  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
- *  THE POSSIBILITY OF SUCH DAMAGE.
- */"""
+# Copyright Notice:
+# Copyright 2016 Distributed Management Task Force, Inc. All rights reserved.
+# License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-Interface-Emulator/LICENSE.md
 
 # Resource Manager Module
 
@@ -36,6 +10,7 @@ import urllib3
 from uuid import uuid4
 from threading import Thread
 import logging
+import copy
 
 import g
 from api_emulator.redfish.storageservices_api import *
@@ -83,6 +58,7 @@ from .redfish.CompositionService_api import CompositionServiceAPI
 from .redfish.ResourceBlock_api import ResourceBlockCollectionAPI, ResourceBlockAPI, CreateResourceBlock
 from .redfish.ResourceZone_api import ResourceZoneCollectionAPI, ResourceZoneAPI, CreateResourceZone
 
+mockupfolders = []
 
 # The __init__ method sets up the static and dynamic resources.
 #
@@ -104,12 +80,12 @@ from .redfish.ResourceZone_api import ResourceZoneCollectionAPI, ResourceZoneAPI
 #   - The EgResource* provides an example of adding a dynamic resource.
 #
 # Note: There is one additional change that needs to be made in order to create multiple instances of a
-#   resource.  The resource endpoint for the second instance collides which the first because flask
-#   doesn't will reuse the endpont name for the subordinate resources.  This results in an assertion failure
+#   resource.  The resource endpoint for the second instance collides with the first because flask
+#   doesn't reuse the endpont name for the subordinate resources.  This results in an assertion failure
 #       "AssertionError: View function mapping is overwriting an existing endpoint function"
 #
-#   To fix, a unique endpoint names need to be formed and passed during the call to api_add_resource()
-#       api.add_resource(Todo,  '/todo/<int:todo_id>', endpoint='todo_ep')
+#   The fix is form a unique endpoint names and pass it during the call to api_add_resource()
+#      e.g. api.add_resource(Todo,  '/todo/<int:todo_id>', endpoint='todo_ep')
 #
 
 class ResourceManager(object):
@@ -131,9 +107,6 @@ class ResourceManager(object):
         2. Static resource dictionary
         """
 
-        #        logging.basicConfig(level=logging.INFO)
-        #        logging.basicConfig(level=logging.DEBUG)
-
         self.rest_base = rest_base
 
         self.mode = mode
@@ -145,12 +118,18 @@ class ResourceManager(object):
 
         # Load the static resources into the dictionary
         self.resource_dictionary = ResourceDictionary()
-        self.AccountService = load_static('AccountService', 'redfish', mode, rest_base, self.resource_dictionary)
-        self.Registries = load_static('Registries', 'redfish', mode, rest_base, self.resource_dictionary)
-        self.SessionService = load_static('SessionService', 'redfish', mode, rest_base, self.resource_dictionary)
-        self.TaskService = load_static('TaskService', 'redfish', mode, rest_base, self.resource_dictionary)
-        # self.Managers = load_static('Managers', 'redfish', mode, rest_base, self.resource_dictionary)
-        # self.EventService = load_static('EventService', 'redfish', mode, rest_base, self.resource_dictionary)
+
+        mockupfolders = copy.copy(g.staticfolders)
+        if "Redfish" in mockupfolders:
+            logging.info('Loading Redfish static resources')
+            self.AccountService =   load_static('AccountService', 'redfish', mode, rest_base, self.resource_dictionary)
+            self.Registries =       load_static('Registries', 'redfish', mode, rest_base, self.resource_dictionary)
+            self.SessionService =   load_static('SessionService', 'redfish', mode, rest_base, self.resource_dictionary)
+            self.TaskService =      load_static('TaskService', 'redfish', mode, rest_base, self.resource_dictionary)
+
+#        if "Swordfish" in mockupfolders:
+#            self.SessionService = load_static('SessionService', 'redfish', mode, rest_base, self.resource_dictionary)
+#            self.StorageSystems = load_static('StorageSystems', 'redfish', mode, rest_base, self.resource_dictionary)
 
         # Attach APIs for dynamic resources
 
@@ -209,11 +188,7 @@ class ResourceManager(object):
 
         # Example Resource Collection
         g.api.add_resource(EgResourceCollectionAPI, '/redfish/v1/EgResources')
-        g.api.add_resource(EgResourceAPI, '/redfish/v1/EgResources/<string:ident>',
-                           resource_class_kwargs={'rb': g.rest_base})
-        #        config = CreateEgResource()
-        #        out = config.__init__(resource_class_kwargs={'rb': g.rest_base})
-        #        out = config.put("Resource2")
+        g.api.add_resource(EgResourceAPI, '/redfish/v1/EgResources/<string:ident>', resource_class_kwargs={'rb': g.rest_base})
 
         # Composition Service - API
         g.api.add_resource(CompositionServiceAPI, '/redfish/v1/CompositionService', resource_class_kwargs={'rb': g.rest_base, 'id': "CompositionService"})
@@ -225,7 +200,7 @@ class ResourceManager(object):
         # Composition Service - Resource Zone API
         g.api.add_resource(ResourceZoneCollectionAPI, '/redfish/v1/CompositionService/ResourceZones')
         g.api.add_resource(ResourceZoneAPI,           '/redfish/v1/CompositionService/ResourceZones/<string:ident>', resource_class_kwargs={'rb': g.rest_base})
-
+		
 		# Storage Services - API and Collection
         g.api.add_resource(StorageServicesCollectionAPI, '/redfish/v1/StorageServices')
         g.api.add_resource(StorageServicesAPI, '/redfish/v1/StorageServices/<string:storage_service>')
@@ -287,9 +262,6 @@ class ResourceManager(object):
                             '/redfish/v1/StorageServices/<string:storage_service>/Volumes/<string:volumes>')
         g.api.add_resource(VolumesChildAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/Volumes/<string:volumes>/<string:values>')
-		
-		
-        
 
 
     @property
@@ -310,8 +282,8 @@ class ResourceManager(object):
                 'Managers': {'@odata.id': self.rest_base + 'Managers'},
                 'TaskService': {'@odata.id': self.rest_base + 'TaskService'},
                 'SessionService': {'@odata.id': self.rest_base + 'SessionService'},
-                'AccountService': {'@odata.id': self.rest_base + 'AccountService'},
 				'StorageServices': {'@odata.id': self.rest_base + 'StorageServices'},
+                'AccountService': {'@odata.id': self.rest_base + 'AccountService'},
                 'EventService': {'@odata.id': self.rest_base + 'EventService'},
                 'Registries': {'@odata.id': self.rest_base + 'Registries'},
                 'Systems': {'@odata.id': self.rest_base + 'Systems'},
@@ -403,6 +375,13 @@ class ResourceManager(object):
             raise RemovePooledNodeError(
                 'No pooled node with CS_PUID: {0}, exists'.format(cs_puid))
 
+    def get_resource(self, path):
+        """
+        Call Resource_Dictionary's get_resource
+        """
+        obj = self.resource_dictionary.get_resource(path)
+        return obj
+
 
 '''
     def remove_pooled_node(self, cs_puid):
@@ -413,12 +392,6 @@ class ResourceManager(object):
             cs_puid - CS_PUID of the pooed node to remove
         """
         self.remove_method(cs_puid)
-    def get_resource(self, path):
-        """
-        Call Resource_Dictionary's get_resource
-        """
-        obj = self.resource_dictionary.get_resource(path)
-        return obj
     def update_cs(self,cs_puid,rs):
         """
             Updates the power metrics of Systems/1

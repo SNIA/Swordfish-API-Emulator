@@ -126,10 +126,9 @@ class ResourceManager(object):
             self.Registries =       load_static('Registries', 'redfish', mode, rest_base, self.resource_dictionary)
             self.SessionService =   load_static('SessionService', 'redfish', mode, rest_base, self.resource_dictionary)
             self.TaskService =      load_static('TaskService', 'redfish', mode, rest_base, self.resource_dictionary)
-
+            self.StorageSystems = load_static('StorageSystems', 'redfish', mode, rest_base, self.resource_dictionary)
 #        if "Swordfish" in mockupfolders:
-#            self.SessionService = load_static('SessionService', 'redfish', mode, rest_base, self.resource_dictionary)
-#            self.StorageSystems = load_static('StorageSystems', 'redfish', mode, rest_base, self.resource_dictionary)
+#            self.SessionService = load_static('SessionService', 'redfish', mode, rest_base, self.resource_dictionary)			
 
         # Attach APIs for dynamic resources
 
@@ -283,6 +282,7 @@ class ResourceManager(object):
                 'TaskService': {'@odata.id': self.rest_base + 'TaskService'},
                 'SessionService': {'@odata.id': self.rest_base + 'SessionService'},
 				'StorageServices': {'@odata.id': self.rest_base + 'StorageServices'},
+				'StorageSystems': {'@odata.id': self.rest_base + 'StorageSystems'},
                 'AccountService': {'@odata.id': self.rest_base + 'AccountService'},
                 'EventService': {'@odata.id': self.rest_base + 'EventService'},
                 'Registries': {'@odata.id': self.rest_base + 'Registries'},

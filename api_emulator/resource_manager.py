@@ -28,6 +28,7 @@ from api_emulator.redfish.datasecurityloscapabilities_api import *
 from api_emulator.redfish.datastorageloscapabilities_api import *
 from api_emulator.redfish.ioperformanceloscapabilities_api import *
 from api_emulator.redfish.ioconnectivityloscapabilities_api import *
+from api_emulator.redfish.storagesystems_api import *
 from . import utils
 from .resource_dictionary import ResourceDictionary
 
@@ -126,7 +127,7 @@ class ResourceManager(object):
             self.Registries =       load_static('Registries', 'redfish', mode, rest_base, self.resource_dictionary)
             self.SessionService =   load_static('SessionService', 'redfish', mode, rest_base, self.resource_dictionary)
             self.TaskService =      load_static('TaskService', 'redfish', mode, rest_base, self.resource_dictionary)
-            self.StorageSystems = load_static('StorageSystems', 'redfish', mode, rest_base, self.resource_dictionary)
+            #self.StorageSystems = load_static('StorageSystems', 'redfish', mode, rest_base, self.resource_dictionary)
 #        if "Swordfish" in mockupfolders:
 #            self.SessionService = load_static('SessionService', 'redfish', mode, rest_base, self.resource_dictionary)			
 
@@ -261,6 +262,9 @@ class ResourceManager(object):
                             '/redfish/v1/StorageServices/<string:storage_service>/Volumes/<string:volumes>')
         g.api.add_resource(VolumesChildAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/Volumes/<string:volumes>/<string:values>')
+        # Storage Systems - API and Collection
+        g.api.add_resource(StorageSystemsCollectionAPI, '/redfish/v1/StorageSystems')
+        g.api.add_resource(StorageSystemsAPI, '/redfish/v1/StorageSystems/<string:storage_systems>')
 
 
     @property

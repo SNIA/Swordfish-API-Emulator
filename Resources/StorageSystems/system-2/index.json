@@ -1,0 +1,94 @@
+{
+    "@Redfish.Copyright": "Copyright 2015-2017 SNIA. All rights reserved.", 
+    "@odata.context": "/redfish/v1/$metadata#StorageSystems.StorageSystems", 
+    "@odata.id": "/redfish/v1/StorageSystems/system-2", 
+    "@odata.type": "#StorageSystemsCollection.1.0.0.StorageSystemsCollection", 
+    "AssetTag": "free form asset tag", 
+    "BiosVersion": "P79 v1.00 (09/20/2013)", 
+    "Boot": {
+        "BootSourceOverrideEnabled": "Once", 
+        "BootSourceOverrideMode": "UEFI", 
+        "BootSourceOverrideTarget": "Pxe", 
+        "BootSourceOverrideTarget@Redfish.AllowableValues": [
+            "None", 
+            "Pxe", 
+            "Floppy", 
+            "Cd", 
+            "Usb", 
+            "Hdd", 
+            "BiosSetup", 
+            "Utilities", 
+            "Diags", 
+            "UefiTarget", 
+            "SDCard", 
+            "UefiHttp"
+        ], 
+        "UefiTargetBootSourceOverride": "uefi device path"
+    }, 
+    "Description": "Description of server", 
+    "HostName": "web-srv344", 
+    "HostedServices": "sample", 
+    "HostingRoles": "sample", 
+    "Id": "system-2", 
+    "IndicatorLED": "Off", 
+    "Links": {
+        "StorageServices": [
+            {
+                "@odata.id": "/redfish/v1/StorageServices"
+            }
+        ]
+    }, 
+    "Manufacturer": "Manufacturer Name", 
+    "MemorySummary": {
+        "MemoryMirroring": "System", 
+        "Status": {
+            "Health": "OK", 
+            "HealthRollup": "OK", 
+            "State": "Enabled"
+        }, 
+        "TotalSystemMemoryGiB": 16
+    }, 
+    "Model": "Model Name", 
+    "Name": "Storage Systems Collection", 
+    "Oem": [], 
+    "PartNumber": "", 
+    "Permissions": [
+        {
+            "Read": "True"
+        }, 
+        {
+            "Write": "True"
+        }
+    ], 
+    "PowerState": "On", 
+    "ProcessorSummary": {
+        "Count": 8, 
+        "Model": "Multi-Core Intel(R) Xeon(R) processor 7xxx Series", 
+        "Status": {
+            "Health": "OK", 
+            "HealthRollup": "OK", 
+            "State": "Enabled"
+        }
+    }, 
+    "SKU": "", 
+    "SerialNumber": "2M220100SL", 
+    "Status": {
+        "Health": "OK", 
+        "HealthRollup": "OK", 
+        "State": "Enabled"
+    }, 
+    "SystemType": "Physical", 
+    "TrustedModules": [
+        {
+            "FirmwareVersion": "3.1", 
+            "FirmwareVersion2": "1", 
+            "InterfaceTypeSelection": "None", 
+            "ModuleType": "TPM2_0", 
+            "Status": {
+                "Health": "OK", 
+                "State": "Enabled"
+            }
+        }
+    ], 
+    "UUID": "00000000-0000-0000-0000-000000000000"
+}

@@ -55,6 +55,12 @@ PATHS = {
         'file_systems': 'FileSystems/'
 
     },
+    
+    'StorageSystems': {
+        'path': 'StorageSystems/'
+        
+    },
+    
     'AddService':
     {
         'path': 'AddService/'

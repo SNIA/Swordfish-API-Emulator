@@ -42,7 +42,7 @@ from flask_restful import Resource
 from api_emulator.utils import update_collections_json
 from .constants import *
 from .templates.volumes import get_Volumes_instance
-from .storagegroups_api import StorageGroupsAPI, CreateStorageGroups
+
 
 members =[]
 member_ids = []
@@ -110,8 +110,7 @@ class VolumesAPI(Resource):
             collection_path = os.path.join(self.root, self.storage_services, storage_service, self.volumes, 'index.json')
             update_collections_json(path=collection_path, link=config['@odata.id'])
             
-            cfg = CreateStorageGroups()
-            cfg.put(volumes)
+           
 
             resp = config, 200
         except Exception:

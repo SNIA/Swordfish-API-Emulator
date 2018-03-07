@@ -211,9 +211,7 @@ class ResourceManager(object):
         g.api.add_resource(StoragePoolsCollectionAPI,
                            '/redfish/v1/StorageServices/<string:storage_service>/StoragePools')
         g.api.add_resource(StoragePoolsAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/StoragePools/<string:storage_pools>')
-        g.api.add_resource(StoragePoolsChildAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/StoragePools/<string:storage_pools>/<string:values>')        
+                            '/redfish/v1/StorageServices/<string:storage_service>/StoragePools/<string:storage_pools>')                
         g.api.add_resource(DrivesCollectionAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/Drives')
         g.api.add_resource(DrivesAPI,
@@ -244,9 +242,7 @@ class ResourceManager(object):
         g.api.add_resource(FileSystemsCollectionAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/FileSystems')
         g.api.add_resource(FileSystemsAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/FileSystems/<string:file_systems>')
-        g.api.add_resource(FileSystemsChildAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/FileSystems/<string:file_systems>/<string:values>')
+                            '/redfish/v1/StorageServices/<string:storage_service>/FileSystems/<string:file_systems>')        
         
         g.api.add_resource(IOConnectivityLoSCapabilitiesAPI,
                            '/redfish/v1/StorageServices/<string:storage_service>/IOConnectivityLoSCapabilities')
@@ -259,9 +255,7 @@ class ResourceManager(object):
         g.api.add_resource(VolumesCollectionAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/Volumes')
         g.api.add_resource(VolumesAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/Volumes/<string:volumes>')
-        g.api.add_resource(VolumesChildAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/Volumes/<string:volumes>/<string:values>')
+                            '/redfish/v1/StorageServices/<string:storage_service>/Volumes/<string:volumes>')        
         # Storage Systems - API and Collection
         g.api.add_resource(StorageSystemsCollectionAPI, '/redfish/v1/StorageSystems')
         g.api.add_resource(StorageSystemsAPI, '/redfish/v1/StorageSystems/<string:storage_systems>')

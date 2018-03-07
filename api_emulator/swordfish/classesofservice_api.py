@@ -237,25 +237,7 @@ class ClassesOfServiceCollectionAPI(Resource):
     def post(self):
         pass
 
-"""class ClassesOfServiceChildAPI(Resource):
 
-    def __init__(self):
-        self.root = PATHS['Root']
-        self.storage_services = PATHS['StorageServices']['path']
-        self.classes_of_service = PATHS['StorageServices']['classes_of_service']
-
-    def get(self, storage_service, volumes, values):
-        path = '{}{}{}/{}{}/{}/{}'.format(self.root, self.storage_services, storage_service,
-                                       self.volumes, volumes, values, 'index.json')
-
-        try:
-            volumes_json = open(path)
-            data = json.load(volumes_json)
-        except Exception as e:
-            traceback.print_exc()
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(data)"""
 
 class CreateClassesOfService (Resource):
     def __init__(self):

@@ -236,25 +236,6 @@ class VolumesCollectionAPI(Resource):
     def post(self):
         pass
 
-class VolumesChildAPI(Resource):
-
-    def __init__(self):
-        self.root = PATHS['Root']
-        self.storage_services = PATHS['StorageServices']['path']
-        self.volumes = PATHS['StorageServices']['volumes']
-
-    def get(self, storage_service, volumes, values):
-        path = '{}{}{}/{}{}/{}/{}'.format(self.root, self.storage_services, storage_service,
-                                       self.volumes, volumes, values, 'index.json')
-
-        try:
-            volumes_json = open(path)
-            data = json.load(volumes_json)
-        except Exception as e:
-            traceback.print_exc()
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(data)
 
 class CreateVolume (Resource):
     def __init__(self):

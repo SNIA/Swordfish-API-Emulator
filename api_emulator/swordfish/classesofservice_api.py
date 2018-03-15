@@ -1,32 +1,32 @@
-"""
- * Copyright (c) 2017, The Storage Networking Industry Association.
- *  
- * Redistribution and use in source and binary forms, with or without 
- * modification, are permitted provided that the following conditions are met:
- *  
- * Redistributions of source code must retain the above copyright notice, 
- * this list of conditions and the following disclaimer.
- *  
- * Redistributions in binary form must reproduce the above copyright notice, 
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution.
- *  
- * Neither the name of The Storage Networking Industry Association (SNIA) nor 
- * the names of its contributors may be used to endorse or promote products 
- * derived from this software without specific prior written permission.
- *  
- *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
- *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- *  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
- *  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
- *  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
- *  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
- *  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS  
- *  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
- *  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
- *  THE POSSIBILITY OF SUCH DAMAGE.
-"""
+#
+# Copyright (c) 2017-2018, The Storage Networking Industry Association.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# Neither the name of The Storage Networking Industry Association (SNIA) nor
+# the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+#  THE POSSIBILITY OF SUCH DAMAGE.
+#
 
 # classesofservice_api.py
 
@@ -59,7 +59,7 @@ def create_path(*args):
     return os.path.join(*trimmed)
 
 
-# ClassesOfServiceAPI 
+# ClassesOfServiceAPI
 class ClassesOfServiceAPI(Resource):
     def __init__(self, **kwargs):
         logging.info('ClassesOfServiceAPI init called')
@@ -111,17 +111,16 @@ class ClassesOfServiceAPI(Resource):
             # update the collection json file with new added resource
             collection_path = os.path.join(self.root, self.storage_services, storage_service, self.classes_of_service, 'index.json')
             update_collections_json(path=collection_path, link=config['@odata.id'])
-            
-            
+    
             resp = config, 200
         except Exception:
             traceback.print_exc()
             resp = INTERNAL_ERROR
         logging.info('ClassesOfServiceAPI put exit')
         return resp
-    
+
     def put(self, storage_service, classes_of_service):
-        
+
         path = os.path.join(self.root, self.storage_services, storage_service, self.classes_of_service, classes_of_service, 'index.json')
         try:
             # Read json from file.
@@ -150,29 +149,29 @@ class ClassesOfServiceAPI(Resource):
 
     # HTTP DELETE
     def delete(self,storage_service):
-        
+
         path = create_path(self.root, self.storage_services, storage_service, self.classes_of_service, classes_of_service, 'index.json')
-        print (path)            
-        
+        print(path)
+
         try:
             with open(path,"r") as pdata:
                 pdata = json.load(pdata)
-                
+
             data = json.loads(request.data)
             jdata = data["@odata.id"].split('/')
-            for element in pdata: 
+            for element in pdata:
                 if element == jdata[len(jdata)-1]:
                     pdata.pop(element)
-                    
-            
-            path1 = os.path.join(self.root, self.storage_services, storage_service,  self.classes_of_service, classes_of_service, sjdata[len(jdata)-1])
-            
-            shutil.rmtree(path1)
-            
-           
 
-            with open(path,"w") as jdata:                
-                
+
+            path1 = os.path.join(self.root, self.storage_services, storage_service,  self.classes_of_service, classes_of_service, sjdata[len(jdata)-1])
+
+            shutil.rmtree(path1)
+
+
+
+            with open(path,"w") as jdata:
+
                 json.dump(pdata,jdata)
 
         except Exception as e:
@@ -204,24 +203,24 @@ class ClassesOfServiceCollectionAPI(Resource):
         pass
 
     def delete(self):
-        
+
         path = os.path.join(self.root, self.storage_services, storage_service, self.classes_of_service, 'index.json')
-                    
-        
+
+
         try:
             with open(path,"r") as pdata:
                 pdata = json.load(pdata)
-                
+
             data = json.loads(request.data)
             jdata = data["@odata.id"].split('/')
             path1 = os.path.join(self.root, self.storage_services, storage_service, self.classes_of_service, jdata[len(jdata)-1])
             shutil.rmtree(path1)
             pdata['Members'].remove(data)
             pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
-           
 
-            with open(path,"w") as jdata:                
-                
+
+            with open(path,"w") as jdata:
+
                 json.dump(pdata,jdata)
 
         except Exception as e:
@@ -254,7 +253,7 @@ class CreateClassesOfService (Resource):
                 os.mkdir(path)
             else:
                 logging.info('The given path : {} already Exist.'.format(path))
-            config={  
+            config={
                       "@Redfish.Copyright": "Copyright 2015-2017 SNIA. All rights reserved.",
                       "@odata.context": "/redfish/v1/$metadata#ClassesOfService.ClassesOfService",
                       "@odata.id": "/redfish/v1/StorageServices/$metadata#/ClassesOfService",

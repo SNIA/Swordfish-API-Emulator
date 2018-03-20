@@ -1,4 +1,10 @@
 """/* 
+ * Copyright Notice:
+ * Copyright 2016 Distributed Management Task Force, Inc. All rights reserved.
+ * License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-Interface-Emulator/LICENSE.md
+ 
+ * The original DMTF contents of this file have been modified to support
+ * The SNIA Swordfish API Emulator. These modifications are subject to the following:
  * Copyright (c) 2017, The Storage Networking Industry Association.
  *  
  * Redistribution and use in source and binary forms, with or without 

@@ -1,4 +1,4 @@
- /* 
+"""
  * Copyright (c) 2017, The Storage Networking Industry Association.
  *  
  * Redistribution and use in source and binary forms, with or without 
@@ -26,7 +26,7 @@
  *  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
  *  THE POSSIBILITY OF SUCH DAMAGE.
- */
+"""
 
 #storagepools_api.py
 
@@ -236,25 +236,7 @@ class StoragePoolsCollectionAPI(Resource):
     def post(self):
         pass
 
-class StoragePoolsChildAPI(Resource):
 
-    def __init__(self):
-        self.root = PATHS['Root']
-        self.storage_services = PATHS['StorageServices']['path']
-        self.storage_pools = PATHS['StorageServices']['storage_pools']
-
-    def get(self, storage_service, storage_pools, values):
-        path = os.path.join(self.root, self.storage_services, storage_service,
-                                       self.storage_pools, storage_pools, values, 'index.json')
-
-        try:
-            storage_pools_json = open(path)
-            data = json.load(storage_pools_json)
-        except Exception as e:
-            traceback.print_exc()
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(data)
 # Used to create a resource instance internally
 class CreateStoragePools (Resource):
     def __init__(self):

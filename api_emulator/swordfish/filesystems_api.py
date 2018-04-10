@@ -1,4 +1,4 @@
- /* 
+""" 
  * Copyright (c) 2017, The Storage Networking Industry Association.
  *  
  * Redistribution and use in source and binary forms, with or without 
@@ -26,7 +26,7 @@
  *  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
  *  THE POSSIBILITY OF SUCH DAMAGE.
- */
+"""
 
 # filesystems_api.py
 
@@ -233,25 +233,6 @@ class FileSystemsCollectionAPI(Resource):
     def post(self):
         pass
 
-class FileSystemsChildAPI(Resource):
-
-    def __init__(self):
-        self.root = PATHS['Root']
-        self.storage_services = PATHS['StorageServices']['path']
-        self.file_systems = PATHS['StorageServices']['file_systems']
-
-    def get(self, storage_service, file_systems, values):
-        path = os.path.join(self.root, self.storage_services, storage_service,
-                                       self.file_systems, file_systems, values, 'index.json')
-
-        try:
-            file_systems_json = open(path)
-            data = json.load(file_systems_json)
-        except Exception as e:
-            traceback.print_exc()
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(data)
 
 class CreateFileSystems (Resource):
     def __init__(self):

@@ -1,4 +1,4 @@
- /* 
+""" 
  * Copyright (c) 2017, The Storage Networking Industry Association.
  *  
  * Redistribution and use in source and binary forms, with or without 
@@ -26,7 +26,7 @@
  *  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
  *  THE POSSIBILITY OF SUCH DAMAGE.
- */
+ """
 # volumes_api.py
 
 
@@ -42,7 +42,7 @@ from flask_restful import Resource
 from api_emulator.utils import update_collections_json
 from .constants import *
 from .templates.volumes import get_Volumes_instance
-from .storagegroups_api import StorageGroupsAPI, CreateStorageGroups
+
 
 members =[]
 member_ids = []
@@ -110,8 +110,7 @@ class VolumesAPI(Resource):
             collection_path = os.path.join(self.root, self.storage_services, storage_service, self.volumes, 'index.json')
             update_collections_json(path=collection_path, link=config['@odata.id'])
             
-            cfg = CreateStorageGroups()
-            cfg.put(volumes)
+           
 
             resp = config, 200
         except Exception:
@@ -236,25 +235,6 @@ class VolumesCollectionAPI(Resource):
     def post(self):
         pass
 
-class VolumesChildAPI(Resource):
-
-    def __init__(self):
-        self.root = PATHS['Root']
-        self.storage_services = PATHS['StorageServices']['path']
-        self.volumes = PATHS['StorageServices']['volumes']
-
-    def get(self, storage_service, volumes, values):
-        path = '{}{}{}/{}{}/{}/{}'.format(self.root, self.storage_services, storage_service,
-                                       self.volumes, volumes, values, 'index.json')
-
-        try:
-            volumes_json = open(path)
-            data = json.load(volumes_json)
-        except Exception as e:
-            traceback.print_exc()
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(data)
 
 class CreateVolume (Resource):
     def __init__(self):

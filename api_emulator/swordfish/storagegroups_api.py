@@ -1,4 +1,4 @@
- /* 
+"""
  * Copyright (c) 2017, The Storage Networking Industry Association.
  *  
  * Redistribution and use in source and binary forms, with or without 
@@ -26,7 +26,7 @@
  *  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
  *  THE POSSIBILITY OF SUCH DAMAGE.
- */
+"""
 
 #storagegroups_api.py
 
@@ -209,25 +209,7 @@ class StorageGroupsCollectionAPI(Resource):
     def post(self):
         pass
 
-class StorageGroupsChildAPI(Resource):
 
-    def __init__(self):
-        self.root = PATHS['Root']
-        self.storage_services = PATHS['StorageServices']['path']
-        self.storage_groups = PATHS['StorageServices']['storage_groups']
-
-    def get(self, storage_service, storage_groups, values):
-        path = '{}{}{}/{}{}/{}/{}'.format(self.root, self.storage_services, storage_service,
-                                       self.storage_groups, storage_groups, values, 'index.json')
-
-        try:
-            storage_groups_json = open(path)
-            data = json.load(storage_groups_json)
-        except Exception as e:
-            traceback.print_exc()
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(data)
 
 class CreateStorageGroups (Resource):
     def __init__(self):

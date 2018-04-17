@@ -1,32 +1,33 @@
-"""
- * Copyright (c) 2017, The Storage Networking Industry Association.
- *  
- * Redistribution and use in source and binary forms, with or without 
- * modification, are permitted provided that the following conditions are met:
- *  
- * Redistributions of source code must retain the above copyright notice, 
- * this list of conditions and the following disclaimer.
- *  
- * Redistributions in binary form must reproduce the above copyright notice, 
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution.
- *  
- * Neither the name of The Storage Networking Industry Association (SNIA) nor 
- * the names of its contributors may be used to endorse or promote products 
- * derived from this software without specific prior written permission.
- *  
- *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
- *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- *  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
- *  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
- *  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
- *  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
- *  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS  
- *  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
- *  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
- *  THE POSSIBILITY OF SUCH DAMAGE.
-"""
+#
+# Copyright (c) 2017-2018, The Storage Networking Industry Association.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# Neither the name of The Storage Networking Industry Association (SNIA) nor
+# the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+#  THE POSSIBILITY OF SUCH DAMAGE.
+#
+
 # StorageServices_api.py
 #
 # Collection API  GET, POST
@@ -102,15 +103,15 @@ class StorageServicesAPI(Resource):
         try:
             global config
             global foo
-            
+
             wildcards = {'id': storage_service, 'rb': g.rest_base}
-            
+
             config=get_StorageServices_instance(wildcards)
-            
+
 
             members.append(config)
             member_ids.append({'@odata.id': config['@odata.id']})
-            
+
             path = os.path.join(self.root, self.storage_services, storage_service)
             if not os.path.exists(path):
                 os.mkdir(path)
@@ -122,8 +123,8 @@ class StorageServicesAPI(Resource):
             update_collections_json(path=collection_path, link=config['@odata.id'])
 
             # Create instances of subordinate resources, then call put operation
-            
-            
+
+
             cfg = CreateVolume()
             cfg.put(storage_service)
             cfg = CreateStoragePools()
@@ -152,7 +153,7 @@ class StorageServicesAPI(Resource):
             cfg.put(storage_service)
             cfg = CreateStorageSubsystems()
             cfg.put(storage_service)
-            
+
 
 
             resp = config, 200
@@ -186,30 +187,30 @@ class StorageServicesAPI(Resource):
 
     # HTTP DELETE
     def delete(self,storage_service):
-        
+
         path = os.path.join(self.root, self.storage_services, storage_service, 'index.json')
-        print (path)            
-        
+        print (path)
+
         try:
             with open(path,"r") as pdata:
                 pdata = json.load(pdata)
-                
+
             data = json.loads(request.data)
             jdata = data["@odata.id"].split('/')
-            for element in pdata: 
-                
+            for element in pdata:
+
                 if element == jdata[len(jdata)-1]:
-                    
+
                     pdata.pop(element)
-                    
-                    break                   
-            
+
+                    break
+
             path1 = os.path.join(self.root, self.storage_services, storage_service, jdata[len(jdata)-1])
-            
-            shutil.rmtree(path1)           
-           
-            with open(path,"w") as jdata:                
-                
+
+            shutil.rmtree(path1)
+
+            with open(path,"w") as jdata:
+
                 json.dump(pdata,jdata)
 
         except Exception as e:
@@ -240,24 +241,24 @@ class StorageServicesCollectionAPI(Resource):
         pass
 
     def delete(self):
-        
+
         path = os.path.join(self.root, self.storage_services, 'index.json')
-                    
-        
+
+
         try:
             with open(path,"r") as pdata:
                 pdata = json.load(pdata)
-                
+
             data = json.loads(request.data)
             jdata = data["@odata.id"].split('/')
             path1 = os.path.join(self.root, self.storage_services, jdata[len(jdata)-1])
             shutil.rmtree(path1)
             pdata['Members'].remove(data)
             pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
-           
 
-            with open(path,"w") as jdata:                
-                
+
+            with open(path,"w") as jdata:
+
                 json.dump(pdata,jdata)
 
         except Exception as e:
@@ -286,7 +287,7 @@ class StorageServicesCollectionAPI(Resource):
 # to be editted.  A better method is just hack up a copy of usertest.py which performs a POST for each resource
 # instance desired (e.g. populate.py).  Then one could have a multiple 'populate' files and the emulator doesn't
 # need to change.
-# 
+#
 # Note: In 'init', the first time through, kwargs may not have any values, so we need to check.
 #   The call to 'init' stores the path wildcards. The wildcards are used when subsequent calls instanctiate
 #   resources to modify the resource template.

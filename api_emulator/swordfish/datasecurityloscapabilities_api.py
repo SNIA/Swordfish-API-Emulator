@@ -39,7 +39,7 @@ import g
 import urllib3
 
 from flask import jsonify, request
-from flask.ext.restful import Resource
+from flask_restful import Resource
 from api_emulator.utils import update_collections_json
 from .constants import *
 from .templates.datasecurityloscapabilities import get_DataSecurityLoSCapabilities_instance

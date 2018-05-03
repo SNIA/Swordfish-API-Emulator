@@ -8,7 +8,7 @@
 	"Members": 
 		[{"@odata.id": "/redfish/v1/StorageServices/1/StoragePools/BasePool"},
 		{"@odata.id": "/redfish/v1/StorageServices/1/StoragePools/SpecialPool"} 
-		 
+		],
 	"Permissions": 
 		[{"Read": "True"}, 
 		{"Write": "False"}]

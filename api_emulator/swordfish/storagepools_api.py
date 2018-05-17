@@ -151,32 +151,33 @@ class StoragePoolsAPI(Resource):
 
     def delete(self,storage_service, storage_pools):
         
-        path = os.path.join(self.root, self.storage_services, storage_service, self.storage_pools, storage_pools, 'index.json')
+        path = os.path.join(self.root, self.storage_services, storage_service, self.storage_pools, storage_pools)
         print (path)            
-        
+        delPath = path.replace('Resources','/redfish/v1')
+        path2 = os.path.join(self.root, self.storage_services, storage_service, self.storage_pools, 'index.json')
         try:
-            with open(path,"r") as pdata:
+            with open(path2,"r") as pdata:
                 pdata = json.load(pdata)
                 
-            data = json.loads(request.data)
+            data = {
+            "@odata.id":delPath
+            }            
+            resp = 200
             jdata = data["@odata.id"].split('/')
-            for element in pdata: 
-                if element == jdata[len(jdata)-1]:
-                    pdata.pop(element)
-                    
-            
-            path1 = os.path.join(self.root, self.storage_services, storage_service,  self.storage_pools, storage_pools, jdata[len(jdata)-1])
-            
-            shutil.rmtree(path1)                     
-
-            with open(path,"w") as jdata:                
-                
+           
+            path1 = os.path.join(self.root, self.storage_services, storage_service,  self.storage_pools, jdata[len(jdata)-1])
+            shutil.rmtree(path1)
+            pdata['Members'].remove(data)
+            pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
+          
+            with open(path2,"w") as jdata:
                 json.dump(pdata,jdata)
+                       
 
         except Exception as e:
             return {"error": "Unable read file because of following error::{}".format(e)}, 500
 
-        return jsonify(pdata)
+        return jsonify(resp)
 
 		
 		
@@ -200,33 +201,7 @@ class StoragePoolsCollectionAPI(Resource):
         return jsonify(data)
 
     def put(self):
-        pass
-
-    def delete(self, storage_service):
-        
-        path = os.path.join(self.root, self.storage_services, storage_service, self.storage_pools, 'index.json')
-                    
-        
-        try:
-            with open(path,"r") as pdata:
-                pdata = json.load(pdata)
-                
-            data = json.loads(request.data)
-            jdata = data["@odata.id"].split('/')
-            path1 = os.path.join(self.root, self.storage_services, storage_service, self.storage_pools, jdata[len(jdata)-1])
-            shutil.rmtree(path1)
-            pdata['Members'].remove(data)
-            pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
-           
-
-            with open(path,"w") as jdata:                
-                
-                json.dump(pdata,jdata)
-
-        except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(pdata)
+        pass    
 
     def verify(self,config):
         #TODO: implement a method to verify that the POST'ed data is valid

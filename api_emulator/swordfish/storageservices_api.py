@@ -187,35 +187,36 @@ class StorageServicesAPI(Resource):
     # HTTP DELETE
     def delete(self,storage_service):
         
-        path = os.path.join(self.root, self.storage_services, storage_service, 'index.json')
-        print (path)            
+        path = os.path.join(self.root, self.storage_services, storage_service)
+        print (path)
+        delPath = path.replace('Resources','/redfish/v1')
+        path2 = os.path.join(self.root, self.storage_services, 'index.json')
+
         
         try:
-            with open(path,"r") as pdata:
+            with open(path2,"r") as pdata:
                 pdata = json.load(pdata)
                 
-            data = json.loads(request.data)
-            jdata = data["@odata.id"].split('/')
-            for element in pdata: 
-                
-                if element == jdata[len(jdata)-1]:
-                    
-                    pdata.pop(element)
-                    
-                    break                   
+            data = {
+            "@odata.id":delPath
+            }
             
-            path1 = os.path.join(self.root, self.storage_services, storage_service, jdata[len(jdata)-1])
-            
-            shutil.rmtree(path1)           
+            resp = 200
+            jdata = data["@odata.id"].split('/')                          
            
-            with open(path,"w") as jdata:                
+            path1 = os.path.join(self.root, self.storage_services, jdata[len(jdata)-1])            
+            shutil.rmtree(path1)
+            pdata['Members'].remove(data)
+            pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
+          
+            with open(path2,"w") as jdata:                
                 
                 json.dump(pdata,jdata)
-
+            
         except Exception as e:
             return {"error": "Unable read file because of following error::{}".format(e)}, 500
 
-        return jsonify(pdata)
+        return jsonify(resp)
 
 
 # StorageServices Collection API

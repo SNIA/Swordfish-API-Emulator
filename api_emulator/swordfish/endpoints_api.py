@@ -1,32 +1,32 @@
-#
-# Copyright (c) 2017-2018, The Storage Networking Industry Association.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# Redistributions of source code must retain the above copyright notice,
-# this list of conditions and the following disclaimer.
-#
-# Redistributions in binary form must reproduce the above copyright notice,
-# this list of conditions and the following disclaimer in the documentation
-# and/or other materials provided with the distribution.
-#
-# Neither the name of The Storage Networking Industry Association (SNIA) nor
-# the names of its contributors may be used to endorse or promote products
-# derived from this software without specific prior written permission.
-#
-#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
-#  THE POSSIBILITY OF SUCH DAMAGE.
-#
+""" 
+ * Copyright (c) 2017, The Storage Networking Industry Association.
+ *  
+ * Redistribution and use in source and binary forms, with or without 
+ * modification, are permitted provided that the following conditions are met:
+ *  
+ * Redistributions of source code must retain the above copyright notice, 
+ * this list of conditions and the following disclaimer.
+ *  
+ * Redistributions in binary form must reproduce the above copyright notice, 
+ * this list of conditions and the following disclaimer in the documentation 
+ * and/or other materials provided with the distribution.
+ *  
+ * Neither the name of The Storage Networking Industry Association (SNIA) nor 
+ * the names of its contributors may be used to endorse or promote products 
+ * derived from this software without specific prior written permission.
+ *  
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ *  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ *  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ *  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+ *  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ *  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS  
+ *  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+ *  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ *  THE POSSIBILITY OF SUCH DAMAGE.
+"""
 #endpoints_api.py
 
 import json, os
@@ -38,7 +38,7 @@ import g
 import urllib3
 
 from flask import jsonify, request
-from flask_restful import Resource
+from flask.ext.restful import Resource
 from api_emulator.utils import update_collections_json
 from .constants import *
 from .templates.endpoints import get_Endpoints_instance
@@ -116,33 +116,35 @@ class EndpointsAPI(Resource):
 
     # HTTP DELETE
     def delete(self,storage_service, endpoints):
-
-        path = create_path(self.root, self.storage_services, storage_service, self.endpoints, endpoints, 'index.json')
+        
+        path = create_path(self.root, self.storage_services, storage_service, self.endpoints, endpoints)
         print (path)
-
+        delPath = path.replace('Resources','/redfish/v1')
+        path2 = os.path.join(self.root, self.storage_services, storage_service, self.endpoints, 'index.json')
+        
         try:
-            with open(path,"r") as pdata:
+            with open(path2,"r") as pdata:
                 pdata = json.load(pdata)
-
-            data = json.loads(request.data)
+                
+            data = {
+            "@odata.id":delPath
+            }            
+            resp = 200
             jdata = data["@odata.id"].split('/')
-            for element in pdata:
-                if element == jdata[len(jdata)-1]:
-                    pdata.pop(element)
-
-            path1 = os.path.join(self.root, self.storage_services, storage_service, self.endpoints, endpoints, jdata[len(jdata)-1])
+            
+            path1 = os.path.join(self.root, self.storage_services, storage_service, self.endpoints, jdata[len(jdata)-1])
             shutil.rmtree(path1)
-
-
-
-            with open(path,"w") as jdata:
-
+            pdata['Members'].remove(data)
+            pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
+          
+            with open(path2,"w") as jdata:
                 json.dump(pdata,jdata)
+                       
 
         except Exception as e:
             return {"error": "Unable read file because of following error::{}".format(e)}, 500
 
-        return jsonify(pdata)
+        return jsonify(resp)
 
 
 # Endpoints Collection API
@@ -166,31 +168,7 @@ class EndpointsCollectionAPI(Resource):
 
     def put(self):
         pass
-
-    def delete(self, storage_service):
-
-        path = os.path.join(self.root, self.storage_services, storage_service, self.endpoints, 'index.json')
-
-        try:
-            with open(path,"r") as pdata:
-                pdata = json.load(pdata)
-
-            data = json.loads(request.data)
-            jdata = data["@odata.id"].split('/')
-            path1 = os.path.join(self.root, self.storage_services, storage_service, self.endpoints, jdata[len(jdata)-1])
-            shutil.rmtree(path1)
-            pdata['Members'].remove(data)
-            pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
-
-
-            with open(path,"w") as jdata:
-
-                json.dump(pdata,jdata)
-
-        except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(pdata)
+    
     def verify(self,config):
         #TODO: implement a method to verify that the POST'ed data is valid
         return True,{}
@@ -223,7 +201,7 @@ class CreateEndpoints (Resource):
                       "@odata.type": "#EndpointCollection.v1_0_0.EndpointCollection",
                       "Name": "Endpoints Collection",
                       "Members@odata.count": 0,
-                      "Members": [
+                      "Members": [                      
                       ]
                     }
             with open(os.path.join(path, "index.json"), "w") as fd:

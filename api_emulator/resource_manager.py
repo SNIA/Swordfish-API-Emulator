@@ -1,39 +1,38 @@
-#
-# Copyright Notice:
-# Copyright 2016 Distributed Management Task Force, Inc. All rights reserved.
-# License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-Interface-Emulator/LICENSE.md
-#
-# The original DMTF contents of this file have been modified to support
-# The SNIA Swordfish API Emulator. These modifications are subject to the following:
-# Copyright (c) 2017-2018, The Storage Networking Industry Association.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# Redistributions of source code must retain the above copyright notice,
-# this list of conditions and the following disclaimer.
-#
-# Redistributions in binary form must reproduce the above copyright notice,
-# this list of conditions and the following disclaimer in the documentation
-# and/or other materials provided with the distribution.
-#
-# Neither the name of The Storage Networking Industry Association (SNIA) nor
-# the names of its contributors may be used to endorse or promote products
-# derived from this software without specific prior written permission.
-#
-#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
-#  THE POSSIBILITY OF SUCH DAMAGE.
-#
-
+"""/* 
+ * Copyright Notice:
+ * Copyright 2016 Distributed Management Task Force, Inc. All rights reserved.
+ * License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-Interface-Emulator/LICENSE.md
+ 
+ * The original DMTF contents of this file have been modified to support
+ * The SNIA Swordfish API Emulator. These modifications are subject to the following:
+ * Copyright (c) 2017, The Storage Networking Industry Association.
+ *  
+ * Redistribution and use in source and binary forms, with or without 
+ * modification, are permitted provided that the following conditions are met:
+ *  
+ * Redistributions of source code must retain the above copyright notice, 
+ * this list of conditions and the following disclaimer.
+ *  
+ * Redistributions in binary form must reproduce the above copyright notice, 
+ * this list of conditions and the following disclaimer in the documentation 
+ * and/or other materials provided with the distribution.
+ *  
+ * Neither the name of The Storage Networking Industry Association (SNIA) nor 
+ * the names of its contributors may be used to endorse or promote products 
+ * derived from this software without specific prior written permission.
+ *  
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ *  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ *  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ *  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+ *  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ *  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS  
+ *  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+ *  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ *  THE POSSIBILITY OF SUCH DAMAGE.
+ */"""
 # Resource Manager Module
 
 import os
@@ -243,7 +242,7 @@ class ResourceManager(object):
         g.api.add_resource(StoragePoolsCollectionAPI,
                            '/redfish/v1/StorageServices/<string:storage_service>/StoragePools')
         g.api.add_resource(StoragePoolsAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/StoragePools/<string:storage_pools>')
+                            '/redfish/v1/StorageServices/<string:storage_service>/StoragePools/<string:storage_pools>')                
         g.api.add_resource(DrivesCollectionAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/Drives')
         g.api.add_resource(DrivesAPI,
@@ -253,6 +252,7 @@ class ResourceManager(object):
                             '/redfish/v1/StorageServices/<string:storage_service>/ClassesOfService')
         g.api.add_resource(ClassesOfServiceAPI,
                            '/redfish/v1/StorageServices/<string:storage_service>/ClassesOfService/<string:classes_of_service>')
+        
         g.api.add_resource(DataProtectionLoSCapabilitiesAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/DataProtectionLoSCapabilities')
         g.api.add_resource(DataSecurityLoSCapabilitiesAPI,
@@ -268,23 +268,29 @@ class ResourceManager(object):
                             '/redfish/v1/StorageServices/<string:storage_service>/EndpointGroups')
         g.api.add_resource(EndpointGroupsAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/EndpointGroups/<string:endpoint_groups>')
+        
+        
         g.api.add_resource(FileSystemsCollectionAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/FileSystems')
         g.api.add_resource(FileSystemsAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/FileSystems/<string:file_systems>')
+                            '/redfish/v1/StorageServices/<string:storage_service>/FileSystems/<string:file_systems>')        
+        
         g.api.add_resource(IOConnectivityLoSCapabilitiesAPI,
                            '/redfish/v1/StorageServices/<string:storage_service>/IOConnectivityLoSCapabilities')
+
         g.api.add_resource(IOPerformanceLoSCapabilitiesAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/IOPerformanceLoSCapabilities')
         g.api.add_resource(StorageSubsystemsAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/StorageSubsystems')
+
         g.api.add_resource(VolumesCollectionAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/Volumes')
         g.api.add_resource(VolumesAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/Volumes/<string:volumes>')
+                            '/redfish/v1/StorageServices/<string:storage_service>/Volumes/<string:volumes>')        
         # Storage Systems - API and Collection
         g.api.add_resource(StorageSystemsCollectionAPI, '/redfish/v1/StorageSystems')
         g.api.add_resource(StorageSystemsAPI, '/redfish/v1/StorageSystems/<string:storage_systems>')
+
 
     @property
     def configuration(self):

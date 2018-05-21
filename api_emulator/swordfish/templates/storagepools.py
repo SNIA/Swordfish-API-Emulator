@@ -36,8 +36,8 @@ from flask import json
 _TEMPLATE = \
 {
   "@Redfish.Copyright": "Copyright 2014-2016 SNIA. All rights reserved.",
-  "@odata.context": "{rb}$metadata#StoragePool.StoragePool/{sp_id}",
-  "@odata.id": "{rb}StorageServices/{s_id}/StoragePool/{sp_id}",
+  "@odata.context": "{rb}$metadata#StoragePools.StoragePools/{sp_id}",
+  "@odata.id": "{rb}StorageServices/{s_id}/StoragePools/{sp_id}",
   "@odata.type": "#StoragePool_1_0_0.StoragePool",
   "Id": "{sp_id}",
   "Name": "",

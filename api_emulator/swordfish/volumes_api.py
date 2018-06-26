@@ -118,8 +118,8 @@ class VolumesAPI(Resource):
             resp = INTERNAL_ERROR
         logging.info('VolumesAPI put exit')
         return resp
-
-    def put(self, storage_service, volumes):
+	# HTTP PATCH
+    def patch(self, storage_service, volumes):
         path = os.path.join(self.root, self.storage_services, storage_service,
                                        self.volumes, volumes, 'index.json')
         try:

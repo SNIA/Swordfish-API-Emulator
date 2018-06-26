@@ -119,8 +119,8 @@ class StoragePoolsAPI(Resource):
             resp = INTERNAL_ERROR
         logging.info('StoragePoolsAPI put exit')
         return resp
-
-    def put(self, storage_service, storage_pools):
+	# HTTP PATCH
+    def patch(self, storage_service, storage_pools):
         path = os.path.join(self.root, self.storage_services, storage_service,
                                        self.storage_pools, storage_pools, 'index.json')
         try:

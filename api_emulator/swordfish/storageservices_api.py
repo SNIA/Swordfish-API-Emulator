@@ -163,28 +163,7 @@ class StorageServicesAPI(Resource):
         logging.info('StorageServicesAPI put exit')
         return resp
 
-    # HTTP PATCH
-    def patch(self, ident):
-        logging.info('StorageServicesAPI patch called')
-        raw_dict = request.get_json(force=True)
-        logging.info(raw_dict)
-        try:
-            # Find the entry with the correct value for Id
-            for cfg in members:
-                if (ident == cfg["Id"]):
-                    break
-            config = cfg
-            logging.info(config)
-            for key, value in raw_dict.items():
-                logging.info('Update ' + key + ' to ' + value)
-                config[key] = value
-            logging.info(config)
-            resp = config, 200
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        return resp
-
+    
     # HTTP DELETE
     def delete(self,storage_service):
         

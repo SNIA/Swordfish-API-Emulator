@@ -114,6 +114,35 @@ class StorageGroupsAPI(Resource):
         logging.info('StorageGroupsAPI put exit')
         return resp
 
+	# HTTP PATCH
+    def patch(self, storage_service, storage_groups):
+        path = os.path.join(self.root, self.storage_services, storage_service,
+                                       self.storage_groups, storage_groups, 'index.json')
+        try:
+            # Read json from file.
+            with open(path, 'r') as storage_groups_json:
+                data = json.load(storage_groups_json)
+                storage_groups_json.close()
+
+            request_data = json.loads(request.data)
+
+            if request_data:
+                # Update the keys of payload in json file.
+                for key, value in request_data.items():
+                    if key in data and data[key]:
+                        data[key] = value
+
+            # Write the updated json to file.
+            with open(path, 'w') as f:
+                json.dump(data, f)
+                f.close()
+
+        except Exception as e:
+            return {"error": "Unable read file because of following error::{}".format(e)}, 500
+
+        json_data = self.get(storage_service, storage_groups_json)
+        return json_data
+
 
     # HTTP DELETE
     def delete(self,storage_service, storage_groups):

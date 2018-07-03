@@ -78,8 +78,8 @@ class DataStorageLoSCapabilitiesAPI(Resource):
             raise Exception("Unable read file because of following error::{}".format(e))
         return jsonify(data)
         print (data)
-
-    def put(self, storage_service):
+	# HTTP PATCH
+    def patch(self, storage_service):
         path = os.path.join(self.root, self.storage_services, storage_service,
                                        self.data_storage_los_capabilities, 'index.json')
 

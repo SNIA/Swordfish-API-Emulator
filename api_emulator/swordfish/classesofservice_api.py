@@ -118,8 +118,8 @@ class ClassesOfServiceAPI(Resource):
             resp = INTERNAL_ERROR
         logging.info('ClassesOfServiceAPI put exit')
         return resp
-
-    def put(self, storage_service, classes_of_service):
+	# HTTP PATCH
+    def patch(self, storage_service, classes_of_service):
 
         path = os.path.join(self.root, self.storage_services, storage_service, self.classes_of_service, classes_of_service, 'index.json')
         try:

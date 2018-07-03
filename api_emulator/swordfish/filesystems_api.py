@@ -114,8 +114,8 @@ class FileSystemsAPI(Resource):
             resp = INTERNAL_ERROR
         logging.info('FileSystemsAPI put exit')
         return resp
-
-    def put(self, storage_service, file_systems):
+	# HTTP PATCH
+    def patch(self, storage_service, file_systems):
         path = os.path.join(self.root, self.storage_services, storage_service,
                                        self.file_systems, file_systems, 'index.json')
         try:

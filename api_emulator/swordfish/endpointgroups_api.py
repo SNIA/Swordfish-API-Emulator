@@ -116,29 +116,35 @@ class EndpointGroupsAPI(Resource):
         logging.info('EndpointGroupsAPI put exit')
         return resp
 
-    # HTTP PATCH
-    def patch(self, ident):
-        logging.info('EndpointGroupsAPI patch called')
-        raw_dict = request.get_json(force=True)
-        logging.info(raw_dict)
+	# HTTP PATCH
+    def patch(self, storage_service, endpoint_groups):
+        path = os.path.join(self.root, self.storage_services, storage_service,
+                                       self.endpoint_groups, endpoint_groups, 'index.json')
         try:
-            # Find the entry with the correct value for Id
-            for cfg in members:
-                if (ident == cfg["Id"]):
-                    break
-            config = cfg
-            logging.info(config)
-            for key, value in raw_dict.items():
-                logging.info('Update ' + key + ' to ' + value)
-                config[key] = value
-            logging.info(config)
-            resp = config, 200
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        return resp
+            # Read json from file.
+            with open(path, 'r') as endpoint_groups_json:
+                data = json.load(endpoint_groups_json)
+                endpoint_groups_json.close()
 
+            request_data = json.loads(request.data)
 
+            if request_data:
+                # Update the keys of payload in json file.
+                for key, value in request_data.items():
+                    if key in data and data[key]:
+                        data[key] = value
+
+            # Write the updated json to file.
+            with open(path, 'w') as f:
+                json.dump(data, f)
+                f.close()
+
+        except Exception as e:
+            return {"error": "Unable read file because of following error::{}".format(e)}, 500
+
+        json_data = self.get(storage_service, endpoint_groups_json)
+        return json_data
+        
     # HTTP DELETE
     def delete(self,storage_service, endpoint_groups):
         

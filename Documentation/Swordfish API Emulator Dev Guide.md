@@ -387,8 +387,11 @@ storageservices_api.py file to create a new Volume subresource. Other
 subresources are created similarly.
 
 ![](media/95909dd660c1bccc22d3a352d782e090.png)
+==========
+
 
 [Top](#section)
+
 
 Additional information about the SNIA Swordfish specification and usage is
 available at https://www.snia.org/swordfish and <https://github.com/SNIA>.

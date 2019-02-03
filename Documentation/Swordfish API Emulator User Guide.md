@@ -4,7 +4,7 @@
 ![https://www.snia.org/sites/default/files/SMI/member-logos/SNIA_SwordfishLogo%20Tag.jpg](media/31f6d669644d7fa491ff3b007c3e5b34.jpg)
 
 
-SNIA Swordfish<sup>TM</sup> API Emulator User Guide
+# SNIA Swordfish<sup>TM</sup> API Emulator User Guide
 
 
 The purpose of this User Guide is to illustrate how to use create, read, update,
@@ -15,8 +15,8 @@ Contents
 - [Disclaimer](#disclaimer)
 - [Introduction](#introduction)
 - [Using the Swordfish API Emulator](#using-the-swordfish-api-emulator)
-  * [REST Operations:](#rest-operations)
-  * [API functionality demonstrated using Postman:](#api-functionality-demonstrated-using-postman)
+  * [REST Operations](#rest-operations)
+  * [API functionality demonstrated using Postman](#api-functionality-demonstrated-using-postman)
 
 
 Disclaimer
@@ -32,6 +32,8 @@ connection with the furnishing, performance, or use.
 Suggestions for revisions should be directed to <http://www.snia.org/feedback/>.
 
 Copyright © 2016-2019 Storage Networking Industry Association.
+
+[Top](#section)
 
 Introduction
 ============
@@ -54,6 +56,8 @@ SNIA Swordfish has been designed around management use cases that focus on what
 IT administrators need to do with storage equipment and storage services in a
 data center. As a result, the API provides functionality that simplifies the way
 storage can be allocated, monitored, and managed.
+
+[Top](#section)
 
 **SNIA Swordfish Scalable Storage Management API Emulator**
 
@@ -86,10 +90,12 @@ operations can be done on these dynamic resources using RESTful operations.
 The Swordfish API Emulator code is maintained on GitHub by the SNIA, and the
 Redfish Interface Emulator code is maintained on GitHub by the DMTF.
 
+[Top](#section)
+
 Using the Swordfish API Emulator
 ================================
 
-REST Operations:
+REST Operations
 ----------------
 
 Swordfish supports RESTful commands (GET, POST, PUT and DELETE). These
@@ -101,7 +107,9 @@ includes useful tools for persisting data and simulating how a user might
 interact with the system. Postman is available as a standalone app or as a
 browser plugin. Other similar REST tools can be used as well.
 
-API functionality demonstrated using Postman:
+[Top](#section)
+
+API functionality demonstrated using Postman
 ---------------------------------------------
 
 Postman is used for all REST operations shown here. Each example shown describes
@@ -112,6 +120,8 @@ can be created at <https://identity.getpostman.com/signup>.
 Commands and screenshots for commands GET, POST, PUT, and DELETE are included
 below. A brief description, command syntax and a screenshot each is listed
 below.
+
+[Top](#section)
 
 1.  **GET** Operation
 
@@ -132,7 +142,9 @@ collection. The members of the collection and the number of members
 
 ![](media/0f90e32b39c8917e7ee3ac4b676e84d4.png)
 
-1.  **POST** Operation
+[Top](#section)
+
+2.  **POST** Operation
 
 The POST operation is used to create a new resource in a collection. When used
 with the emulator, it will create a new instance of a resource, along with new
@@ -153,7 +165,9 @@ http://localhost:5000/redfish/v1/StorageServices/3/Volumes/1
 
 ![](media/5b1d5b877487b4eac0478d87f9349090.png)
 
-1.  **PUT** Operation
+[Top](#section)
+
+3.  **PUT** Operation
 
     The PUT operation is used to completely replace an existing instance of a
     resource in a collection.
@@ -168,7 +182,9 @@ http://localhost:5000/redfish/v1/StorageServices/3/Volumes/1
 
 ![](media/ade667e0c72e3fb7c3b21f7b48a12481.png)
 
-1.  **Delete** a resource
+[Top](#section)
+
+4.  **Delete** a resource
 
     The DELETE operation is used to remove a resource from a collection.
 
@@ -179,6 +195,8 @@ http://localhost:5000/redfish/v1/StorageServices/3/Volumes/1
     http://localhost:5000/redfish/v1/StorageServices/3/Volumes/1
 
 ![](media/bd0969ba96ac7d0f9e4f696abab4e944.png)
+
+[Top](#section)
 
 Additional information about the SNIA Swordfish specification and usage is
 available at https://www.snia.org/forums/smi/swordfish and

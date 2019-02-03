@@ -1,7 +1,7 @@
 <a name="section"></a>
 ![https://www.snia.org/sites/default/files/SMI/member-logos/SNIA_SwordfishLogo%20Tag.jpg](media/31f6d669644d7fa491ff3b007c3e5b34.jpg)
 
-**SNIA SwordfishTM Emulator API Developer Guide**
+**SNIA Swordfish<sup>TM</sup> Emulator API Developer Guide**
 ==========
 
 The purpose of this Developer Guide is to provide an overview of how the

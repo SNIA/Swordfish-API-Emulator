@@ -1,9 +1,25 @@
+<a name="section"></a>
 ![https://www.snia.org/sites/default/files/SMI/member-logos/SNIA_SwordfishLogo%20Tag.jpg](media/31f6d669644d7fa491ff3b007c3e5b34.jpg)
 
 **SNIA SwordfishTM Emulator API Developer Guide**
+==========
 
 The purpose of this Developer Guide is to provide an overview of how the
 Swordfish API Emulator works. A user guide is also available.
+
+- [Disclaimer](#disclaimer)
+- [Requirements](#requirements)
+- [Introduction](#introduction)
+  * [Static Resources](#static-resources)
+  * [Dynamic Resources](#dynamic-resources)
+  * [Static versus Dynamic Resources](#static-versus-dynamic-resources)
+  * [The resource_manager.py file](#the-resource\_managerpy-file)
+  * [The utils.py file](#the-utilspy-file)
+- [Implementing Dynamic Resources](#implementing-dynamic-resources)
+  * [Dynamic Resource Template Files](#dynamic-resource-template-files)
+  * [Dynamic Resource API Files](#dynamic-resource-api-files)
+- [Redfish Emulator Dynamic Resources](#redfish-emulator-dynamic-resources)
+- [Swordfish Dynamic Resources](#swordfish-dynamic-resources)
 
 Disclaimer
 ==========
@@ -30,6 +46,9 @@ The following are the tested configurations for Linux and Windows environments.
 
 **Windows:** 7, 8 and 10
 
+[Top](#section)
+
+
 Introduction
 ============
 
@@ -51,6 +70,9 @@ SNIA Swordfish has been designed around management use cases that focus on what
 IT administrators need to do with storage equipment and storage services in a
 data center. As a result, the API provides functionality that simplifies the way
 storage can be allocated, monitored, and managed.
+
+[Top](#section)
+
 
 **Swordfish Scalable Storage Management API Emulator**
 
@@ -86,8 +108,11 @@ Redfish Interface Emulator code is maintained on GitHub by the DMTF.
 It is important to understand the following before working with the emulator
 code.
 
-2.1 Static Resources
---------------------
+[Top](#section)
+
+
+Static Resources
+----------------
 
 Static resources in the emulator are read-only instances of resources created
 from mockups that are kept in the api_emulator/redfish/static directory. The
@@ -95,14 +120,17 @@ Redfish Interface Emulator documentation has instructions for using static
 mockups. This documentation can be found in the Readme file or in Redfish
 Interface Emulator “doc” folder.
 
-2.2 Dynamic Resources
----------------------
+[Top](#section)
+
+
+Dynamic Resources
+-----------------
 
 Dynamic resources in the emulator are resources that can be created, read,
 updated, and deleted using POST, GET, PUT, PATCH, and DELETE operations.
 
-2.3 Static versus Dynamic Resources
------------------------------------
+Static versus Dynamic Resources
+-------------------------------
 
 Static and Dynamic resources in the emulator differ in how they respond to
 RESTful operations, and in how they are populated.
@@ -145,8 +173,11 @@ starting point for manually adding new resources to a collection. PATCH
 operations can then be used to manually customize the new resources after they
 have been added to a collection.
 
-2.4 The resource_manager.py file
---------------------------------
+[Top](#section)
+
+
+The resource_manager.py file
+----------------------------
 
 The resource_manager.py file establishes all the static and dynamic resources
 made available by the emulator, and it also defines the Redfish service root for
@@ -176,8 +207,8 @@ service root collection, as shown in the figure below.
 
 ![](media/79dbfb9ee6f51684bbdc1f11256b8e0d.png)
 
-2.5 The utils.py file
----------------------
+The utils.py file
+-----------------
 
 The Redfish Interface Emulator file utils.py file contains a small set of
 support functions for the emulator. The Swordfish emulator adds a new function
@@ -189,14 +220,17 @@ The figure below shows the Update_collections_json() function.
 
 ![](media/3d223283a2ea384fdaa8a4a7bc9509fa.png)
 
-1.  Implementing Dynamic Resources
+[Top](#section)
 
-    The dynamic resources are kept in the Resource directory. To create a new
-    dynamic resource, the developer must create new Python API and template
-    files.
 
-3.1 Dynamic Resource Template Files
------------------------------------
+Implementing Dynamic Resources
+==============================
+
+The dynamic resources are kept in the Resource directory. To create a new
+dynamic resource, the developer must create new Python API and template files.
+
+Dynamic Resource Template Files
+-------------------------------
 
 Python template files are kept in the api_emulator/redfish/templates directory.
 These files are used by the emulator to create new default instances of dynamic
@@ -221,8 +255,11 @@ necessary with data taken from the “wildcards” argument.
 
 ![](media/c28bfaee4bed7fcb7ed6dafab2c1deef.png)
 
-3.2 Dynamic Resource API Files
-------------------------------
+[Top](#section)
+
+
+Dynamic Resource API Files
+--------------------------
 
 Python API files are kept in the api_emulator/redfish directory. These files are
 used by the emulator to define how dynamic resources respond to GET, PUT, POST,
@@ -244,6 +281,9 @@ defined. In this case, it will delete the resource and update the count of
 resources in the collection.
 
 ![](media/09ac9d5f0e2e89d5abaed0e407690ed6.png)
+
+[Top](#section)
+
 
 Redfish Emulator Dynamic Resources
 ==================================
@@ -274,6 +314,9 @@ default configuration for the Redfish Interface Emulator.
 Note: Changes to Redfish resources are lost when the emulator is restarted, but
 changes to Swordfish resources are not lost when the emulator is restarted. This
 is because Swordfish resources are preserved in the Resources directory.
+
+[Top](#section)
+
 
 Swordfish Dynamic Resources
 ===========================
@@ -344,6 +387,8 @@ storageservices_api.py file to create a new Volume subresource. Other
 subresources are created similarly.
 
 ![](media/95909dd660c1bccc22d3a352d782e090.png)
+
+[Top](#section)
 
 Additional information about the SNIA Swordfish specification and usage is
 available at https://www.snia.org/swordfish and <https://github.com/SNIA>.

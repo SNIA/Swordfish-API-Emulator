@@ -1,10 +1,23 @@
+
+<a name="section"></a>
+
 ![https://www.snia.org/sites/default/files/SMI/member-logos/SNIA_SwordfishLogo%20Tag.jpg](media/31f6d669644d7fa491ff3b007c3e5b34.jpg)
 
-**SNIA SwordfishTM API Emulator User Guide**
+
+SNIA Swordfish<sup>TM</sup> API Emulator User Guide
+
 
 The purpose of this User Guide is to illustrate how to use create, read, update,
 and delete RESTful operations with the Swordfish API Emulator. A developer guide
 is also available.
+
+Contents
+- [Disclaimer](#disclaimer)
+- [Introduction](#introduction)
+- [Using the Swordfish API Emulator](#using-the-swordfish-api-emulator)
+  * [REST Operations:](#rest-operations)
+  * [API functionality demonstrated using Postman:](#api-functionality-demonstrated-using-postman)
+
 
 Disclaimer
 ==========

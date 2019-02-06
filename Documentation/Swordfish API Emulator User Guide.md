@@ -123,7 +123,8 @@ below.
 
 [Top](#section)
 
-1.  **GET** Operation
+
+### 1.  **GET** Operation
 
 The GET operation is used to retrieve resources.
 
@@ -144,7 +145,8 @@ collection. The members of the collection and the number of members
 
 [Top](#section)
 
-2.  **POST** Operation
+
+ ### 2.  **POST** Operation
 
 The POST operation is used to create a new resource in a collection. When used
 with the emulator, it will create a new instance of a resource, along with new
@@ -167,7 +169,8 @@ http://localhost:5000/redfish/v1/StorageServices/3/Volumes/1
 
 [Top](#section)
 
-3.  **PUT** Operation
+
+### 3.  **PUT** Operation
 
     The PUT operation is used to completely replace an existing instance of a
     resource in a collection.
@@ -184,7 +187,8 @@ http://localhost:5000/redfish/v1/StorageServices/3/Volumes/1
 
 [Top](#section)
 
-4.  **Delete** a resource
+
+### 4.  **Delete** a resource ###
 
     The DELETE operation is used to remove a resource from a collection.
 

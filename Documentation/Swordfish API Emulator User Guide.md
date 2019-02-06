@@ -172,15 +172,14 @@ http://localhost:5000/redfish/v1/StorageServices/3/Volumes/1
 
 ### 3.  **PUT** Operation
 
-    The PUT operation is used to completely replace an existing instance of a
-    resource in a collection.
+The PUT operation is used to completely replace an existing instance of a resource in a collection.
 
-    The PUT operation shown below replaces the “1” resource in the
-    StorageServices/3/Volumes collection. Note that the user must pass a
-    complete JSON file in the body of the command, and that JSON
-    (application/json) must be declared before sending the command.
+The PUT operation shown below replaces the “1” resource in the
+StorageServices/3/Volumes collection. Note that the user must pass a
+complete JSON file in the body of the command, and that JSON
+(application/json) must be declared before sending the command.
 
-    **Command**: **PUT**
+**Command**: **PUT**
     http://localhost:5000/redfish/v1/StorageServices/3/Volumes/1
 
 ![](media/ade667e0c72e3fb7c3b21f7b48a12481.png)
@@ -188,19 +187,18 @@ http://localhost:5000/redfish/v1/StorageServices/3/Volumes/1
 [Top](#section)
 
 
-### 4.  **Delete** a resource ###
+### 4.  **Delete** a Resource
 
-    The DELETE operation is used to remove a resource from a collection.
+The DELETE operation is used to remove a resource from a collection.
 
-    The DELETE operation shown below removes the “1” resource from the
-    StorageServices/3/Volumes collection.
+The DELETE operation shown below removes the “1” resource from the StorageServices/3/Volumes collection.
 
-    **Command**: **DELETE**
-    http://localhost:5000/redfish/v1/StorageServices/3/Volumes/1
+**Command**: **DELETE**  http://localhost:5000/redfish/v1/StorageServices/3/Volumes/1
 
 ![](media/bd0969ba96ac7d0f9e4f696abab4e944.png)
 
 [Top](#section)
+
 
 Additional information about the SNIA Swordfish specification and usage is
 available at https://www.snia.org/forums/smi/swordfish and

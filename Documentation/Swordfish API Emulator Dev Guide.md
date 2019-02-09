@@ -7,6 +7,7 @@
 The purpose of this Developer Guide is to provide an overview of how the
 Swordfish API Emulator works. A user guide is also available.
 
+## Contents
 - [Disclaimer](#disclaimer)
 - [Requirements](#requirements)
 - [Introduction](#introduction)
@@ -34,6 +35,9 @@ connection with the furnishing, performance, or use.
 Suggestions for revisions should be directed to <http://www.snia.org/feedback/>
 
 Copyright © 2016-2019 Storage Networking Industry Association.
+
+[Top](#section)
+
 
 Requirements
 ============

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2018, The Storage Networking Industry Association.
+# Copyright (c) 2017-2019, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -197,18 +197,38 @@ class EndpointGroupsCollectionAPI(Resource):
 
         return jsonify(data)
 
-    def put(self):
-        pass
-
-    
-
-    def verify(self,config):
-        #TODO: implement a method to verify that the POST'ed data is valid
+    def verify(self, config):
+        # TODO: Implement a method to verify that the POST body is valid
         return True,{}
 
-    # The POST command should be for adding multiple instances. For now, just add one.
-    def post(self):
-        pass
+    # HTTP POST
+    # POST should allow adding multiple instances to a collection.
+    # For now, this only adds one instance.
+    # TODO: 'id' should be obtained from the request data.
+    def post(self, storage_service):
+        logging.info('EndpointGroupsCollectionAPI POST called')
+        try:
+            config = request.get_json(force=True)
+            ok, msg = self.verify(config)
+            if ok:
+                # Save the new singleton
+                singleton_name = os.path.basename(config['@odata.id'])
+                path = os.path.join(self.root, self.storage_services, storage_service, self.endpoint_groups, singleton_name)
+                if not os.path.exists(path):
+                    os.mkdir(path)
+                with open(os.path.join(path, "index.json"), "w") as fd:
+                    fd.write(json.dumps(config, indent=4, sort_keys=True))
+                # Update the collection
+                collection_path = os.path.join(self.root, self.storage_services, storage_service, self.endpoint_groups, 'index.json')
+                update_collections_json(collection_path, config['@odata.id'])
+                # Return a copy of the new singleton with a Created response
+                resp = config, 201
+            else:
+                resp = msg, 400
+        except Exception:
+            traceback.print_exc()
+            resp = INTERNAL_ERROR
+        return resp
 
 
 class CreateEndpointGroups (Resource):

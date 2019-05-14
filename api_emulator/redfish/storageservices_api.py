@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2018, The Storage Networking Industry Association.
+# Copyright (c) 2017-2019, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -194,7 +194,6 @@ class StorageServicesAPI(Resource):
     def delete(self,storage_service):
         
         path = os.path.join(self.root, self.storage_services, storage_service)
-        print (path)
         delPath = path.replace('Resources','/redfish/v1')
         path2 = os.path.join(self.root, self.storage_services, 'index.json')
 
@@ -242,42 +241,40 @@ class StorageServicesCollectionAPI(Resource):
             return {"error": "Unable read file because of following error::{}".format(e)}, 500
 
         return jsonify(data)
-
-    # HTTP PATCH
-    def patch(self):
-        path = os.path.join(self.root, self.storage_services,'index.json')
-        try:
-            # Read json from file.
-            with open(path, 'r') as storage_service_json:
-                data = json.load(storage_service_json)
-                storage_service_json.close()
-
-            request_data = json.loads(request.data)
-
-            if request_data:
-                # Update the keys of payload in json file.
-                for key, value in request_data.items():
-                    if key in data and data[key]:
-                        data[key] = value
-
-            # Write the updated json to file.
-            with open(path, 'w') as f:
-                json.dump(data, f)
-                f.close()
-
-        except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(data)
-
     
-    def verify(self,config):
-        #TODO: implement a method to verify that the POST'ed data is valid
+    def verify(self, config):
+        # TODO: Implement a method to verify that the POST body is valid
         return True,{}
 
-    # The POST command should be for adding multiple instances. For now, just add one.
+    # HTTP POST
+    # POST should allow adding multiple instances to a collection.
+    # For now, this only adds one instance.
+    # TODO: 'id' should be obtained from the request data.
     def post(self):
-        pass
+        logging.info('StorageServicesCollectionAPI POST called')
+        try:
+            config = request.get_json(force=True)
+            ok, msg = self.verify(config)
+            if ok:
+                # Save the new singleton
+                singleton_name = os.path.basename(config['@odata.id'])
+                path = os.path.join(self.root, self.storage_services, singleton_name)
+                if not os.path.exists(path):
+                    os.mkdir(path)
+                with open(os.path.join(path, "index.json"), "w") as fd:
+                    fd.write(json.dumps(config, indent=4, sort_keys=True))
+                # Update the collection
+                collection_path = os.path.join(self.root, self.storage_services, 'index.json')
+                update_collections_json(collection_path, config['@odata.id'])
+                # Return a copy of the new singleton with a Created response
+                resp = config, 201
+            else:
+                resp = msg, 400
+        except Exception:
+            traceback.print_exc()
+            resp = INTERNAL_ERROR
+        return resp
+
 
 # CreateStorageServices
 #

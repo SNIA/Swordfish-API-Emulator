@@ -1,5 +1,5 @@
 # Copyright Notice:
-# Copyright 2016-2018 Distributed Management Task Force, Inc. All rights reserved.
+# Copyright 2016-2019 DMTF. All rights reserved.
 # License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-Interface-Emulator/blob/master/LICENSE.md
 #
 # The original DMTF contents of this file have been modified to support
@@ -268,8 +268,8 @@ class ResourceManager(object):
         g.api.add_resource(ResourceZoneCollectionAPI, '/redfish/v1/CompositionService/ResourceZones')
         g.api.add_resource(ResourceZoneAPI, '/redfish/v1/CompositionService/ResourceZones/<string:ident>',
                 resource_class_kwargs={'rb': g.rest_base})
-		
-		# Storage Services - API and Collection
+
+        # Storage Services - API and Collection
         g.api.add_resource(StorageServicesCollectionAPI, '/redfish/v1/StorageServices')
         g.api.add_resource(StorageServicesAPI, '/redfish/v1/StorageServices/<string:storage_service>')
         g.api.add_resource(StorageGroupsCollectionAPI,
@@ -335,20 +335,18 @@ class ResourceManager(object):
             'Name': 'Root Service',
             'ServiceVersion': '1.0.0',
             'UUID': self.uuid,
-            'Links': {
-                'Chassis': {'@odata.id': self.rest_base + 'Chassis'},
-                # 'EgResources': {'@odata.id': self.rest_base + 'EgResources'},
-                'Managers': {'@odata.id': self.rest_base + 'Managers'},
-                'TaskService': {'@odata.id': self.rest_base + 'TaskService'},
-                'SessionService': {'@odata.id': self.rest_base + 'SessionService'},
-				'StorageServices': {'@odata.id': self.rest_base + 'StorageServices'},
-				'StorageSystems': {'@odata.id': self.rest_base + 'StorageSystems'},
-                'AccountService': {'@odata.id': self.rest_base + 'AccountService'},
-                'EventService': {'@odata.id': self.rest_base + 'EventService'},
-                'Registries': {'@odata.id': self.rest_base + 'Registries'},
-                'Systems': {'@odata.id': self.rest_base + 'Systems'},
-                'CompositionService': {'@odata.id': self.rest_base + 'CompositionService'}
-            }
+            'Chassis': {'@odata.id': self.rest_base + 'Chassis'},
+            # 'EgResources': {'@odata.id': self.rest_base + 'EgResources'},
+            'Managers': {'@odata.id': self.rest_base + 'Managers'},
+            'TaskService': {'@odata.id': self.rest_base + 'TaskService'},
+            'SessionService': {'@odata.id': self.rest_base + 'SessionService'},
+            'StorageServices': {'@odata.id': self.rest_base + 'StorageServices'},
+            'StorageSystems': {'@odata.id': self.rest_base + 'StorageSystems'},
+            'AccountService': {'@odata.id': self.rest_base + 'AccountService'},
+            'EventService': {'@odata.id': self.rest_base + 'EventService'},
+            'Registries': {'@odata.id': self.rest_base + 'Registries'},
+            'Systems': {'@odata.id': self.rest_base + 'Systems'},
+            'CompositionService': {'@odata.id': self.rest_base + 'CompositionService'}
         }
 
         return config

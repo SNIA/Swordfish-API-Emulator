@@ -18,7 +18,7 @@
   "StorageGroups": {"@odata.id": "/redfish/v1/StorageServices/1/StorageGroups"},
   "StoragePools": {"@odata.id": "/redfish/v1/StorageServices/1/StoragePools"},
   "Volumes": {
-    "Members":[{"@odata.id": "/redfish/v1/StorageServices/1/Volumes"}]
+    "@odata.id": "/redfish/v1/StorageServices/1/Volumes"
   },
   "StorageSubsystems": {"@odata.id": "/redfish/v1/StorageServices/1/StorageSubsystems"},
   "Links": {

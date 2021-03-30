@@ -41,7 +41,7 @@ necessary source files ready and start a local instance of the emulator.
 
 USAGE:
 
-    $(basename $0) [--port PORT] [--workspace DIR] [--no-start] 
+    $(basename $0) [--port PORT] [--workspace DIR] [--no-start]
 
 Options:
 
@@ -118,6 +118,9 @@ echo "Setting up emulator Python virtualenv and requirements..."
 cd $WORK_DIR
 virtualenv --python=python3 venv
 venv/bin/pip install -q -r requirements.txt
+
+# Remove Redfish static / starting mockups
+rm -r $WORK_DIR/api_emulator/redfish/static
 
 # Copy over the Swordfish bits
 echo "Applying Swordfish additions..."

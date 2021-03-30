@@ -1,37 +1,6 @@
 # Copyright Notice:
 # Copyright 2016-2019 DMTF. All rights reserved.
 # License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-Interface-Emulator/blob/master/LICENSE.md
-#
-# The original DMTF contents of this file have been modified to support
-# The SNIA Swordfish API Emulator. These modifications are subject to the following:
-# Copyright (c) 2017-2018, The Storage Networking Industry Association.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# Redistributions of source code must retain the above copyright notice,
-# this list of conditions and the following disclaimer.
-#
-# Redistributions in binary form must reproduce the above copyright notice,
-# this list of conditions and the following disclaimer in the documentation
-# and/or other materials provided with the distribution.
-#
-# Neither the name of The Storage Networking Industry Association (SNIA) nor
-# the names of its contributors may be used to endorse or promote products
-# derived from this software without specific prior written permission.
-#
-#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
-#  THE POSSIBILITY OF SUCH DAMAGE.
-#
 
 # Resource Manager Module
 
@@ -45,25 +14,8 @@ import logging
 import copy
 # Local imports
 import g
-from api_emulator.redfish.storageservices_api import *
-from api_emulator.redfish.volumes_api import *
-from api_emulator.redfish.storagepools_api import *
-from api_emulator.redfish.drives_api import *
-from api_emulator.redfish.filesystems_api import *
-from api_emulator.redfish.storagegroups_api import *
-from api_emulator.redfish.storagesubsystems_api import *
-from api_emulator.redfish.endpoints_api import *
-from api_emulator.redfish.endpointgroups_api import *
-from api_emulator.redfish.classesofservice_api import *
-from api_emulator.redfish.dataprotectionloscapabilities_api import *
-from api_emulator.redfish.datasecurityloscapabilities_api import *
-from api_emulator.redfish.datastorageloscapabilities_api import *
-from api_emulator.redfish.ioperformanceloscapabilities_api import *
-from api_emulator.redfish.ioconnectivityloscapabilities_api import *
-from api_emulator.redfish.storagesystems_api import *
 from . import utils
 from .resource_dictionary import ResourceDictionary
-
 from .static_loader import load_static
 # Local imports (special case)
 from .redfish.computer_system import ComputerSystem
@@ -137,7 +89,7 @@ mockupfolders = []
 # with the call to api_add_resource(), as shown in the following:
 #   api.add_resource(Todo, '/todo/<int:todo_id>', endpoint='todo_ep')
 
-class ResourceManager(object):
+class StaticResourceManager(object):
     """
     ResourceManager Class
 
@@ -188,145 +140,6 @@ class ResourceManager(object):
 #            self.StorageServices = load_static('StorageServices', 'redfish', mode, rest_base, self.resource_dictionary)
 #            self.StorageSystems = load_static('StorageSystems', 'redfish', mode, rest_base, self.resource_dictionary)
 
-        # Attach APIs for dynamic resources
-
-        # EventService Resources
-        g.api.add_resource(EventServiceAPI, '/redfish/v1/EventService',
-                resource_class_kwargs={'rb': g.rest_base, 'id': "EventService"})
-        # EventService SubResources
-        g.api.add_resource(SubscriptionCollectionAPI, '/redfish/v1/EventService/Subscriptions')
-        g.api.add_resource(SubscriptionAPI, '/redfish/v1/EventService/Subscriptions/<string:ident>',
-                resource_class_kwargs={'rb': g.rest_base})
-
-        # Chassis Resources
-        g.api.add_resource(ChassisCollectionAPI, '/redfish/v1/Chassis')
-        g.api.add_resource(ChassisAPI, '/redfish/v1/Chassis/<string:ident>',
-                resource_class_kwargs={'rb': g.rest_base})
-        # Chassis SubResources
-        g.api.add_resource(ThermalAPI, '/redfish/v1/Chassis/<string:ident>/Thermal',
-                resource_class_kwargs={'rb': g.rest_base})
-        # Chassis SubResources
-        g.api.add_resource(PowerAPI, '/redfish/v1/Chassis/<string:ident>/Power',
-                resource_class_kwargs={'rb': g.rest_base})
-
-        # Manager Resources
-        g.api.add_resource(ManagerCollectionAPI, '/redfish/v1/Managers')
-        g.api.add_resource(ManagerAPI, '/redfish/v1/Managers/<string:ident>', resource_class_kwargs={'rb': g.rest_base})
-
-        # EgResource Resources (Example entries for attaching APIs)
-        # g.api.add_resource(EgResourceCollectionAPI,
-        #     '/redfish/v1/EgResources')
-        # g.api.add_resource(EgResourceAPI,
-        #     '/redfish/v1/EgResources/<string:ident>',
-        #     resource_class_kwargs={'rb': g.rest_base})
-        #
-        # EgResource SubResources (Example entries for attaching APIs)
-        # g.api.add_resource(EgSubResourceCollection,
-        #     '/redfish/v1/EgResources/<string:ident>/EgSubResources',
-        #     resource_class_kwargs={'rb': g.rest_base})
-        # g.api.add_resource(EgSubResource,
-        #     '/redfish/v1/EgResources/<string:ident1>/EgSubResources/<string:ident2>',
-        #     resource_class_kwargs={'rb': g.rest_base})
-
-        # System Resources
-        g.api.add_resource(ComputerSystemCollectionAPI, '/redfish/v1/Systems')
-        g.api.add_resource(ComputerSystemAPI, '/redfish/v1/Systems/<string:ident>',
-                resource_class_kwargs={'rb': g.rest_base})
-        # System SubResources
-        g.api.add_resource(Processors, '/redfish/v1/Systems/<string:ident>/Processors',
-                resource_class_kwargs={'rb': g.rest_base,'suffix':'Systems'})
-        g.api.add_resource(Processor, '/redfish/v1/Systems/<string:ident1>/Processors/<string:ident2>',
-                '/redfish/v1/CompositionService/ResourceBlocks/<string:ident1>/Processors/<string:ident2>')
-        # System SubResources
-        g.api.add_resource(MemoryCollection, '/redfish/v1/Systems/<string:ident>/Memory',
-                 resource_class_kwargs={'rb': g.rest_base,'suffix':'Systems'})
-        g.api.add_resource(Memory, '/redfish/v1/Systems/<string:ident1>/Memory/<string:ident2>',
-                '/redfish/v1/CompositionService/ResourceBlocks/<string:ident1>/Memory/<string:ident2>')
-        # System SubResources
-        g.api.add_resource(SimpleStorageCollection, '/redfish/v1/Systems/<string:ident>/SimpleStorage',
-                resource_class_kwargs={'rb': g.rest_base,'suffix':'Systems'})
-        g.api.add_resource(SimpleStorage, '/redfish/v1/Systems/<string:ident1>/SimpleStorage/<string:ident2>',
-                '/redfish/v1/CompositionService/ResourceBlocks/<string:ident1>/SimpleStorage/<string:ident2>')
-        # System SubResources
-        g.api.add_resource(EthernetInterfaceCollection, '/redfish/v1/Systems/<string:ident>/EthernetInterfaces',
-                resource_class_kwargs={'rb': g.rest_base,'suffix':'Systems'})
-        g.api.add_resource(EthernetInterface, '/redfish/v1/Systems/<string:ident1>/EthernetInterfaces/<string:ident2>',
-                '/redfish/v1/CompositionService/ResourceBlocks/<string:ident1>/EthernetInterfaces/<string:ident2>')
-        # System SubResources
-        g.api.add_resource(ResetActionInfo_API, '/redfish/v1/Systems/<string:ident>/ResetActionInfo',
-                resource_class_kwargs={'rb': g.rest_base})
-        g.api.add_resource(ResetAction_API, '/redfish/v1/Systems/<string:ident>/Actions/ComputerSystem.Reset',
-                resource_class_kwargs={'rb': g.rest_base})
-
-        # PCIe Switch Resources
-        g.api.add_resource(PCIeSwitchesAPI, '/redfish/v1/PCIeSwitches')
-        g.api.add_resource(PCIeSwitchAPI, '/redfish/v1/PCIeSwitches/<string:ident>',
-                resource_class_kwargs={'rb': g.rest_base})
-
-        # Composition Service Resources
-        g.api.add_resource(CompositionServiceAPI, '/redfish/v1/CompositionService',
-                resource_class_kwargs={'rb': g.rest_base, 'id': "CompositionService"})
-        # Composition Service SubResources
-        g.api.add_resource(ResourceBlockCollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks')
-        g.api.add_resource(ResourceBlockAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ident>',
-                resource_class_kwargs={'rb': g.rest_base})
-        # Composition Service SubResources
-        g.api.add_resource(ResourceZoneCollectionAPI, '/redfish/v1/CompositionService/ResourceZones')
-        g.api.add_resource(ResourceZoneAPI, '/redfish/v1/CompositionService/ResourceZones/<string:ident>',
-                resource_class_kwargs={'rb': g.rest_base})
-
-        # Storage Services - API and Collection
-        g.api.add_resource(StorageServicesCollectionAPI, '/redfish/v1/StorageServices')
-        g.api.add_resource(StorageServicesAPI, '/redfish/v1/StorageServices/<string:storage_service>')
-        g.api.add_resource(StorageGroupsCollectionAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/StorageGroups')
-        g.api.add_resource(StorageGroupsAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/StorageGroups/<string:storage_groups>')
-        g.api.add_resource(StoragePoolsCollectionAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/StoragePools')
-        g.api.add_resource(StoragePoolsAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/StoragePools/<string:storage_pools>')
-        g.api.add_resource(DrivesCollectionAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/Drives')
-        g.api.add_resource(DrivesAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/Drives/<string:drives>')
-
-        g.api.add_resource(ClassesOfServiceCollectionAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/ClassesOfService')
-        g.api.add_resource(ClassesOfServiceAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/ClassesOfService/<string:classes_of_service>')
-        g.api.add_resource(DataProtectionLoSCapabilitiesAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/DataProtectionLoSCapabilities')
-        g.api.add_resource(DataSecurityLoSCapabilitiesAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/DataSecurityLoSCapabilities')
-
-        g.api.add_resource(DataStorageLoSCapabilitiesAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/DataStorageLoSCapabilities')
-        g.api.add_resource(EndpointsCollectionAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/Endpoints')
-        g.api.add_resource(EndpointsAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/Endpoints/<string:endpoints>')
-        g.api.add_resource(EndpointGroupsCollectionAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/EndpointGroups')
-        g.api.add_resource(EndpointGroupsAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/EndpointGroups/<string:endpoint_groups>')
-        g.api.add_resource(FileSystemsCollectionAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/FileSystems')
-        g.api.add_resource(FileSystemsAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/FileSystems/<string:file_systems>')
-        g.api.add_resource(IOConnectivityLoSCapabilitiesAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/IOConnectivityLoSCapabilities')
-        g.api.add_resource(IOPerformanceLoSCapabilitiesAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/IOPerformanceLoSCapabilities')
-        g.api.add_resource(StorageSubsystemsAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/StorageSubsystems')
-        g.api.add_resource(VolumesCollectionAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/Volumes')
-        g.api.add_resource(VolumesAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/Volumes/<string:volumes>')
-        # Storage Systems - API and Collection
-        g.api.add_resource(StorageSystemsCollectionAPI, '/redfish/v1/StorageSystems')
-        g.api.add_resource(StorageSystemsAPI, '/redfish/v1/StorageSystems/<string:storage_systems>')
 
     @property
     def configuration(self):
@@ -339,21 +152,19 @@ class ResourceManager(object):
             '@odata.id': self.rest_base,
             'Id': 'RootService',
             'Name': 'Root Service',
-            'RedfishVersion': '1.6.0',
+            'RedfishVersion': '1.3.0',
             'UUID': self.uuid,
             'Chassis': {'@odata.id': self.rest_base + 'Chassis'},
             # 'EgResources': {'@odata.id': self.rest_base + 'EgResources'},
             #'Managers': {'@odata.id': self.rest_base + 'Managers'},
             #'TaskService': {'@odata.id': self.rest_base + 'TaskService'},
             'SessionService': {'@odata.id': self.rest_base + 'SessionService'},
-            #'StorageServices': {'@odata.id': self.rest_base + 'StorageServices'},
-            #'StorageSystems': {'@odata.id': self.rest_base + 'StorageSystems'},
             #'AccountService': {'@odata.id': self.rest_base + 'AccountService'},
-            'EventService': {'@odata.id': self.rest_base + 'EventService'},
+            #'EventService': {'@odata.id': self.rest_base + 'EventService'},
             'Registries': {'@odata.id': self.rest_base + 'Registries'},
             'Systems': {'@odata.id': self.rest_base + 'Systems'},
-            'Storage': {'@odata.id': self.rest_base + 'Storage'},
             #'CompositionService': {'@odata.id': self.rest_base + 'CompositionService'}
+            'Storage': {'@odata.id': self.rest_base + 'Storage'}
         }
 
         return config

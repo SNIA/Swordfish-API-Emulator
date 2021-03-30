@@ -1,0 +1,41 @@
+{
+  "@Redfish.Copyright": "Copyright 2014-2020 SNIA. All rights reserved.",
+  "@odata.id": "/redfish/v1/Storage/IPAttachedDrive/Volumes/SimpleNamespace",
+  "@odata.type": "#Volume.v1_5_0.Volume",
+  "Id": "1",
+  "Name": "Namespace 1",
+  "LogicalUnitNumber": 1,
+  "Description": "A Namespace is a quantity of non-volatile memory that may be formatted into logical blocks. When formatted, a namespace of size n is a collection of logical blocks with logical block addresses from 0 to (n-1). NVMe systems can support multiple namespaces.",
+  "Status": {
+    "State": "Enabled",
+    "Health": "OK"
+  },
+  "Identifiers": [
+    {
+      "DurableNameFormat": "NQN",
+      "DurableName": "nqn.2014-08.org.nvmexpress:uuid:6c5fe566-10e6-4fb6-aad4-8b4159029384"
+    }
+  ],
+  "Capacity": {
+    "Data": {
+      "ConsumedBytes": 0,
+      "AllocatedBytes": 10737418240
+    }
+  },
+  "NVMeNamespaceProperties": {
+    "NamespaceId": "0x011",
+    "NamespaceFeatures": {
+      "SupportsThinProvisioning": false,
+      "SupportsAtomicTransactionSize": false,
+      "SupportsDeallocatedOrUnwrittenLBError": false,
+      "SupportsNGUIDReuse": false,
+      "SupportsIOPerformanceHints": false
+    },
+    "NumberLBAFormats": 0,
+    "FormattedLBASize": "LBAFormat0Support",
+    "MetadataTransferredAtEndOfDataLBA": false,
+    "NVMeVersion": "1.4"
+  },
+  "OptimumIOSizeBytes": 1024,
+  "Links": {}
+}

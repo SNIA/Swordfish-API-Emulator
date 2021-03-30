@@ -1,0 +1,56 @@
+{
+  "@odata.id": "/redfish/v1/Chassis/IPAttachedDrive/Drives/IPAttachedDrive",
+  "@Redfish.Copyright": "Copyright 2014-2020 SNIA. All rights reserved.",
+  "@odata.type": "#Drive.v1_12_0.Drive",
+  "Name": "NVMe IPAttachedDrive Drive",
+  "Id": "IPAttachedDrive",
+  "BlockSizeBytes": 512,
+  "CapableSpeedGbs": 12,
+  "CapacityBytes": 899527000000,
+  "Description": "IP Attached drive.",
+  "EncryptionAbility": "None",
+  "FailurePredicted": false,
+  "Identifiers": [
+    {
+      "DurableNameFormat": "NAA",
+      "DurableName": "500003942810D13A"
+    }
+  ],
+  "LocationIndicatorActive": true,
+  "MediaType": "SSD",
+  "Manufacturer": "Contoso",
+  "Model": "ST9146802SS",
+  "NegotiatedSpeedGbs": 12,
+  "PartNumber": "SG0GP8811253178M02GJA00",
+  "PhysicalLocation": {
+    "PartLocation": {
+      "LocationType": "Slot"
+    }
+  },
+  "PredictedMediaLifeLeftPercent": 86,
+  "Protocol": "NVMe",
+  "Revision": "S20A",
+  "SKU": "N/A",
+  "SerialNumber": "72D0A037FRD26",
+  "Status": {
+    "State": "Enabled",
+    "Health": "OK"
+  },
+  "StatusIndicator": "OK",
+  "WriteCacheEnabled": true,
+  "Links": {
+    "Volumes": [
+      {
+        "@odata.id": "/redfish/v1/Storage/IPAttachedDrive/Volumes/SimpleNamespace"
+      }
+    ]
+  },
+  "Actions": {
+    "#Drive.Reset": {
+      "target": "/redfish/v1/Chassis/IPAttachedDrive/Drives/IPAttachedDrive/Actions/Drive.Reset"
+    },
+    "#Drive.SecureErase": {
+      "target": "/redfish/v1/Chassis/IPAttachedDrive/Drives/IPAttachedDrive/Actions/Drive.SecureErase"
+    }
+  }
+}

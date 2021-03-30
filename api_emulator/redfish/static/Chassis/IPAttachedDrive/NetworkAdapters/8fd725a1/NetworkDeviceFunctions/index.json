@@ -1,0 +1,12 @@
+{
+  "@Redfish.Copyright": "Copyright 2014-2019 DMTF. All rights reserved.",
+  "@odata.id": "/redfish/v1/Chassis/IPAttachedDrive/NetworkAdapters/8fd725a1/NetworkDeviceFunctions",
+  "@odata.type": "#NetworkDeviceFunctionCollection.NetworkDeviceFunctionCollection",
+  "Name": "Network Device Function Collection",
+  "Members@odata.count": 1,
+  "Members": [
+    {
+      "@odata.id": "/redfish/v1/Chassis/IPAttachedDrive/NetworkAdapters/8fd725a1/NetworkDeviceFunctions/11100"
+    }
+  ]
+}

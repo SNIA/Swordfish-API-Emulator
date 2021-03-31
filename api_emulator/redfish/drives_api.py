@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2019, The Storage Networking Industry Association.
+# Copyright (c) 2017-2021, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -61,12 +61,12 @@ class DrivesAPI(Resource):
     def __init__(self, **kwargs):
         logging.info('DrivesAPI init called')
         self.root = PATHS['Root']
-        self.storage_services = PATHS['StorageServices']['path']
-        self.drives = PATHS['StorageServices']['drives']
+        self.chassis = PATHS['Chassis']['path']
+        self.drives = PATHS['Chassis']['drives']
 
     # HTTP GET
-    def get(self, storage_service, drives):
-        path = create_path(self.root, self.storage_services, storage_service, self.drives, drives, 'index.json')
+    def get(self, chassis, drives):
+        path = create_path(self.root, self.chassis, chassis, self.drives, drives, 'index.json')
         try:
             drives_json = open(path)
             data = json.load(drives_json)
@@ -79,14 +79,14 @@ class DrivesAPI(Resource):
     # - Create the resource (since URI variables are available)
     # - Update the members and members.id lists
     # - Attach the APIs of subordinate resources (do this only once)
-    # - Finally, create an instance of the subordiante resources
-    def post(self, storage_service, drives):
-        logging.info('DrivesAPI PUT called')
+    # - Finally, create an instance of the subordinate resources
+    def post(self, chassis, drives):
+        logging.info('DrivesAPI POST called')
         try:
             global config
             global foo
 
-            wildcards = {'s_id':storage_service, 'd_id': drives, 'rb': g.rest_base}
+            wildcards = {'s_id':chassis, 'd_id': drives, 'rb': g.rest_base}
             config=get_Drives_instance(wildcards)
 
             members.append(config)
@@ -95,7 +95,7 @@ class DrivesAPI(Resource):
             # Create instances of subordinate resources, then call put operation
             # not implemented yet
 
-            path = create_path(self.root, self.storage_services, storage_service, self.drives, drives)
+            path = create_path(self.root, self.chassis, chassis, self.drives, drives)
             if not os.path.exists(path):
                 os.mkdir(path)
             else:
@@ -105,7 +105,7 @@ class DrivesAPI(Resource):
                 fd.write(json.dumps(config, indent=4, sort_keys=True))
 
             # update the collection json file with new added resource
-            collection_path = os.path.join(self.root, self.storage_services, storage_service, self.drives, 'index.json')
+            collection_path = os.path.join(self.root, self.chassis, chassis, self.drives, 'index.json')
             update_collections_json(path=collection_path, link=config['@odata.id'])
             resp = config, 200
         except Exception:
@@ -115,8 +115,8 @@ class DrivesAPI(Resource):
         return resp
 
     # HTTP PATCH
-    def patch(self, storage_service, drives):
-        path = os.path.join(self.root, self.storage_services, storage_service,
+    def patch(self, chassis, drives):
+        path = os.path.join(self.root, self.chassis, chassis,
                                        self.drives, drives, 'index.json')
         try:
             # Read json from file.
@@ -140,33 +140,33 @@ class DrivesAPI(Resource):
         except Exception as e:
             return {"error": "Unable read file because of following error::{}".format(e)}, 500
 
-        json_data = self.get(storage_service, drives_json)
+        json_data = self.get(chassis, drives_json)
         return json_data
     # HTTP DELETE
-    def delete(self,storage_service, drives):
-        
-        path = os.path.join(self.root, self.storage_services, storage_service, self.drives, drives).replace("\\","/")
+    def delete(self,chassis, drives):
+
+        path = os.path.join(self.root, self.chassis, chassis, self.drives, drives).replace("\\","/")
         print (path)
         delPath = path.replace('Resources','/redfish/v1')
-        path2 = os.path.join(self.root, self.storage_services, storage_service, self.drives, 'index.json').replace("\\","/")
+        path2 = os.path.join(self.root, self.chassis, chassis, self.drives, 'index.json').replace("\\","/")
         try:
             with open(path2,"r") as pdata:
                 pdata = json.load(pdata)
-                
+
             data = {
             "@odata.id":delPath
-            }            
+            }
             resp = 200
             jdata = data["@odata.id"].split('/')
-            path1 = os.path.join(self.root, self.storage_services, storage_service, self.drives, jdata[len(jdata)-1])
-            
+            path1 = os.path.join(self.root, self.chassis, chassis, self.drives, jdata[len(jdata)-1])
+
             shutil.rmtree(path1)
             pdata['Members'].remove(data)
             pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
-          
+
             with open(path2,"w") as jdata:
-                json.dump(pdata,jdata)           
-            
+                json.dump(pdata,jdata)
+
         except Exception as e:
             return {"error": "Unable read file because of following error::{}".format(e)}, 500
 
@@ -178,11 +178,11 @@ class DrivesCollectionAPI(Resource):
 
     def __init__(self):
         self.root = PATHS['Root']
-        self.storage_services = PATHS['StorageServices']['path']
-        self.drives = PATHS['StorageServices']['drives']
+        self.chassis = PATHS['Chassis']['path']
+        self.drives = PATHS['Chassis']['drives']
 
-    def get(self, storage_service):
-        path = os.path.join(self.root, self.storage_services, storage_service, self.drives, 'index.json')
+    def get(self, chassis):
+        path = os.path.join(self.root, self.chassis, chassis, self.drives, 'index.json')
         try:
             drives_json = open(path)
             data = json.load(drives_json)
@@ -200,7 +200,7 @@ class DrivesCollectionAPI(Resource):
     # POST should allow adding multiple instances to a collection.
     # For now, this only adds one instance.
     # TODO: 'id' should be obtained from the request data.
-    def post(self, storage_service):
+    def post(self, chassis):
         logging.info('DrivesCollectionAPI POST called')
         try:
             config = request.get_json(force=True)
@@ -208,13 +208,13 @@ class DrivesCollectionAPI(Resource):
             if ok:
                 # Save the new singleton
                 singleton_name = os.path.basename(config['@odata.id'])
-                path = os.path.join(self.root, self.storage_services, storage_service, self.drives, singleton_name)
+                path = os.path.join(self.root, self.chassis, chassis, self.drives, singleton_name)
                 if not os.path.exists(path):
                     os.mkdir(path)
                 with open(os.path.join(path, "index.json"), "w") as fd:
                     fd.write(json.dumps(config, indent=4, sort_keys=True))
                 # Update the collection
-                collection_path = os.path.join(self.root, self.storage_services, storage_service, self.drives, 'index.json')
+                collection_path = os.path.join(self.root, self.chassis, chassis, self.drives, 'index.json')
                 update_collections_json(collection_path, config['@odata.id'])
                 # Return a copy of the new singleton with a Created response
                 resp = config, 201
@@ -229,14 +229,14 @@ class DrivesCollectionAPI(Resource):
 class CreateDrives (Resource):
     def __init__(self):
         self.root = PATHS['Root']
-        self.storage_services = PATHS['StorageServices']['path']
-        self.drives = PATHS['StorageServices']['drives']
+        self.chassis = PATHS['Chassis']['path']
+        self.drives = PATHS['Chassis']['drives']
 
     # Attach APIs for subordinate resource(s). Attach the APIs for a resource collection and its singletons
-    def put(self,storage_service):
+    def put(self,chassis):
         logging.info('CreateDrives put started.')
         try:
-            path = create_path(self.root, self.storage_services, storage_service, self.drives)
+            path = create_path(self.root, self.chassis, chassis, self.drives)
             if not os.path.exists(path):
                 os.mkdir(path)
             else:

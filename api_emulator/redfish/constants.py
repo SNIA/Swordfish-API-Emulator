@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2018, The Storage Networking Industry Association.
+# Copyright (c) 2017-2021, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,6 +35,11 @@
 PATHS = {
     'Root': 'Resources/',
 
+     'Chassis': {
+         'path': 'Chassis/',
+         'drives': 'Drives/'
+     },
+
     'StorageServices': {
         'path': 'StorageServices/',
         'storage_groups': 'StorageGroups/',
@@ -55,12 +60,12 @@ PATHS = {
         'file_systems': 'FileSystems/'
 
     },
-    
+
     'StorageSystems': {
         'path': 'StorageSystems/'
-        
+
     },
-    
+
     'AddService':
     {
         'path': 'AddService/'

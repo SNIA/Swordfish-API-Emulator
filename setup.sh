@@ -110,7 +110,7 @@ mkdir $WORK_DIR
 
 # Get the Redfish base
 echo "Getting Redfish emulator base files..."
-git clone --depth 1 https://github.com/DMTF/Redfish-Interface-Emulator \
+git clone --depth 1 https://github.com/rahlvers/Redfish-Interface-Emulator \
     $WORK_DIR
 
 # Set up our virtual environment
@@ -126,6 +126,7 @@ rm -r $WORK_DIR/api_emulator/redfish/static
 echo "Applying Swordfish additions..."
 cp -r -f $BASE_DIR/api_emulator $WORK_DIR/
 cp -r -f $BASE_DIR/Resources $WORK_DIR/
+cp -r -f $BASE_DIR/emulator-config.json $WORK_DIR/
 
 if [ "$SETUP_ONLY" == "true" ]; then
     echo ""

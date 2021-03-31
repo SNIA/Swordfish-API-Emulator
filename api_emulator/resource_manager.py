@@ -209,6 +209,10 @@ class ResourceManager(object):
         g.api.add_resource(PowerAPI, '/redfish/v1/Chassis/<string:ident>/Power',
                 resource_class_kwargs={'rb': g.rest_base})
 
+        g.api.add_resource(DrivesCollectionAPI,
+                            '/redfish/v1/Chassis/<string:chassis>/Drives')
+        g.api.add_resource(DrivesAPI,
+                            '/redfish/v1/StorageServices/Chassis/<string:chassis>/Drives/<string:drives>')
         # Manager Resources
         g.api.add_resource(ManagerCollectionAPI, '/redfish/v1/Managers')
         g.api.add_resource(ManagerAPI, '/redfish/v1/Managers/<string:ident>', resource_class_kwargs={'rb': g.rest_base})
@@ -286,10 +290,6 @@ class ResourceManager(object):
                            '/redfish/v1/StorageServices/<string:storage_service>/StoragePools')
         g.api.add_resource(StoragePoolsAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/StoragePools/<string:storage_pools>')
-        g.api.add_resource(DrivesCollectionAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/Drives')
-        g.api.add_resource(DrivesAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/Drives/<string:drives>')
 
         g.api.add_resource(ClassesOfServiceCollectionAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/ClassesOfService')

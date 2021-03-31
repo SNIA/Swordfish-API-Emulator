@@ -10,6 +10,9 @@
   "Chassis": {
     "@odata.id": "/redfish/v1/Chassis"
   },
+  "Registries": {
+    "@odata.id": "/redfish/v1/Registries"
+  },
   "SessionService": {
     "@odata.id": "/redfish/v1/SessionService"
   },

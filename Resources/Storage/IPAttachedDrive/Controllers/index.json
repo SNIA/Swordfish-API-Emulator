@@ -1,0 +1,13 @@
+{
+  "@odata.type": "#StorageControllerCollection.StorageControllerCollection",
+  "Name": "Storage Controller Collection",
+  "Description": "Storage Controller Collection",
+  "Members@odata.count": 1,
+  "Members": [
+    {
+      "@odata.id": "/redfish/v1/Storage/IPAttachedDrive/Controllers/NVMeIOController"
+    }
+  ],
+  "@odata.id": "/redfish/v1/Storage/IPAttachedDrive/Controllers",
+  "@Redfish.Copyright": "Copyright 2020 SNIA. All rights reserved."
+}

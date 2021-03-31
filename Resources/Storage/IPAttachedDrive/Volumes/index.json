@@ -1,0 +1,14 @@
+{
+  "@odata.type": "#VolumeCollection.VolumeCollection",
+  "Name": "Storage Volume Collection",
+  "Description": "Storage Volume Collection",
+  "Members@odata.count": 1,
+  "Members": [
+    {
+      "@odata.id": "/redfish/v1/Storage/IPAttachedDrive/Volumes/SimpleNamespace"
+    }
+  ],
+  "Oem": {},
+  "@odata.id": "/redfish/v1/Storage/IPAttachedDrive/Volumes",
+  "@Redfish.Copyright": "Copyright 2014-2020 SNIA. All rights reserved."
+}

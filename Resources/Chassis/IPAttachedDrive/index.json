@@ -1,0 +1,35 @@
+{
+  "@odata.type": "#Chassis.v1_15_0.Chassis",
+  "Id": "IPAttachedDrive",
+  "Name": "IPAttachedDrive",
+  "ChassisType": "IPBasedDrive",
+  "Manufacturer": "NVMeDriveVendorFoo",
+  "Model": "NVMeMODEL",
+  "SKU": "6914260",
+  "SerialNumber": "529QB9450R6",
+  "PartNumber": "166480-S23",
+  "PowerState": "On",
+  "IndicatorLED": "Off",
+  "Status": {
+    "State": "Enabled",
+    "Health": "OK"
+  },
+  "Thermal": {
+    "@odata.id": "/redfish/v1/Chassis/IPAttachedDrive/Thermal"
+  },
+  "NetworkAdapters": {
+    "@odata.id": "/redfish/v1/Chassis/IPAttachedDrive/NetworkAdapters"
+  },
+  "Drives": {
+    "@odata.id": "/redfish/v1/Chassis/IPAttachedDrive/Drives"
+  },
+  "Links": {
+    "Storage": [
+      {
+        "@odata.id": "/redfish/v1/Storage/IPAttachedDrive"
+      }
+    ]
+  },
+  "@odata.id": "/redfish/v1/Chassis/IPAttachedDrive",
+  "@Redfish.Copyright": "Copyright 2014-2020 SNIA. All rights reserved."
+}

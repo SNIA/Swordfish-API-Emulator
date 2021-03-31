@@ -1,0 +1,20 @@
+{
+  "@Redfish.Copyright": "Copyright 2014-2020 SNIA. All rights reserved.",
+  "@odata.id": "/redfish/v1/Registries/AdvertisedFeatures.v1_0_0",
+  "@odata.type": "#MessageRegistryFile.v1_1_3.MessageRegistryFile",
+  "Id": "AdvertisedFeatures.v1_0_0",
+  "Name": "Swordfish Feature Registry File",
+  "Description": "Swordfish Feature Registry File locations",
+  "Languages": [
+    "en"
+  ],
+  "Registry": "SwordfishFeatures.1.1.0",
+  "Location": [
+    {
+      "Language": "en",
+      "PublicationUri": "https://contoso.com/productX/featureinfo/AdvertisedFeatures.v1_0_0.json",
+      "Uri": "/redfish/v1/AdvertisedFeatures.v1_0_0.json"
+    }
+  ],
+  "Oem": {}
+}

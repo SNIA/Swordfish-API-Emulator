@@ -34,10 +34,9 @@ from flask import json
 
 _TEMPLATE = \
 {
-  "@Redfish.Copyright": "Copyright 2014-2016 SNIA. All rights reserved.",
-  "@odata.context": "{rb}$metadata#StorageServices/Members/{s_id}/EndpointGroups/{epg_id}",
-  "@odata.id": "{rb}StorageServices/{s_id}/EndpointGroups/{epg_id}",
-  "@odata.type": "#EndpointGroup.v1_0_0.EndpointGroup",
+  "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
+  "@odata.id": "{rb}Fabrics/{fabric_id}/EndpointGroups/{epg_id}",
+  "@odata.type": "#EndpointGroup.v1_3_1.EndpointGroup",
   "Name": "{epg_id}",
   "Description": "Group of client endpoints for 1",
 

@@ -30,15 +30,41 @@
 
 #constants.py
 
-
-
 PATHS = {
     'Root': 'Resources/',
 
-     'Chassis': {
+    'Chassis': {
          'path': 'Chassis/',
          'drives': 'Drives/'
      },
+
+   'Fabrics': {
+       'path': 'Fabrics/',
+       'switches': 'Switches/',
+       'endpoints': 'Endpoints/',
+       'zones': 'Zones/',
+       'connections': 'Connections/'
+   },
+
+    'Storage': {
+        'path': 'Storage/',
+        'storage_groups': 'StorageGroups/',
+        'storage_pools': 'StoragePools/',
+        'capacity_sources': 'CapacitySources/',
+        'volumes': 'Volumes/',
+        'client_end_point_groups': 'ClientEndpointGroups/',
+        'server_end_point_groups': 'ServerEndpointGroups/',
+        'drives': 'Drives/',
+        'classes_of_service': 'ClassesOfService/',
+        'data_protection_los_capabilities': 'DataProtectionLoSCapabilities/',
+        'data_security_los_capabilities': 'DataSecurityLoSCapabilities/',
+        'data_storage_los_capabilities': 'DataStorageLoSCapabilities/',
+        'ioconnectivity_los_capabilities': 'IOConnectivityLoSCapabilities/',
+        'ioperformance_los_capabilities': 'IOPerformanceLoSCapabilities/',
+        'endpoints': 'Endpoints/',
+        'endpoint_groups': 'EndpointGroups/',
+        'file_systems': 'FileSystems/'
+    },
 
     'StorageServices': {
         'path': 'StorageServices/',

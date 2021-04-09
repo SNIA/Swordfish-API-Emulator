@@ -28,7 +28,7 @@
 #  THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-# get_Drives_instance()
+# get_Fabric_instance()
 
 import copy
 from flask import json
@@ -36,16 +36,16 @@ from flask import json
 _TEMPLATE = \
 {
   "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-  "@odata.id": "{rb}Chassis/{s_id}/Drives/{d_id}",
-  "@odata.type": "#DriveCollection.DriveCollection",
-  "Name": "Drives",
+  "@odata.id": "{rb}Chassis/{s_id}/Fabrics/{d_id}",
+  "@odata.type": "#FabricCollection.FabricCollection",
+  "Name": "Fabric",
   "Description": "",
   "Id": "{d_id}",
 
 }
 
 
-def get_Drives_instance(wildcards):
+def get_Fabric_instance(wildcards):
     """
     Instantiates and formats the template
 

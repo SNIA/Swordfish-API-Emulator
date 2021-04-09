@@ -44,7 +44,7 @@ from .redfish.ethernetinterface import EthernetInterfaceCollection, EthernetInte
 from .redfish.ResetActionInfo_api import ResetActionInfo_API
 from .redfish.ResetAction_api import ResetAction_API
 # PCIe Switch imports
-from .redfish.pcie_switch_api import PCIeSwitchesAPI, PCIeSwitchAPI
+#from .redfish.pcie_switch_api import PCIeSwitchesAPI, PCIeSwitchAPI
 # CompositionService imports
 from .redfish.CompositionService_api import CompositionServiceAPI
 from .redfish.ResourceBlock_api import ResourceBlockCollectionAPI, ResourceBlockAPI, CreateResourceBlock

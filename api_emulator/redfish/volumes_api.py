@@ -1,4 +1,4 @@
-# 
+#
 # Copyright (c) 2017-2021, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -62,12 +62,12 @@ class VolumesAPI(Resource):
     def __init__(self, **kwargs):
         logging.info('VolumesAPI init called')
         self.root = PATHS['Root']
-        self.storage_services = PATHS['StorageServices']['path']
-        self.volumes = PATHS['StorageServices']['volumes']
+        self.storage = PATHS['Storage']['path']
+        self.volumes = PATHS['Storage']['volumes']
 
     # HTTP GET
-    def get(self, storage_service, volumes):
-        path = create_path(self.root, self.storage_services, storage_service, self.volumes, volumes, 'index.json')
+    def get(self, storage, volumes):
+        path = create_path(self.root, self.storage, storage, self.volumes, volumes, 'index.json')
         try:
             volumes_json = open(path)
             data = json.load(volumes_json)
@@ -81,13 +81,13 @@ class VolumesAPI(Resource):
     # - Update the members and members.id lists
     # - Attach the APIs of subordinate resources (do this only once)
     # - Finally, create an instance of the subordiante resources
-    def post(self, storage_service, volumes):
+    def post(self, storage, volumes):
         logging.info('VolumesAPI PUT called')
         try:
             global config
             global foo
 
-            wildcards = {'s_id':storage_service, 'v_id': volumes, 'rb': g.rest_base}
+            wildcards = {'s_id':storage, 'v_id': volumes, 'rb': g.rest_base}
             config=get_Volumes_instance(wildcards)
 
             members.append(config)
@@ -96,7 +96,7 @@ class VolumesAPI(Resource):
             # Create instances of subordinate resources, then call put operation
             # not implemented yet
 
-            path = create_path(self.root, self.storage_services, storage_service, self.volumes, volumes)
+            path = create_path(self.root, self.storage, storage, self.volumes, volumes)
             if not os.path.exists(path):
                 os.mkdir(path)
             else:
@@ -107,10 +107,10 @@ class VolumesAPI(Resource):
 
 
             # update the collection json file with new added resource
-            collection_path = os.path.join(self.root, self.storage_services, storage_service, self.volumes, 'index.json')
+            collection_path = os.path.join(self.root, self.storage, storage, self.volumes, 'index.json')
             update_collections_json(path=collection_path, link=config['@odata.id'])
-            
-           
+
+
 
             resp = config, 200
         except Exception:
@@ -119,8 +119,8 @@ class VolumesAPI(Resource):
         logging.info('VolumesAPI put exit')
         return resp
 	# HTTP PATCH
-    def patch(self, storage_service, volumes):
-        path = os.path.join(self.root, self.storage_services, storage_service,
+    def patch(self, storage, volumes):
+        path = os.path.join(self.root, self.storage, storage,
                                        self.volumes, volumes, 'index.json')
         try:
             # Read json from file.
@@ -144,35 +144,35 @@ class VolumesAPI(Resource):
         except Exception as e:
             return {"error": "Unable read file because of following error::{}".format(e)}, 500
 
-        json_data = self.get(storage_service, volumes)
+        json_data = self.get(storage, volumes)
         return json_data
 
     # HTTP DELETE
-    def delete(self,storage_service,  volumes):
-        
-        path = os.path.join(self.root, self.storage_services, storage_service, self.volumes, volumes).replace("\\","/")
-        print (path)            
+    def delete(self,storage,  volumes):
+
+        path = os.path.join(self.root, self.storage, storage, self.volumes, volumes).replace("\\","/")
+        print (path)
         delPath = path.replace('Resources','/redfish/v1')
-        path2 = os.path.join(self.root, self.storage_services, storage_service, self.volumes, 'index.json').replace("\\","/")
+        path2 = os.path.join(self.root, self.storage, storage, self.volumes, 'index.json').replace("\\","/")
         try:
             with open(path2,"r") as pdata:
                 pdata = json.load(pdata)
-                
+
             data = {
             "@odata.id":delPath
-            }            
+            }
             resp = 200
             jdata = data["@odata.id"].split('/')
-            
-            path1 = os.path.join(self.root, self.storage_services, storage_service, self.volumes, jdata[len(jdata)-1])
-            
+
+            path1 = os.path.join(self.root, self.storage, storage, self.volumes, jdata[len(jdata)-1])
+
             shutil.rmtree(path1)
             pdata['Members'].remove(data)
             pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
-          
+
             with open(path2,"w") as jdata:
                 json.dump(pdata,jdata)
-                       
+
 
         except Exception as e:
             return {"error": "Unable read file because of following error::{}".format(e)}, 500
@@ -185,11 +185,11 @@ class VolumesCollectionAPI(Resource):
 
     def __init__(self):
         self.root = PATHS['Root']
-        self.storage_services = PATHS['StorageServices']['path']
-        self.volumes = PATHS['StorageServices']['volumes']
+        self.storage = PATHS['Storage']['path']
+        self.volumes = PATHS['Storage']['volumes']
 
-    def get(self, storage_service):
-        path = os.path.join(self.root, self.storage_services, storage_service, self.volumes, 'index.json')
+    def get(self, storage):
+        path = os.path.join(self.root, self.storage, storage, self.volumes, 'index.json')
         try:
             volume_json = open(path)
             data = json.load(volume_json)
@@ -207,7 +207,7 @@ class VolumesCollectionAPI(Resource):
     # POST should allow adding multiple instances to a collection.
     # For now, this only adds one instance.
     # TODO: 'id' should be obtained from the request data.
-    def post(self, storage_service):
+    def post(self, storage):
         logging.info('VolumesCollectionAPI POST called')
         try:
             config = request.get_json(force=True)
@@ -215,13 +215,13 @@ class VolumesCollectionAPI(Resource):
             if ok:
                 # Save the new singleton
                 singleton_name = os.path.basename(config['@odata.id'])
-                path = os.path.join(self.root, self.storage_services, storage_service, self.volumes, singleton_name)
+                path = os.path.join(self.root, self.storage, storage, self.volumes, singleton_name)
                 if not os.path.exists(path):
                     os.mkdir(path)
                 with open(os.path.join(path, "index.json"), "w") as fd:
                     fd.write(json.dumps(config, indent=4, sort_keys=True))
                 # Update the collection
-                collection_path = os.path.join(self.root, self.storage_services, storage_service, self.volumes, 'index.json')
+                collection_path = os.path.join(self.root, self.storage, storage, self.volumes, 'index.json')
                 update_collections_json(collection_path, config['@odata.id'])
                 # Return a copy of the new singleton with a Created response
                 resp = config, 201
@@ -236,22 +236,21 @@ class VolumesCollectionAPI(Resource):
 class CreateVolume (Resource):
     def __init__(self):
         self.root = PATHS['Root']
-        self.storage_services = PATHS['StorageServices']['path']
-        self.volumes = PATHS['StorageServices']['volumes']
+        self.storage = PATHS['Storage']['path']
+        self.volumes = PATHS['Storage']['volumes']
 
     # Attach APIs for subordinate resource(s). Attach the APIs for a resource collection and its singletons
-    def put(self,storage_service):
+    def put(self,storage):
         logging.info('CreateVolume put started.')
         try:
-            path = create_path(self.root, self.storage_services, storage_service, self.volumes)
+            path = create_path(self.root, self.storage, storage, self.volumes)
             if not os.path.exists(path):
                 os.mkdir(path)
             else:
                 logging.info('The given path : {} already Exist.'.format(path))
             config={
-                      "@Redfish.Copyright": "Copyright 2015-2016 SNIA. All rights reserved.",
-                      "@odata.context": "/redfish/v1/$metadata#Volume.Volume",
-                      "@odata.id": "/redfish/v1/StorageServices/$metadata#/Volumes",
+                      "@Redfish.Copyright": "Copyright 2015-2021 SNIA. All rights reserved.",
+                      "@odata.id": "/redfish/v1/Storage/$metadata#/Volumes",
                       "@odata.type": "#VolumeCollection.VolumeCollection",
                       "Name": "Volume Collection",
                       "Members@odata.count": 0,

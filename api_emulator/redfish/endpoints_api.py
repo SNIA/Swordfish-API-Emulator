@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2019, The Storage Networking Industry Association.
+# Copyright (c) 2017-2021, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -248,7 +248,7 @@ class CreateEndpoints (Resource):
                       "@Redfish.Copyright": "Copyright 2015-2017 SNIA. All rights reserved.",
                       "@odata.context": "/redfish/v1/$metadata#Endpoints.Endpoints",
                       "@odata.id": "/redfish/v1/StorageServices/$metadata#/Endpoints",
-                      "@odata.type": "#EndpointCollection.v1_0_0.EndpointCollection",
+                      "@odata.type": "#EndpointCollection.EndpointCollection",
                       "Name": "Endpoints Collection",
                       "Members@odata.count": 0,
                       "Members": [

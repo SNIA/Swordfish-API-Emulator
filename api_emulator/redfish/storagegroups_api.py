@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2019, The Storage Networking Industry Association.
+# Copyright (c) 2017-2021, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -249,7 +249,7 @@ class CreateStorageGroups (Resource):
                      "@Redfish.Copyright": "Copyright 2015-2016 SNIA. All rights reserved.",
                       "@odata.context": "/redfish/v1/$metadata#StorageGroups.StorageGroups",
                       "@odata.id": "/redfish/v1/StorageServices/$metadata#/StorageGroups",
-                      "@odata.type": "#StorageGroupsCollection.1.0.0.StorageGroupsCollection",
+                      "@odata.type": "#StorageGroupsCollection.StorageGroupsCollection",
                       "Name": "StorageGroups Collection",
                       "Members@odata.count": 0,
                       "Members": [

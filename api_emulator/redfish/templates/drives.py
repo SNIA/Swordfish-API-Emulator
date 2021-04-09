@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2018, The Storage Networking Industry Association.
+# Copyright (c) 2017-2021, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -38,7 +38,7 @@ _TEMPLATE = \
   "@Redfish.Copyright": "Copyright 2014-2016 SNIA. All rights reserved.",
   "@odata.context": "{rb}$metadata#Drives.Drives",
   "@odata.id": "{rb}StorageServices/{s_id}/Drives/{d_id}",
-  "@odata.type": "#DrivesCollection_1_0_0.DrivesCollection",
+  "@odata.type": "#DrivesCollection.DrivesCollection",
   "Name": "Drives",
   "Description": "",
   "Id": "{d_id}",

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2019, The Storage Networking Industry Association.
+# Copyright (c) 2017-2021, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -144,33 +144,33 @@ class EndpointGroupsAPI(Resource):
 
         json_data = self.get(storage_service, endpoint_groups_json)
         return json_data
-        
+
     # HTTP DELETE
     def delete(self,storage_service, endpoint_groups):
-        
+
         path = os.path.join(self.root, self.storage_services, storage_service, self.endpoint_groups, endpoint_groups).replace("\\","/")
         print (path)
         delPath = path.replace('Resources','/redfish/v1')
         path2 = os.path.join(self.root, self.storage_services, storage_service, self.endpoint_groups, 'index.json').replace("\\","/")
-        
+
         try:
             with open(path2,"r") as pdata:
                 pdata = json.load(pdata)
-                
+
             data = {
             "@odata.id":delPath
-            }            
+            }
             resp = 200
             jdata = data["@odata.id"].split('/')
-            
+
             path1 = os.path.join(self.root, self.storage_services, storage_service, self.endpoint_groups, jdata[len(jdata)-1])
             shutil.rmtree(path1)
             pdata['Members'].remove(data)
             pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
-          
+
             with open(path2,"w") as jdata:
                 json.dump(pdata,jdata)
-                       
+
 
         except Exception as e:
             return {"error": "Unable read file because of following error::{}".format(e)}, 500
@@ -251,7 +251,7 @@ class CreateEndpointGroups (Resource):
                       "@Redfish.Copyright": "Copyright 2015-2016 SNIA. All rights reserved.",
                       "@odata.context": "/redfish/v1/$metadata#EndpointGroups.EndpointGroups",
                       "@odata.id": "/redfish/v1/StorageServices/$metadata#/EndpointGroups",
-                      "@odata.type": "#EndpointGroupCollection.1.0.0.EndpointGroupCollection",
+                      "@odata.type": "#EndpointGroupCollection.EndpointGroupCollection",
                       "Name": "EndpointGroups Collection",
                       "Members@odata.count": 0,
                       "Members": [

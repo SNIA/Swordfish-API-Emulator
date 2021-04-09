@@ -244,7 +244,7 @@ class CreateDrives (Resource):
             config={
                       "@Redfish.Copyright": "Copyright 2015-2017 SNIA. All rights reserved.",
                       "@odata.context": "/redfish/v1/$metadata#Drives.Drives",
-                      "@odata.type": "#DriveCollection.v1_0_0.DriveCollection",
+                      "@odata.type": "#DriveCollection.DriveCollection",
                       "Name": "Drives",
                       "Members@odata.count": 1,
                       "Members": [

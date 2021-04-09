@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2019, The Storage Networking Industry Association.
+# Copyright (c) 2017-2021, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -150,29 +150,29 @@ class StoragePoolsAPI(Resource):
 
 
     def delete(self,storage_service, storage_pools):
-        
+
         path = os.path.join(self.root, self.storage_services, storage_service, self.storage_pools, storage_pools).replace("\\","/")
-        print (path)            
+        print (path)
         delPath = path.replace('Resources','/redfish/v1')
         path2 = os.path.join(self.root, self.storage_services, storage_service, self.storage_pools, 'index.json').replace("\\","/")
         try:
             with open(path2,"r") as pdata:
                 pdata = json.load(pdata)
-                
+
             data = {
             "@odata.id":delPath
-            }            
+            }
             resp = 200
             jdata = data["@odata.id"].split('/')
-           
+
             path1 = os.path.join(self.root, self.storage_services, storage_service,  self.storage_pools, jdata[len(jdata)-1])
             shutil.rmtree(path1)
             pdata['Members'].remove(data)
             pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
-          
+
             with open(path2,"w") as jdata:
                 json.dump(pdata,jdata)
-                       
+
 
         except Exception as e:
             return {"error": "Unable read file because of following error::{}".format(e)}, 500
@@ -254,7 +254,7 @@ class CreateStoragePools (Resource):
                       "@Redfish.Copyright": "Copyright 2014-2017 SNIA. All rights reserved.",
 					  "@odata.context": "/redfish/v1/$metadata#StoragePools.StoragePools",
 					  "@odata.id": "/redfish/v1/StorageServices/$metadata#/StoragePools",
-					  "@odata.type": "#StoragePoolsCollection_1_0_0.StoragePoolsCollection",
+					  "@odata.type": "#StoragePoolsCollection.StoragePoolsCollection",
 					  "Name": "StoragePools Collection",
 					  "Members@odata.count": 0,
 					  "Members": [
@@ -272,8 +272,3 @@ class CreateStoragePools (Resource):
             resp = INTERNAL_ERROR
         logging.info('CreateStoragePools put exit.')
         return resp
-
-
-
-
-

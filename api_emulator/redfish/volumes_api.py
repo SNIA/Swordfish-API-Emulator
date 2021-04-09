@@ -1,5 +1,5 @@
 # 
-# Copyright (c) 2017-2019, The Storage Networking Industry Association.
+# Copyright (c) 2017-2021, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -252,7 +252,7 @@ class CreateVolume (Resource):
                       "@Redfish.Copyright": "Copyright 2015-2016 SNIA. All rights reserved.",
                       "@odata.context": "/redfish/v1/$metadata#Volume.Volume",
                       "@odata.id": "/redfish/v1/StorageServices/$metadata#/Volumes",
-                      "@odata.type": "#VolumeCollection.1.0.0.VolumeCollection",
+                      "@odata.type": "#VolumeCollection.VolumeCollection",
                       "Name": "Volume Collection",
                       "Members@odata.count": 0,
                       "Members": [

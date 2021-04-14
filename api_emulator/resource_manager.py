@@ -84,6 +84,8 @@ from .redfish.event import Event
 # EventService imports
 from .redfish.EventService_api import EventServiceAPI, CreateEventService
 from .redfish.Subscriptions_api import SubscriptionCollectionAPI, SubscriptionAPI, CreateSubscription
+# SessionService imports
+from .redfish.EventService_api import *
 # Chassis imports
 from .redfish.Chassis_api import ChassisCollectionAPI, ChassisAPI, CreateChassis
 from .redfish.power_api import PowerAPI, CreatePower
@@ -206,6 +208,14 @@ class ResourceManager(object):
         # EventService SubResources
         g.api.add_resource(SubscriptionCollectionAPI, '/redfish/v1/EventService/Subscriptions')
         g.api.add_resource(SubscriptionAPI, '/redfish/v1/EventService/Subscriptions/<string:ident>',
+                resource_class_kwargs={'rb': g.rest_base})
+
+        # SessionService Resources
+        g.api.add_resource(SessionServiceAPI, '/redfish/v1/SessionService',
+                resource_class_kwargs={'rb': g.rest_base, 'id': "SessionService"})
+        # SessionService SubResources
+        g.api.add_resource(SessionCollectionAPI, '/redfish/v1/SessionService/Subscriptions')
+        g.api.add_resource(SessionAPI, '/redfish/v1/SessionService/Sessions/<string:ident>',
                 resource_class_kwargs={'rb': g.rest_base})
 
         # Chassis Resources

@@ -48,6 +48,7 @@ import g
 from api_emulator.redfish.drives_api import *
 from api_emulator.redfish.endpoints_api import *
 from api_emulator.redfish.volumes_api import *
+from api_emulator.redfish.storagecontrollers_api import *
 from api_emulator.redfish.storagepools_api import *
 from api_emulator.redfish.filesystems_api import *
 from api_emulator.redfish.storagegroups_api import *
@@ -56,6 +57,10 @@ from api_emulator.redfish.endpointgroups_api import *
 
 from api_emulator.redfish.fabric_api import *
 from api_emulator.redfish.storage_api import *
+
+from api_emulator.redfish.networkadapters_api import *
+from api_emulator.redfish.networkdevicefunctions_api import *
+from api_emulator.redfish.nwports_api import *
 
 from api_emulator.redfish.storageservices_api import *
 from api_emulator.redfish.classesofservice_api import *
@@ -218,6 +223,22 @@ class ResourceManager(object):
                             '/redfish/v1/Chassis/<string:chassis>/Drives')
         g.api.add_resource(DrivesAPI,
                             '/redfish/v1/Chassis/<string:chassis>/Drives/<string:drives>')
+
+        g.api.add_resource(NetworkAdaptersCollectionAPI,
+                            '/redfish/v1/Chassis/<string:chassis>/NetworkAdapters')
+        g.api.add_resource(NetworkAdaptersAPI,
+                            '/redfish/v1/Chassis/<string:chassis>/NetworkAdapters/<string:network_adapter>')
+
+        g.api.add_resource(NetworkDeviceFunctionsCollectionAPI,
+                            '/redfish/v1/Chassis/<string:chassis>/NetworkAdapters/<string:network_adapter>/NetworkDeviceFunctions')
+        g.api.add_resource(NetworkDeviceFunctionsAPI,
+                            '/redfish/v1/Chassis/<string:chassis>/NetworkAdapters/<string:network_adapter>/NetworkDeviceFunctions/<string:network_device_functions>')
+
+        g.api.add_resource(NWPortsCollectionAPI,
+                            '/redfish/v1/Chassis/<string:chassis>/NetworkAdapters/<string:network_adapter>/Ports')
+        g.api.add_resource(NWPortsAPI,
+                            '/redfish/v1/Chassis/<string:chassis>/NetworkAdapters/<string:network_adapter>/Ports/<string:nw_ports>')
+
         # Manager Resources
         g.api.add_resource(ManagerCollectionAPI, '/redfish/v1/Managers')
         g.api.add_resource(ManagerAPI, '/redfish/v1/Managers/<string:ident>', resource_class_kwargs={'rb': g.rest_base})
@@ -277,13 +298,17 @@ class ResourceManager(object):
         g.api.add_resource(StorageGroupsAPI,
                            '/redfish/v1/Storage/<string:storage>/StorageGroups/<string:storage_groups>')
         g.api.add_resource(StoragePoolsCollectionAPI,
-                           '/redfish/v1/Storage//<string:storage>/StoragePools')
+                           '/redfish/v1/Storage/<string:storage>/StoragePools')
         g.api.add_resource(StoragePoolsAPI,
-                            '/redfish/v1/Storage//<string:storage>/StoragePools/<string:storage_pools>')
+                            '/redfish/v1/Storage/<string:storage>/StoragePools/<string:storage_pools>')
         g.api.add_resource(VolumesCollectionAPI,
-                            '/redfish/v1/StorageServices/<string:storage>/Volumes')
+                            '/redfish/v1/Storage/<string:storage>/Volumes')
         g.api.add_resource(VolumesAPI,
-                            '/redfish/v1/StorageServices/<string:storage>/Volumes/<string:volumes>')
+                            '/redfish/v1/Storage/<string:storage>/Volumes/<string:volumes>')
+        g.api.add_resource(StorageControllersCollectionAPI,
+                            '/redfish/v1/Storage/<string:storage>/Controllers')
+        g.api.add_resource(StorageControllersAPI,
+                            '/redfish/v1/Storage/<string:storage>/Controllers/<string:storage_controllers>')
 
         # Fabric Resources
         g.api.add_resource(FabricCollectionAPI, '/redfish/v1/Fabrics')

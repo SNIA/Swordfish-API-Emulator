@@ -35,7 +35,10 @@ PATHS = {
 
     'Chassis': {
          'path': 'Chassis/',
-         'drives': 'Drives/'
+         'drives': 'Drives/',
+         'network_adapter': 'NetworkAdapters/',
+         'network_device_functions': 'NetworkDeviceFunctions/',
+         'nw_ports': 'Ports'
      },
 
    'Fabrics': {
@@ -50,6 +53,7 @@ PATHS = {
         'path': 'Storage/',
         'storage_groups': 'StorageGroups/',
         'storage_pools': 'StoragePools/',
+        'storage_controllers': 'Controllers/',
         'capacity_sources': 'CapacitySources/',
         'volumes': 'Volumes/',
         'client_end_point_groups': 'ClientEndpointGroups/',

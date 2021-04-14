@@ -85,7 +85,7 @@ from .redfish.event import Event
 from .redfish.EventService_api import EventServiceAPI, CreateEventService
 from .redfish.Subscriptions_api import SubscriptionCollectionAPI, SubscriptionAPI, CreateSubscription
 # SessionService imports
-from .redfish.EventService_api import *
+from .redfish.SessionService_api import *
 # Chassis imports
 from .redfish.Chassis_api import ChassisCollectionAPI, ChassisAPI, CreateChassis
 from .redfish.power_api import PowerAPI, CreatePower

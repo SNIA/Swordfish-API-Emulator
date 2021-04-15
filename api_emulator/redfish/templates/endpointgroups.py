@@ -39,7 +39,7 @@ _TEMPLATE = \
   "@odata.type": "#EndpointGroup.v1_3_1.EndpointGroup",
   "Name": "{epg_id}",
   "Description": "Group of client endpoints for 1",
-
+  "Id": "{epg_id}"
 }
 
 
@@ -69,8 +69,3 @@ def get_EndpointGroups_instance(wildcards):
     g = g.replace('~!', '{')
     g = g.replace('!~', '}')
     return json.loads(g)
-    # c['@odata.context'] = c['@odata.context'].format(**wildcards)
-    # c['@odata.id'] = c['@odata.id'].format(**wildcards)
-    # c['Id'] = c['Id'].format(**wildcards)
-    #
-    # return c

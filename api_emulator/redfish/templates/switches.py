@@ -28,46 +28,56 @@
 #  THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-# get_Endpoints_instance()
+# get_Switches_instance()
 
 import copy
 from flask import json
 
 _TEMPLATE = \
 {
-  "@Redfish.Copyright": "Copyright 2014-2017 SNIA. All rights reserved.",
-  "@odata.context": "{rb}$metadata#Endpoint.Endpoint",
-  "@odata.id": "{rb}StorageServices/{s_id}/Endpoints/{ep_id}",
-  "@odata.type": "#Endpoint.v1_0_0.Endpoint",
-  "Description": "This instance represents a SCSI implemented over FC",
-  "Id": "{ep_id}",
-  "Name": "SCSI2",
-  "Status": {
-    "State": "Enabled",
-    "Health": "Degraded"
-  },
-  "Identifiers": [
-    {
-      "DurableName": "60123456789abcdef60123456789abcdef",
-      "DurableNameFormat": "NAA"
-    }
-  ],
-  "BroadcastResetSupported": False,
-  "EndpointRole": "Target",
-  "RelativePortIdentifier": 3,
-  "TargetPortGroupIdentifier": 1,
-  "SupportingEndpoints": [
-    {
-      "ConnectionID": None,
-      "ConnectedEndpoint": {
-        "@odata.id": "{rb}StorageServices/{s_id}/Endpoints/{ep_id}"
-      }
-    }
-  ]
+  "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
+   "@odata.id": "{rb}Fabrics/Switches/{s_id}",
+    "@odata.type": "#Switch.v1_5_0.Switch",
+    "Id": "{s_id}",
+    "Name": "Ethernet Switch",
+    "SwitchType": "Ethernet",
+    "Status" : {
+      "State": "Enabled",
+      "Health": "OK"
+    },
+    "Manufacturer": "Contoso",
+    "Model": "SAS1000",
+    "SKU": "67B",
+    "SerialNumber": "2M220100SL",
+    "PartNumber": "76-88883",
+    "IsManaged": "true",
+    "FirmwareVersion": "v12451.4",
+    "LocationIndicatorActive": "true",
+    "MaxBandwidthGbps": 400,
+    "SupportedProtocols": ["Ethernet"],
+
+    "Ports": {
+        "@odata.id": "/redfish/v1/Fabrics/Ethernet/Switches/{s_id}/Ports"
+    },
+
+    "Links": {
+        "Oem": {}
+    },
+    "Actions": {
+        "#Switch.Reset": {
+            "target": "/redfish/v1/Fabrics/Ethernet/Switches/{s_id}/Actions/Switch.Reset",
+            "ResetType@Redfish.AllowableValues": [
+                "ForceRestart",
+                "GracefulRestart"
+            ]
+        },
+        "Oem": {}
+    },
+    "Oem": {}
 }
 
 
-def get_Endpoints_instance(wildcards):
+def get_Switches_instance(wildcards):
     """
     Instantiates and formats the template
 
@@ -92,8 +102,3 @@ def get_Endpoints_instance(wildcards):
     g = g.replace('~!', '{')
     g = g.replace('!~', '}')
     return json.loads(g)
-    # c['@odata.context'] = c['@odata.context'].format(**wildcards)
-    # c['@odata.id'] = c['@odata.id'].format(**wildcards)
-    # c['Id'] = c['Id'].format(**wildcards)
-    #
-    # return c

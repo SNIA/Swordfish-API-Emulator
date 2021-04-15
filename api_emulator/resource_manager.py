@@ -45,24 +45,30 @@ import logging
 import copy
 # Local imports
 import g
+
+from api_emulator.redfish.storage_api import *
 from api_emulator.redfish.drives_api import *
-from api_emulator.redfish.endpoints_api import *
 from api_emulator.redfish.volumes_api import *
 from api_emulator.redfish.storagecontrollers_api import *
 from api_emulator.redfish.storagepools_api import *
 from api_emulator.redfish.filesystems_api import *
 from api_emulator.redfish.storagegroups_api import *
 from api_emulator.redfish.storagesubsystems_api import *
-from api_emulator.redfish.endpointgroups_api import *
 
 from api_emulator.redfish.fabric_api import *
-from api_emulator.redfish.storage_api import *
+from api_emulator.redfish.f_switches_api import *
+from api_emulator.redfish.f_connections_api import *
+from api_emulator.redfish.f_zones_api import *
+from api_emulator.redfish.f_endpoints_api import *
+from api_emulator.redfish.f_endpointgroups_api import *
 
 from api_emulator.redfish.networkadapters_api import *
 from api_emulator.redfish.networkdevicefunctions_api import *
 from api_emulator.redfish.nwports_api import *
 
 from api_emulator.redfish.storageservices_api import *
+from api_emulator.redfish.endpoints_api import *
+from api_emulator.redfish.endpointgroups_api import *
 from api_emulator.redfish.classesofservice_api import *
 from api_emulator.redfish.dataprotectionloscapabilities_api import *
 from api_emulator.redfish.datasecurityloscapabilities_api import *
@@ -327,18 +333,31 @@ class ResourceManager(object):
         g.api.add_resource(FabricCollectionAPI, '/redfish/v1/Fabrics')
         g.api.add_resource(FabricAPI, '/redfish/v1/Fabrics/<string:ident>',
                 resource_class_kwargs={'rb': g.rest_base})
-        g.api.add_resource(EndpointsCollectionAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/Endpoints')
-        g.api.add_resource(EndpointsAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/Endpoints/<string:endpoints>')
-        g.api.add_resource(EndpointGroupsCollectionAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/EndpointGroups')
-        g.api.add_resource(EndpointGroupsAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/EndpointGroups/<string:endpoint_groups>')
+        g.api.add_resource(FabricsEndpointsCollectionAPI,
+                            '/redfish/v1/Fabrics/<string:fabrics>/Endpoints')
+        g.api.add_resource(FabricsEndpointsAPI,
+                            '/redfish/v1/Fabrics/<string:fabrics>/Endpoints/<string:f_endpoints>')
+        g.api.add_resource(FabricsEndpointGroupsCollectionAPI,
+                            '/redfish/v1/Fabrics/<string:fabrics>/EndpointGroups')
+        g.api.add_resource(FabricsEndpointGroupsAPI,
+                            '/redfish/v1/Fabrics/<string:fabrics>/EndpointGroups/<string:f_endpoint_groups>')
+        g.api.add_resource(FabricsZonesCollectionAPI,
+                            '/redfish/v1/Fabrics/<string:fabrics>/Zones')
+        g.api.add_resource(FabricsZonesAPI,
+                            '/redfish/v1/Fabrics/<string:fabrics>/Zones/<string:f_zones>')
+        g.api.add_resource(FabricsConnectionsCollectionAPI,
+                            '/redfish/v1/Fabrics/<string:fabrics>/Connections')
+        g.api.add_resource(FabricsConnectionsAPI,
+                            '/redfish/v1/Fabrics/<string:fabrics>/Connections/<string:f_connections>')
+        g.api.add_resource(FabricsSwitchesCollectionAPI,
+                            '/redfish/v1/Fabrics/<string:fabrics>/Switches')
+        g.api.add_resource(FabricsSwitchesAPI,
+                            '/redfish/v1/Fabrics/<string:fabrics>/Switches/<string:f_switches>')
+
         g.api.add_resource(FileSystemsCollectionAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/FileSystems')
+                            '/redfish/v1/Storage/<string:storage>/FileSystems')
         g.api.add_resource(FileSystemsAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/FileSystems/<string:file_systems>')
+                            '/redfish/v1/Storage/<string:storage>/FileSystems/<string:file_systems>')
 
         # PCIe Switch Resources
         #g.api.add_resource(PCIeSwitchesAPI, '/redfish/v1/PCIeSwitches')

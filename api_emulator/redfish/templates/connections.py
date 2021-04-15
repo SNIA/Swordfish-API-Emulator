@@ -28,46 +28,50 @@
 #  THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-# get_Endpoints_instance()
+# get_Connections_instance()
 
 import copy
 from flask import json
 
 _TEMPLATE = \
 {
-  "@Redfish.Copyright": "Copyright 2014-2017 SNIA. All rights reserved.",
-  "@odata.context": "{rb}$metadata#Endpoint.Endpoint",
-  "@odata.id": "{rb}StorageServices/{s_id}/Endpoints/{ep_id}",
-  "@odata.type": "#Endpoint.v1_0_0.Endpoint",
-  "Description": "This instance represents a SCSI implemented over FC",
-  "Id": "{ep_id}",
-  "Name": "SCSI2",
-  "Status": {
-    "State": "Enabled",
-    "Health": "Degraded"
-  },
-  "Identifiers": [
-    {
-      "DurableName": "60123456789abcdef60123456789abcdef",
-      "DurableNameFormat": "NAA"
+    "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
+    "@odata.id": "{rb}Fabrics/{f_id}/Connections/{c_id}",
+    "@odata.type": "#Connection.v1_0_0.Connection",
+    "Id": "{c_id}",
+    "Name": "Connection info",
+    "ConnectionType": "Storage",
+    "VolumeInfo": [
+        {
+            "AccessCapabilities": [
+                "Read",
+                "Write"
+            ],
+            "Volume": {
+                "@odata.id": "{rb}Storage/{f_id}/Volumes/1"
+            }
+        },
+        {
+            "AccessCapabilities": [
+                "Read",
+                "Write"
+            ],
+            "Volume": {
+                "@odata.id": "{rb}Storage/{f_id}/Volumes/3"
+            }
+        }
+    ],
+    "Links": {
+        "InitiatorEndpoints": [
+            {
+                "@odata.id": "{rb}Fabrics/{f_id}/Endpoints/Initiator1"
+            }
+        ]
     }
-  ],
-  "BroadcastResetSupported": False,
-  "EndpointRole": "Target",
-  "RelativePortIdentifier": 3,
-  "TargetPortGroupIdentifier": 1,
-  "SupportingEndpoints": [
-    {
-      "ConnectionID": None,
-      "ConnectedEndpoint": {
-        "@odata.id": "{rb}StorageServices/{s_id}/Endpoints/{ep_id}"
-      }
-    }
-  ]
 }
 
 
-def get_Endpoints_instance(wildcards):
+def get_Connections_instance(wildcards):
     """
     Instantiates and formats the template
 
@@ -92,8 +96,3 @@ def get_Endpoints_instance(wildcards):
     g = g.replace('~!', '{')
     g = g.replace('!~', '}')
     return json.loads(g)
-    # c['@odata.context'] = c['@odata.context'].format(**wildcards)
-    # c['@odata.id'] = c['@odata.id'].format(**wildcards)
-    # c['Id'] = c['Id'].format(**wildcards)
-    #
-    # return c

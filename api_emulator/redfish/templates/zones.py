@@ -28,46 +28,39 @@
 #  THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-# get_Endpoints_instance()
+# get_Zones_instance()
 
 import copy
 from flask import json
 
 _TEMPLATE = \
 {
-  "@Redfish.Copyright": "Copyright 2014-2017 SNIA. All rights reserved.",
-  "@odata.context": "{rb}$metadata#Endpoint.Endpoint",
-  "@odata.id": "{rb}StorageServices/{s_id}/Endpoints/{ep_id}",
-  "@odata.type": "#Endpoint.v1_0_0.Endpoint",
-  "Description": "This instance represents a SCSI implemented over FC",
-  "Id": "{ep_id}",
-  "Name": "SCSI2",
-  "Status": {
-    "State": "Enabled",
-    "Health": "Degraded"
-  },
-  "Identifiers": [
-    {
-      "DurableName": "60123456789abcdef60123456789abcdef",
-      "DurableNameFormat": "NAA"
-    }
-  ],
-  "BroadcastResetSupported": False,
-  "EndpointRole": "Target",
-  "RelativePortIdentifier": 3,
-  "TargetPortGroupIdentifier": 1,
-  "SupportingEndpoints": [
-    {
-      "ConnectionID": None,
-      "ConnectedEndpoint": {
-        "@odata.id": "{rb}StorageServices/{s_id}/Endpoints/{ep_id}"
-      }
-    }
-  ]
+    "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
+    "@odata.id": "{rb}Fabrics/{s_id}/Zones/{z_id}",
+    "@odata.type": "#Zone.v1_6_0.Zone",
+    "Id": "{z_id}",
+    "Name": "Ethernet Zone 1",
+    "Description": "Ethernet Zone 1",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "ZoneType": "ZoneOfEndpoints",
+    "ExternalAccessibility": "GloballyAccessible",
+    "Links": {
+        "Endpoints": [
+            {
+                "@odata.id": "/redfish/v1/Fabrics/{f_id}/Endpoints/{ep_id}"
+            }
+        ]
+    },
+    "Oem": {},
+
+
 }
 
 
-def get_Endpoints_instance(wildcards):
+def get_Zones_instance(wildcards):
     """
     Instantiates and formats the template
 
@@ -92,8 +85,3 @@ def get_Endpoints_instance(wildcards):
     g = g.replace('~!', '{')
     g = g.replace('!~', '}')
     return json.loads(g)
-    # c['@odata.context'] = c['@odata.context'].format(**wildcards)
-    # c['@odata.id'] = c['@odata.id'].format(**wildcards)
-    # c['Id'] = c['Id'].format(**wildcards)
-    #
-    # return c

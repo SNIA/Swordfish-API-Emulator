@@ -35,8 +35,7 @@ from flask import json
 
 _TEMPLATE = \
 {
-  "@Redfish.Copyright": "Copyright 2014-2016 SNIA. All rights reserved.",
-  "@odata.context": "{rb}$metadata#StorageGroup.StorageGroup/{sg_id}",
+  "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
   "@odata.id": "{rb}StorageServices/{s_id}/StorageGroups/{sg_id}",
   "@odata.type": "#StorageGroup_1_0_0.StorageGroup",
   "Id": "{sg_id}",
@@ -94,8 +93,3 @@ def get_StorageGroups_instance(wildcards):
     g = g.replace('~!', '{')
     g = g.replace('!~', '}')
     return json.loads(g)
-    # c['@odata.context'] = c['@odata.context'].format(**wildcards)
-    # c['@odata.id'] = c['@odata.id'].format(**wildcards)
-    # c['Id'] = c['Id'].format(**wildcards)
-    #
-    # return c

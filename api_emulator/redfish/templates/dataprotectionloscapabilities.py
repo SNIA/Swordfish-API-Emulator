@@ -35,8 +35,7 @@ from flask import json
 
 _TEMPLATE = \
 {
-  "@Redfish.Copyright": "Copyright 2014-2016 SNIA. All rights reserved.",
-  "@odata.context": "{rb}$metadata#DataProtectionLoSCapabilites.DataProtectionLoSCapabilites",
+  "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
   "@odata.id": "{rb}StorageServices/{s_id}/DataProtectionLoSCapabilites",
   "@odata.type": "#DataProtectionLoSCapabilites_1_0_0.DataProtectionLoSCapabilites",
   "Name": "DataProtectionLoSCapabilites",
@@ -137,8 +136,3 @@ def get_DataProtectionLoSCapabilities_instance(wildcards):
     g = g.replace('~!', '{')
     g = g.replace('!~', '}')
     return json.loads(g)
-    # c['@odata.context'] = c['@odata.context'].format(**wildcards)
-    # c['@odata.id'] = c['@odata.id'].format(**wildcards)
-    # c['Id'] = c['Id'].format(**wildcards)
-    #
-    # return c

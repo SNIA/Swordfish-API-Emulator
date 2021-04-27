@@ -36,7 +36,6 @@ from flask import json
 _TEMPLATE = \
 {
   "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-  "@odata.context": "{rb}$metadata#StorageController.StorageController/{sc_id}",
   "@odata.id": "{rb}Storage/{s_id}/Controllers/{sc_id}",
   "@odata.type": "#StorageController.v1_1_0.StorageController",
   "Id": "{sc_id}",
@@ -86,10 +85,3 @@ def get_StorageControllers_instance(wildcards):
     g = g.replace('~!', '{')
     g = g.replace('!~', '}')
     return json.loads(g)
-    #c['@odata.context'] = c['@odata.context'].format(**wildcards)
-    #c['@odata.id'] = c['@odata.id'].format(**wildcards)
-    #c['Id'] = c['Id'].format(**wildcards)
-
-
-
-    #return c

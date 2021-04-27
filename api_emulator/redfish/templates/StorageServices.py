@@ -36,8 +36,7 @@ from flask import json
 
 _TEMPLATE = \
 {
-  "@Redfish.Copyright": "Copyright 2015-2017 SNIA. All rights reserved.",
-  "@odata.context": "{rb}$metadata#StorageService.StorageService",
+  "@Redfish.Copyright": "Copyright 2015-2021 SNIA. All rights reserved.",
   "@odata.id": "{rb}StorageServices/{id}",
   "@odata.type": "#StorageServiceCollection.StorageServiceCollection",
   "Name": "Storage Service Collection",
@@ -87,7 +86,6 @@ def get_StorageServices_instance(wildcards):
         wildcard - A dictionary of wildcards strings and their repalcement values
     """
     c = copy.deepcopy(_TEMPLATE)
-    c['@odata.context'] = c['@odata.context'].format(**wildcards)
     c['@odata.id'] = c['@odata.id'].format(**wildcards)
     c['Id'] = c['Id'].format(**wildcards)
     c['Drives']['@odata.id']=c['Drives']['@odata.id'].format(**wildcards)
@@ -107,5 +105,3 @@ def get_StorageServices_instance(wildcards):
 
 
     return c
-
-

@@ -36,7 +36,6 @@ from flask import json
 _TEMPLATE = \
 {
   "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-  "@odata.context": "{rb}$metadata#NetworkAdapter.NetworkAdapter/{n_id}",
   "@odata.id": "{rb}Chassis/{c_id}/NetworkAdapters/{n_id}",
   "@odata.type": "#NetworkAdapter.v1_6_0.NetworkAdapter",
   "Id": "{n_id}",
@@ -100,10 +99,3 @@ def get_NetworkAdapters_instance(wildcards):
     g = g.replace('~!', '{')
     g = g.replace('!~', '}')
     return json.loads(g)
-    #c['@odata.context'] = c['@odata.context'].format(**wildcards)
-    #c['@odata.id'] = c['@odata.id'].format(**wildcards)
-    #c['Id'] = c['Id'].format(**wildcards)
-
-
-
-    #return c

@@ -154,23 +154,23 @@ class FileSystemsAPI(Resource):
         try:
             with open(path2,"r") as sdata:
                 sdata = json.load(sdata)
-                
+
             data = {
             "@odata.id":delPath
-            }            
+            }
             resp = 200
-            jdata = data["@odata.id"].split('/')         
+            jdata = data["@odata.id"].split('/')
 
             path1 = os.path.join(self.root, self.storage_services, storage_service, self.file_systems, jdata[len(jdata)-1])
-            
+
             shutil.rmtree(path1)
             sdata['Members'].remove(data)
             sdata['Members@odata.count'] = int(sdata['Members@odata.count']) - 1
-          
-            with open(path2,"w") as jdata:                
-                
+
+            with open(path2,"w") as jdata:
+
                 json.dump(sdata,jdata)
-            
+
         except Exception as e:
             return {"error": "Unable read file because of following error::{}".format(e)}, 500
 
@@ -245,8 +245,7 @@ class CreateFileSystems (Resource):
             else:
                 logging.info('The given path : {} already Exist.'.format(path))
             config={
-                      "@Redfish.Copyright": "Copyright 2015-2017 SNIA. All rights reserved.",
-                      "@odata.context": "/redfish/v1/$metadata#FileSystems.FileSystems",
+                      "@Redfish.Copyright": "Copyright 2015-2021 SNIA. All rights reserved.",
                       "@odata.id": "/redfish/v1/StorageServices/$metadata#/FileSystems",
                       "@odata.type": "#FileSystemsCollection.FileSystemsCollection",
                       "Name": "FileSystems Collection",

@@ -67,7 +67,6 @@ def get_Storage_instance(wildcards):
         wildcard - A dictionary of wildcards strings and their repalcement values
     """
     c = copy.deepcopy(_TEMPLATE)
-    c['@odata.context'] = c['@odata.context'].format(**wildcards)
     c['@odata.id'] = c['@odata.id'].format(**wildcards)
     c['Id'] = c['Id'].format(**wildcards)
     c['Drives']['@odata.id']=c['Drives']['@odata.id'].format(**wildcards)

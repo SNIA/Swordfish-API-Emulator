@@ -242,8 +242,7 @@ class CreateDrives (Resource):
             else:
                 logging.info('The given path : {} already Exist.'.format(path))
             config={
-                      "@Redfish.Copyright": "Copyright 2015-2017 SNIA. All rights reserved.",
-                      "@odata.context": "/redfish/v1/$metadata#Drives.Drives",
+                      "@Redfish.Copyright": "Copyright 2015-2021 SNIA. All rights reserved.",
                       "@odata.type": "#DriveCollection.DriveCollection",
                       "Name": "Drives",
                       "Members@odata.count": 1,

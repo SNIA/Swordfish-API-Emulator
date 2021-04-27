@@ -113,7 +113,7 @@ class EndpointsAPI(Resource):
             resp = INTERNAL_ERROR
         logging.info('EndpointsAPI put exit')
         return resp
-		
+
 	# HTTP PATCH
     def patch(self, storage_service, endpoints):
         path = os.path.join(self.root, self.storage_services, storage_service,
@@ -145,30 +145,30 @@ class EndpointsAPI(Resource):
 
     # HTTP DELETE
     def delete(self,storage_service, endpoints):
-        
+
         path = os.path.join(self.root, self.storage_services, storage_service, self.endpoints, endpoints).replace("\\","/")
         print (path)
         delPath = path.replace('Resources','/redfish/v1')
         path2 = os.path.join(self.root, self.storage_services, storage_service, self.endpoints, 'index.json').replace("\\","/")
-        
+
         try:
             with open(path2,"r") as pdata:
                 pdata = json.load(pdata)
-                
+
             data = {
             "@odata.id":delPath
-            }            
+            }
             resp = 200
             jdata = data["@odata.id"].split('/')
-            
+
             path1 = os.path.join(self.root, self.storage_services, storage_service, self.endpoints, jdata[len(jdata)-1])
             shutil.rmtree(path1)
             pdata['Members'].remove(data)
             pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
-          
+
             with open(path2,"w") as jdata:
                 json.dump(pdata,jdata)
-                       
+
 
         except Exception as e:
             return {"error": "Unable read file because of following error::{}".format(e)}, 500
@@ -245,8 +245,7 @@ class CreateEndpoints (Resource):
             else:
                 logging.info('The given path : {} already Exist.'.format(path))
             config={
-                      "@Redfish.Copyright": "Copyright 2015-2017 SNIA. All rights reserved.",
-                      "@odata.context": "/redfish/v1/$metadata#Endpoints.Endpoints",
+                      "@Redfish.Copyright": "Copyright 2015-2021 SNIA. All rights reserved.",
                       "@odata.id": "/redfish/v1/StorageServices/$metadata#/Endpoints",
                       "@odata.type": "#EndpointCollection.EndpointCollection",
                       "Name": "Endpoints Collection",

@@ -251,8 +251,7 @@ class CreateStoragePools (Resource):
             else:
                 logging.info('The given path : {} already Exist.'.format(path))
             config={
-                      "@Redfish.Copyright": "Copyright 2014-2017 SNIA. All rights reserved.",
-					  "@odata.context": "/redfish/v1/$metadata#StoragePools.StoragePools",
+                      "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
 					  "@odata.id": "/redfish/v1/StorageServices/$metadata#/StoragePools",
 					  "@odata.type": "#StoragePoolsCollection.StoragePoolsCollection",
 					  "Name": "StoragePools Collection",

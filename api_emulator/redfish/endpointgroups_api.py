@@ -249,7 +249,6 @@ class CreateEndpointGroups (Resource):
             config={
 
                       "@Redfish.Copyright": "Copyright 2015-2016 SNIA. All rights reserved.",
-                      "@odata.context": "/redfish/v1/$metadata#EndpointGroups.EndpointGroups",
                       "@odata.id": "/redfish/v1/StorageServices/$metadata#/EndpointGroups",
                       "@odata.type": "#EndpointGroupCollection.EndpointGroupCollection",
                       "Name": "EndpointGroups Collection",

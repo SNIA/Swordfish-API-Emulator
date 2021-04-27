@@ -146,30 +146,30 @@ class StorageGroupsAPI(Resource):
 
     # HTTP DELETE
     def delete(self,storage_service, storage_groups):
-        
+
         path = os.path.join(self.root, self.storage_services, storage_service, self.storage_groups, storage_groups).replace("\\","/")
         print (path)
         delPath = path.replace('Resources','/redfish/v1')
         path2 = os.path.join(self.root, self.storage_services, storage_service, self.storage_groups, 'index.json').replace("\\","/")
-        
+
         try:
             with open(path2,"r") as pdata:
                 pdata = json.load(pdata)
-                
+
             data = {
             "@odata.id":delPath
-            }            
+            }
             resp = 200
             jdata = data["@odata.id"].split('/')
-           
+
             path1 = os.path.join(self.root, self.storage_services, storage_service, self.storage_groups, jdata[len(jdata)-1])
             shutil.rmtree(path1)
             pdata['Members'].remove(data)
             pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
-          
+
             with open(path2,"w") as jdata:
                 json.dump(pdata,jdata)
-                       
+
 
         except Exception as e:
             return {"error": "Unable read file because of following error::{}".format(e)}, 500
@@ -247,7 +247,6 @@ class CreateStorageGroups (Resource):
                 logging.info('The given path : {} already Exist.'.format(path))
             config={
                      "@Redfish.Copyright": "Copyright 2015-2016 SNIA. All rights reserved.",
-                      "@odata.context": "/redfish/v1/$metadata#StorageGroups.StorageGroups",
                       "@odata.id": "/redfish/v1/StorageServices/$metadata#/StorageGroups",
                       "@odata.type": "#StorageGroupsCollection.StorageGroupsCollection",
                       "Name": "StorageGroups Collection",

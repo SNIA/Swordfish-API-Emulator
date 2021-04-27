@@ -1,0 +1,20 @@
+{
+  "@odata.type": "#FeaturesRegistry.v1_0_0.FeaturesRegistry",
+  "Id": "GlobalRegistry",
+  "Name": "Global Features Registry",
+  "Features": [
+    {
+      "FeatureName": "SNIA.Swordfish.NVMeDrive",
+      "Description": "Supports the Swordfish NVMe Drive Feature.",
+      "Version": "1.0.0",
+      "CorrespondingProfileDefinition": "SwordfishNVMeDrive.json"
+    },
+    {
+      "FeatureName": "SNIA.Swordfish.NVMeDriveEthernetAttach",
+      "Description": "Supports Ethernet Attach functionality for NVMe Drives.",
+      "Version": "1.0.0",
+      "CorrespondingProfileDefinition": "SwordfishNVMeDriveEthernetAttach.json"
+    }
+  ],
+  "@Redfish.Copyright": "Copyright 2019-2021 SNIA. All rights reserved."
+}

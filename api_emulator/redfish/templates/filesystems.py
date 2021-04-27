@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2018, The Storage Networking Industry Association.
+# Copyright (c) 2017-2021, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,8 +35,7 @@ from flask import json
 
 _TEMPLATE = \
 {
-  "@Redfish.Copyright": "Copyright 2014-2016 SNIA. All rights reserved.",
-  "@odata.context": "{rb}$metadata#FileSystems.FileSystems",
+  "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
   "@odata.id": "{rb}StorageServices/{s_id}/FileSystems/{fss_id}",
   "@odata.type": "#FileSystem.FileSystem",
   "Id": "{fss_id}",
@@ -131,8 +130,3 @@ def get_FileSystems_instance(wildcards):
     g = g.replace('~!', '{')
     g = g.replace('!~', '}')
     return json.loads(g)
-    c['@odata.context'] = c['@odata.context'].format(**wildcards)
-    c['@odata.id'] = c['@odata.id'].format(**wildcards)
-    c['Id'] = c['Id'].format(**wildcards)
-
-    return c

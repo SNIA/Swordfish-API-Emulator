@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2018, The Storage Networking Industry Association.
+# Copyright (c) 2017-2021, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -36,10 +36,9 @@ from flask import json
 
 _TEMPLATE = \
 {
-  "@Redfish.Copyright": "Copyright 2015-2017 SNIA. All rights reserved.",
-  "@odata.context": "{rb}$metadata#StorageSystems.StorageSystems",
+  "@Redfish.Copyright": "Copyright 2015-2021 SNIA. All rights reserved.",
   "@odata.id": "{rb}StorageSystems/{id}",
-  "@odata.type": "#StorageSystemsCollection.1.0.0.StorageSystemsCollection",
+  "@odata.type": "#StorageSystemsCollection.StorageSystemsCollection",
   "Name": "Storage Systems Collection",
   "Id":"{id}",
   "Links": {
@@ -88,7 +87,7 @@ _TEMPLATE = \
         ],
         "UefiTargetBootSourceOverride": "uefi device path"
     },
-    "BiosVersion": "P79 v1.00 (09/20/2013)",    
+    "BiosVersion": "P79 v1.00 (09/20/2013)",
     "ProcessorSummary": {
         "Count": 8,
         "Model": "Multi-Core Intel(R) Xeon(R) processor 7xxx Series",
@@ -119,8 +118,8 @@ _TEMPLATE = \
            "InterfaceTypeSelection": "None"
         }
     ],
-  
-  
+
+
   "Permissions": [
               {"Read": "True"},
               {"Write": "True"}],
@@ -137,11 +136,8 @@ def get_StorageSystems_instance(wildcards):
         wildcard - A dictionary of wildcards strings and their repalcement values
     """
     c = copy.deepcopy(_TEMPLATE)
-    c['@odata.context'] = c['@odata.context'].format(**wildcards)
     c['@odata.id'] = c['@odata.id'].format(**wildcards)
     c['Id'] = c['Id'].format(**wildcards)
-    
-    
-    return c
 
-  
+
+    return c

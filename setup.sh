@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2018, The Storage Networking Industry Association.
+# Copyright (c) 2018-2021, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -41,7 +41,7 @@ necessary source files ready and start a local instance of the emulator.
 
 USAGE:
 
-    $(basename $0) [--port PORT] [--workspace DIR] [--no-start] 
+    $(basename $0) [--port PORT] [--workspace DIR] [--no-start]
 
 Options:
 
@@ -119,10 +119,14 @@ cd $WORK_DIR
 virtualenv --python=python3 venv
 venv/bin/pip install -q -r requirements.txt
 
+# Remove Redfish static / starting mockups
+rm -r $WORK_DIR/api_emulator/redfish/static
+
 # Copy over the Swordfish bits
 echo "Applying Swordfish additions..."
 cp -r -f $BASE_DIR/api_emulator $WORK_DIR/
 cp -r -f $BASE_DIR/Resources $WORK_DIR/
+cp -r -f $BASE_DIR/emulator-config.json $WORK_DIR/
 
 if [ "$SETUP_ONLY" == "true" ]; then
     echo ""

@@ -1,0 +1,12 @@
+{
+  "@odata.type": "#ChassisCollection.ChassisCollection",
+  "Name": "Chassis Collection",
+  "Members@odata.count": 1,
+  "Members": [
+    {
+      "@odata.id": "/redfish/v1/Chassis/IPAttachedDrive"
+    }
+  ],
+  "@odata.id": "/redfish/v1/Chassis",
+  "@Redfish.Copyright": "Copyright 2014-2020 SNIA. All rights reserved."
+}

@@ -1,0 +1,44 @@
+{
+  "@Redfish.Copyright": "Copyright 2014-2019 DMTF. All rights reserved.",
+  "@odata.id": "/redfish/v1/Chassis/IPAttachedDrive/NetworkAdapters/8fd725a1",
+  "@odata.type": "#NetworkAdapter.v1_6_0.NetworkAdapter",
+  "Id": "9fa725a1",
+  "Name": "Network Adapter View",
+  "Description": "Embedded Network Adapter in IP Attached drive.",
+  "Controllers": [
+    {
+      "ControllerCapabilities": {
+        "NetworkPortCount": 2,
+        "NetworkDeviceFunctionCount": 8,
+        "DataCenterBridging": {
+          "Capable": true
+        }
+      },
+      "FirmwarePackageVersion": "7.4.10",
+      "Links": {
+        "Ports": [
+          {
+            "@odata.id": "/redfish/v1/Chassis/IPAttachedDrive/NetworkAdapters/8fd725a1/Ports/1"
+          }
+        ],
+        "NetworkDeviceFunctions": [
+          {
+            "@odata.id": "/redfish/v1/Chassis/IPAttachedDrive/NetworkAdapters/8fd725a1/NetworkDeviceFunctions/11100"
+          }
+        ]
+      }
+    }
+  ],
+  "Manufacturer": "Globex",
+  "Model": "599TPS-T",
+  "NetworkDeviceFunctions": {
+    "@odata.id": "/redfish/v1/Chassis/IPAttachedDrive/NetworkAdapters/8fd725a1/NetworkDeviceFunctions"
+  },
+  "PartNumber": "975421-B20",
+  "Ports": {
+    "@odata.id": "/redfish/v1/Chassis/IPAttachedDrive/NetworkAdapters/8fd725a1/Ports"
+  },
+  "SKU": "Globex TPS-Net 2-Port Base-T",
+  "SerialNumber": "003BFLRT00023234",
+  "Oem": {}
+}

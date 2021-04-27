@@ -1,0 +1,12 @@
+{
+  "@odata.type": "#StorageCollection.StorageCollection",
+  "Name": "Storage Collection",
+  "Members@odata.count": 1,
+  "Members": [
+    {
+      "@odata.id": "/redfish/v1/Storage/IPAttachedDrive"
+    }
+  ],
+  "@odata.id": "/redfish/v1/Storage",
+  "@Redfish.Copyright": "Copyright 2014-2020 SNIA. All rights reserved."
+}

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2018, The Storage Networking Industry Association.
+# Copyright (c) 2017-2021, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -30,10 +30,45 @@
 
 #constants.py
 
-
-
 PATHS = {
     'Root': 'Resources/',
+
+    'Chassis': {
+         'path': 'Chassis/',
+         'drives': 'Drives/',
+         'network_adapter': 'NetworkAdapters/',
+         'network_device_functions': 'NetworkDeviceFunctions/',
+         'nw_ports': 'Ports'
+     },
+
+   'Fabrics': {
+       'path': 'Fabrics/',
+       'switches': 'Switches/',
+       'endpoints': 'Endpoints/',
+       'zones': 'Zones/',
+       'connections': 'Connections/'
+   },
+
+    'Storage': {
+        'path': 'Storage/',
+        'storage_groups': 'StorageGroups/',
+        'storage_pools': 'StoragePools/',
+        'storage_controllers': 'Controllers/',
+        'capacity_sources': 'CapacitySources/',
+        'volumes': 'Volumes/',
+        'client_end_point_groups': 'ClientEndpointGroups/',
+        'server_end_point_groups': 'ServerEndpointGroups/',
+        'drives': 'Drives/',
+        'classes_of_service': 'ClassesOfService/',
+        'data_protection_los_capabilities': 'DataProtectionLoSCapabilities/',
+        'data_security_los_capabilities': 'DataSecurityLoSCapabilities/',
+        'data_storage_los_capabilities': 'DataStorageLoSCapabilities/',
+        'ioconnectivity_los_capabilities': 'IOConnectivityLoSCapabilities/',
+        'ioperformance_los_capabilities': 'IOPerformanceLoSCapabilities/',
+        'endpoints': 'Endpoints/',
+        'endpoint_groups': 'EndpointGroups/',
+        'file_systems': 'FileSystems/'
+    },
 
     'StorageServices': {
         'path': 'StorageServices/',
@@ -55,12 +90,12 @@ PATHS = {
         'file_systems': 'FileSystems/'
 
     },
-    
+
     'StorageSystems': {
         'path': 'StorageSystems/'
-        
+
     },
-    
+
     'AddService':
     {
         'path': 'AddService/'

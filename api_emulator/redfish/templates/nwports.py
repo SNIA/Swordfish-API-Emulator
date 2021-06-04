@@ -37,9 +37,9 @@ _TEMPLATE = \
 {
   "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
   "@odata.id": "{rb}Chassis/{c_id}/NetworkAdapters/{n_id}/Ports/{p_id}",
-  "@odata.type": "#Port.v1_3_1.Port",
+  "@odata.type": "#Port.v1_4_0.Port",
   "Id": "{p_id}",
-  "Name": "Network Device Function",
+  "Name": "Port",
    "CurrentSpeedGbps": 12,
   "Description": "Port in embedded network interface for IP Attached drive.",
   "Ethernet": {

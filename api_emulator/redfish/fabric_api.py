@@ -64,15 +64,14 @@ class FabricAPI(Resource):
     def __init__(self, **kwargs):
         logging.info('FabricAPI init called')
         self.root = PATHS['Root']
-        self.storage_services = PATHS['StorageServices']['path']
-        self.classes_of_service = PATHS['StorageServices']['classes_of_service']
+        self.fabrics = PATHS['Fabrics']['path']
 
     # HTTP GET
-    def get(self, storage_service, classes_of_service):
-        path = create_path(self.root, self.storage_services, storage_service, self.classes_of_service, classes_of_service, 'index.json')
+    def get(self, fabric):
+        path = create_path(self.root, self.fabrics, fabric, 'index.json')
         try:
-            classes_of_service_json = open(path)
-            data = json.load(classes_of_service_json)
+            fabric_json = open(path)
+            data = json.load(fabric_json)
         except Exception as e:
             traceback.print_exc()
             raise Exception("Unable read file because of following error::{}".format(e))
@@ -83,13 +82,13 @@ class FabricAPI(Resource):
     # - Update the members and members.id lists
     # - Attach the APIs of subordinate resources (do this only once)
     # - Finally, create an instance of the subordiante resources
-    def post(self, storage_service, classes_of_service):
+    def post(self, fabric):
         logging.info('FabricAPI PUT called')
         try:
             global config
             global foo
 
-            wildcards = {'s_id':storage_service, 'clos_id': classes_of_service, 'rb': g.rest_base}
+            wildcards = {'f_id':fabric, 'rb': g.rest_base}
             config=get_Fabric_instance(wildcards)
 
             members.append(config)
@@ -98,7 +97,7 @@ class FabricAPI(Resource):
             # Create instances of subordinate resources, then call put operation
             # not implemented yet
 
-            path = create_path(self.root, self.storage_services, storage_service, self.classes_of_service, classes_of_service)
+            path = create_path(self.root,  self.fabrics, fabric)
             if not os.path.exists(path):
                 os.mkdir(path)
             else:
@@ -109,7 +108,7 @@ class FabricAPI(Resource):
 
 
             # update the collection json file with new added resource
-            collection_path = os.path.join(self.root, self.storage_services, storage_service, self.classes_of_service, 'index.json')
+            collection_path = os.path.join(self.root,  self.fabrics,  'index.json')
             update_collections_json(path=collection_path, link=config['@odata.id'])
 
             resp = config, 200
@@ -119,14 +118,14 @@ class FabricAPI(Resource):
         logging.info('FabricAPI put exit')
         return resp
 	# HTTP PATCH
-    def patch(self, storage_service, classes_of_service):
+    def patch(self, fabric):
 
-        path = os.path.join(self.root, self.storage_services, storage_service, self.classes_of_service, classes_of_service, 'index.json')
+        path = os.path.join(self.root, self.fabrics, fabric, 'index.json')
         try:
             # Read json from file.
-            with open(path, 'r') as classes_of_service_json:
-                data = json.load(classes_of_service_json)
-                classes_of_service_json.close()
+            with open(path, 'r') as fabric_json:
+                data = json.load(fabric_json)
+                fabric_json.close()
 
             request_data = json.loads(request.data)
 
@@ -144,16 +143,16 @@ class FabricAPI(Resource):
         except Exception as e:
             return {"error": "Unable read file because of following error::{}".format(e)}, 500
 
-        json_data = self.get(storage_service, classes_of_service)
+        json_data = self.get(fabric)
         return json_data
 
     # HTTP DELETE
-    def delete(self,storage_service,classes_of_service):
+    def delete(self,fabric):
 
-        path = os.path.join(self.root, self.storage_services, storage_service, self.classes_of_service, classes_of_service).replace("\\","/")
+        path = os.path.join(self.root, self.fabric, fabric).replace("\\","/")
         print (path)
         delPath = path.replace('Resources','/redfish/v1')
-        path2 = os.path.join(self.root, self.storage_services, storage_service, self.classes_of_service, 'index.json').replace("\\","/")
+        path2 = os.path.join(self.root, self.fabrics,  'index.json').replace("\\","/")
         try:
             with open(path2,"r") as pdata:
                 pdata = json.load(pdata)
@@ -164,8 +163,7 @@ class FabricAPI(Resource):
             resp = 200
             jdata = data["@odata.id"].split('/')
 
-            path1 = os.path.join(self.root, self.storage_services, storage_service,  self.classes_of_service, jdata[len(jdata)-1])
-
+            path1 = os.path.join(self.root, self.fabrics, jdata[len(jdata)-1])
             shutil.rmtree(path1)
             pdata['Members'].remove(data)
             pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
@@ -185,17 +183,16 @@ class FabricCollectionAPI(Resource):
 
     def __init__(self):
         self.root = PATHS['Root']
-        self.storage_services = PATHS['StorageServices']['path']
-        self.classes_of_service = PATHS['StorageServices']['classes_of_service']
+        self.fabrics = PATHS['Fabrics']['path']
 
-    def get(self, storage_service):
-        path = os.path.join(self.root, self.storage_services, storage_service, self.classes_of_service, 'index.json')
+    def get(self):
+        path = os.path.join(self.root, self.fabrics, 'index.json')
         try:
-            classes_of_service_json = open(path)
-            data = json.load(classes_of_service_json)
+            fabric_json = open(path)
+            data = json.load(fabric_json)
         except Exception as e:
             traceback.print_exc()
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
+            return {"error": "Unable to read file because of following error::{}".format(e)}, 500
 
         return jsonify(data)
 
@@ -207,7 +204,7 @@ class FabricCollectionAPI(Resource):
     # POST should allow adding multiple instances to a collection.
     # For now, this only adds one instance.
     # TODO: 'id' should be obtained from the request data.
-    def post(self, storage_service):
+    def post(self):
         logging.info('FabricCollectionAPI POST called')
         try:
             config = request.get_json(force=True)
@@ -215,13 +212,13 @@ class FabricCollectionAPI(Resource):
             if ok:
                 # Save the new singleton
                 singleton_name = os.path.basename(config['@odata.id'])
-                path = os.path.join(self.root, self.storage_services, storage_service, self.classes_of_service, singleton_name)
+                path = os.path.join(self.root, self.fabrics, singleton_name)
                 if not os.path.exists(path):
                     os.mkdir(path)
                 with open(os.path.join(path, "index.json"), "w") as fd:
                     fd.write(json.dumps(config, indent=4, sort_keys=True))
                 # Update the collection
-                collection_path = os.path.join(self.root, self.storage_services, storage_service, self.classes_of_service, 'index.json')
+                collection_path = os.path.join(self.root, self.fabrics, 'index.json')
                 update_collections_json(collection_path, config['@odata.id'])
                 # Return a copy of the new singleton with a Created response
                 resp = config, 201
@@ -236,18 +233,18 @@ class FabricCollectionAPI(Resource):
 class CreateFabric (Resource):
     def __init__(self):
         self.root = PATHS['Root']
-        self.storage_services = PATHS['StorageServices']['path']
-        self.classes_of_service = PATHS['StorageServices']['classes_of_service']
+        self.fabrics = PATHS['Fabrics']['path']
+
 
     # Attach APIs for subordinate resource(s). Attach the APIs for a resource collection and its singletons
-    def put(self,storage_service):
+    def put(self,fabric):
         logging.info('CreateFabric put started.')
         try:
-            path = create_path(self.root, self.storage_services, storage_service, self.classes_of_service)
+            path = create_path(self.root, self.fabrics, fabric)
             if not os.path.exists(path):
                 os.mkdir(path)
             else:
-                logging.info('The given path : {} already Exist.'.format(path))
+                logging.info('The given path : {} already Exists.'.format(path))
             config={
                       "@Redfish.Copyright": "Copyright 2015-2021 SNIA. All rights reserved.",
                       "@odata.id": "/redfish/v1/Fabrics",

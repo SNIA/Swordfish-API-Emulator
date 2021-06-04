@@ -21,7 +21,7 @@
 # derived from this software without specific prior written permission.
 #
 #  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  AND ANY EXPRESS OR IMfPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 #  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 #  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
 #  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
@@ -57,8 +57,11 @@ from api_emulator.redfish.storagesubsystems_api import *
 
 from api_emulator.redfish.fabric_api import *
 from api_emulator.redfish.f_switches_api import *
+from api_emulator.redfish.f_switch_ports_api import *
+
 from api_emulator.redfish.f_connections_api import *
 from api_emulator.redfish.f_zones_api import *
+
 from api_emulator.redfish.f_endpoints_api import *
 from api_emulator.redfish.f_endpointgroups_api import *
 
@@ -201,7 +204,7 @@ class ResourceManager(object):
             #self.EventService =     load_static('EventService', 'redfish', mode, rest_base, self.resource_dictionary)
             self.Chassis =          load_static('Chassis', 'redfish', mode, rest_base, self.resource_dictionary)
             self.Storage =          load_static('Storage', 'redfish', mode, rest_base, self.resource_dictionary)
-
+            self.Fabrics =          load_static('Fabrics', 'redfish', mode, rest_base, self.resource_dictionary)
             #self.Systems=           load_static('Systems', 'redfish', mode, rest_base, self.resource_dictionary)
             #self.Managers =         load_static('Managers', 'redfish', mode, rest_base, self.resource_dictionary)
 
@@ -331,29 +334,34 @@ class ResourceManager(object):
 
         # Fabric Resources
         g.api.add_resource(FabricCollectionAPI, '/redfish/v1/Fabrics')
-        g.api.add_resource(FabricAPI, '/redfish/v1/Fabrics/<string:ident>',
-                resource_class_kwargs={'rb': g.rest_base})
+        g.api.add_resource(FabricAPI, '/redfish/v1/Fabrics/<string:fabric>',
+                        '/redfish/v1/Fabrics/<string:fabric>')
+        # Fabric SubResources
         g.api.add_resource(FabricsEndpointsCollectionAPI,
-                            '/redfish/v1/Fabrics/<string:fabrics>/Endpoints')
+                            '/redfish/v1/Fabrics/<string:fabric>/Endpoints')
         g.api.add_resource(FabricsEndpointsAPI,
-                            '/redfish/v1/Fabrics/<string:fabrics>/Endpoints/<string:f_endpoints>')
+                            '/redfish/v1/Fabrics/<string:fabric>/Endpoints/<string:f_endpoint>')
         g.api.add_resource(FabricsEndpointGroupsCollectionAPI,
-                            '/redfish/v1/Fabrics/<string:fabrics>/EndpointGroups')
+                            '/redfish/v1/Fabrics/<string:fabric>/EndpointGroups')
         g.api.add_resource(FabricsEndpointGroupsAPI,
-                            '/redfish/v1/Fabrics/<string:fabrics>/EndpointGroups/<string:f_endpoint_groups>')
+                            '/redfish/v1/Fabrics/<string:fabric>/EndpointGroups/<string:f_endpoint_group>')
         g.api.add_resource(FabricsZonesCollectionAPI,
-                            '/redfish/v1/Fabrics/<string:fabrics>/Zones')
+                            '/redfish/v1/Fabrics/<string:fabric>/Zones')
         g.api.add_resource(FabricsZonesAPI,
-                            '/redfish/v1/Fabrics/<string:fabrics>/Zones/<string:f_zones>')
+                            '/redfish/v1/Fabrics/<string:fabric>/Zones/<string:f_zone>')
         g.api.add_resource(FabricsConnectionsCollectionAPI,
-                            '/redfish/v1/Fabrics/<string:fabrics>/Connections')
+                            '/redfish/v1/Fabrics/<string:fabric>/Connections')
         g.api.add_resource(FabricsConnectionsAPI,
-                            '/redfish/v1/Fabrics/<string:fabrics>/Connections/<string:f_connections>')
+                            '/redfish/v1/Fabrics/<string:fabric>/Connections/<string:f_connection>')
         g.api.add_resource(FabricsSwitchesCollectionAPI,
-                            '/redfish/v1/Fabrics/<string:fabrics>/Switches')
+                            '/redfish/v1/Fabrics/<string:fabric>/Switches')
         g.api.add_resource(FabricsSwitchesAPI,
-                            '/redfish/v1/Fabrics/<string:fabrics>/Switches/<string:f_switches>')
-
+                            '/redfish/v1/Fabrics/<string:fabric>/Switches/<string:f_switch>')
+        g.api.add_resource(FabricsSwitchPortsCollectionAPI,
+                            '/redfish/v1/Fabrics/<string:fabric>/Switches/<string:f_switch>/Ports/')
+        g.api.add_resource(FabricsSwitchPortsAPI,
+                            '/redfish/v1/Fabrics/<string:fabric>/Switches/<string:f_switch>/Ports/<string:f_switch_port>')
+        # FileSystems
         g.api.add_resource(FileSystemsCollectionAPI,
                             '/redfish/v1/Storage/<string:storage>/FileSystems')
         g.api.add_resource(FileSystemsAPI,
@@ -424,6 +432,7 @@ class ResourceManager(object):
             'RedfishVersion': '1.6.0',
             'UUID': self.uuid,
             'Chassis': {'@odata.id': self.rest_base + 'Chassis'},
+            'Fabrics': {'@odata.id': self.rest_base + 'Fabrics'},
             # 'EgResources': {'@odata.id': self.rest_base + 'EgResources'},
             #'Managers': {'@odata.id': self.rest_base + 'Managers'},
             #'TaskService': {'@odata.id': self.rest_base + 'TaskService'},

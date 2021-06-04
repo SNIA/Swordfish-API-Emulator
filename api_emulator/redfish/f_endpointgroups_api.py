@@ -64,14 +64,14 @@ class FabricsEndpointGroupsAPI(Resource):
         logging.info('FabricsEndpointGroupsAPI init called')
         self.root = PATHS['Root']
         self.fabrics = PATHS['Fabrics']['path']
-        self.f_endpoint_groups = PATHS['Fabrics']['f_endpoint_groups']
+        self.f_endpoint_groups = PATHS['Fabrics']['f_endpoint_group']
 
     # HTTP GET
-    def get(self, fabrics, f_endpoint_groups):
-        path = create_path(self.root, self.fabrics, fabrics, self.f_endpoint_groups, f_endpoint_groups, 'index.json')
+    def get(self, fabric, f_endpoint_group):
+        path = create_path(self.root, self.fabrics, fabric, self.f_endpoint_groups, f_endpoint_group, 'index.json')
         try:
-            f_endpoint_groups_json = open(path)
-            data = json.load(f_endpoint_groups_json)
+            f_endpoint_group_json = open(path)
+            data = json.load(f_endpoint_group_json)
         except Exception as e:
             traceback.print_exc()
             raise Exception("Unable read file because of following error::{}".format(e))
@@ -82,13 +82,13 @@ class FabricsEndpointGroupsAPI(Resource):
     # - Update the members and members.id lists
     # - Attach the APIs of subordinate resources (do this only once)
     # - Finally, create an instance of the subordiante resources
-    def post(self, fabrics, f_endpoint_groups):
+    def post(self, fabric, f_endpoint_group):
         logging.info('FabricsEndpointGroupsAPI PUT called')
         try:
             global config
             global foo
 
-            wildcards = {'s_id':fabrics, 'epg_id': f_endpoint_groups, 'rb': g.rest_base}
+            wildcards = {'s_id':fabrics, 'epg_id': f_endpoint_group, 'rb': g.rest_base}
             config=get_EndpointGroups_instance(wildcards)
 
             members.append(config)
@@ -97,7 +97,7 @@ class FabricsEndpointGroupsAPI(Resource):
             # Create instances of subordinate resources, then call put operation
             # not implemented yet
 
-            path = create_path(self.root, self.fabrics, fabrics, self.f_endpoint_groups, f_endpoint_groups)
+            path = create_path(self.root, self.fabrics, fabric, self.f_endpoint_groups, f_endpoint_group)
             if not os.path.exists(path):
                 os.mkdir(path)
             else:
@@ -107,7 +107,7 @@ class FabricsEndpointGroupsAPI(Resource):
                 fd.write(json.dumps(config, indent=4, sort_keys=True))
 
             # update the collection json file with new added resource
-            collection_path = os.path.join(self.root, self.fabrics, fabrics, self.f_endpoint_groups, 'index.json')
+            collection_path = os.path.join(self.root, self.fabrics, fabric, self.f_endpoint_groups, 'index.json')
             update_collections_json(path=collection_path, link=config['@odata.id'])
             resp = config, 200
         except Exception:
@@ -117,14 +117,14 @@ class FabricsEndpointGroupsAPI(Resource):
         return resp
 
 	# HTTP PATCH
-    def patch(self, fabrics, f_endpoint_groups):
-        path = os.path.join(self.root, self.fabrics, fabrics,
-                                       self.f_endpoint_groups, f_endpoint_groups, 'index.json')
+    def patch(self, fabric, f_endpoint_group):
+        path = os.path.join(self.root, self.fabrics, fabric,
+                                       self.f_endpoint_groups, f_endpoint_group, 'index.json')
         try:
             # Read json from file.
-            with open(path, 'r') as f_endpoint_groups_json:
-                data = json.load(f_endpoint_groups_json)
-                f_endpoint_groups_json.close()
+            with open(path, 'r') as f_endpoint_group_json:
+                data = json.load(f_endpoint_group_json)
+                f_endpoint_group_json.close()
 
             request_data = json.loads(request.data)
 
@@ -142,16 +142,16 @@ class FabricsEndpointGroupsAPI(Resource):
         except Exception as e:
             return {"error": "Unable read file because of following error::{}".format(e)}, 500
 
-        json_data = self.get(fabrics, f_endpoint_groups_json)
+        json_data = self.get(fabrics, f_endpoint_group_json)
         return json_data
 
     # HTTP DELETE
-    def delete(self,fabrics, f_endpoint_groups):
+    def delete(self,fabrics, f_endpoint_group):
 
-        path = os.path.join(self.root, self.fabrics, fabrics, self.f_endpoint_groups, f_endpoint_groups).replace("\\","/")
+        path = os.path.join(self.root, self.fabrics, fabric, self.f_endpoint_groups, f_endpoint_group).replace("\\","/")
         print (path)
         delPath = path.replace('Resources','/redfish/v1')
-        path2 = os.path.join(self.root, self.fabrics, fabrics, self.f_endpoint_groups, 'index.json').replace("\\","/")
+        path2 = os.path.join(self.root, self.fabrics, fabric, self.f_endpoint_groups, 'index.json').replace("\\","/")
 
         try:
             with open(path2,"r") as pdata:
@@ -163,7 +163,7 @@ class FabricsEndpointGroupsAPI(Resource):
             resp = 200
             jdata = data["@odata.id"].split('/')
 
-            path1 = os.path.join(self.root, self.fabrics, fabrics, self.f_endpoint_groups, jdata[len(jdata)-1])
+            path1 = os.path.join(self.root, self.fabrics, fabric, self.f_endpoint_groups, jdata[len(jdata)-1])
             shutil.rmtree(path1)
             pdata['Members'].remove(data)
             pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
@@ -184,13 +184,13 @@ class FabricsEndpointGroupsCollectionAPI(Resource):
     def __init__(self):
         self.root = PATHS['Root']
         self.fabrics = PATHS['Fabrics']['path']
-        self.f_endpoint_groups = PATHS['Fabrics']['f_endpoint_groups']
+        self.f_endpoint_groups = PATHS['Fabrics']['f_endpoint_group']
 
-    def get(self, fabrics):
-        path = os.path.join(self.root, self.fabrics, fabrics, self.f_endpoint_groups, 'index.json')
+    def get(self, fabric):
+        path = os.path.join(self.root, self.fabrics, fabric, self.f_endpoint_groups, 'index.json')
         try:
-            f_endpoint_groups_json = open(path)
-            data = json.load(f_endpoint_groups_json)
+            f_endpoint_group_json = open(path)
+            data = json.load(f_endpoint_group_json)
         except Exception as e:
             traceback.print_exc()
             return {"error": "Unable read file because of following error::{}".format(e)}, 500
@@ -205,7 +205,7 @@ class FabricsEndpointGroupsCollectionAPI(Resource):
     # POST should allow adding multiple instances to a collection.
     # For now, this only adds one instance.
     # TODO: 'id' should be obtained from the request data.
-    def post(self, fabrics):
+    def post(self, fabric):
         logging.info('FabricsEndpointGroupsCollectionAPI POST called')
         try:
             config = request.get_json(force=True)
@@ -213,13 +213,13 @@ class FabricsEndpointGroupsCollectionAPI(Resource):
             if ok:
                 # Save the new singleton
                 singleton_name = os.path.basename(config['@odata.id'])
-                path = os.path.join(self.root, self.fabrics, fabrics, self.f_endpoint_groups, singleton_name)
+                path = os.path.join(self.root, self.fabrics, fabric, self.f_endpoint_groups, singleton_name)
                 if not os.path.exists(path):
                     os.mkdir(path)
                 with open(os.path.join(path, "index.json"), "w") as fd:
                     fd.write(json.dumps(config, indent=4, sort_keys=True))
                 # Update the collection
-                collection_path = os.path.join(self.root, self.fabrics, fabrics, self.f_endpoint_groups, 'index.json')
+                collection_path = os.path.join(self.root, self.fabrics, fabric, self.f_endpoint_groups, 'index.json')
                 update_collections_json(collection_path, config['@odata.id'])
                 # Return a copy of the new singleton with a Created response
                 resp = config, 201
@@ -235,13 +235,13 @@ class CreateFabricsEndpointGroups (Resource):
     def __init__(self):
         self.root = PATHS['Root']
         self.fabrics = PATHS['Fabrics']['path']
-        self.f_endpoint_groups = PATHS['Fabrics']['f_endpoint_groups']
+        self.f_endpoint_groups = PATHS['Fabrics']['f_endpoint_group']
 
     # Attach APIs for subordinate resource(s). Attach the APIs for a resource collection and its singletons
     def put(self,fabrics):
         logging.info('CreateFabricsEndpointGroups put started.')
         try:
-            path = create_path(self.root, self.fabrics, fabrics, self.f_endpoint_groups)
+            path = create_path(self.root, self.fabrics, fabric, self.f_endpoint_groups)
             if not os.path.exists(path):
                 os.mkdir(path)
             else:

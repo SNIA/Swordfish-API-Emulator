@@ -42,15 +42,13 @@ from flask import jsonify, request
 from flask_restful import Resource
 from api_emulator.utils import update_collections_json
 from .constants import *
-from .templates.switches import get_Switches_instance
+from .templates.fabric_switch_port import get_FabricSwitchPorts_instance
 
 members =[]
 member_ids = []
 foo = False
 config = {}
 INTERNAL_ERROR = 500
-
-
 
 
 def create_path(*args):
@@ -64,15 +62,15 @@ class FabricsSwitchPortsAPI(Resource):
         logging.info('FabricsSwitchPortsAPI init called')
         self.root = PATHS['Root']
         self.fabrics = PATHS['Fabrics']['path']
-        self.f_switches = PATHS['Fabrics']['f_switches']
-        self.f_switch_ports = PATHS['Fabrics']['f_switch_ports']
+        self.f_switches = PATHS['Fabrics']['f_switch']
+        self.f_switch_ports = PATHS['Fabrics']['f_switch_port']
 
     # HTTP GET
-    def get(self, fabrics, f_switches, f_switch_ports):
-        path = create_path(self.root, self.fabrics, fabrics, self.f_switches, f_switches, self.f_switch_ports,f_switch_ports, 'index.json')
+    def get(self, fabric, f_switch, f_switch_port):
+        path = create_path(self.root, self.fabrics, fabric, self.f_switches, f_switch, self.f_switch_ports, f_switch_port, 'index.json')
         try:
-            f_switch_ports_json = open(path)
-            data = json.load(f_switch_ports_json)
+            f_switch_port_json = open(path)
+            data = json.load(f_switch_port_json)
         except Exception as e:
             traceback.print_exc()
             raise Exception("Unable to read file because of following error::{}".format(e))
@@ -83,13 +81,13 @@ class FabricsSwitchPortsAPI(Resource):
     # - Update the members and members.id lists
     # - Attach the APIs of subordinate resources (do this only once)
     # - Finally, create an instance of the subordiante resources
-    def post(self, fabrics, f_switches, f_switch_ports):
+    def post(self, fabric, f_switch, f_switch_port):
         logging.info('FabricsSwitchPortsAPI PUT called')
         try:
             global config
             global foo
 
-            wildcards = {'f_id':fabrics, 's_id': f_switches, 'fsp_id': f_switch_ports, 'rb': g.rest_base}
+            wildcards = {'f_id':fabrics, 's_id': f_switch, 'fsp_id': f_switch_port, 'rb': g.rest_base}
             config=get_FabricSwitchPorts_instance(wildcards)
 
             members.append(config)
@@ -98,7 +96,7 @@ class FabricsSwitchPortsAPI(Resource):
             # Create instances of subordinate resources, then call put operation
             # not implemented yet
 
-            path = create_path(self.root, self.fabrics, fabrics, self.f_switches, f_switches, self.f_switch_ports, f_switch_ports)
+            path = create_path(self.root, self.fabrics, fabric, self.f_switches, f_switch, self.f_switch_ports, f_switch_port)
             if not os.path.exists(path):
                 os.mkdir(path)
             else:
@@ -108,7 +106,7 @@ class FabricsSwitchPortsAPI(Resource):
                 fd.write(json.dumps(config, indent=4, sort_keys=True))
 
             # update the collection json file with new added resource
-            collection_path = os.path.join(self.root, self.fabrics, fabrics, self.f_switches, self.f_switch_ports, f_switch_ports, 'index.json')
+            collection_path = os.path.join(self.root, self.fabrics, fabric, self.f_switches, f_switch, self.f_switch_ports, f_switch_port, 'index.json')
             update_collections_json(path=collection_path, link=config['@odata.id'])
             resp = config, 200
         except Exception:
@@ -118,14 +116,14 @@ class FabricsSwitchPortsAPI(Resource):
         return resp
 
 	# HTTP PATCH
-    def patch(self, fabrics, f_switches):
-        path = os.path.join(self.root, self.fabrics, fabrics,
-                                       self.f_switches, f_switches, self.f_switch_ports, f_switch_ports, 'index.json')
+    def patch(self, fabric, f_switch, f_switch_port):
+        path = os.path.join(self.root, self.fabrics, fabric,
+                                       self.f_switches, f_switch, self.f_switch_ports, f_switch_port, 'index.json')
         try:
             # Read json from file.
-            with open(path, 'r') as f_switch_ports_json:
-                data = json.load(f_switch_ports_json)
-                f_switches_json.close()
+            with open(path, 'r') as f_switch_port_json:
+                data = json.load(f_switch_port_json)
+                f_switch_port_json.close()
 
             request_data = json.loads(request.data)
 
@@ -143,16 +141,16 @@ class FabricsSwitchPortsAPI(Resource):
         except Exception as e:
             return {"error": "Unable to read file because of following error::{}".format(e)}, 500
 
-        json_data = self.get(fabrics, f_switch_ports_json)
+        json_data = self.get(fabrics, f_switch_port_json)
         return json_data
 
     # HTTP DELETE
-    def delete(self,fabrics, f_switches, f_switch_ports):
+    def delete(self, fabric, f_switch, f_switch_port):
 
-        path = os.path.join(self.root, self.fabrics, fabrics, self.f_switches, f_switches, self.f_switch_ports, f_switch_ports).replace("\\","/")
+        path = os.path.join(self.root, self.fabrics, fabric, self.f_switches, f_switch, self.f_switch_ports, f_switch_port).replace("\\","/")
         print (path)
         delPath = path.replace('Resources','/redfish/v1')
-        path2 = os.path.join(self.root, self.fabrics, fabrics, self.f_switches, self.f_switch_ports, f_switch_ports, 'index.json').replace("\\","/")
+        path2 = os.path.join(self.root, self.fabrics, fabric, self.f_switches, self.f_switch_ports, f_switch_port, 'index.json').replace("\\","/")
 
         try:
             with open(path2,"r") as pdata:
@@ -164,7 +162,7 @@ class FabricsSwitchPortsAPI(Resource):
             resp = 200
             jdata = data["@odata.id"].split('/')
 
-            path1 = os.path.join(self.root, self.fabrics, fabrics, self.f_switches, f_switches, self.f_switch_ports, jdata[len(jdata)-1])
+            path1 = os.path.join(self.root, self.fabrics, fabric, self.f_switches, f_switch, self.f_switch_ports, jdata[len(jdata)-1])
             shutil.rmtree(path1)
             pdata['Members'].remove(data)
             pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
@@ -185,14 +183,14 @@ class FabricsSwitchPortsCollectionAPI(Resource):
     def __init__(self):
         self.root = PATHS['Root']
         self.fabrics = PATHS['Fabrics']['path']
-        self.f_switches = PATHS['Fabrics']['f_switches']
-        self.f_switch_ports = PATHS['Fabrics']['f_switch_ports']
+        self.f_switches = PATHS['Fabrics']['f_switch']
+        self.f_switch_ports = PATHS['Fabrics']['f_switch_port']
 
-    def get(self, fabrics):
-        path = os.path.join(self.root, self.fabrics, fabrics, self.f_switches, f_switches, self.f_switch_ports, 'index.json')
+    def get(self, fabric, f_switch):
+        path = os.path.join(self.root, self.fabrics, fabric, self.f_switches, f_switch, self.f_switch_ports, 'index.json')
         try:
-            f_switches_json = open(path)
-            data = json.load(f_switches_json)
+            f_switch_port_json = open(path)
+            data = json.load(f_switch_port_json)
         except Exception as e:
             traceback.print_exc()
             return {"error": "Unable to read file because of following error::{}".format(e)}, 500
@@ -207,7 +205,7 @@ class FabricsSwitchPortsCollectionAPI(Resource):
     # POST should allow adding multiple instances to a collection.
     # For now, this only adds one instance.
     # TODO: 'id' should be obtained from the request data.
-    def post(self, fabrics, f_switches):
+    def post(self, fabric, f_switch):
         logging.info('FabricsSwitchPortsCollectionAPI POST called')
         try:
             config = request.get_json(force=True)
@@ -215,13 +213,13 @@ class FabricsSwitchPortsCollectionAPI(Resource):
             if ok:
                 # Save the new singleton
                 singleton_name = os.path.basename(config['@odata.id'])
-                path = os.path.join(self.root, self.fabrics, fabrics, self.f_switches, f_switches, self.f_switch_ports, singleton_name)
+                path = os.path.join(self.root, self.fabrics, fabric, self.f_switches, f_switch, self.f_switch_ports, singleton_name)
                 if not os.path.exists(path):
                     os.mkdir(path)
                 with open(os.path.join(path, "index.json"), "w") as fd:
                     fd.write(json.dumps(config, indent=4, sort_keys=True))
                 # Update the collection
-                collection_path = os.path.join(self.root, self.fabrics, fabrics, self.f_switches, f_switches, self.f_switch_ports,'index.json')
+                collection_path = os.path.join(self.root, self.fabrics, fabric, self.f_switches, f_switch, self.f_switch_ports,'index.json')
                 update_collections_json(collection_path, config['@odata.id'])
                 # Return a copy of the new singleton with a Created response
                 resp = config, 201
@@ -237,14 +235,14 @@ class CreateFabricsSwitchPorts (Resource):
     def __init__(self):
         self.root = PATHS['Root']
         self.fabrics = PATHS['Fabrics']['path']
-        self.f_switches = PATHS['Fabrics']['f_switches']
-        self.f_switch_ports = PATHS['Fabrics']['f_switch_ports']
+        self.f_switches = PATHS['Fabrics']['f_switch']
+        self.f_switch_ports = PATHS['Fabrics']['f_switch_port']
 
     # Attach APIs for subordinate resource(s). Attach the APIs for a resource collection and its singletons
     def put(self,fabrics):
         logging.info('CreateFabricsSwitchPorts put started.')
         try:
-            path = create_path(self.root, self.fabrics, fabrics, self.f_switches, f_switches, self.f_switch_ports)
+            path = create_path(self.root, self.fabrics, fabric, self.f_switches, f_switch, self.f_switch_ports)
             if not os.path.exists(path):
                 os.mkdir(path)
             else:

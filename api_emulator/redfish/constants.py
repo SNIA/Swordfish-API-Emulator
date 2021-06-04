@@ -43,10 +43,12 @@ PATHS = {
 
    'Fabrics': {
        'path': 'Fabrics/',
-       'switches': 'Switches/',
-       'endpoints': 'Endpoints/',
-       'zones': 'Zones/',
-       'connections': 'Connections/'
+       'f_switch': 'Switches/',
+       'f_switch_port': 'Ports/',
+       'f_endpoint': 'Endpoints/',
+       'f_zone': 'Zones/',
+       'f_connection': 'Connections/',
+       'f_endpoint_group': 'EndpointGroups/'
    },
 
     'Storage': {

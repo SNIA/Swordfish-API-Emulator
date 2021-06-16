@@ -33,13 +33,26 @@
 PATHS = {
     'Root': 'Resources/',
 
+     'Systems': {
+          'path': 'Systems/',
+          'drives': 'Drives/',
+          'fabric_adapters': 'FabricAdapters/',
+          'fabric_adapter_ports': 'Ports/'
+      },
+
+
     'Chassis': {
          'path': 'Chassis/',
          'drives': 'Drives/',
+         'c_memory': 'Memory/',
+         'memory_domains': 'MemoryDomains/',
+         'md_chunks': 'MemoryChunks/',
          'network_adapter': 'NetworkAdapters/',
          'network_device_functions': 'NetworkDeviceFunctions/',
-         'nw_ports': 'Ports'
-     },
+         'nw_ports': 'Ports',
+         'media_controllers': 'MediaControllers/',
+         'mc_ports': 'Ports'
+    },
 
    'Fabrics': {
        'path': 'Fabrics/',

@@ -43,6 +43,9 @@ import g
 import sys, traceback
 import logging
 import copy
+import json, os
+
+from flask import jsonify
 from flask import Flask, request, make_response, render_template
 from flask_restful import reqparse, Api, Resource
 
@@ -54,6 +57,7 @@ from .memory import members as memory
 from .ethernetinterface import members as ethernetinterfaces
 from .simplestorage import members as simplestorage
 from .ResourceBlock_api import members as resource_blocks
+from .constants import *
 
 members = {}
 
@@ -73,11 +77,8 @@ class ComputerSystemAPI(Resource):
     # values to the get_<resource>_instance() call.
     def __init__(self, **kwargs):
         logging.info('ComputerSystemAPI init called')
-        try:
-            global wildcards
-            wildcards = kwargs
-        except Exception:
-            traceback.print_exc()
+        self.root = PATHS['Root']
+        self.systems = PATHS['Systems']['path']
 
     def memory_summary(self,ident):
         totalsysmem=sum([x['CapacityMiB']for x in
@@ -99,18 +100,17 @@ class ComputerSystemAPI(Resource):
     # HTTP GET
     def get(self, ident):
         logging.info('ComputerSystemAPI GET called')
-        try:
-            # Find the entry with the correct value for Id
+        if ident in members:
             resp = 404
-            if ident in members:
-                conf= members[ident]
-                conf['ProcessorSummary']=self.processor_summary(ident)
-                conf['MemorySummary']=self.memory_summary(ident)
-                resp = conf, 200
-        except Exception:
+            return resp
+        path = os.path.join(self.root, self.systems, ident, 'index.json')
+        try:
+            systems_json = open(path)
+            data = json.load(systems_json)
+        except Exception as e:
             traceback.print_exc()
-            resp = INTERNAL_ERROR
-        return resp
+            raise Exception("Unable read file because of following error::{}".format(e))
+        return jsonify(data)
 
     # HTTP PUT
     def put(self, ident):
@@ -172,34 +172,25 @@ class ComputerSystemAPI(Resource):
         return resp
 
 
-
-
-
 # ComputerSystem Collection API
 class ComputerSystemCollectionAPI(Resource):
 
     def __init__(self):
         logging.info('ComputerSystemCollectionAPI init called')
-        self.rb = g.rest_base
-        self.config = {
-            '@odata.id': self.rb + 'Systems',
-            '@odata.type': '#ComputerSystemCollection.ComputerSystemCollection',
-            'Name': 'ComputerSystem Collection',
-            'Links': {}
-        }
-        self.config['Links']['Members@odata.count'] = len(members)
-        self.config['Links']['Members'] = [{'@odata.id':x['@odata.id']} for
-                x in list(members.values())]
+        self.root = PATHS['Root']
+        self.systems = PATHS['Systems']['path']
 
     # HTTP GET
     def get(self):
-        logging.info('ComputerSystemCollectionAPI GET called')
+        path = os.path.join(self.root, self.systems, 'index.json')
         try:
-            resp = self.config, 200
-        except Exception:
+            systems_json = open(path)
+            data = json.load(systems_json)
+        except Exception as e:
             traceback.print_exc()
-            resp = INTERNAL_ERROR
-        return resp
+            return {"error": "Unable to read file because of following error::{}".format(e)}, 500
+
+        return jsonify(data)
 
     # HTTP PUT
     def put(self):

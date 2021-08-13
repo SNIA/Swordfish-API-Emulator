@@ -40,7 +40,7 @@ import urllib3
 
 from flask import jsonify, request
 from flask_restful import Resource
-from api_emulator.utils import update_collections_json
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, patch_object, create_collection
 from .constants import *
 from .templates.endpointgroups import get_EndpointGroups_instance
 
@@ -49,13 +49,6 @@ member_ids = []
 foo = False
 config = {}
 INTERNAL_ERROR = 500
-
-
-
-
-def create_path(*args):
-    trimmed = [str(arg).strip('/') for arg in args]
-    return os.path.join(*trimmed)
 
 
 # FabricsEndpointGroups API
@@ -69,13 +62,7 @@ class FabricsEndpointGroupsAPI(Resource):
     # HTTP GET
     def get(self, fabric, f_endpoint_group):
         path = create_path(self.root, self.fabrics, fabric, self.f_endpoint_groups, f_endpoint_group, 'index.json')
-        try:
-            f_endpoint_group_json = open(path)
-            data = json.load(f_endpoint_group_json)
-        except Exception as e:
-            traceback.print_exc()
-            raise Exception("Unable read file because of following error::{}".format(e))
-        return jsonify(data)
+        return get_json_data (path)
 
     # HTTP POST
     # - Create the resource (since URI variables are available)
@@ -188,47 +175,21 @@ class FabricsEndpointGroupsCollectionAPI(Resource):
 
     def get(self, fabric):
         path = os.path.join(self.root, self.fabrics, fabric, self.f_endpoint_groups, 'index.json')
-        try:
-            f_endpoint_group_json = open(path)
-            data = json.load(f_endpoint_group_json)
-        except Exception as e:
-            traceback.print_exc()
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(data)
+        return get_json_data (path)
 
     def verify(self, config):
         # TODO: Implement a method to verify that the POST body is valid
         return True,{}
 
-    # HTTP POST
-    # POST should allow adding multiple instances to a collection.
-    # For now, this only adds one instance.
-    # TODO: 'id' should be obtained from the request data.
+    # HTTP POST Collection
     def post(self, fabric):
         logging.info('FabricsEndpointGroupsCollectionAPI POST called')
-        try:
-            config = request.get_json(force=True)
-            ok, msg = self.verify(config)
-            if ok:
-                # Save the new singleton
-                singleton_name = os.path.basename(config['@odata.id'])
-                path = os.path.join(self.root, self.fabrics, fabric, self.f_endpoint_groups, singleton_name)
-                if not os.path.exists(path):
-                    os.mkdir(path)
-                with open(os.path.join(path, "index.json"), "w") as fd:
-                    fd.write(json.dumps(config, indent=4, sort_keys=True))
-                # Update the collection
-                collection_path = os.path.join(self.root, self.fabrics, fabric, self.f_endpoint_groups, 'index.json')
-                update_collections_json(collection_path, config['@odata.id'])
-                # Return a copy of the new singleton with a Created response
-                resp = config, 201
-            else:
-                resp = msg, 400
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        return resp
+        if fabric in members:
+            resp = 404
+            return resp
+
+        path = create_path(self.root, self.fabrics, fabric, self.f_endpoint_groups)
+        return create_collection (path, 'EndpointGroup')
 
 
 class CreateFabricsEndpointGroups (Resource):

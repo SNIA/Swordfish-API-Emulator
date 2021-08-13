@@ -40,7 +40,7 @@ import urllib3
 
 from flask import jsonify, request
 from flask_restful import Resource
-from api_emulator.utils import update_collections_json
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, patch_object, create_collection
 from .constants import *
 from .templates.fabric_switch_port import get_FabricSwitchPorts_instance
 
@@ -49,12 +49,6 @@ member_ids = []
 foo = False
 config = {}
 INTERNAL_ERROR = 500
-
-
-def create_path(*args):
-    trimmed = [str(arg).strip('/') for arg in args]
-    return os.path.join(*trimmed)
-
 
 # FabricsSwitchPorts API
 class FabricsSwitchPortsAPI(Resource):
@@ -68,13 +62,7 @@ class FabricsSwitchPortsAPI(Resource):
     # HTTP GET
     def get(self, fabric, f_switch, f_switch_port):
         path = create_path(self.root, self.fabrics, fabric, self.f_switches, f_switch, self.f_switch_ports, f_switch_port, 'index.json')
-        try:
-            f_switch_port_json = open(path)
-            data = json.load(f_switch_port_json)
-        except Exception as e:
-            traceback.print_exc()
-            raise Exception("Unable to read file because of following error::{}".format(e))
-        return jsonify(data)
+        return get_json_data (path)
 
     # HTTP POST
     # - Create the resource (since URI variables are available)
@@ -207,30 +195,14 @@ class FabricsSwitchPortsCollectionAPI(Resource):
     # TODO: 'id' should be obtained from the request data.
     def post(self, fabric, f_switch):
         logging.info('FabricsSwitchPortsCollectionAPI POST called')
-        try:
-            config = request.get_json(force=True)
-            ok, msg = self.verify(config)
-            if ok:
-                # Save the new singleton
-                singleton_name = os.path.basename(config['@odata.id'])
-                path = os.path.join(self.root, self.fabrics, fabric, self.f_switches, f_switch, self.f_switch_ports, singleton_name)
-                if not os.path.exists(path):
-                    os.mkdir(path)
-                with open(os.path.join(path, "index.json"), "w") as fd:
-                    fd.write(json.dumps(config, indent=4, sort_keys=True))
-                # Update the collection
-                collection_path = os.path.join(self.root, self.fabrics, fabric, self.f_switches, f_switch, self.f_switch_ports,'index.json')
-                update_collections_json(collection_path, config['@odata.id'])
-                # Return a copy of the new singleton with a Created response
-                resp = config, 201
-            else:
-                resp = msg, 400
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        return resp
 
+        if f_switch in members:
+            resp = 404
+            return resp
 
+        path = create_path(self.root, self.fabrics, fabric, self.f_switches, f_switch, self.f_switch_ports)
+        return create_collection (path, 'Port')
+    
 class CreateFabricsSwitchPorts (Resource):
     def __init__(self):
         self.root = PATHS['Root']

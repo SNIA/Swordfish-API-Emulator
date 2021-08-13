@@ -101,7 +101,6 @@ PATHS = {
         'ioperformance_los_capabilities': 'IOPerformanceLoSCapabilities/',
         'endpoints': 'Endpoints/',
         'endpoint_groups': 'EndpointGroups/',
-	    'storage_subsystems':'StorageSubsystems/',
         'file_systems': 'FileSystems/'
 
     },

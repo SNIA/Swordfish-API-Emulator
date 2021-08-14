@@ -27,7 +27,6 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 #
-
 #f_switches_api.py
 
 import json, os
@@ -40,16 +39,17 @@ import urllib3
 
 from flask import jsonify, request
 from flask_restful import Resource
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, patch_object, create_collection
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 from .constants import *
 from .templates.switches import get_Switches_instance
+from api_emulator.redfish.f_switch_ports_api import *
 
 members =[]
 member_ids = []
 config = {}
 INTERNAL_ERROR = 500
 
-# FabricsSwitches API
+# FabricsSwitchesAPI API
 class FabricsSwitchesAPI(Resource):
     def __init__(self, **kwargs):
         logging.info('FabricsSwitchesAPI init called')
@@ -68,25 +68,25 @@ class FabricsSwitchesAPI(Resource):
     # - Attach the APIs of subordinate resources (do this only once)
     # - Finally, create an instance of the subordiante resources
     def post(self, fabric, f_switch):
-        logging.info('FabricsSwitchesAPI PUT called')
+        logging.info('FabricsSwitchesAPI POST called')
         path = create_path(self.root, self.fabrics, fabric, self.f_switches, f_switch)
         collection_path = os.path.join(self.root, self.fabrics, fabric, self.f_switches, 'index.json')
 
         # Check if collection exists:
         if not os.path.exists(collection_path):
-                    FabricsSwitchesCollectionAPI.post (self, fabric)
+            FabricsSwitchesCollectionAPI.post (self, fabric)
 
         if f_switch in members:
             resp = 404
             return resp
         try:
             global config
-
-            wildcards = {'s_id':fabrics, 'ep_id': f_connection, 'rb': g.rest_base}
+            wildcards = {'f_id':fabric, 's_id': f_switch, 'rb': g.rest_base}
             config=get_Switches_instance(wildcards)
-
             config = create_and_patch_object (config, members, member_ids, path, collection_path)
 
+            #Add default placeholder collections to instance.
+            FabricsSwitchPortsCollectionAPI.post (self, fabric, f_switch)
             resp = config, 200
         except Exception:
             traceback.print_exc()
@@ -100,14 +100,21 @@ class FabricsSwitchesAPI(Resource):
         patch_object(path)
         return self.get(f_switch)
 
-    # HTTP DELETE
-    def delete(self,fabrics, f_switch):
+    # HTTP PUT
+    def put(self, fabric, f_switch):
+        path = os.path.join(self.root, self.fabrics, fabric, self.f_switches, f_switch, 'index.json')
+        put_object(path)
+        return self.get(fabric, f_switch)
 
+    # HTTP DELETE
+    def delete(self, fabric, f_switch):
+        #Set path to object, then call delete_object:
         path = create_path(self.root, self.fabrics, fabric, self.f_switches, f_switch)
         base_path = create_path(self.root, self.fabrics, fabric, self.f_switches)
         return delete_object(path, base_path)
 
-# FabricsSwitches Collection API
+
+# Fabrics Switches Collection API
 class FabricsSwitchesCollectionAPI(Resource):
 
     def __init__(self):
@@ -137,3 +144,16 @@ class FabricsSwitchesCollectionAPI(Resource):
 
         path = create_path(self.root, self.fabrics, fabric, self.f_switches)
         return create_collection (path, 'Switch')
+
+    # HTTP PUT
+    def put(self, fabric):
+        path = os.path.join(self.root, self.fabrics, fabric, self.f_switches, 'index.json')
+        put_object(path)
+        return self.get(fabric)
+
+    # HTTP DELETE
+    def delete(self):
+        #Set path to object, then call delete_object:
+        path = create_path(self.root, self.fabrics, fabric, self.f_switches)
+        base_path = create_path(self.root, self.fabrics)
+        return delete_collection(path, base_path)

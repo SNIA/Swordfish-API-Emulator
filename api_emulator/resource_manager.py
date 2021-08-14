@@ -53,7 +53,6 @@ from api_emulator.redfish.storagecontrollers_api import *
 from api_emulator.redfish.storagepools_api import *
 from api_emulator.redfish.filesystems_api import *
 from api_emulator.redfish.storagegroups_api import *
-from api_emulator.redfish.storagesubsystems_api import *
 
 from api_emulator.redfish.fabric_api import *
 from api_emulator.redfish.f_switches_api import *
@@ -371,8 +370,7 @@ class ResourceManager(object):
 
         # Storage Resources
         g.api.add_resource(StorageCollectionAPI, '/redfish/v1/Storage')
-        g.api.add_resource(StorageAPI, '/redfish/v1/Storage/<string:ident>',
-                '/redfish/v1/Storage/<string:storage>')
+        g.api.add_resource(StorageAPI, '/redfish/v1/Storage/<string:storage>')
         # Storage SubResources
         g.api.add_resource(StorageGroupsCollectionAPI,
                             '/redfish/v1/Storage/<string:storage>/StorageGroups')
@@ -419,7 +417,7 @@ class ResourceManager(object):
         g.api.add_resource(FabricsSwitchPortsCollectionAPI,
                             '/redfish/v1/Fabrics/<string:fabric>/Switches/<string:f_switch>/Ports/')
         g.api.add_resource(FabricsSwitchPortsAPI,
-                            '/redfish/v1/Fabrics/<string:fabric>/Switches/<string:f_switch>/Ports/<string:f_switch_port>')
+                            '/redfish/v1/Fabrics/<string:fabric>/Switches/<string:f_switch>/Ports/<string:fs_port>')
         # FileSystems
         g.api.add_resource(FileSystemsCollectionAPI,
                             '/redfish/v1/Storage/<string:storage>/FileSystems')
@@ -470,8 +468,6 @@ class ResourceManager(object):
                            '/redfish/v1/StorageServices/<string:storage_service>/IOConnectivityLoSCapabilities')
         g.api.add_resource(IOPerformanceLoSCapabilitiesAPI,
                             '/redfish/v1/StorageServices/<string:storage_service>/IOPerformanceLoSCapabilities')
-        g.api.add_resource(StorageSubsystemsAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/StorageSubsystems')
 
         # Storage Systems - API and Collection
         g.api.add_resource(StorageSystemsCollectionAPI, '/redfish/v1/StorageSystems')
@@ -491,7 +487,7 @@ class ResourceManager(object):
             'RedfishVersion': '1.6.0',
             'UUID': self.uuid,
             'Chassis': {'@odata.id': self.rest_base + 'Chassis'},
-            'Fabrics': {'@odata.id': self.rest_base + 'Fabrics'},
+            #'Fabrics': {'@odata.id': self.rest_base + 'Fabrics'},
             # 'EgResources': {'@odata.id': self.rest_base + 'EgResources'},
             #'Managers': {'@odata.id': self.rest_base + 'Managers'},
             #'TaskService': {'@odata.id': self.rest_base + 'TaskService'},
@@ -499,7 +495,7 @@ class ResourceManager(object):
             #'StorageServices': {'@odata.id': self.rest_base + 'StorageServices'},
             #'StorageSystems': {'@odata.id': self.rest_base + 'StorageSystems'},
             #'AccountService': {'@odata.id': self.rest_base + 'AccountService'},
-            'EventService': {'@odata.id': self.rest_base + 'EventService'},
+            #'EventService': {'@odata.id': self.rest_base + 'EventService'},
             'Registries': {'@odata.id': self.rest_base + 'Registries'},
             'Systems': {'@odata.id': self.rest_base + 'Systems'},
             'Storage': {'@odata.id': self.rest_base + 'Storage'},

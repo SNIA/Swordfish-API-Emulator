@@ -39,7 +39,7 @@ import urllib3
 
 from flask import jsonify, request
 from flask_restful import Resource
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, patch_object, create_collection
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 from .constants import *
 from .templates.zones import get_Zones_instance
 
@@ -62,6 +62,10 @@ class FabricsZonesAPI(Resource):
         return get_json_data (path)
 
     # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordiante resources
     def post(self, fabric, f_zone):
         logging.info('FabricsZonesAPI POST called')
         path = create_path(self.root, self.fabrics, fabric, self.f_zones, f_zone)
@@ -76,13 +80,10 @@ class FabricsZonesAPI(Resource):
             return resp
         try:
             global config
-
-            wildcards = {'s_id':fabrics, 'ep_id': f_zone, 'rb': g.rest_base}
+            wildcards = {'f_id':fabric, 's_id': f_zone, 'rb': g.rest_base}
             config=get_Zones_instance(wildcards)
-
             config = create_and_patch_object (config, members, member_ids, path, collection_path)
 
-            resp = config, 200
         except Exception:
             traceback.print_exc()
             resp = INTERNAL_ERROR
@@ -94,6 +95,12 @@ class FabricsZonesAPI(Resource):
         path = os.path.join(self.root, self.fabrics, fabric, self.f_zones, f_zone, 'index.json')
         patch_object(path)
         return self.get(f_zone)
+
+    # HTTP PUT
+    def put(self, fabric, f_zone):
+        path = os.path.join(self.root, self.fabrics, fabric, self.f_zones, f_zone, 'index.json')
+        put_object(path)
+        return self.get(fabric, f_zone)
 
     # HTTP DELETE
     def delete(self, fabric, f_zone):
@@ -133,3 +140,16 @@ class FabricsZonesCollectionAPI(Resource):
 
         path = create_path(self.root, self.fabrics, fabric, self.f_zones)
         return create_collection (path, 'Zone')
+
+    # HTTP PUT
+    def put(self, fabric):
+        path = os.path.join(self.root, self.fabrics, fabric, self.f_zones, 'index.json')
+        put_object(path)
+        return self.get(fabric)
+
+    # HTTP DELETE
+    def delete(self):
+        #Set path to object, then call delete_object:
+        path = create_path(self.root, self.fabrics, fabric, self.f_zones)
+        base_path = create_path(self.root, self.fabrics)
+        return delete_collection(path, base_path)

@@ -39,7 +39,7 @@ import urllib3
 
 from flask import jsonify, request
 from flask_restful import Resource
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, patch_object, create_collection
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 from .constants import *
 from .templates.endpoints import get_Endpoints_instance
 
@@ -80,13 +80,10 @@ class FabricsEndpointsAPI(Resource):
             return resp
         try:
             global config
-
-            wildcards = {'s_id':fabrics, 'ep_id': f_endpoint, 'rb': g.rest_base}
+            wildcards = {'f_id':fabric, 's_id': f_endpoint, 'rb': g.rest_base}
             config=get_Endpoints_instance(wildcards)
-
             config = create_and_patch_object (config, members, member_ids, path, collection_path)
 
-            resp = config, 200
         except Exception:
             traceback.print_exc()
             resp = INTERNAL_ERROR
@@ -98,6 +95,12 @@ class FabricsEndpointsAPI(Resource):
         path = os.path.join(self.root, self.fabrics, fabric, self.f_endpoints, f_endpoint, 'index.json')
         patch_object(path)
         return self.get(f_endpoint)
+
+    # HTTP PUT
+    def put(self, fabric, f_endpoint):
+        path = os.path.join(self.root, self.fabrics, fabric, self.f_endpoints, f_endpoint, 'index.json')
+        put_object(path)
+        return self.get(fabric, f_endpoint)
 
     # HTTP DELETE
     def delete(self, fabric, f_endpoint):
@@ -137,3 +140,16 @@ class FabricsEndpointsCollectionAPI(Resource):
 
         path = create_path(self.root, self.fabrics, fabric, self.f_endpoints)
         return create_collection (path, 'Endpoint')
+
+    # HTTP PUT
+    def put(self, fabric):
+        path = os.path.join(self.root, self.fabrics, fabric, self.f_endpoints, 'index.json')
+        put_object(path)
+        return self.get(fabric)
+
+    # HTTP DELETE
+    def delete(self):
+        #Set path to object, then call delete_object:
+        path = create_path(self.root, self.fabrics, fabric, self.f_endpoints)
+        base_path = create_path(self.root, self.fabrics)
+        return delete_collection(path, base_path)

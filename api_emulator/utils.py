@@ -200,12 +200,37 @@ def delete_object (path, base_path):
 
     return jsonify(resp)
 
+def delete_collection (path, base_path):
+
+    delPath = path.replace('Resources','/redfish/v1').replace("\\","/")
+    path2 = create_path(base_path, 'index.json').replace("\\","/")
+    try:
+        with open(path2,"r") as pdata:
+            pdata = json.load(pdata)
+
+        data = {
+        "@odata.id":delPath
+        }
+        resp = 200
+        jdata = data["@odata.id"].split('/')
+
+        path1 = os.path.join(base_path, jdata[len(jdata)-1])
+        shutil.rmtree(path1)
+
+        with open(path2,"w") as jdata:
+            json.dump(pdata,jdata)
+
+    except Exception as e:
+        return {"error": "Unable to read file because of the following error::{}".format(e)}, 404
+
+    return jsonify(resp)
+
 def patch_object(path):
     try:
     # Read json from file.
-        with open(path, 'r') as fabric_json:
-            data = json.load(fabric_json)
-            fabric_json.close()
+        with open(path, 'r') as data_json:
+            data = json.load(data_json)
+            data_json.close()
 
         # If input body data, then update properties
         if request.data:
@@ -220,7 +245,34 @@ def patch_object(path):
             f.close()
 
     except Exception as e:
-        return {"error": "Unable to read file because of the following error::{}".format(e)}, 404
+        return {"error": "Unable to read file because of the following error:{}".format(e)}, 404
+
+    return True
+
+def put_object(path):
+    if not os.path.exists(path):
+        return {"error": "The requested object does not exist.:{}"}, 404
+    try:
+    # Read json from file.
+    #    with open(path, 'r') as data_json:
+    #        data = json.load(data_json)
+    #        data_json.close()
+        data = {}
+        path = path.replace("\\","/")
+        # If input body data, then update properties
+        if request.data:
+            request_data = json.loads(request.data)
+            # Update the keys of payload in json file.
+            for key, value in request_data.items():
+                data[key] = value
+
+        # Write the updated json to file.
+        with open(path, 'w') as f:
+            json.dump(data, f)
+            f.close()
+
+    except Exception as e:
+        return {"error": "Unable to read file because of the following error:{}".format(e)}, 404
 
     return True
 

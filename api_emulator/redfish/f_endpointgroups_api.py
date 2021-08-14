@@ -94,7 +94,7 @@ class FabricsEndpointGroupsAPI(Resource):
     def patch(self, fabric, f_endpointgroup):
         path = os.path.join(self.root, self.fabrics, fabric, self.f_endpointgroups, f_endpointgroup, 'index.json')
         patch_object(path)
-        return self.get(f_endpointgroup)
+        return self.get(fabric, f_endpointgroup)
 
     # HTTP PUT
     def put(self, fabric, f_endpointgroup):

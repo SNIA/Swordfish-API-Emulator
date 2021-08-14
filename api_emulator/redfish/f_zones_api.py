@@ -94,7 +94,7 @@ class FabricsZonesAPI(Resource):
     def patch(self, fabric, f_zone):
         path = os.path.join(self.root, self.fabrics, fabric, self.f_zones, f_zone, 'index.json')
         patch_object(path)
-        return self.get(f_zone)
+        return self.get(fabric, f_zone)
 
     # HTTP PUT
     def put(self, fabric, f_zone):

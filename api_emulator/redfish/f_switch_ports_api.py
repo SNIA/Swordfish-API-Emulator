@@ -98,13 +98,13 @@ class FabricsSwitchPortsAPI(Resource):
     def patch(self, fabric, f_switch, fs_port):
         path = os.path.join(self.root, self.fabrics, fabric, self.f_switches, f_switch, self.fs_ports, fs_port, 'index.json')
         patch_object(path)
-        return self.get(f_switch)
+        return self.get(fabric, f_switch, fs_port)
 
     # HTTP PUT
     def put(self, fabric, f_switch, fs_port):
         path = os.path.join(self.root, self.fabrics, fabric, self.f_switches, f_switch, self.fs_ports, fs_port, 'index.json')
         put_object(path)
-        return self.get(fabric, f_switch)
+        return self.get(fabric, f_switch, fs_port)
 
     # HTTP DELETE
     def delete(self, fabric, f_switch, fs_port):

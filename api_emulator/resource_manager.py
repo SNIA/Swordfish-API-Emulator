@@ -259,7 +259,7 @@ class ResourceManager(object):
         g.api.add_resource(DrivesCollectionAPI,
                             '/redfish/v1/Chassis/<string:chassis>/Drives')
         g.api.add_resource(DrivesAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/Drives/<string:drives>')
+                            '/redfish/v1/Chassis/<string:chassis>/Drives/<string:drive>')
 
         # Memory SubResources
         g.api.add_resource(ChassisMemoryCollectionAPI,

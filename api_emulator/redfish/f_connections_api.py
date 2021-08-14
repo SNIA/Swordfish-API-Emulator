@@ -95,7 +95,7 @@ class FabricsConnectionsAPI(Resource):
     def patch(self, fabric, f_connection):
         path = os.path.join(self.root, self.fabrics, fabric, self.f_connections, f_connection, 'index.json')
         patch_object(path)
-        return self.get(f_connection)
+        return self.get(fabric, f_connection)
 
     # HTTP PUT
     def put(self, fabric, f_connection):

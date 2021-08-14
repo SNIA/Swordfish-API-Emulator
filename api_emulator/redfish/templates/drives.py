@@ -36,11 +36,11 @@ from flask import json
 _TEMPLATE = \
 {
   "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-  "@odata.id": "{rb}Chassis/{s_id}/Drives/{d_id}",
-  "@odata.type": "#DriveCollection.DriveCollection",
-  "Name": "Drives",
-  "Description": "",
-  "Id": "{d_id}",
+  "@odata.id": "{rb}Chassis/{c_id}/Drives/{d_id}",
+  "@odata.type": "#Drive.v1_12_1.Drive",
+  "Name": "Drive {d_id}",
+  "Description": "Drive instance",
+  "Id": "{d_id}"
 
 }
 
@@ -56,14 +56,14 @@ def get_Drives_instance(wildcards):
     d = json.dumps(c)
     g = d.replace('{d_id}', 'NUv')
     g = g.replace('{rb}', 'NUb')
-    g = g.replace('{s_id}', 'NUs')
+    g = g.replace('{c_id}', 'NUs')
     g = g.replace('{{', '~~!')
     g = g.replace('}}', '!!~')
     g = g.replace('{', '~!')
     g = g.replace('}', '!~')
     g = g.replace('NUv', '{d_id}')
     g = g.replace('NUb', '{rb}')
-    g = g.replace('NUs', '{s_id}')
+    g = g.replace('NUs', '{c_id}')
     g = g.format(**wildcards)
     g = g.replace('~~!', '{{')
     g = g.replace('!!~', '}}')

@@ -111,7 +111,7 @@ class FabricAPI(Resource):
     def put(self, fabric):
         path = create_path(self.root, self.fabrics, fabric, 'index.json')
         put_object(path)
-        return self.get(fabric, f_zone)
+        return self.get(fabric)
 
 	# HTTP PATCH
     def patch(self, fabric):
@@ -147,8 +147,6 @@ class FabricCollectionAPI(Resource):
     def post(self):
         self.root = PATHS['Root']
         self.fabrics = PATHS['Fabrics']['path']
-
-        logging.info('FabricsCollectionAPI POST called')
 
         path = create_path(self.root, self.fabrics)
         return create_collection (path, 'Fabric')

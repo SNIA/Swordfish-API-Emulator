@@ -80,10 +80,10 @@ class FabricsEndpointsAPI(Resource):
             return resp
         try:
             global config
-            wildcards = {'f_id':fabric, 's_id': f_endpoint, 'rb': g.rest_base}
+            wildcards = {'f_id':fabric, 'ep_id': f_endpoint, 'rb': g.rest_base}
             config=get_Endpoints_instance(wildcards)
             config = create_and_patch_object (config, members, member_ids, path, collection_path)
-
+            resp = config, 200
         except Exception:
             traceback.print_exc()
             resp = INTERNAL_ERROR
@@ -148,7 +148,7 @@ class FabricsEndpointsCollectionAPI(Resource):
         return self.get(fabric)
 
     # HTTP DELETE
-    def delete(self):
+    def delete(self, fabric):
         #Set path to object, then call delete_object:
         path = create_path(self.root, self.fabrics, fabric, self.f_endpoints)
         base_path = create_path(self.root, self.fabrics)

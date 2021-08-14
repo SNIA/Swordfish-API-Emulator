@@ -152,7 +152,7 @@ class FabricsSwitchesCollectionAPI(Resource):
         return self.get(fabric)
 
     # HTTP DELETE
-    def delete(self):
+    def delete(self, fabric):
         #Set path to object, then call delete_object:
         path = create_path(self.root, self.fabrics, fabric, self.f_switches)
         base_path = create_path(self.root, self.fabrics)

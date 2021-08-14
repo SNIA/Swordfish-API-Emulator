@@ -36,7 +36,7 @@ from flask import json
 _TEMPLATE = \
 {
     "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-    "@odata.id": "{rb}Fabrics/{s_id}/Zones/{z_id}",
+    "@odata.id": "{rb}Fabrics/{f_id}/Zones/{z_id}",
     "@odata.type": "#Zone.v1_6_0.Zone",
     "Id": "{z_id}",
     "Name": "Ethernet Zone 1",
@@ -48,15 +48,8 @@ _TEMPLATE = \
     "ZoneType": "ZoneOfEndpoints",
     "ExternalAccessibility": "GloballyAccessible",
     "Links": {
-        "Endpoints": [
-            {
-                "@odata.id": "/redfish/v1/Fabrics/{f_id}/Endpoints/{ep_id}"
-            }
-        ]
-    },
-    "Oem": {},
-
-
+        "Endpoints": []
+    }
 }
 
 
@@ -69,16 +62,16 @@ def get_Zones_instance(wildcards):
     """
     c = copy.deepcopy(_TEMPLATE)
     d = json.dumps(c)
-    g = d.replace('{ep_id}', 'NUv')
+    g = d.replace('{z_id}', 'NUv')
     g = g.replace('{rb}', 'NUb')
-    g = g.replace('{s_id}', 'NUs')
+    g = g.replace('{f_id}', 'NUs')
     g = g.replace('{{', '~~!')
     g = g.replace('}}', '!!~')
     g = g.replace('{', '~!')
     g = g.replace('}', '!~')
-    g = g.replace('NUv', '{ep_id}')
+    g = g.replace('NUv', '{z_id}')
     g = g.replace('NUb', '{rb}')
-    g = g.replace('NUs', '{s_id}')
+    g = g.replace('NUs', '{f_id}')
     g = g.format(**wildcards)
     g = g.replace('~~!', '{{')
     g = g.replace('!!~', '}}')

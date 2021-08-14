@@ -80,9 +80,10 @@ class FabricsConnectionsAPI(Resource):
             return resp
         try:
             global config
-            wildcards = {'f_id':fabric, 's_id': f_connection, 'rb': g.rest_base}
+            wildcards = {'f_id':fabric, 'c_id': f_connection, 'rb': g.rest_base}
             config=get_Connections_instance(wildcards)
             config = create_and_patch_object (config, members, member_ids, path, collection_path)
+            resp = config, 200
 
         except Exception:
             traceback.print_exc()
@@ -148,7 +149,7 @@ class FabricsConnectionsCollectionAPI(Resource):
         return self.get(fabric)
 
     # HTTP DELETE
-    def delete(self):
+    def delete(self, fabric):
         #Set path to object, then call delete_object:
         path = create_path(self.root, self.fabrics, fabric, self.f_connections)
         base_path = create_path(self.root, self.fabrics)

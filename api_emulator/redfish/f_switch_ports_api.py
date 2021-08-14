@@ -86,7 +86,7 @@ class FabricsSwitchPortsAPI(Resource):
             config = create_and_patch_object (config, members, member_ids, path, collection_path)
 
             #Add default placeholder collections to instance.
-            FabricsSwitchPortCollectionAPI.post (self, fabric, f_switch)
+            FabricsSwitchPortsCollectionAPI.post (self, fabric, f_switch)
             resp = config, 200
         except Exception:
             traceback.print_exc()
@@ -154,7 +154,7 @@ class FabricsSwitchPortsCollectionAPI(Resource):
         return self.get(fabric)
 
     # HTTP DELETE
-    def delete(self):
+    def delete(self, fabric, f_switch):
         #Set path to object, then call delete_object:
         path = create_path(self.root, self.fabrics, fabric, self.f_switches, f_switch, self.fs_ports)
         base_path = create_path(self.root, self.fabrics, fabric, self.f_switches)

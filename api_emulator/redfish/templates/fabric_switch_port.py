@@ -29,14 +29,14 @@
 #
 
 # FabricSwitchPort Template File
-
 import copy
+from flask import json
 
-FabricSwitchPort_TEMPLATE={
+_TEMPLATE={
     "@odata.type": "Port.v1_4_0.Port",
     "@odata.id": "{rb}Fabrics/{f_id}/Switches/{s_id}/Ports/{fsp_id}",
 
-    "Id": "{id}",
+    "Id": "{fsp_id}",
     "Name": "Port",
     "Description": "Fabric switch port",
     "PortType": "Upstream",
@@ -57,15 +57,30 @@ FabricSwitchPort_TEMPLATE={
     "Width": 4
     }
 
+def get_FabricSwitchPorts_instance(wildcards):
+    """
+    Instantiates and formats the template
 
-
-def get_FabricSwitchPorts_instance(rest_base,sw_id,ident):
-
-    c = copy.deepcopy(FabricSwitchPort_TEMPLATE)
-
-    c['@odata.context']=c['@odata.context'].format(rb=rest_base,sw_id=sw_id)
-    c['@odata.id']=c['@odata.id'].format(rb=rest_base,sw_id=sw_id,id=ident)
-    c['Id'] = c['Id'].format(id=ident)
-    c['Actions']['#PCIePort.SetState']['target']=c['Actions']['#PCIePort.SetState']['target'].format(rb=rest_base,sw_id=sw_id,id=ident)
-
-    return c
+    Arguments:
+        wildcard - A dictionary of wildcards strings and their repalcement values
+    """
+    c = copy.deepcopy(_TEMPLATE)
+    d = json.dumps(c)
+    g = d.replace('{f_id}', 'NUv')
+    g = g.replace('{rb}', 'NUb')
+    g = g.replace('{s_id}', 'NUs')
+    g = g.replace('{fsp_id}', 'NUr')
+    g = g.replace('{{', '~~!')
+    g = g.replace('}}', '!!~')
+    g = g.replace('{', '~!')
+    g = g.replace('}', '!~')
+    g = g.replace('NUv', '{f_id}')
+    g = g.replace('NUb', '{rb}')
+    g = g.replace('NUs', '{s_id}')
+    g = g.replace('NUr', '{fsp_id}')
+    g = g.format(**wildcards)
+    g = g.replace('~~!', '{{')
+    g = g.replace('!!~', '}}')
+    g = g.replace('~!', '{')
+    g = g.replace('!~', '}')
+    return json.loads(g)

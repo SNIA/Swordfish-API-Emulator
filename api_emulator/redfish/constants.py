@@ -57,7 +57,7 @@ PATHS = {
    'Fabrics': {
        'path': 'Fabrics/',
        'f_switch': 'Switches/',
-       'f_switch_port': 'Ports/',
+       'fs_port': 'Ports/',
        'f_endpoint': 'Endpoints/',
        'f_zone': 'Zones/',
        'f_connection': 'Connections/',

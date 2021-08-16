@@ -110,7 +110,6 @@ class FabricsConnectionsAPI(Resource):
         base_path = create_path(self.root, self.fabrics, fabric, self.f_connections)
         return delete_object(path, base_path)
 
-
 # Fabrics Connections Collection API
 class FabricsConnectionsCollectionAPI(Resource):
 

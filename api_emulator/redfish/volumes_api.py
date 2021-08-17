@@ -69,8 +69,8 @@ class VolumesAPI(Resource):
     # - Finally, create an instance of the subordinate resources
     def post(self, storage, volume):
         logging.info('VolumesAPI POST called')
-        path = create_path(self.root, self.storages, storage, self.volumes, volume)
-        collection_path = os.path.join(self.root, self.storages, storage, self.volumes, 'index.json')
+        path = create_path(self.root, self.storage, storage, self.volumes, volume)
+        collection_path = os.path.join(self.root, self.storage, storage, self.volumes, 'index.json')
 
         # Check if collection exists:
         if not os.path.exists(collection_path):

@@ -82,7 +82,7 @@ class MCPortsAPI(Resource):
             return resp
         try:
             global config
-            wildcards = {'c_id':chassis,'n_id': media_controller, 'p_id': mc_ports, 'rb': g.rest_base}
+            wildcards = {'c_id':chassis,'mc_id': media_controller, 'p_id': mc_ports, 'rb': g.rest_base}
             config=get_MCPorts_instance(wildcards)
             config = create_and_patch_object (config, members, member_ids, path, collection_path)
             #Add default placeholder collections to instance.

@@ -43,6 +43,7 @@ from api_emulator.utils import update_collections_json, create_path, get_json_da
 from .constants import *
 from .templates.Storage import get_Storage_instance
 
+from api_emulator.redfish.storagecontrollers_api import *
 from api_emulator.redfish.volumes_api import *
 from api_emulator.redfish.storagepools_api import *
 
@@ -89,6 +90,7 @@ class StorageAPI(Resource):
             #Add default placeholder collections to instance.
             VolumesCollectionAPI.post (self, storage)
             StoragePoolsCollectionAPI.post (self, storage)
+            StorageControllersCollectionAPI.post (self, storage)
 
             resp = config, 200
         except Exception:

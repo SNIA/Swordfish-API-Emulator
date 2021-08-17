@@ -46,6 +46,9 @@ _TEMPLATE = \
   "Volumes": {
     "@odata.id": "{rb}Storage/{s_id}/Volumes"
   },
+  "Controllers": {
+      "@odata.id": "{rb}Storage/{s_id}/Controllers"
+    },
   "Oem": []
 }
 

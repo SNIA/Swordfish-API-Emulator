@@ -35,8 +35,8 @@ from flask import json
 
 _TEMPLATE = \
 {
-  "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-   "@odata.id": "{rb}Fabrics/Switches/{s_id}",
+    "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
+    "@odata.id": "{rb}Fabrics/{f_id}/Switches/{s_id}",
     "@odata.type": "#Switch.v1_5_0.Switch",
     "Id": "{s_id}",
     "Name": "Ethernet Switch",
@@ -54,26 +54,14 @@ _TEMPLATE = \
     "FirmwareVersion": "v12451.4",
     "LocationIndicatorActive": "true",
     "MaxBandwidthGbps": 400,
-    "SupportedProtocols": ["Ethernet"],
 
     "Ports": {
-        "@odata.id": "/redfish/v1/Fabrics/Ethernet/Switches/{s_id}/Ports"
+        "@odata.id": "/redfish/v1/Fabrics/{f_id}/Switches/{s_id}/Ports"
     },
 
     "Links": {
         "Oem": {}
-    },
-    "Actions": {
-        "#Switch.Reset": {
-            "target": "/redfish/v1/Fabrics/Ethernet/Switches/{s_id}/Actions/Switch.Reset",
-            "ResetType@Redfish.AllowableValues": [
-                "ForceRestart",
-                "GracefulRestart"
-            ]
-        },
-        "Oem": {}
-    },
-    "Oem": {}
+    }
 }
 
 
@@ -86,14 +74,14 @@ def get_Switches_instance(wildcards):
     """
     c = copy.deepcopy(_TEMPLATE)
     d = json.dumps(c)
-    g = d.replace('{ep_id}', 'NUv')
+    g = d.replace('{f_id}', 'NUv')
     g = g.replace('{rb}', 'NUb')
     g = g.replace('{s_id}', 'NUs')
     g = g.replace('{{', '~~!')
     g = g.replace('}}', '!!~')
     g = g.replace('{', '~!')
     g = g.replace('}', '!~')
-    g = g.replace('NUv', '{ep_id}')
+    g = g.replace('NUv', '{f_id}')
     g = g.replace('NUb', '{rb}')
     g = g.replace('NUs', '{s_id}')
     g = g.format(**wildcards)

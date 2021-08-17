@@ -40,7 +40,7 @@ import shutil
 
 from flask import jsonify, request
 from flask_restful import Resource
-from api_emulator.utils import update_collections_json
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 from .constants import *
 from .templates.filesystems import get_FileSystems_instance
 
@@ -49,13 +49,6 @@ member_ids = []
 foo = False
 config = {}
 INTERNAL_ERROR = 500
-
-
-
-def create_path(*args):
-    trimmed = [str(arg).strip('/') for arg in args]
-    return os.path.join(*trimmed)
-
 
 # FileSystemsAPI API
 class FileSystemsAPI(Resource):
@@ -68,13 +61,7 @@ class FileSystemsAPI(Resource):
     # HTTP GET
     def get(self, storage_service, file_systems):
         path = create_path(self.root, self.storage_services, storage_service, self.file_systems, file_systems, 'index.json')
-        try:
-            file_systems_json = open(path)
-            data = json.load(file_systems_json)
-        except Exception as e:
-            traceback.print_exc()
-            raise Exception("Unable read file because of following error::{}".format(e))
-        return jsonify(data)
+        return get_json_data (path)
 
     # HTTP POST
     # - Create the resource (since URI variables are available)
@@ -186,14 +173,7 @@ class FileSystemsCollectionAPI(Resource):
 
     def get(self, storage_service):
         path = os.path.join(self.root, self.storage_services, storage_service, self.file_systems, 'index.json')
-        try:
-            file_systems_json = open(path)
-            data = json.load(file_systems_json)
-        except Exception as e:
-            traceback.print_exc()
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(data)
+        return get_json_data (path)
 
     def verify(self, config):
         # TODO: Implement a method to verify that the POST body is valid

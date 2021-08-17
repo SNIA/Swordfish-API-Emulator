@@ -40,7 +40,7 @@ import urllib3
 
 from flask import jsonify, request
 from flask_restful import Resource
-from api_emulator.utils import update_collections_json
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 from .constants import *
 from .templates.endpointgroups import get_EndpointGroups_instance
 
@@ -49,14 +49,6 @@ member_ids = []
 foo = False
 config = {}
 INTERNAL_ERROR = 500
-
-
-
-
-def create_path(*args):
-    trimmed = [str(arg).strip('/') for arg in args]
-    return os.path.join(*trimmed)
-
 
 # EndpointGroups API
 class EndpointGroupsAPI(Resource):
@@ -69,13 +61,7 @@ class EndpointGroupsAPI(Resource):
     # HTTP GET
     def get(self, storage_service, endpoint_groups):
         path = create_path(self.root, self.storage_services, storage_service, self.endpoint_groups, endpoint_groups, 'index.json')
-        try:
-            endpoint_groups_json = open(path)
-            data = json.load(endpoint_groups_json)
-        except Exception as e:
-            traceback.print_exc()
-            raise Exception("Unable read file because of following error::{}".format(e))
-        return jsonify(data)
+        return get_json_data (path)
 
     # HTTP POST
     # - Create the resource (since URI variables are available)
@@ -188,14 +174,7 @@ class EndpointGroupsCollectionAPI(Resource):
 
     def get(self, storage_service):
         path = os.path.join(self.root, self.storage_services, storage_service, self.endpoint_groups, 'index.json')
-        try:
-            endpoint_groups_json = open(path)
-            data = json.load(endpoint_groups_json)
-        except Exception as e:
-            traceback.print_exc()
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(data)
+        return get_json_data (path)
 
     def verify(self, config):
         # TODO: Implement a method to verify that the POST body is valid

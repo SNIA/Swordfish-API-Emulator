@@ -38,8 +38,8 @@ _TEMPLATE = \
 {
   "@Redfish.Copyright": "Copyright 2015-2021 SNIA. All rights reserved.",
   "@odata.id": "{rb}StorageSystems/{id}",
-  "@odata.type": "#StorageSystemsCollection.StorageSystemsCollection",
-  "Name": "Storage Systems Collection",
+  "@odata.type": "#StorageSystem.v1_0_1.StorageSystem",
+  "Name": "Storage System {id}",
   "Id":"{id}",
   "Links": {
         "StorageServices": [

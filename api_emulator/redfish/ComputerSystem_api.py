@@ -58,6 +58,7 @@ from .ethernetinterface import members as ethernetinterfaces
 from .simplestorage import members as simplestorage
 from .ResourceBlock_api import members as resource_blocks
 from .constants import *
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 members = {}
 
@@ -100,17 +101,8 @@ class ComputerSystemAPI(Resource):
     # HTTP GET
     def get(self, ident):
         logging.info('ComputerSystemAPI GET called')
-        if ident in members:
-            resp = 404
-            return resp
         path = os.path.join(self.root, self.systems, ident, 'index.json')
-        try:
-            systems_json = open(path)
-            data = json.load(systems_json)
-        except Exception as e:
-            traceback.print_exc()
-            raise Exception("Unable read file because of following error::{}".format(e))
-        return jsonify(data)
+        return get_json_data (path)
 
     # HTTP PUT
     def put(self, ident):
@@ -124,6 +116,11 @@ class ComputerSystemAPI(Resource):
     # PATCH commands can then be used to update the new instance.
     def post(self, ident):
         logging.info('ComputerSystemAPI POST called')
+        path = os.path.join(self.root, self.systems, ident, 'index.json')
+        collection_path = os.path.join(self.root, self.systems, 'index.json')
+        if ident in members:
+            resp = 404
+            return resp
         try:
             global config
             global wildcards
@@ -131,7 +128,9 @@ class ComputerSystemAPI(Resource):
             wildcards['linkMgr'] = 'UpdateWithPATCH'
             wildcards['linkChassis'] = ['UpdateWithPATCH']
             config=get_ComputerSystem_instance(wildcards)
-            members[ident]=config
+
+            config = create_and_patch_object (config, members, member_ids, path, collection_path)
+
             resp = config, 200
         except Exception:
             traceback.print_exc()
@@ -141,36 +140,16 @@ class ComputerSystemAPI(Resource):
     # HTTP PATCH
     def patch(self, ident):
         logging.info('ComputerSystemAPI PATCH called')
-        raw_dict = request.get_json(force=True)
-        try:
-            # Update specific portions of the identified object
-            for key, value in raw_dict.items():
-                members[ident][key] = value
-            resp = members[ident], 200
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        return resp
+
+        patch_object(path)
+        return self.get(ident)
 
     # HTTP DELETE
     def delete(self, ident):
         logging.info('ComputerSystemAPI DELETE called')
-        try:
-            resp = 404
-            if ident in members:
-                if members[ident]['SystemType'] == 'Composed':
-                    # Delete a composed system
-                    resp = DeleteComposedSystem(ident)
-                    resp = 200
-                else:
-                    # Delete a physical system
-                    del(members[ident])
-                    resp = 200
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        return resp
-
+        path = os.path.join(self.root, self.systems, ident, 'index.json')
+        base_path = os.path.join(self.root, self.systems, 'index.json')
+        return delete_object(path, base_path)
 
 # ComputerSystem Collection API
 class ComputerSystemCollectionAPI(Resource):

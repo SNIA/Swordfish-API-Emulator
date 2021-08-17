@@ -285,12 +285,12 @@ class ResourceManager(object):
         g.api.add_resource(NetworkDeviceFunctionsCollectionAPI,
                             '/redfish/v1/Chassis/<string:chassis>/NetworkAdapters/<string:network_adapter>/NetworkDeviceFunctions')
         g.api.add_resource(NetworkDeviceFunctionsAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/NetworkAdapters/<string:network_adapter>/NetworkDeviceFunctions/<string:network_device_functions>')
+                            '/redfish/v1/Chassis/<string:chassis>/NetworkAdapters/<string:network_adapter>/NetworkDeviceFunctions/<string:network_device_function>')
 
         g.api.add_resource(NWPortsCollectionAPI,
                             '/redfish/v1/Chassis/<string:chassis>/NetworkAdapters/<string:network_adapter>/Ports')
         g.api.add_resource(NWPortsAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/NetworkAdapters/<string:network_adapter>/Ports/<string:nw_ports>')
+                            '/redfish/v1/Chassis/<string:chassis>/NetworkAdapters/<string:network_adapter>/Ports/<string:nw_port>')
 
         # MediaController resources
         g.api.add_resource(MediaControllersCollectionAPI,

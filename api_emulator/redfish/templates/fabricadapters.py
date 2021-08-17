@@ -112,15 +112,9 @@ _TEMPLATE = \
             "@odata.id": "{rb}Systems/{s_id}/FabricAdapters/{fa_id}/SSDT"
         }
     },
-    "Links": {
-        "Endpoints": [
-            {}
-        ]
-    },
     "Manufacturer": "Contoso",
     "Model": "Bridge Model X",
     "Name": "Bridge",
-    "Oem": {},
     "PCIeInterface": {
         "LanesInUse": 64,
         "MaxLanes": 64,

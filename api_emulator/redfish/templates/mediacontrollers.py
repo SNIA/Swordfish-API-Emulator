@@ -38,8 +38,8 @@ _TEMPLATE = \
   "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
   "@odata.id": "{rb}Chassis/{c_id}/MediaControllers/{mc_id}",
   "@odata.type": "#MediaController.v1_6_0.MediaController",
-  "Id": "{n_id}",
-  "Name": "Media Controller",
+  "Id": "{mc_id}",
+  "Name": "Media Controller {mc_id}",
   "Description": "Media Controller",
 
   "Controllers": [{
@@ -47,30 +47,17 @@ _TEMPLATE = \
       "NetworkPortCount": 2,
       "NetworkDeviceFunctionCount": 8
     },
-    "FirmwarePackageVersion": "7.4.10",
-    "Links": {
-      "Ports": [{
-        "@odata.id": "/redfish/v1/Chassis/{c_id}/MediaControllers/{mc_id}/Ports/1"
-      }],
-      "NetworkDeviceFunctions": [{
-        "@odata.id": "/redfish/v1/Chassis/{c_id}/MediaControllers/{n_id}/NetworkDeviceFunctions/11100"
-      }]
-    }
+    "FirmwarePackageVersion": "7.4.10"
   }],
 
   "Manufacturer": "Globex",
   "Model": "599TPS-T",
-  "NetworkDeviceFunctions": {
-    "@odata.id": "/redfish/v1/Chassis/{c_id}/MediaControllers/{n_id}/NetworkDeviceFunctions"
-  },
   "PartNumber": "975421-B20",
   "Ports": {
-    "@odata.id": "/redfish/v1/Chassis/{c_id}/MediaControllers/{n_id}/Ports"
+    "@odata.id": "/redfish/v1/Chassis/{c_id}/MediaControllers/{mc_id}/Ports"
   },
   "SKU": "Globex TPS-Net 2-Port Base-T",
-  "SerialNumber": "003BFLRT00023234",
-
-  "Oem": {}
+  "SerialNumber": "003BFLRT00023234"
 }
 
 
@@ -83,14 +70,14 @@ def get_MediaControllers_instance(wildcards):
     """
     c = copy.deepcopy(_TEMPLATE)
     d = json.dumps(c)
-    g = d.replace('{n_id}', 'NUv')
+    g = d.replace('{mc_id}', 'NUv')
     g = g.replace('{rb}', 'NUb')
     g = g.replace('{c_id}', 'NUs')
     g = g.replace('{{', '~~!')
     g = g.replace('}}', '!!~')
     g = g.replace('{', '~!')
     g = g.replace('}', '!~')
-    g = g.replace('NUv', '{n_id}')
+    g = g.replace('NUv', '{mc_id}')
     g = g.replace('NUb', '{rb}')
     g = g.replace('NUs', '{c_id}')
     g = g.format(**wildcards)

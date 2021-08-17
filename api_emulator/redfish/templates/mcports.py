@@ -41,7 +41,6 @@ _TEMPLATE = \
   "Id": "{p_id}",
   "Name": "Port",
    "CurrentSpeedGbps": 12,
-  "Description": "Port in embedded network interface for IP Attached drive.",
   "Ethernet": {
     "SupportedEthernetCapabilities": [
       "WakeOnLAN",
@@ -81,16 +80,18 @@ def get_MCPorts_instance(wildcards):
     """
     c = copy.deepcopy(_TEMPLATE)
     d = json.dumps(c)
-    g = d.replace('{n_id}', 'NUv')
+    g = d.replace('{mc_id}', 'NUv')
     g = g.replace('{rb}', 'NUb')
     g = g.replace('{c_id}', 'NUs')
+    g = g.replace('{p_id}', 'NUr')
     g = g.replace('{{', '~~!')
     g = g.replace('}}', '!!~')
     g = g.replace('{', '~!')
     g = g.replace('}', '!~')
-    g = g.replace('NUv', '{n_id}')
+    g = g.replace('NUv', '{mc_id}')
     g = g.replace('NUb', '{rb}')
     g = g.replace('NUs', '{c_id}')
+    g = g.replace('NUr', '{p_id}')
     g = g.format(**wildcards)
     g = g.replace('~~!', '{{')
     g = g.replace('!!~', '}}')

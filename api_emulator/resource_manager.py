@@ -299,9 +299,9 @@ class ResourceManager(object):
                             '/redfish/v1/Chassis/<string:chassis>/MediaControllers/<string:media_controller>')
 
         g.api.add_resource(MCPortsCollectionAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/MediaControllers/<string:media_controllers>/Ports')
+                            '/redfish/v1/Chassis/<string:chassis>/MediaControllers/<string:media_controller>/Ports')
         g.api.add_resource(MCPortsAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/MediaControllers/<string:media_controllers>/Ports/<string:mc_ports>')
+                            '/redfish/v1/Chassis/<string:chassis>/MediaControllers/<string:media_controller>/Ports/<string:mc_ports>')
 
 
         # Manager Resources

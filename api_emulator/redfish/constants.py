@@ -67,10 +67,10 @@ PATHS = {
     'Storage': {
         'path': 'Storage/',
         'storage_groups': 'StorageGroups/',
-        'storage_pools': 'StoragePools/',
-        'storage_controllers': 'Controllers/',
+        'storagepool': 'StoragePools/',
+        'storagecontroller': 'Controllers/',
         'capacity_sources': 'CapacitySources/',
-        'volumes': 'Volumes/',
+        'volume': 'Volumes/',
         'client_end_point_groups': 'ClientEndpointGroups/',
         'server_end_point_groups': 'ServerEndpointGroups/',
         'drives': 'Drives/',

@@ -66,5 +66,6 @@ def get_Storage_instance(wildcards):
     c['Id'] = c['Id'].format(**wildcards)
     c['StoragePools'] ['@odata.id']=c['StoragePools']['@odata.id'].format(**wildcards)
     c['Volumes']['@odata.id']=c['Volumes']['@odata.id'].format(**wildcards)
+    c['Controllers']['@odata.id']=c['Controllers']['@odata.id'].format(**wildcards)
 
     return c

@@ -157,5 +157,5 @@ class FabricsSwitchPortsCollectionAPI(Resource):
     def delete(self, fabric, f_switch):
         #Set path to object, then call delete_object:
         path = create_path(self.root, self.fabrics, fabric, self.f_switches, f_switch, self.fs_ports)
-        base_path = create_path(self.root, self.fabrics, fabric, self.f_switches)
+        base_path = create_path(self.root, self.fabrics, fabric, self.f_switches, f_switch)
         return delete_collection(path, base_path)

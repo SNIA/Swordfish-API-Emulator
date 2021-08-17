@@ -379,15 +379,15 @@ class ResourceManager(object):
         g.api.add_resource(StoragePoolsCollectionAPI,
                            '/redfish/v1/Storage/<string:storage>/StoragePools')
         g.api.add_resource(StoragePoolsAPI,
-                            '/redfish/v1/Storage/<string:storage>/StoragePools/<string:storage_pools>')
+                            '/redfish/v1/Storage/<string:storage>/StoragePools/<string:storagepool>')
         g.api.add_resource(VolumesCollectionAPI,
                             '/redfish/v1/Storage/<string:storage>/Volumes')
         g.api.add_resource(VolumesAPI,
-                            '/redfish/v1/Storage/<string:storage>/Volumes/<string:volumes>')
+                            '/redfish/v1/Storage/<string:storage>/Volumes/<string:volume>')
         g.api.add_resource(StorageControllersCollectionAPI,
                             '/redfish/v1/Storage/<string:storage>/Controllers')
         g.api.add_resource(StorageControllersAPI,
-                            '/redfish/v1/Storage/<string:storage>/Controllers/<string:storage_controllers>')
+                            '/redfish/v1/Storage/<string:storage>/Controllers/<string:storagecontroller>')
 
         # Fabric Resources
         g.api.add_resource(FabricCollectionAPI, '/redfish/v1/Fabrics')

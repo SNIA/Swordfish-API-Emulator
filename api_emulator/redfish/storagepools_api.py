@@ -69,8 +69,8 @@ class StoragePoolsAPI(Resource):
     # - Finally, create an instance of the subordiante resources
     def post(self, storage, storagepool):
         logging.info('StoragePoolsAPI POST called')
-        path = create_path(self.root, self.storages, storage, self.storagepools, storagepool)
-        collection_path = os.path.join(self.root, self.storages, storage, self.storagepools, 'index.json')
+        path = create_path(self.root, self.storage, storage, self.storagepools, storagepool)
+        collection_path = os.path.join(self.root, self.storage, storage, self.storagepools, 'index.json')
 
         # Check if collection exists:
         if not os.path.exists(collection_path):
@@ -81,7 +81,7 @@ class StoragePoolsAPI(Resource):
             return resp
         try:
             global config
-            wildcards = {'f_id':storage, 'sp_id': storagepool, 'rb': g.rest_base}
+            wildcards = {'s_id':storage, 'sp_id': storagepool, 'rb': g.rest_base}
             config=get_StoragePools_instance(wildcards)
             config = create_and_patch_object (config, members, member_ids, path, collection_path)
             resp = config, 200
@@ -94,21 +94,21 @@ class StoragePoolsAPI(Resource):
 
 	# HTTP PATCH
     def patch(self, storage, storagepool):
-        path = os.path.join(self.root, self.storage, storagepool, self.storagepools, storagepool, 'index.json')
+        path = os.path.join(self.root, self.storage, storage, self.storagepools, storagepool, 'index.json')
         patch_object(path)
         return self.get(storage, storagepool)
 
 	# HTTP PUT
     def put(self, storage, storagepool):
-        path = os.path.join(self.root, self.storage, storagepool, self.storagepools, storagepool, 'index.json')
+        path = os.path.join(self.root, self.storage, storage, self.storagepools, storagepool, 'index.json')
         put_object(path)
         return self.get(storage, storagepool)
 
     # HTTP DELETE
     def delete(self, storage, storagepool):
         #Set path to object, then call delete_object:
-        path = create_path(self.root, self.storage, storagepool, self.storagepools, storagepool)
-        base_path = create_path(self.root, self.storage, storagepool, self.storagepools)
+        path = create_path(self.root, self.storage, storage, self.storagepools, storagepool)
+        base_path = create_path(self.root, self.storage, storage, self.storagepools)
         return delete_object(path, base_path)
 
 # StoragePools Collection API
@@ -128,29 +128,29 @@ class StoragePoolsCollectionAPI(Resource):
         return True,{}
 
     # HTTP POST Collection
-    def post(self, storagepool):
+    def post(self, storage):
         self.root = PATHS['Root']
         self.storage = PATHS['Storage']['path']
         self.storagepools = PATHS['Storage']['storagepool']
 
         logging.info('StoragePoolsCollectionAPI POST called')
 
-        if storagepool in members:
+        if storage in members:
             resp = 404
             return resp
 
-        path = create_path(self.root, self.storage, storagepool, self.storagepools)
+        path = create_path(self.root, self.storage, storage, self.storagepools)
         return create_collection (path, 'StoragePool')
 
     # HTTP PUT
-    def put(self, storagepool):
-        path = os.path.join(self.root, self.storage, storagepool, self.storagepools, 'index.json')
+    def put(self, storage):
+        path = os.path.join(self.root, self.storage, storage, self.storagepools, 'index.json')
         put_object(path)
-        return self.get(storagepool)
+        return self.get(storage)
 
     # HTTP DELETE
-    def delete(self, storagepool):
+    def delete(self, storage):
         #Set path to object, then call delete_object:
-        path = create_path(self.root, self.storage, storagepool, self.storagepools)
-        base_path = create_path(self.root, self.storage)
+        path = create_path(self.root, self.storage, storage, self.storagepools)
+        base_path = create_path(self.root, self.storage, storage)
         return delete_collection(path, base_path)

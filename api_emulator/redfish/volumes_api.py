@@ -94,21 +94,21 @@ class VolumesAPI(Resource):
 
 	# HTTP PATCH
     def patch(self, storage, volume):
-        path = os.path.join(self.root, self.storage, volume, self.volumes, volume, 'index.json')
+        path = os.path.join(self.root, self.storage, storage, self.volumes, volume, 'index.json')
         patch_object(path)
         return self.get(storage, volume)
 
 	# HTTP PUT
     def put(self, storage, volume):
-        path = os.path.join(self.root, self.storage, volume, self.volumes, volume, 'index.json')
+        path = os.path.join(self.root, self.storage, storage, self.volumes, volume, 'index.json')
         put_object(path)
         return self.get(storage, volume)
 
     # HTTP DELETE
     def delete(self, storage, volume):
         #Set path to object, then call delete_object:
-        path = create_path(self.root, self.storage, volume, self.volumes, volume)
-        base_path = create_path(self.root, self.storage, volume, self.volumes)
+        path = create_path(self.root, self.storage, storage, self.volumes, volume)
+        base_path = create_path(self.root, self.storage, storage, self.volumes)
         return delete_object(path, base_path)
 
 # Volumes Collection API
@@ -117,7 +117,7 @@ class VolumesCollectionAPI(Resource):
     def __init__(self):
         self.root = PATHS['Root']
         self.storage = PATHS['Storage']['path']
-        self.volumes = PATHS['Storage']['volumes']
+        self.volumes = PATHS['Storage']['volume']
 
     def get(self, storage):
         path = os.path.join(self.root, self.storage, storage, self.volumes, 'index.json')
@@ -128,38 +128,38 @@ class VolumesCollectionAPI(Resource):
         return True,{}
 
     # HTTP POST Collection
-    def post(self, volume):
+    def post(self, storage):
         self.root = PATHS['Root']
         self.storage = PATHS['Storage']['path']
         self.volumes = PATHS['Storage']['volume']
 
         logging.info('VolumesCollectionAPI POST called')
 
-        if volume in members:
+        if storage in members:
             resp = 404
             return resp
 
-        path = create_path(self.root, self.storage, volume, self.volumes)
+        path = create_path(self.root, self.storage, storage, self.volumes)
         return create_collection (path, 'Volume')
 
     # HTTP PUT
-    def put(self, volume):
-        path = os.path.join(self.root, self.storage, volume, self.volumes, 'index.json')
+    def put(self, storage):
+        path = os.path.join(self.root, self.storage, storage, self.volumes, 'index.json')
         put_object(path)
         return self.get(volume)
 
     # HTTP DELETE
-    def delete(self, volume):
+    def delete(self, storage):
         #Set path to object, then call delete_object:
-        path = create_path(self.root, self.storage, volume, self.volumes)
-        base_path = create_path(self.root, self.storage)
+        path = create_path(self.root, self.storage, storage, self.volumes)
+        base_path = create_path(self.root, self.storage, storage)
         return delete_collection(path, base_path)
 
 class CreateVolume (Resource):
     def __init__(self):
         self.root = PATHS['Root']
         self.storage = PATHS['Storage']['path']
-        self.volumes = PATHS['Storage']['volumes']
+        self.volumes = PATHS['Storage']['volume']
 
     # Attach APIs for subordinate resource(s). Attach the APIs for a resource collection and its singletons
     def put(self,storage):

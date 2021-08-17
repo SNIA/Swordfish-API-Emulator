@@ -151,5 +151,5 @@ class FabricsEndpointsCollectionAPI(Resource):
     def delete(self, fabric):
         #Set path to object, then call delete_object:
         path = create_path(self.root, self.fabrics, fabric, self.f_endpoints)
-        base_path = create_path(self.root, self.fabrics)
+        base_path = create_path(self.root, self.fabrics, fabric)
         return delete_collection(path, base_path)

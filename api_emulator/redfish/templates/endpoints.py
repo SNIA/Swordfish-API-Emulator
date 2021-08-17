@@ -36,7 +36,7 @@ from flask import json
 _TEMPLATE = \
 {
   "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-  "@odata.id": "{rb}StorageServices/{s_id}/Endpoints/{ep_id}",
+  "@odata.id": "{rb}Fabrics/{f_id}/Endpoints/{ep_id}",
   "@odata.type": "#Endpoint.v1_0_0.Endpoint",
   "Description": "This instance represents a SCSI implemented over FC",
   "Id": "{ep_id}",
@@ -59,7 +59,7 @@ _TEMPLATE = \
     {
       "ConnectionID": None,
       "ConnectedEndpoint": {
-        "@odata.id": "{rb}StorageServices/{s_id}/Endpoints/{ep_id}"
+        "@odata.id": "{rb}Fabrics/{f_id}/Endpoints/{ep_id}"
       }
     }
   ]
@@ -77,14 +77,14 @@ def get_Endpoints_instance(wildcards):
     d = json.dumps(c)
     g = d.replace('{ep_id}', 'NUv')
     g = g.replace('{rb}', 'NUb')
-    g = g.replace('{s_id}', 'NUs')
+    g = g.replace('{f_id}', 'NUs')
     g = g.replace('{{', '~~!')
     g = g.replace('}}', '!!~')
     g = g.replace('{', '~!')
     g = g.replace('}', '!~')
     g = g.replace('NUv', '{ep_id}')
     g = g.replace('NUb', '{rb}')
-    g = g.replace('NUs', '{s_id}')
+    g = g.replace('NUs', '{f_id}')
     g = g.format(**wildcards)
     g = g.replace('~~!', '{{')
     g = g.replace('!!~', '}}')

@@ -28,7 +28,7 @@
 #  THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-# memory_domains_api.py
+# c_memory_api.py
 
 import json, os
 import traceback
@@ -40,138 +40,78 @@ import urllib3
 
 from flask import jsonify, request
 from flask_restful import Resource
-from api_emulator.utils import update_collections_json
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 from .constants import *
-from .templates.memory_domains import get_MemoryDomain_instance
+from .templates.memory_domains import get_ChassisMemoryDomain_instance
 
 members =[]
 member_ids = []
-foo = False
 config = {}
 INTERNAL_ERROR = 500
 
-
-
-def create_path(*args):
-    trimmed = [str(arg).strip('/') for arg in args]
-    return os.path.join(*trimmed)
-
-
-# MemoryDomainsAPI API
+# MemoryDomainAPI API
 class MemoryDomainsAPI(Resource):
     def __init__(self, **kwargs):
-        logging.info('MemoryDomainsAPI init called')
+        logging.info('MemoryDomainAPI init called')
         self.root = PATHS['Root']
         self.chassis = PATHS['Chassis']['path']
-        self.memory_domains = PATHS['Chassis']['memory_domains']
+        self.memory_domains = PATHS['Chassis']['memory_domain']
 
     # HTTP GET
     def get(self, chassis, memory_domain):
         path = create_path(self.root, self.chassis, chassis, self.memory_domains, memory_domain, 'index.json')
-        try:
-            memory_domain_json = open(path)
-            data = json.load(memory_domain_json)
-        except Exception as e:
-            traceback.print_exc()
-            raise Exception("Unable read file because of following error::{}".format(e))
-        return jsonify(data)
+        return get_json_data (path)
 
     # HTTP POST
     # - Create the resource (since URI variables are available)
     # - Update the members and members.id lists
     # - Attach the APIs of subordinate resources (do this only once)
-    # - Finally, create an instance of the subordinate resources
+    # - Finally, create an instance of the subordiante resources
     def post(self, chassis, memory_domain):
-        logging.info('MemoryDomainsAPI POST called')
+        logging.info('MemoryDomainAPI POST called')
+        path = create_path(self.root, self.chassis, chassis, self.memory_domains, memory_domain)
+        collection_path = os.path.join(self.root, self.chassis, chassis, self.memory_domains, 'index.json')
+
+        # Check if collection exists:
+        if not os.path.exists(collection_path):
+            MemoryDomainsCollectionAPI.post (self, chassis)
+
+        if memory_domain in members:
+            resp = 404
+            return resp
         try:
             global config
-            global foo
+            wildcards = {'c_id':chassis, 'md_id': memory_domain, 'rb': g.rest_base}
+            config=get_ChassisMemoryDomain_instance(wildcards)
+            config = create_and_patch_object (config, members, member_ids, path, collection_path)
 
-            wildcards = {'s_id':chassis, 'd_id': memory_domain, 'rb': g.rest_base}
-            config=get_MemoryDomain_instance(wildcards)
-
-            members.append(config)
-            member_ids.append({'@odata.id': config['@odata.id']})
-
-            # Create instances of subordinate resources, then call put operation
-            # not implemented yet
-
-            path = create_path(self.root, self.chassis, chassis, self.memory_domains, memory_domain)
-            if not os.path.exists(path):
-                os.mkdir(path)
-            else:
-                # This will execute when POST is called for more than one time for a resource
-                return config, 500
-            with open(os.path.join(path, "index.json"), "w") as fd:
-                fd.write(json.dumps(config, indent=4, sort_keys=True))
-
-            # update the collection json file with new added resource
-            collection_path = os.path.join(self.root, self.chassis, chassis, self.memory_domains, 'index.json')
-            update_collections_json(path=collection_path, link=config['@odata.id'])
+            # Create sub-collections:
             resp = config, 200
+
         except Exception:
             traceback.print_exc()
             resp = INTERNAL_ERROR
-        logging.info('MemoryDomainsAPI put exit')
+        logging.info('MemoryDomainAPI POST exit')
         return resp
 
-    # HTTP PATCH
+	# HTTP PATCH
     def patch(self, chassis, memory_domain):
-        path = os.path.join(self.root, self.chassis, chassis,
-                                       self.memory_domains, memory_domain, 'index.json')
-        try:
-            # Read json from file.
-            with open(path, 'r') as memory_domain_json:
-                data = json.load(memory_domain_json)
-                memory_domain_json.close()
+        path = os.path.join(self.root, self.chassis, chassis, self.memory_domains, memory_domain, 'index.json')
+        patch_object(path)
+        return self.get(chassis, memory_domain)
 
-            request_data = json.loads(request.data)
+    # HTTP PUT
+    def put(self, chassis, memory_domain):
+        path = os.path.join(self.root, self.chassis, chassis, self.memory_domains, memory_domain, 'index.json')
+        put_object(path)
+        return self.get(chassis, memory_domain)
 
-            if request_data:
-                # Update the keys of payload in json file.
-                for key, value in request_data.items():
-                    if key in data and data[key]:
-                        data[key] = value
-
-            # Write the updated json to file.
-            with open(path, 'w') as f:
-                json.dump(data, f)
-                f.close()
-
-        except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        json_data = self.get(chassis, memory_domain_json)
-        return json_data
     # HTTP DELETE
-    def delete(self,chassis, memory_domain):
-
-        path = os.path.join(self.root, self.chassis, chassis, self.memory_domains, memory_domain).replace("\\","/")
-        print (path)
-        delPath = path.replace('Resources','/redfish/v1')
-        path2 = os.path.join(self.root, self.chassis, chassis, self.memory_domains, 'index.json').replace("\\","/")
-        try:
-            with open(path2,"r") as pdata:
-                pdata = json.load(pdata)
-
-            data = {
-            "@odata.id":delPath
-            }
-            resp = 200
-            jdata = data["@odata.id"].split('/')
-            path1 = os.path.join(self.root, self.chassis, chassis, self.memory_domains, jdata[len(jdata)-1])
-
-            shutil.rmtree(path1)
-            pdata['Members'].remove(data)
-            pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
-
-            with open(path2,"w") as jdata:
-                json.dump(pdata,jdata)
-
-        except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(resp)
+    def delete(self, chassis, memory_domain):
+        #Set path to object, then call delete_object:
+        path = create_path(self.root, self.chassis, chassis, self.memory_domains, memory_domain)
+        base_path = create_path(self.root, self.chassis, chassis, self.memory_domains)
+        return delete_object(path, base_path)
 
 
 # MemoryDomains Collection API
@@ -180,82 +120,40 @@ class MemoryDomainsCollectionAPI(Resource):
     def __init__(self):
         self.root = PATHS['Root']
         self.chassis = PATHS['Chassis']['path']
-        self.memory_domains = PATHS['Chassis']['memory_domains']
+        self.memory_domains = PATHS['Chassis']['memory_domain']
 
     def get(self, chassis):
         path = os.path.join(self.root, self.chassis, chassis, self.memory_domains, 'index.json')
-        try:
-            memory_domain_json = open(path)
-            data = json.load(memory_domain_json)
-        except Exception as e:
-            traceback.print_exc()
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(data)
+        return get_json_data (path)
 
     def verify(self, config):
         # TODO: Implement a method to verify that the POST body is valid
         return True,{}
 
-    # HTTP POST
-    # POST should allow adding multiple instances to a collection.
-    # For now, this only adds one instance.
-    # TODO: 'id' should be obtained from the request data.
+    # HTTP POST Collection
     def post(self, chassis):
-        logging.info('MemoryDomainsCollectionAPI POST called')
-        try:
-            config = request.get_json(force=True)
-            ok, msg = self.verify(config)
-            if ok:
-                # Save the new singleton
-                singleton_name = os.path.basename(config['@odata.id'])
-                path = os.path.join(self.root, self.chassis, chassis, self.memory_domains, singleton_name)
-                if not os.path.exists(path):
-                    os.mkdir(path)
-                with open(os.path.join(path, "index.json"), "w") as fd:
-                    fd.write(json.dumps(config, indent=4, sort_keys=True))
-                # Update the collection
-                collection_path = os.path.join(self.root, self.chassis, chassis, self.memory_domains, 'index.json')
-                update_collections_json(collection_path, config['@odata.id'])
-                # Return a copy of the new singleton with a Created response
-                resp = config, 201
-            else:
-                resp = msg, 400
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        return resp
-
-
-class CreateMemoryDomain (Resource):
-    def __init__(self):
         self.root = PATHS['Root']
         self.chassis = PATHS['Chassis']['path']
-        self.memory_domains = PATHS['Chassis']['memory_domains']
+        self.memory_domains = PATHS['Chassis']['memory_domain']
 
-    # Attach APIs for subordinate resource(s). Attach the APIs for a resource collection and its singletons
-    def put(self,chassis):
-        logging.info('CreateMemoryDomain put started.')
-        try:
-            path = create_path(self.root, self.chassis, chassis, self.memory_domains)
-            if not os.path.exists(path):
-                os.mkdir(path)
-            else:
-                logging.info('The given path : {} already Exist.'.format(path))
-            config={
-                      "@Redfish.Copyright": "Copyright 2015-2021 SNIA. All rights reserved.",
-                      "@odata.type": "#MemoryCollection.MemoryCollection",
-                      "Name": "Memory",
-                      "Members@odata.count": 1,
-                      "Members": [
-                      ]
-                    }
-            with open(os.path.join(path, "index.json"), "w") as fd:
-                fd.write(json.dumps(config, indent=4, sort_keys=True))
+        logging.info('MemoryDomainsCollectionAPI POST called')
 
-            resp = config, 200
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        logging.info('CreateMemoryDomain put exit.')
-        return resp
+        if chassis in members:
+            resp = 404
+            return resp
+
+        path = create_path(self.root, self.chassis, chassis, self.memory_domains)
+        return create_collection (path, 'MemoryDomain')
+
+    # HTTP PUT
+    def put(self, chassis):
+        path = os.path.join(self.root, self.chassis, chassis, self.memory_domains, 'index.json')
+        put_object(path)
+        return self.get(chassis)
+
+    # HTTP DELETE
+    def delete(self, chassis):
+        #Set path to object, then call delete_object:
+        path = create_path(self.root, self.chassis, chassis, self.memory_domains)
+        base_path = create_path(self.root, self.chassis, chassis)
+        return delete_collection(path, base_path)

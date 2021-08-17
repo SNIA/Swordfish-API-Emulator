@@ -112,15 +112,9 @@ _TEMPLATE = \
             "@odata.id": "{rb}Systems/{s_id}/FabricAdapters/{fa_id}/SSDT"
         }
     },
-    "Links": {
-        "Endpoints": [
-            {}
-        ]
-    },
     "Manufacturer": "Contoso",
     "Model": "Bridge Model X",
     "Name": "Bridge",
-    "Oem": {},
     "PCIeInterface": {
         "LanesInUse": 64,
         "MaxLanes": 64,
@@ -151,16 +145,16 @@ def get_FabricAdapters_instance(wildcards):
     """
     c = copy.deepcopy(_TEMPLATE)
     d = json.dumps(c)
-    g = d.replace('{fa_id}', 'NUv')
+    g = d.replace('{s_id}', 'NUv')
     g = g.replace('{rb}', 'NUb')
-    g = g.replace('{c_id}', 'NUs')
+    g = g.replace('{fa_id}', 'NUs')
     g = g.replace('{{', '~~!')
     g = g.replace('}}', '!!~')
     g = g.replace('{', '~!')
     g = g.replace('}', '!~')
-    g = g.replace('NUv', '{fa_id}')
+    g = g.replace('NUv', '{s_id}')
     g = g.replace('NUb', '{rb}')
-    g = g.replace('NUs', '{c_id}')
+    g = g.replace('NUs', '{fa_id}')
     g = g.format(**wildcards)
     g = g.replace('~~!', '{{')
     g = g.replace('!!~', '}}')

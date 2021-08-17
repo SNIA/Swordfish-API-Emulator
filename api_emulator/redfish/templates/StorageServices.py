@@ -38,8 +38,8 @@ _TEMPLATE = \
 {
   "@Redfish.Copyright": "Copyright 2015-2021 SNIA. All rights reserved.",
   "@odata.id": "{rb}StorageServices/{id}",
-  "@odata.type": "#StorageServiceCollection.StorageServiceCollection",
-  "Name": "Storage Service Collection",
+  "@odata.type": "#StorageService.v1_5_0.StorageService",
+  "Name": "Storage Service {id}",
   "Id":"{id}",
   "Links":[],
   "ClassesOfService": {"@odata.id": "{rb}StorageServices/{id}/ClassesOfService"},
@@ -51,7 +51,6 @@ _TEMPLATE = \
   "Volumes": {
     "@odata.id": "{rb}StorageServices/{id}/Volumes"
   },
-  "StorageSubsystems": {"@odata.id": "{rb}StorageServices/{id}/StorageSubsystems"},
   "DataProtectionLoSCapabilities": {
       "@odata.id": "{rb}StorageServices/{id}/DataProtectionLoSCapabilities"
     },
@@ -96,12 +95,10 @@ def get_StorageServices_instance(wildcards):
     c['StoragePools'] ['@odata.id']=c['StoragePools']['@odata.id'].format(**wildcards)
     c['Volumes']['@odata.id']=c['Volumes']['@odata.id'].format(**wildcards)
     c['FileSystems']['@odata.id']=c['FileSystems']['@odata.id'].format(**wildcards)
-    c['StorageSubsystems']['@odata.id']=c['StorageSubsystems']['@odata.id'].format(**wildcards)
     c['DataProtectionLoSCapabilities']['@odata.id']=c['DataProtectionLoSCapabilities']['@odata.id'].format(**wildcards)
     c['DataSecurityLoSCapabilities']['@odata.id']=c['DataSecurityLoSCapabilities']['@odata.id'].format(**wildcards)
     c['DataStorageLoSCapabilities']['@odata.id']=c['DataStorageLoSCapabilities']['@odata.id'].format(**wildcards)
     c['IOPerformanceLoSCapabilities']['@odata.id']=c['IOPerformanceLoSCapabilities']['@odata.id'].format(**wildcards)
     c['IOConnectivityLoSCapabilities']['@odata.id']=c['IOConnectivityLoSCapabilities']['@odata.id'].format(**wildcards)
-
 
     return c

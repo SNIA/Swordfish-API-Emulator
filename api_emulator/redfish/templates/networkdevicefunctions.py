@@ -39,12 +39,9 @@ _TEMPLATE = \
   "@odata.id": "{rb}Chassis/{c_id}/NetworkAdapters/{n_id}/NetworkDeviceFunctions/{ndf_id}",
   "@odata.type": "#NetworkDeviceFunction.v1_6_0.NetworkDeviceFunction",
   "Id": "{ndf_id}",
-  "Name": "Network Device Function",
-  "Name": "Network Device Function View",
+  "Name": "Network Device Function {ndf_id}",
   "Description": "Network Device function for IP Attach drive.",
-  "AssignablePhysicalNetworkPorts": [{
-    "@odata.id": "/redfish/v1/Chassis/{c_id}/NetworkAdapters/{n_id}/Ports/1"
-  }],
+
   "DeviceEnabled": "true",
   "Ethernet": {
     "IPv4Addresses": [
@@ -52,8 +49,7 @@ _TEMPLATE = \
             "Address": "192.168.0.10",
             "SubnetMask": "255.255.252.0",
             "AddressOrigin": "DHCP",
-            "Gateway": "192.168.0.1",
-            "Oem": {}
+            "Gateway": "192.168.0.1"
         }
     ],
     "IPv6AddressPolicyTable": [
@@ -75,8 +71,7 @@ _TEMPLATE = \
             "Address": "fe80::1ec1:deff:fe6f:1e24",
             "PrefixLength": 64,
             "AddressOrigin": "SLAAC",
-            "AddressState": "Preferred",
-            "Oem": {}
+            "AddressState": "Preferred"
         }
     ],
     "PermanentMACAddress": "00:0C:29:9A:98:01",
@@ -88,13 +83,7 @@ _TEMPLATE = \
   "NetDevFuncCapabilities": [
     "Ethernet"
   ],
-  "NetDevFuncType": "Ethernet",
-  "PhysicalNetworkPortAssignment": {
-    "@odata.id": "/redfish/v1/Chassis/{c_id}/NetworkAdapters/{n_id}/Ports/1"
-  },
-  "Links": {
-    "Endpoints": []
-  }
+  "NetDevFuncType": "Ethernet"
 }
 
 
@@ -110,6 +99,7 @@ def get_NetworkDeviceFunctions_instance(wildcards):
     g = d.replace('{n_id}', 'NUv')
     g = g.replace('{rb}', 'NUb')
     g = g.replace('{c_id}', 'NUs')
+    g = g.replace('{ndf_id}', 'NUr')
     g = g.replace('{{', '~~!')
     g = g.replace('}}', '!!~')
     g = g.replace('{', '~!')
@@ -117,6 +107,7 @@ def get_NetworkDeviceFunctions_instance(wildcards):
     g = g.replace('NUv', '{n_id}')
     g = g.replace('NUb', '{rb}')
     g = g.replace('NUs', '{c_id}')
+    g = g.replace('NUr', '{ndf_id}')
     g = g.format(**wildcards)
     g = g.replace('~~!', '{{')
     g = g.replace('!!~', '}}')

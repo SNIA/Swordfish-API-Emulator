@@ -40,7 +40,7 @@ import urllib3
 
 from flask import jsonify, request
 from flask_restful import Resource
-from api_emulator.utils import update_collections_json
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 from .constants import *
 from .templates.classesofservice import get_ClassesOfService_instance
 
@@ -50,13 +50,6 @@ member_ids = []
 foo = False
 config = {}
 INTERNAL_ERROR = 500
-
-
-
-
-def create_path(*args):
-    trimmed = [str(arg).strip('/') for arg in args]
-    return os.path.join(*trimmed)
 
 
 # ClassesOfServiceAPI
@@ -70,13 +63,7 @@ class ClassesOfServiceAPI(Resource):
     # HTTP GET
     def get(self, storage_service, classes_of_service):
         path = create_path(self.root, self.storage_services, storage_service, self.classes_of_service, classes_of_service, 'index.json')
-        try:
-            classes_of_service_json = open(path)
-            data = json.load(classes_of_service_json)
-        except Exception as e:
-            traceback.print_exc()
-            raise Exception("Unable read file because of following error::{}".format(e))
-        return jsonify(data)
+        return get_json_data (path)
 
     # HTTP POST
     # - Create the resource (since URI variables are available)
@@ -85,32 +72,19 @@ class ClassesOfServiceAPI(Resource):
     # - Finally, create an instance of the subordiante resources
     def post(self, storage_service, classes_of_service):
         logging.info('ClassesOfServiceAPI PUT called')
+        path = create_path(self.root, self.storage_services, storage_service, self.classes_of_service, classes_of_service)
+        collection_path = create_path(self.root, self.storage_services, storage_service, self.classes_of_service)
+
+        if classes_of_service in members:
+            resp = 404
+            return resp
         try:
             global config
-            global foo
 
             wildcards = {'s_id':storage_service, 'clos_id': classes_of_service, 'rb': g.rest_base}
             config=get_ClassesOfService_instance(wildcards)
 
-            members.append(config)
-            member_ids.append({'@odata.id': config['@odata.id']})
-
-            # Create instances of subordinate resources, then call put operation
-            # not implemented yet
-
-            path = create_path(self.root, self.storage_services, storage_service, self.classes_of_service, classes_of_service)
-            if not os.path.exists(path):
-                os.mkdir(path)
-            else:
-                # This will execute when POST is called for more than one time for a resource
-                return config, 500
-            with open(os.path.join(path, "index.json"), "w") as fd:
-                fd.write(json.dumps(config, indent=4, sort_keys=True))
-
-
-            # update the collection json file with new added resource
-            collection_path = os.path.join(self.root, self.storage_services, storage_service, self.classes_of_service, 'index.json')
-            update_collections_json(path=collection_path, link=config['@odata.id'])
+            config = create_and_patch_object (config, members, member_ids, path, collection_path)
 
             resp = config, 200
         except Exception:
@@ -118,66 +92,21 @@ class ClassesOfServiceAPI(Resource):
             resp = INTERNAL_ERROR
         logging.info('ClassesOfServiceAPI put exit')
         return resp
+
 	# HTTP PATCH
     def patch(self, storage_service, classes_of_service):
 
         path = os.path.join(self.root, self.storage_services, storage_service, self.classes_of_service, classes_of_service, 'index.json')
-        try:
-            # Read json from file.
-            with open(path, 'r') as classes_of_service_json:
-                data = json.load(classes_of_service_json)
-                classes_of_service_json.close()
+        patch_object(path)
+        return self.get(fabric)
 
-            request_data = json.loads(request.data)
-
-            if request_data:
-                # Update the keys of payload in json file.
-                for key, value in request_data.items():
-                    if key in data and data[key]:
-                        data[key] = value
-
-            # Write the updated json to file.
-            with open(path, 'w') as f:
-                json.dump(data, f)
-                f.close()
-
-        except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        json_data = self.get(storage_service, classes_of_service)
-        return json_data
 
     # HTTP DELETE
     def delete(self,storage_service,classes_of_service):
 
-        path = os.path.join(self.root, self.storage_services, storage_service, self.classes_of_service, classes_of_service).replace("\\","/")
-        print (path)
-        delPath = path.replace('Resources','/redfish/v1')
-        path2 = os.path.join(self.root, self.storage_services, storage_service, self.classes_of_service, 'index.json').replace("\\","/")
-        try:
-            with open(path2,"r") as pdata:
-                pdata = json.load(pdata)
-
-            data = {
-            "@odata.id":delPath
-            }
-            resp = 200
-            jdata = data["@odata.id"].split('/')
-
-            path1 = os.path.join(self.root, self.storage_services, storage_service,  self.classes_of_service, jdata[len(jdata)-1])
-
-            shutil.rmtree(path1)
-            pdata['Members'].remove(data)
-            pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
-
-            with open(path2,"w") as jdata:
-                json.dump(pdata,jdata)
-
-
-        except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(resp)
+        path = create_path(self.root, self.storage_services, storage_service, self.classes_of_service, classes_of_service).replace("\\","/")
+        collection_path = create_path(self.root, self.storage_services, storage_service, self.classes_of_service).replace("\\","/")
+        return delete_object(path, base_path)
 
 
 # ClassesOfService Collection API

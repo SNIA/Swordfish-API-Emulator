@@ -39,23 +39,15 @@ import shutil
 
 from flask import jsonify, request
 from flask_restful import Resource
-from api_emulator.utils import update_collections_json
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 from .constants import *
 from .templates.volumes import get_Volumes_instance
 
 
 members =[]
 member_ids = []
-foo = False
 config = {}
 INTERNAL_ERROR = 500
-
-
-
-def create_path(*args):
-    trimmed = [str(arg).strip('/') for arg in args]
-    return os.path.join(*trimmed)
-
 
 # VolumesAPI API
 class VolumesAPI(Resource):
@@ -63,122 +55,61 @@ class VolumesAPI(Resource):
         logging.info('VolumesAPI init called')
         self.root = PATHS['Root']
         self.storage = PATHS['Storage']['path']
-        self.volumes = PATHS['Storage']['volumes']
+        self.volumes = PATHS['Storage']['volume']
 
     # HTTP GET
-    def get(self, storage, volumes):
-        path = create_path(self.root, self.storage, storage, self.volumes, volumes, 'index.json')
-        try:
-            volumes_json = open(path)
-            data = json.load(volumes_json)
-        except Exception as e:
-            traceback.print_exc()
-            raise Exception("Unable read file because of following error::{}".format(e))
-        return jsonify(data)
+    def get(self, storage, volume):
+        path = create_path(self.root, self.storage, storage, self.volumes, volume, 'index.json')
+        return get_json_data (path)
 
     # HTTP POST
     # - Create the resource (since URI variables are available)
     # - Update the members and members.id lists
     # - Attach the APIs of subordinate resources (do this only once)
-    # - Finally, create an instance of the subordiante resources
-    def post(self, storage, volumes):
-        logging.info('VolumesAPI PUT called')
+    # - Finally, create an instance of the subordinate resources
+    def post(self, storage, volume):
+        logging.info('VolumesAPI POST called')
+        path = create_path(self.root, self.storage, storage, self.volumes, volume)
+        collection_path = os.path.join(self.root, self.storage, storage, self.volumes, 'index.json')
+
+        # Check if collection exists:
+        if not os.path.exists(collection_path):
+            VolumesCollectionAPI.post (self, storage)
+
+        if volume in members:
+            resp = 404
+            return resp
         try:
             global config
-            global foo
-
-            wildcards = {'s_id':storage, 'v_id': volumes, 'rb': g.rest_base}
+            wildcards = {'s_id':storage, 'v_id': volume, 'rb': g.rest_base}
             config=get_Volumes_instance(wildcards)
-
-            members.append(config)
-            member_ids.append({'@odata.id': config['@odata.id']})
-
-            # Create instances of subordinate resources, then call put operation
-            # not implemented yet
-
-            path = create_path(self.root, self.storage, storage, self.volumes, volumes)
-            if not os.path.exists(path):
-                os.mkdir(path)
-            else:
-                # This will execute when POST is called for more than one time for a resource
-                return config, 500
-            with open(os.path.join(path, "index.json"), "w") as fd:
-                fd.write(json.dumps(config, indent=4, sort_keys=True))
-
-
-            # update the collection json file with new added resource
-            collection_path = os.path.join(self.root, self.storage, storage, self.volumes, 'index.json')
-            update_collections_json(path=collection_path, link=config['@odata.id'])
-
-
-
+            config = create_and_patch_object (config, members, member_ids, path, collection_path)
             resp = config, 200
+
         except Exception:
             traceback.print_exc()
             resp = INTERNAL_ERROR
-        logging.info('VolumesAPI put exit')
+        logging.info('VolumesAPI POST exit')
         return resp
+
 	# HTTP PATCH
-    def patch(self, storage, volumes):
-        path = os.path.join(self.root, self.storage, storage,
-                                       self.volumes, volumes, 'index.json')
-        try:
-            # Read json from file.
-            with open(path, 'r') as volumes_json:
-                data = json.load(volumes_json)
-                volumes_json.close()
+    def patch(self, storage, volume):
+        path = os.path.join(self.root, self.storage, storage, self.volumes, volume, 'index.json')
+        patch_object(path)
+        return self.get(storage, volume)
 
-            request_data = json.loads(request.data)
-
-            if request_data:
-                # Update the keys of payload in json file.
-                for key, value in request_data.items():
-                    if key in data and data[key]:
-                        data[key] = value
-
-            # Write the updated json to file.
-            with open(path, 'w') as f:
-                json.dump(data, f)
-                f.close()
-
-        except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        json_data = self.get(storage, volumes)
-        return json_data
+	# HTTP PUT
+    def put(self, storage, volume):
+        path = os.path.join(self.root, self.storage, storage, self.volumes, volume, 'index.json')
+        put_object(path)
+        return self.get(storage, volume)
 
     # HTTP DELETE
-    def delete(self,storage,  volumes):
-
-        path = os.path.join(self.root, self.storage, storage, self.volumes, volumes).replace("\\","/")
-        print (path)
-        delPath = path.replace('Resources','/redfish/v1')
-        path2 = os.path.join(self.root, self.storage, storage, self.volumes, 'index.json').replace("\\","/")
-        try:
-            with open(path2,"r") as pdata:
-                pdata = json.load(pdata)
-
-            data = {
-            "@odata.id":delPath
-            }
-            resp = 200
-            jdata = data["@odata.id"].split('/')
-
-            path1 = os.path.join(self.root, self.storage, storage, self.volumes, jdata[len(jdata)-1])
-
-            shutil.rmtree(path1)
-            pdata['Members'].remove(data)
-            pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
-
-            with open(path2,"w") as jdata:
-                json.dump(pdata,jdata)
-
-
-        except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(resp)
-
+    def delete(self, storage, volume):
+        #Set path to object, then call delete_object:
+        path = create_path(self.root, self.storage, storage, self.volumes, volume)
+        base_path = create_path(self.root, self.storage, storage, self.volumes)
+        return delete_object(path, base_path)
 
 # Volumes Collection API
 class VolumesCollectionAPI(Resource):
@@ -186,58 +117,49 @@ class VolumesCollectionAPI(Resource):
     def __init__(self):
         self.root = PATHS['Root']
         self.storage = PATHS['Storage']['path']
-        self.volumes = PATHS['Storage']['volumes']
+        self.volumes = PATHS['Storage']['volume']
 
     def get(self, storage):
         path = os.path.join(self.root, self.storage, storage, self.volumes, 'index.json')
-        try:
-            volume_json = open(path)
-            data = json.load(volume_json)
-        except Exception as e:
-            traceback.print_exc()
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(data)
+        return get_json_data (path)
 
     def verify(self, config):
         # TODO: Implement a method to verify that the POST body is valid
         return True,{}
 
-    # HTTP POST
-    # POST should allow adding multiple instances to a collection.
-    # For now, this only adds one instance.
-    # TODO: 'id' should be obtained from the request data.
+    # HTTP POST Collection
     def post(self, storage):
-        logging.info('VolumesCollectionAPI POST called')
-        try:
-            config = request.get_json(force=True)
-            ok, msg = self.verify(config)
-            if ok:
-                # Save the new singleton
-                singleton_name = os.path.basename(config['@odata.id'])
-                path = os.path.join(self.root, self.storage, storage, self.volumes, singleton_name)
-                if not os.path.exists(path):
-                    os.mkdir(path)
-                with open(os.path.join(path, "index.json"), "w") as fd:
-                    fd.write(json.dumps(config, indent=4, sort_keys=True))
-                # Update the collection
-                collection_path = os.path.join(self.root, self.storage, storage, self.volumes, 'index.json')
-                update_collections_json(collection_path, config['@odata.id'])
-                # Return a copy of the new singleton with a Created response
-                resp = config, 201
-            else:
-                resp = msg, 400
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        return resp
+        self.root = PATHS['Root']
+        self.storage = PATHS['Storage']['path']
+        self.volumes = PATHS['Storage']['volume']
 
+        logging.info('VolumesCollectionAPI POST called')
+
+        if storage in members:
+            resp = 404
+            return resp
+
+        path = create_path(self.root, self.storage, storage, self.volumes)
+        return create_collection (path, 'Volume')
+
+    # HTTP PUT
+    def put(self, storage):
+        path = os.path.join(self.root, self.storage, storage, self.volumes, 'index.json')
+        put_object(path)
+        return self.get(volume)
+
+    # HTTP DELETE
+    def delete(self, storage):
+        #Set path to object, then call delete_object:
+        path = create_path(self.root, self.storage, storage, self.volumes)
+        base_path = create_path(self.root, self.storage, storage)
+        return delete_collection(path, base_path)
 
 class CreateVolume (Resource):
     def __init__(self):
         self.root = PATHS['Root']
         self.storage = PATHS['Storage']['path']
-        self.volumes = PATHS['Storage']['volumes']
+        self.volumes = PATHS['Storage']['volume']
 
     # Attach APIs for subordinate resource(s). Attach the APIs for a resource collection and its singletons
     def put(self,storage):

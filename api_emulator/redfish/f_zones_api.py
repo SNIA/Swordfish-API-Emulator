@@ -27,7 +27,6 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 #
-
 #f_zones_api.py
 
 import json, os
@@ -40,25 +39,16 @@ import urllib3
 
 from flask import jsonify, request
 from flask_restful import Resource
-from api_emulator.utils import update_collections_json
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 from .constants import *
 from .templates.zones import get_Zones_instance
 
 members =[]
 member_ids = []
-foo = False
 config = {}
 INTERNAL_ERROR = 500
 
-
-
-
-def create_path(*args):
-    trimmed = [str(arg).strip('/') for arg in args]
-    return os.path.join(*trimmed)
-
-
-# FabricsZones API
+# FabricsZonesAPI API
 class FabricsZonesAPI(Resource):
     def __init__(self, **kwargs):
         logging.info('FabricsZonesAPI init called')
@@ -69,13 +59,7 @@ class FabricsZonesAPI(Resource):
     # HTTP GET
     def get(self, fabric, f_zone):
         path = create_path(self.root, self.fabrics, fabric, self.f_zones, f_zone, 'index.json')
-        try:
-            f_zone_json = open(path)
-            data = json.load(f_zone_json)
-        except Exception as e:
-            traceback.print_exc()
-            raise Exception("Unable read file because of following error::{}".format(e))
-        return jsonify(data)
+        return get_json_data (path)
 
     # HTTP POST
     # - Create the resource (since URI variables are available)
@@ -83,102 +67,50 @@ class FabricsZonesAPI(Resource):
     # - Attach the APIs of subordinate resources (do this only once)
     # - Finally, create an instance of the subordiante resources
     def post(self, fabric, f_zone):
-        logging.info('FabricsZonesAPI PUT called')
+        logging.info('FabricsZonesAPI POST called')
+        path = create_path(self.root, self.fabrics, fabric, self.f_zones, f_zone)
+        collection_path = os.path.join(self.root, self.fabrics, fabric, self.f_zones, 'index.json')
+
+        # Check if collection exists:
+        if not os.path.exists(collection_path):
+            FabricsZonesCollectionAPI.post (self, fabric)
+
+        if f_zone in members:
+            resp = 404
+            return resp
         try:
             global config
-            global foo
-
-            wildcards = {'f_id':fabrics, 'z_id': f_zone, 'rb': g.rest_base}
+            wildcards = {'f_id':fabric, 'z_id': f_zone, 'rb': g.rest_base}
             config=get_Zones_instance(wildcards)
-
-            members.append(config)
-            member_ids.append({'@odata.id': config['@odata.id']})
-
-            # Create instances of subordinate resources, then call put operation
-            # not implemented yet
-
-            path = create_path(self.root, self.fabrics, fabric, self.f_zones, f_zone)
-            if not os.path.exists(path):
-                os.mkdir(path)
-            else:
-                # This will execute when POST is called for more than one time for a resource
-                return config, 500
-            with open(os.path.join(path, "index.json"), "w") as fd:
-                fd.write(json.dumps(config, indent=4, sort_keys=True))
-
-            # update the collection json file with new added resource
-            collection_path = os.path.join(self.root, self.fabrics, fabric, self.f_zones, 'index.json')
-            update_collections_json(path=collection_path, link=config['@odata.id'])
+            config = create_and_patch_object (config, members, member_ids, path, collection_path)
             resp = config, 200
         except Exception:
             traceback.print_exc()
             resp = INTERNAL_ERROR
-        logging.info('FabricsZonesAPI put exit')
+        logging.info('FabricsZonesAPI POST exit')
         return resp
 
 	# HTTP PATCH
     def patch(self, fabric, f_zone):
-        path = os.path.join(self.root, self.fabrics, fabric,
-                                       self.f_zones, f_zone, 'index.json')
-        try:
-            # Read json from file.
-            with open(path, 'r') as f_zone_json:
-                data = json.load(f_zone_json)
-                f_zone_json.close()
+        path = os.path.join(self.root, self.fabrics, fabric, self.f_zones, f_zone, 'index.json')
+        patch_object(path)
+        return self.get(fabric, f_zone)
 
-            request_data = json.loads(request.data)
-
-            if request_data:
-                # Update the keys of payload in json file.
-                for key, value in request_data.items():
-                    if key in data and data[key]:
-                        data[key] = value
-
-            # Write the updated json to file.
-            with open(path, 'w') as f:
-                json.dump(data, f)
-                f.close()
-
-        except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        json_data = self.get(fabrics, f_zone_json)
-        return json_data
+    # HTTP PUT
+    def put(self, fabric, f_zone):
+        path = os.path.join(self.root, self.fabrics, fabric, self.f_zones, f_zone, 'index.json')
+        put_object(path)
+        return self.get(fabric, f_zone)
 
     # HTTP DELETE
-    def delete(self,fabrics, f_zone):
-
-        path = os.path.join(self.root, self.fabrics, fabric, self.f_zones, f_zone).replace("\\","/")
-        print (path)
-        delPath = path.replace('Resources','/redfish/v1')
-        path2 = os.path.join(self.root, self.fabrics, fabric, self.f_zones, 'index.json').replace("\\","/")
-
-        try:
-            with open(path2,"r") as pdata:
-                pdata = json.load(pdata)
-
-            data = {
-            "@odata.id":delPath
-            }
-            resp = 200
-            jdata = data["@odata.id"].split('/')
-
-            path1 = os.path.join(self.root, self.fabrics, fabric, self.f_zones, jdata[len(jdata)-1])
-            shutil.rmtree(path1)
-            pdata['Members'].remove(data)
-            pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
-
-            with open(path2,"w") as jdata:
-                json.dump(pdata,jdata)
+    def delete(self, fabric, f_zone):
+        #Set path to object, then call delete_object:
+        path = create_path(self.root, self.fabrics, fabric, self.f_zones, f_zone)
+        base_path = create_path(self.root, self.fabrics, fabric, self.f_zones)
+        return delete_object(path, base_path)
 
 
-        except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(resp)
-
-
-# FabricsZones Collection API
+# Fabrics Zones Collection API
 class FabricsZonesCollectionAPI(Resource):
 
     def __init__(self):
@@ -188,80 +120,36 @@ class FabricsZonesCollectionAPI(Resource):
 
     def get(self, fabric):
         path = os.path.join(self.root, self.fabrics, fabric, self.f_zones, 'index.json')
-        try:
-            f_zone_json = open(path)
-            data = json.load(f_zone_json)
-        except Exception as e:
-            traceback.print_exc()
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(data)
+        return get_json_data (path)
 
     def verify(self, config):
         # TODO: Implement a method to verify that the POST body is valid
         return True,{}
 
-    # HTTP POST
-    # POST should allow adding multiple instances to a collection.
-    # For now, this only adds one instance.
-    # TODO: 'id' should be obtained from the request data.
+    # HTTP POST Collection
     def post(self, fabric):
-        logging.info('FabricsZonesCollectionAPI POST called')
-        try:
-            config = request.get_json(force=True)
-            ok, msg = self.verify(config)
-            if ok:
-                # Save the new singleton
-                singleton_name = os.path.basename(config['@odata.id'])
-                path = os.path.join(self.root, self.fabrics, fabric, self.f_zones, singleton_name)
-                if not os.path.exists(path):
-                    os.mkdir(path)
-                with open(os.path.join(path, "index.json"), "w") as fd:
-                    fd.write(json.dumps(config, indent=4, sort_keys=True))
-                # Update the collection
-                collection_path = os.path.join(self.root, self.fabrics, fabric, self.f_zones, 'index.json')
-                update_collections_json(collection_path, config['@odata.id'])
-                # Return a copy of the new singleton with a Created response
-                resp = config, 201
-            else:
-                resp = msg, 400
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        return resp
-
-
-class CreateFabricsZones (Resource):
-    def __init__(self):
         self.root = PATHS['Root']
         self.fabrics = PATHS['Fabrics']['path']
         self.f_zones = PATHS['Fabrics']['f_zone']
 
-    # Attach APIs for subordinate resource(s). Attach the APIs for a resource collection and its singletons
-    def put(self,fabrics):
-        logging.info('CreateFabricsZones put started.')
-        try:
-            path = create_path(self.root, self.fabrics, fabric, self.f_zones)
-            if not os.path.exists(path):
-                os.mkdir(path)
-            else:
-                logging.info('The given path : {} already Exist.'.format(path))
-            config={
+        logging.info('FabricsZonesCollectionAPI POST called')
 
-                      "@Redfish.Copyright": "Copyright 2015-2021 SNIA. All rights reserved.",
-                      "@odata.id": "/redfish/v1/Fabrics/{fabrics}/Zones",
-                      "@odata.type": "#ZoneCollection.ZoneCollection",
-                      "Name": "Zone Collection",
-                      "Members@odata.count": 0,
-                      "Members": [
-                      ]
-                    }
-            with open(os.path.join(path, "index.json"), "w") as fd:
-                fd.write(json.dumps(config, indent=4, sort_keys=True))
+        if fabric in members:
+            resp = 404
+            return resp
 
-            resp = config, 200
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        logging.info('CreateFabricsZones put exit.')
-        return resp
+        path = create_path(self.root, self.fabrics, fabric, self.f_zones)
+        return create_collection (path, 'Zone')
+
+    # HTTP PUT
+    def put(self, fabric):
+        path = os.path.join(self.root, self.fabrics, fabric, self.f_zones, 'index.json')
+        put_object(path)
+        return self.get(fabric)
+
+    # HTTP DELETE
+    def delete(self, fabric):
+        #Set path to object, then call delete_object:
+        path = create_path(self.root, self.fabrics, fabric, self.f_zones)
+        base_path = create_path(self.root, self.fabrics)
+        return delete_collection(path, base_path)

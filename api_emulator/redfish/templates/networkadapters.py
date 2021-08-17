@@ -47,15 +47,7 @@ _TEMPLATE = \
       "NetworkPortCount": 2,
       "NetworkDeviceFunctionCount": 8
     },
-    "FirmwarePackageVersion": "7.4.10",
-    "Links": {
-      "Ports": [{
-        "@odata.id": "/redfish/v1/Chassis/{c_id}/NetworkAdapters/{n_id}/Ports/1"
-      }],
-      "NetworkDeviceFunctions": [{
-        "@odata.id": "/redfish/v1/Chassis/{c_id}/NetworkAdapters/{n_id}/NetworkDeviceFunctions/11100"
-      }]
-    }
+    "FirmwarePackageVersion": "7.4.10"
   }],
 
   "Manufacturer": "Globex",
@@ -68,9 +60,7 @@ _TEMPLATE = \
     "@odata.id": "/redfish/v1/Chassis/{c_id}/NetworkAdapters/{n_id}/Ports"
   },
   "SKU": "Globex TPS-Net 2-Port Base-T",
-  "SerialNumber": "003BFLRT00023234",
-
-  "Oem": {}
+  "SerialNumber": "003BFLRT00023234"
 }
 
 

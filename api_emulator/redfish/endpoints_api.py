@@ -39,7 +39,7 @@ import urllib3
 
 from flask import jsonify, request
 from flask_restful import Resource
-from api_emulator.utils import update_collections_json
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 from .constants import *
 from .templates.endpoints import get_Endpoints_instance
 
@@ -48,13 +48,6 @@ member_ids = []
 foo = False
 config = {}
 INTERNAL_ERROR = 500
-
-
-
-def create_path(*args):
-    trimmed = [str(arg).strip('/') for arg in args]
-    return os.path.join(*trimmed)
-
 
 # EndpointsAPI API
 class EndpointsAPI(Resource):
@@ -67,13 +60,7 @@ class EndpointsAPI(Resource):
     # HTTP GET
     def get(self, storage_service, endpoints):
         path = create_path(self.root, self.storage_services, storage_service, self.endpoints, endpoints, 'index.json')
-        try:
-            endpoints_json = open(path)
-            data = json.load(endpoints_json)
-        except Exception as e:
-            traceback.print_exc()
-            raise Exception("Unable read file because of following error::{}".format(e))
-        return jsonify(data)
+        return get_json_data (path)
 
     # HTTP POST
     # - Create the resource (since URI variables are available)
@@ -186,14 +173,7 @@ class EndpointsCollectionAPI(Resource):
 
     def get(self, storage_service):
         path = os.path.join(self.root, self.storage_services, storage_service, self.endpoints, 'index.json')
-        try:
-            endpoints_json = open(path)
-            data = json.load(endpoints_json)
-        except Exception as e:
-            traceback.print_exc()
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(data)
+        return get_json_data (path)
 
     def verify(self, config):
         # TODO: Implement a method to verify that the POST body is valid

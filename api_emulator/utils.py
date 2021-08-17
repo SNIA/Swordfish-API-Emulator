@@ -42,8 +42,12 @@
 import os
 import json
 import datetime
-from functools import wraps
+import traceback
+import shutil
 
+from flask import jsonify, request
+from functools import wraps
+from api_emulator.redfish.templates.collection import get_Collection_instance
 
 def timestamp():
     """
@@ -127,3 +131,170 @@ def update_collections_json(path, link):
     # Write the updated json to file.
     with open(path, 'w') as file_json:
         json.dump(data, file_json)
+
+def create_path(*args):
+    trimmed = [str(arg).strip('/') for arg in args]
+    return os.path.join(*trimmed)
+
+    # HTTP GET
+def get_json_data(path):
+    try:
+        json_data = open(path)
+        data = json.load(json_data)
+    except Exception as e:
+        traceback.print_exc()
+        return {"error": "Unable to read file because of the following error::{}".format(e)}, 404
+    return jsonify(data)
+
+    # For POST Singleton API:
+def create_and_patch_object (config, members, member_ids, path, collection_path):
+
+    # If input body data, then update properties
+    if request.data:
+        request_data = json.loads(request.data)
+        # Update the keys of payload in json file.
+        for key, value in request_data.items():
+            config[key] = value
+
+    members.append(config)
+    member_ids.append({'@odata.id': config['@odata.id']})
+
+    # Create instances of subordinate resources, then call put operation
+    # not implemented yet
+    if not os.path.exists(path):
+        os.mkdir(path)
+    else:
+        # This will execute when POST is called for more than one time for a resource
+        return config, 409
+    with open(os.path.join(path, "index.json"), "w") as fd:
+        fd.write(json.dumps(config, indent=4, sort_keys=True))
+
+    # update the collection json file with new added resource
+    update_collections_json(path=collection_path, link=config['@odata.id'])
+    return config
+
+def delete_object (path, base_path):
+
+    delPath = path.replace('Resources','/redfish/v1').replace("\\","/")
+    path2 = create_path(base_path, 'index.json').replace("\\","/")
+    try:
+        with open(path2,"r") as pdata:
+            pdata = json.load(pdata)
+
+        data = {
+        "@odata.id":delPath
+        }
+        resp = 200
+        jdata = data["@odata.id"].split('/')
+
+        path1 = os.path.join(base_path, jdata[len(jdata)-1])
+        shutil.rmtree(path1)
+        pdata['Members'].remove(data)
+        pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
+
+        with open(path2,"w") as jdata:
+            json.dump(pdata,jdata)
+
+    except Exception as e:
+        return {"error": "Unable to read file because of the following error::{}".format(e)}, 404
+
+    return jsonify(resp)
+
+def delete_collection (path, base_path):
+
+    delPath = path.replace('Resources','/redfish/v1').replace("\\","/")
+    path2 = create_path(base_path, 'index.json').replace("\\","/")
+    try:
+        with open(path2,"r") as pdata:
+            pdata = json.load(pdata)
+
+        data = {
+        "@odata.id":delPath
+        }
+        resp = 200
+        jdata = data["@odata.id"].split('/')
+
+        path1 = os.path.join(base_path, jdata[len(jdata)-1])
+        shutil.rmtree(path1)
+
+        with open(path2,"w") as jdata:
+            json.dump(pdata,jdata)
+
+    except Exception as e:
+        return {"error": "Unable to read file because of the following error::{}".format(e)}, 404
+
+    return jsonify(resp)
+
+def patch_object(path):
+    try:
+    # Read json from file.
+        with open(path, 'r') as data_json:
+            data = json.load(data_json)
+            data_json.close()
+
+        # If input body data, then update properties
+        if request.data:
+            request_data = json.loads(request.data)
+            # Update the keys of payload in json file.
+            for key, value in request_data.items():
+                data[key] = value
+
+        # Write the updated json to file.
+        with open(path, 'w') as f:
+            json.dump(data, f)
+            f.close()
+
+    except Exception as e:
+        return {"error": "Unable to read file because of the following error:{}".format(e)}, 404
+
+    return True
+
+def put_object(path):
+    if not os.path.exists(path):
+        return {"error": "The requested object does not exist.:{}"}, 404
+    try:
+    # Read json from file.
+    #    with open(path, 'r') as data_json:
+    #        data = json.load(data_json)
+    #        data_json.close()
+        data = {}
+        path = path.replace("\\","/")
+        # If input body data, then update properties
+        if request.data:
+            request_data = json.loads(request.data)
+            # Update the keys of payload in json file.
+            for key, value in request_data.items():
+                data[key] = value
+
+        # Write the updated json to file.
+        with open(path, 'w') as f:
+            json.dump(data, f)
+            f.close()
+
+    except Exception as e:
+        return {"error": "Unable to read file because of the following error:{}".format(e)}, 404
+
+    return True
+
+def create_collection (collection_path, collection_type):
+
+    try:
+        if not os.path.exists(collection_path):
+            os.mkdir(collection_path)
+        else:
+            return {"error": "The collection {} already exists.::{}"}, 404
+
+        global config
+
+        path = collection_path.replace('Resources','/redfish/v1').replace("\\","/")
+        wildcards = {'path': path, 'cType': collection_type}
+        config=get_Collection_instance(wildcards)
+
+        with open(os.path.join(collection_path, "index.json"), "w") as fd:
+            fd.write(json.dumps(config, indent=4, sort_keys=True))
+
+        resp = config, 200
+    except Exception as e:
+        traceback.print_exc()
+        resp = 500
+    return resp

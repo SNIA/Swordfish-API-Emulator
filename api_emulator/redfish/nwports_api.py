@@ -27,250 +27,136 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 #
-# nwports_api.py
 
+# c_memory_api.py
 
 import json, os
 import traceback
 import logging
+import shutil
+
 import g
 import urllib3
-import shutil
 
 from flask import jsonify, request
 from flask_restful import Resource
-from api_emulator.utils import update_collections_json
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 from .constants import *
 from .templates.nwports import get_NWPorts_instance
 
-
 members =[]
 member_ids = []
-foo = False
 config = {}
 INTERNAL_ERROR = 500
 
-
-
-def create_path(*args):
-    trimmed = [str(arg).strip('/') for arg in args]
-    return os.path.join(*trimmed)
-
-
-# NWPortsAPI API
+# NWPortsAPI
 class NWPortsAPI(Resource):
     def __init__(self, **kwargs):
         logging.info('NWPortsAPI init called')
         self.root = PATHS['Root']
         self.chassis = PATHS['Chassis']['path']
-        self.network_adapter = PATHS['Chassis']['network_adapter']
+        self.network_adapters = PATHS['Chassis']['network_adapter']
         self.nw_ports = PATHS['Chassis']['nw_ports']
 
     # HTTP GET
-    def get(self, chassis, network_adapter, nw_ports):
-        path = create_path(self.root, self.chassis, chassis, self.network_adapter, network_adapter, self.nw_ports, nw_ports, 'index.json')
-        logging.info('Path 3 ==' + path)
-        try:
-            nw_ports_json = open(path)
-            data = json.load(nw_ports_json)
-        except Exception as e:
-            traceback.print_exc()
-            raise Exception("Unable read file because of following error::{}".format(e))
-        return jsonify(data)
+    def get(self, chassis, network_adapter, nw_port):
+        path = create_path(self.root, self.chassis, chassis, self.network_adapters, network_adapter, self.nw_ports, nw_port, 'index.json')
+        return get_json_data (path)
 
     # HTTP POST
     # - Create the resource (since URI variables are available)
     # - Update the members and members.id lists
     # - Attach the APIs of subordinate resources (do this only once)
     # - Finally, create an instance of the subordiante resources
-    def post(self, chassis, network_adapter, nw_ports):
-        logging.info('NWPortsAPI PUT called')
+    def post(self, chassis, network_adapter, nw_port):
+        logging.info('NWPortsAPI POST called')
+        path = create_path(self.root, self.chassis, chassis, self.network_adapters, network_adapter, self.nw_ports, nw_port)
+        collection_path = os.path.join(self.root, self.chassis, chassis, self.network_adapters, network_adapter, self.nw_ports, 'index.json')
+
+        # Check if collection exists:
+        if not os.path.exists(collection_path):
+            NWPortsCollectionAPI.post (self, chassis)
+
+        if nw_port in members:
+            resp = 404
+            return resp
         try:
             global config
-            global foo
-
-            wildcards = {'c_id':chassis,'n_id': network_adapter, 'p_id': nw_ports, 'rb': g.rest_base}
+            wildcards = {'c_id':chassis, 'p_id': nw_port, 'n_id': network_adapter, 'rb': g.rest_base}
             config=get_NWPorts_instance(wildcards)
+            config = create_and_patch_object (config, members, member_ids, path, collection_path)
 
-            members.append(config)
-            member_ids.append({'@odata.id': config['@odata.id']})
-
-            # Create instances of subordinate resources, then call put operation
-            # not implemented yet
-
-            path = create_path(self.root, self.chassis, chassis, self.network_adapter, network_adapter, self.nw_ports, nw_ports)
-            if not os.path.exists(path):
-                os.mkdir(path)
-            else:
-                # This will execute when POST is called for more than one time for a resource
-                return config, 500
-            with open(os.path.join(path, "index.json"), "w") as fd:
-                fd.write(json.dumps(config, indent=4, sort_keys=True))
-
-
-            # update the collection json file with new added resource
-            collection_path = os.path.join(self.root, self.chassis, chassis, self.network_adapter, network_adapter, self.nw_ports, 'index.json')
-            update_collections_json(path=collection_path, link=config['@odata.id'])
-
-
-
+            # Create sub-collections:
             resp = config, 200
+
         except Exception:
             traceback.print_exc()
             resp = INTERNAL_ERROR
-        logging.info('NWPortsAPI put exit')
+        logging.info('NWPortsAPI POST exit')
         return resp
+
 	# HTTP PATCH
-    def patch(self, chassis, network_adapter, nw_ports):
-        path = os.path.join(self.root, self.chassis, chassis, self.network_adapter, network_adapter, self.nw_ports, nw_ports, 'index.json')
-        try:
-            # Read json from file.
-            with open(path, 'r') as nw_ports_json:
-                data = json.load(nw_ports_json)
-                nw_ports_json.close()
+    def patch(self, chassis, network_adapter, nw_port):
+        path = os.path.join(self.root, self.chassis, chassis, self.network_adapters, network_adapter, self.nw_ports, nw_port, 'index.json')
+        patch_object(path)
+        return self.get(chassis, nw_port)
 
-            request_data = json.loads(request.data)
-
-            if request_data:
-                # Update the keys of payload in json file.
-                for key, value in request_data.items():
-                    if key in data and data[key]:
-                        data[key] = value
-
-            # Write the updated json to file.
-            with open(path, 'w') as f:
-                json.dump(data, f)
-                f.close()
-
-        except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        json_data = self.get(chassis, network_adapter, nw_ports)
-        return json_data
+    # HTTP PUT
+    def put(self, chassis, network_adapter, nw_port):
+        path = os.path.join(self.root, self.chassis, chassis, self.network_adapters, network_adapter, self.nw_ports, nw_port, 'index.json')
+        put_object(path)
+        return self.get(chassis, nw_port)
 
     # HTTP DELETE
-    def delete(self, chassis, network_adapter, nw_ports):
-
-        path = os.path.join(self.root, self.chassis, chassis, self.network_adapter, network_adapter, self.nw_ports, nw_ports).replace("\\","/")
-        print (path)
-        delPath = path.replace('Resources','/redfish/v1')
-        path2 = os.path.join(self.root, self.chassis, chassis, self.network_adapter, network_adapter, self.nw_ports, 'index.json').replace("\\","/")
-        try:
-            with open(path2,"r") as pdata:
-                pdata = json.load(pdata)
-
-            data = {
-            "@odata.id":delPath
-            }
-            resp = 200
-            jdata = data["@odata.id"].split('/')
-
-            path1 = os.path.join(self.root, self.chassis, chassis, self.network_adapter, network_adapter, self.nw_ports, jdata[len(jdata)-1])
-
-            shutil.rmtree(path1)
-            pdata['Members'].remove(data)
-            pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
-
-            with open(path2,"w") as jdata:
-                json.dump(pdata,jdata)
+    def delete(self, chassis, network_adapter, nw_port):
+        #Set path to object, then call delete_object:
+        path = create_path(self.root, self.chassis, chassis, self.network_adapters, network_adapter, self.nw_ports, nw_port)
+        base_path = create_path(self.root, self.chassis, chassis, self.network_adapters, network_adapter, self.nw_ports)
+        return delete_object(path, base_path)
 
 
-        except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(resp)
-
-
-# NWPorts Collection API
+# NetworkPorts Collection API
 class NWPortsCollectionAPI(Resource):
 
     def __init__(self):
-        logging.info('NWPortsCollectionAPI init called')
         self.root = PATHS['Root']
         self.chassis = PATHS['Chassis']['path']
-        self.network_adapter = PATHS['Chassis']['network_adapter']
+        self.network_adapters = PATHS['Chassis']['network_adapter']
         self.nw_ports = PATHS['Chassis']['nw_ports']
 
     def get(self, chassis, network_adapter):
-        path = os.path.join(self.root, self.chassis, chassis, self.network_adapter, network_adapter, self.nw_ports, 'index.json')
-        logging.info('Path 1 ==' + path)
-        try:
-            storage_controller_json = open(path)
-            data = json.load(storage_controller_json)
-        except Exception as e:
-            traceback.print_exc()
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(data)
+        path = os.path.join(self.root, self.chassis, chassis, self.network_adapters, network_adapter, self.nw_ports, 'index.json')
+        return get_json_data (path)
 
     def verify(self, config):
         # TODO: Implement a method to verify that the POST body is valid
         return True,{}
 
-    # HTTP POST
-    # POST should allow adding multiple instances to a collection.
-    # For now, this only adds one instance.
-    # TODO: 'id' should be obtained from the request data.
+    # HTTP POST Collection
     def post(self, chassis, network_adapter):
-        logging.info('NWPortsCollectionAPI POST called')
-        try:
-            config = request.get_json(force=True)
-            ok, msg = self.verify(config)
-            if ok:
-                # Save the new singleton
-                singleton_name = os.path.basename(config['@odata.id'])
-                path = os.path.join(self.root, self.chassis, chassis, self.network_adapter, network_adapter, self.nw_ports, singleton_name)
-                if not os.path.exists(path):
-                    os.mkdir(path)
-                with open(os.path.join(path, "index.json"), "w") as fd:
-                    fd.write(json.dumps(config, indent=4, sort_keys=True))
-                # Update the collection
-                collection_path = os.path.join(self.root, self.chassis, chassis, self.network_adapter, network_adapter, self.nw_ports, 'index.json')
-                update_collections_json(collection_path, config['@odata.id'])
-                # Return a copy of the new singleton with a Created response
-                resp = config, 201
-            else:
-                resp = msg, 400
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        return resp
-
-
-class CreateNWPort (Resource):
-    def __init__(self):
         self.root = PATHS['Root']
         self.chassis = PATHS['Chassis']['path']
-        self.network_adapter = PATHS['Chassis']['network_adapter']
+        self.network_adapters = PATHS['Chassis']['network_adapter']
         self.nw_ports = PATHS['Chassis']['nw_ports']
 
-    # Attach APIs for subordinate resource(s). Attach the APIs for a resource collection and its singletons
-    def put(self,chassis, network_adapter):
-        logging.info('CreateNWPort put started.')
-        try:
-            path = create_path(self.root, self.chassis, chassis, self.network_adapter, network_adapter, self.nw_ports)
-            logging.info('Path 2 ==' + path)
-            if not os.path.exists(path):
-                os.mkdir(path)
-            else:
-                logging.info('The given path : {} already Exist.'.format(path))
-            config={
-                      "@Redfish.Copyright": "Copyright 2015-2021 SNIA. All rights reserved.",
-                      "@odata.type": "#PortCollection.PortCollection",
-                      "Name": "Port Collection",
-                      "Members@odata.count": 0,
-                      "Members": [
-                      ],
-                      "Permissions": [
-                                {"Read": "True"},
-                                {"Write": "True"}]
-                    }
-            with open(os.path.join(path, "index.json"), "w") as fd:
-                fd.write(json.dumps(config, indent=4, sort_keys=True))
+        logging.info('NWPortsCollectionAPI POST called')
 
-            resp = config, 200
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        logging.info('CreateNWPort put exit.')
-        return resp
+        if network_adapter in members:
+            resp = 404
+            return resp
+
+        path = create_path(self.root, self.chassis, chassis, self.network_adapters, network_adapter, self.nw_ports)
+        return create_collection (path, 'NetworkPort')
+
+    # HTTP PUT
+    def put(self, chassis, network_adapter):
+        path = os.path.join(self.root, self.chassis, chassis, self.network_adapters, network_adapter, self.nw_ports, 'index.json')
+        put_object(path)
+        return self.get(chassis)
+
+    # HTTP DELETE
+    def delete(self, chassis, network_adapter):
+        #Set path to object, then call delete_object:
+        path = create_path(self.root, self.chassis, chassis, self.network_adapters, network_adapter, self.nw_ports)
+        base_path = create_path(self.root, self.chassis, chassis, self.network_adapters, network_adapter)
+        return delete_collection(path, base_path)

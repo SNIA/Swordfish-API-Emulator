@@ -34,8 +34,8 @@
 # Chassis API File
 
 """
-Collection API:  GET, POST
-Singleton  API:  GET, POST, PATCH, DELETE
+Collection API:  GET, POST, DELETE, PUT
+Singleton  API:  GET, POST, PATCH, PUT, DELETE
 """
 
 import g
@@ -48,7 +48,7 @@ import copy
 from flask import jsonify
 from flask import Flask, request, make_response, render_template
 from flask_restful import reqparse, Api, Resource
-from api_emulator.utils import update_collections_json
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 # Resource and SubResource imports
 from .templates.Chassis import get_Chassis_instance
@@ -56,11 +56,11 @@ from .thermal_api import ThermalAPI, CreateThermal
 from .power_api import PowerAPI, CreatePower
 from .constants import *
 
-members = {}
+members = []
+member_ids = []
 config = {}
-
+wildcards = {}
 INTERNAL_ERROR = 500
-
 
 # Chassis Singleton API
 class ChassisAPI(Resource):
@@ -80,73 +80,61 @@ class ChassisAPI(Resource):
 
     # HTTP GET
     def get(self, ident):
-        logging.info('ChassisAPI GET called')
+        path = os.path.join(self.root, self.chassis, ident, 'index.json')
+        return get_json_data (path)
+
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, ident):
+        logging.info('ChassisAPI POST called')
+        path = create_path(self.root,  self.chassis, ident)
+        collection_path = os.path.join(self.root, self.chassis, 'index.json')
+        # Check if collection exists:
+        if not os.path.exists(collection_path):
+            ChassisCollectionAPI.post (self)
+
         if ident in members:
             resp = 404
             return resp
-        path = os.path.join(self.root, self.chassis, ident, 'index.json')
-        try:
-            chassis_json = open(path)
-            data = json.load(chassis_json)
-        except Exception as e:
-            traceback.print_exc()
-            raise Exception("Unable read file because of following error::{}".format(e))
-        return jsonify(data)
-
-    # HTTP PUT
-    def put(self, ident):
-        logging.info('ChassisAPI PUT called')
-        return 'PUT is not a supported command for ChassisAPI', 405
-
-    # HTTP POST
-    # This is an emulator-only POST command that creates new resource
-    # instances from a predefined template. The new instance is given
-    # the identifier "ident", which is taken from the end of the URL.
-    # PATCH commands can then be used to update the new instance.
-    def post(self, ident):
-        logging.info('ChassisAPI POST called')
         try:
             global config
-            global wildcards
+
             wildcards['id'] = ident
             wildcards['linkSystem'] = ['UpdateWithPATCH']
             wildcards['linkResourceBlocks'] = ['UpdateWithPATCH']
             wildcards['linkMgr'] = 'UpdateWithPATCH'
+            wildcards['rb'] = g.rest_base
             config=get_Chassis_instance(wildcards)
-            members[ident]=config
+            config = create_and_patch_object (config, members, member_ids, path, collection_path)
+
             resp = config, 200
         except Exception:
             traceback.print_exc()
             resp = INTERNAL_ERROR
         return resp
 
+    # HTTP PUT
+    def put(self, ident):
+        path = create_path(self.root, self.chassis, ident, 'index.json')
+        put_object(path)
+        return self.get(ident)
+
     # HTTP PATCH
     def patch(self, ident):
-        logging.info('ChassisAPI PATCH called')
-        raw_dict = request.get_json(force=True)
-        try:
-            # Update specific portions of the identified object
-            for key, value in raw_dict.items():
-                members[ident][key] = value
-            resp = members[ident], 200
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        return resp
+        #Set path to object, then call patch_object:
+        path = create_path(self.root, self.chassis, ident, 'index.json')
+        patch_object(path)
+        return self.get(ident)
 
     # HTTP DELETE
     def delete(self, ident):
-        logging.info('ChassisAPI DELETE called')
-        try:
-            # Find the entry with the correct value for Id
-            resp = 404
-            if ident in members:
-                del(members[ident])
-                resp = 200
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        return resp
+        #Set path to object, then call delete_object:
+        path = create_path(self.root, self.chassis, ident)
+        base_path = create_path(self.root, self.chassis)
+        return delete_object(path, base_path)
 
 
 # Chassis Collection API
@@ -158,66 +146,36 @@ class ChassisCollectionAPI(Resource):
 
     def get(self):
         path = os.path.join(self.root, self.chassis, 'index.json')
-        try:
-            chassis_json = open(path)
-            data = json.load(chassis_json)
-        except Exception as e:
-            traceback.print_exc()
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(data)
+        return get_json_data (path)
 
     def verify(self, config):
         # TODO: Implement a method to verify that the POST body is valid
         return True,{}
 
+    # HTTP POST Collection
+    def post(self):
+        self.root = PATHS['Root']
+        self.chassis = PATHS['Chassis']['path']
+
+        path = create_path(self.root, self.chassis)
+        return create_collection (path, 'Chassis')
+
     # HTTP PUT
     def put(self):
-        logging.info('ChassisCollectionAPI PUT called')
-        return 'PUT is not a supported command for ChassisCollectionAPI', 405
+        path = os.path.join(self.root, self.chassis, 'index.json')
+        put_object(path)
+        return self.get(self.root)
 
     def verify(self, config):
         #TODO: Implement a method to verify that the POST body is valid
         return True,{}
 
-    # HTTP POST
-    # POST should allow adding multiple instances to a collection.
-    # For now, this only adds one instance.
-    # TODO: 'id' should be obtained from the request data.
-    def post(self):
-        logging.info('ChassisCollectionAPI POST Chassis called')
-        try:
-            config = request.get_json(force=True)
-            ok, msg = self.verify(config)
-            if ok:
-                # Save the new singleton
-                singleton_name = os.path.basename(config['@odata.id'])
-                path = os.path.join(self.root, self.chassis, singleton_name)
-                if not os.path.exists(path):
-                    os.mkdir(path)
-                with open(os.path.join(path, "index.json"), "w") as fd:
-                    fd.write(json.dumps(config, indent=4, sort_keys=True))
-                # Update the collection
-                collection_path = os.path.join(self.root, self.chassis, 'index.json')
-                update_collections_json(collection_path, config['@odata.id'])
-                # Return a copy of the new singleton with a Created response
-                resp = config, 201
-            else:
-                resp = msg, 400
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        return resp
-
-    # HTTP PATCH
-    def patch(self):
-        logging.info('ChassisCollectionAPI PATCH called')
-        return 'PATCH is not a supported command for ChassisCollectionAPI', 405
-
     # HTTP DELETE
     def delete(self):
-        logging.info('ChassisCollectionAPI DELETE called')
-        return 'DELETE is not a supported command for ChassisCollectionAPI', 405
+        #Set path to object, then call delete_object:
+        path = create_path(self.root, self.chassis)
+        base_path = create_path(self.root)
+        return delete_collection(path, base_path)
 
 
 # CreateChassis
@@ -237,6 +195,8 @@ class CreateChassis(Resource):
         if 'resource_class_kwargs' in kwargs:
             global wildcards
             wildcards = copy.deepcopy(kwargs['resource_class_kwargs'])
+        self.root = PATHS['Root']
+        self.chassis = PATHS['Chassis']['path']
 
     # Create instance
     def put(self, ident):

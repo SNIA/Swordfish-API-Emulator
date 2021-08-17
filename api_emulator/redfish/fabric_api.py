@@ -40,24 +40,24 @@ import urllib3
 
 from flask import jsonify, request
 from flask_restful import Resource
-from api_emulator.utils import update_collections_json
+
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 from .constants import *
 from .templates.fabric import get_Fabric_instance
 
+from api_emulator.redfish.f_switches_api import *
+from api_emulator.redfish.f_switch_ports_api import *
+
+from api_emulator.redfish.f_connections_api import *
+from api_emulator.redfish.f_zones_api import *
+
+from api_emulator.redfish.f_endpoints_api import *
+from api_emulator.redfish.f_endpointgroups_api import *
 
 members =[]
 member_ids = []
-foo = False
 config = {}
 INTERNAL_ERROR = 500
-
-
-
-
-def create_path(*args):
-    trimmed = [str(arg).strip('/') for arg in args]
-    return os.path.join(*trimmed)
-
 
 # FabricAPI
 class FabricAPI(Resource):
@@ -69,113 +69,63 @@ class FabricAPI(Resource):
     # HTTP GET
     def get(self, fabric):
         path = create_path(self.root, self.fabrics, fabric, 'index.json')
-        try:
-            fabric_json = open(path)
-            data = json.load(fabric_json)
-        except Exception as e:
-            traceback.print_exc()
-            raise Exception("Unable read file because of following error::{}".format(e))
-        return jsonify(data)
+        return get_json_data (path)
 
     # HTTP POST
     # - Create the resource (since URI variables are available)
     # - Update the members and members.id lists
     # - Attach the APIs of subordinate resources (do this only once)
-    # - Finally, create an instance of the subordiante resources
+    # - Finally, create an instance of the subordinate resources
     def post(self, fabric):
-        logging.info('FabricAPI PUT called')
+        logging.info('FabricAPI POST called')
+        path = create_path(self.root,  self.fabrics, fabric)
+        collection_path = os.path.join(self.root, self.fabrics, 'index.json')
+        # Check if collection exists:
+        if not os.path.exists(collection_path):
+            FabricCollectionAPI.post (self)
+
+        if fabric in members:
+            resp = 404
+            return resp
         try:
             global config
-            global foo
-
             wildcards = {'f_id':fabric, 'rb': g.rest_base}
             config=get_Fabric_instance(wildcards)
 
-            members.append(config)
-            member_ids.append({'@odata.id': config['@odata.id']})
+            config = create_and_patch_object (config, members, member_ids, path, collection_path)
 
-            # Create instances of subordinate resources, then call put operation
-            # not implemented yet
-
-            path = create_path(self.root,  self.fabrics, fabric)
-            if not os.path.exists(path):
-                os.mkdir(path)
-            else:
-                # This will execute when POST is called for more than one time for a resource
-                return config, 500
-            with open(os.path.join(path, "index.json"), "w") as fd:
-                fd.write(json.dumps(config, indent=4, sort_keys=True))
-
-
-            # update the collection json file with new added resource
-            collection_path = os.path.join(self.root,  self.fabrics,  'index.json')
-            update_collections_json(path=collection_path, link=config['@odata.id'])
+            #Add default placeholder collections to instance.
+            FabricsEndpointsCollectionAPI.post (self, fabric)
+            FabricsConnectionsCollectionAPI.post (self, fabric)
+            FabricsSwitchesCollectionAPI.post (self, fabric)
+            FabricsZonesCollectionAPI.post (self, fabric)
 
             resp = config, 200
         except Exception:
             traceback.print_exc()
             resp = INTERNAL_ERROR
-        logging.info('FabricAPI put exit')
+        logging.info('FabricAPI POST exit')
         return resp
+
+    # HTTP PUT
+    def put(self, fabric):
+        path = create_path(self.root, self.fabrics, fabric, 'index.json')
+        put_object(path)
+        return self.get(fabric)
+
 	# HTTP PATCH
     def patch(self, fabric):
-
-        path = os.path.join(self.root, self.fabrics, fabric, 'index.json')
-        try:
-            # Read json from file.
-            with open(path, 'r') as fabric_json:
-                data = json.load(fabric_json)
-                fabric_json.close()
-
-            request_data = json.loads(request.data)
-
-            if request_data:
-                # Update the keys of payload in json file.
-                for key, value in request_data.items():
-                    if key in data and data[key]:
-                        data[key] = value
-
-            # Write the updated json to file.
-            with open(path, 'w') as f:
-                json.dump(data, f)
-                f.close()
-
-        except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        json_data = self.get(fabric)
-        return json_data
+        #Set path to object, then call patch_object:
+        path = create_path(self.root, self.fabrics, fabric, 'index.json')
+        patch_object(path)
+        return self.get(fabric)
 
     # HTTP DELETE
-    def delete(self,fabric):
-
-        path = os.path.join(self.root, self.fabric, fabric).replace("\\","/")
-        print (path)
-        delPath = path.replace('Resources','/redfish/v1')
-        path2 = os.path.join(self.root, self.fabrics,  'index.json').replace("\\","/")
-        try:
-            with open(path2,"r") as pdata:
-                pdata = json.load(pdata)
-
-            data = {
-            "@odata.id":delPath
-            }
-            resp = 200
-            jdata = data["@odata.id"].split('/')
-
-            path1 = os.path.join(self.root, self.fabrics, jdata[len(jdata)-1])
-            shutil.rmtree(path1)
-            pdata['Members'].remove(data)
-            pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
-
-            with open(path2,"w") as jdata:
-                json.dump(pdata,jdata)
-
-
-        except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(resp)
+    def delete(self, fabric):
+        #Set path to object, then call delete_object:
+        path = create_path(self.root, self.fabrics, fabric)
+        base_path = create_path(self.root, self.fabrics)
+        return delete_object(path, base_path)
 
 
 # Fabric Collection API
@@ -187,82 +137,29 @@ class FabricCollectionAPI(Resource):
 
     def get(self):
         path = os.path.join(self.root, self.fabrics, 'index.json')
-        try:
-            fabric_json = open(path)
-            data = json.load(fabric_json)
-        except Exception as e:
-            traceback.print_exc()
-            return {"error": "Unable to read file because of following error::{}".format(e)}, 500
-
-        return jsonify(data)
+        return get_json_data (path)
 
     def verify(self, config):
         # TODO: Implement a method to verify that the POST body is valid
         return True,{}
 
-    # HTTP POST
-    # POST should allow adding multiple instances to a collection.
-    # For now, this only adds one instance.
-    # TODO: 'id' should be obtained from the request data.
+    # HTTP POST Collection
     def post(self):
-        logging.info('FabricCollectionAPI POST called')
-        try:
-            config = request.get_json(force=True)
-            ok, msg = self.verify(config)
-            if ok:
-                # Save the new singleton
-                singleton_name = os.path.basename(config['@odata.id'])
-                path = os.path.join(self.root, self.fabrics, singleton_name)
-                if not os.path.exists(path):
-                    os.mkdir(path)
-                with open(os.path.join(path, "index.json"), "w") as fd:
-                    fd.write(json.dumps(config, indent=4, sort_keys=True))
-                # Update the collection
-                collection_path = os.path.join(self.root, self.fabrics, 'index.json')
-                update_collections_json(collection_path, config['@odata.id'])
-                # Return a copy of the new singleton with a Created response
-                resp = config, 201
-            else:
-                resp = msg, 400
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        return resp
-
-
-class CreateFabric (Resource):
-    def __init__(self):
         self.root = PATHS['Root']
         self.fabrics = PATHS['Fabrics']['path']
 
+        path = create_path(self.root, self.fabrics)
+        return create_collection (path, 'Fabric')
 
-    # Attach APIs for subordinate resource(s). Attach the APIs for a resource collection and its singletons
-    def put(self,fabric):
-        logging.info('CreateFabric put started.')
-        try:
-            path = create_path(self.root, self.fabrics, fabric)
-            if not os.path.exists(path):
-                os.mkdir(path)
-            else:
-                logging.info('The given path : {} already Exists.'.format(path))
-            config={
-                      "@Redfish.Copyright": "Copyright 2015-2021 SNIA. All rights reserved.",
-                      "@odata.id": "/redfish/v1/Fabrics",
-                      "@odata.type": "#FabricCollection.FabricCollection",
-                      "Name": "Fabric",
-                      "Members@odata.count": 0,
-                      "Members": [
-                      ],
-                      "Permissions": [
-                                {"Read": "True"},
-                                {"Write": "False"}]
-                    }
-            with open(os.path.join(path, "index.json"), "w") as fd:
-                fd.write(json.dumps(config, indent=4, sort_keys=True))
+    # HTTP PUT
+    def put(self):
+        path = os.path.join(self.root, self.fabrics, 'index.json')
+        put_object(path)
+        return self.get(self.root)
 
-            resp = config, 200
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        logging.info('CreateFabric put exit.')
-        return resp
+    # HTTP DELETE
+    def delete(self):
+        #Set path to object, then call delete_object:
+        path = create_path(self.root, self.fabrics)
+        base_path = create_path(self.root)
+        return delete_collection(path, base_path)

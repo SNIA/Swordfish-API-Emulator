@@ -39,23 +39,15 @@ import shutil
 
 from flask import jsonify, request
 from flask_restful import Resource
-from api_emulator.utils import update_collections_json
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 from .constants import *
 from .templates.mcports import get_MCPorts_instance
 
 
 members =[]
 member_ids = []
-foo = False
 config = {}
 INTERNAL_ERROR = 500
-
-
-
-def create_path(*args):
-    trimmed = [str(arg).strip('/') for arg in args]
-    return os.path.join(*trimmed)
-
 
 # MCPortsAPI API
 class MCPortsAPI(Resource):
@@ -69,14 +61,7 @@ class MCPortsAPI(Resource):
     # HTTP GET
     def get(self, chassis, media_controller, mc_ports):
         path = create_path(self.root, self.chassis, chassis, self.media_controllers, media_controller, self.mc_ports, mc_ports, 'index.json')
-        logging.info('Path 3 ==' + path)
-        try:
-            mc_ports_json = open(path)
-            data = json.load(mc_ports_json)
-        except Exception as e:
-            traceback.print_exc()
-            raise Exception("Unable read file because of following error::{}".format(e))
-        return jsonify(data)
+        return get_json_data (path)
 
     # HTTP POST
     # - Create the resource (since URI variables are available)
@@ -84,102 +69,48 @@ class MCPortsAPI(Resource):
     # - Attach the APIs of subordinate resources (do this only once)
     # - Finally, create an instance of the subordiante resources
     def post(self, chassis, media_controller, mc_ports):
-        logging.info('MCPortsAPI PUT called')
+        logging.info('MCPortsAPI POST called')
+        path = create_path(self.root, self.chassis, chassis, self.media_controllers, media_controller, self.mc_ports, mc_ports)
+        collection_path = os.path.join(self.root, self.chassis, chassis, self.media_controllers, media_controller, self.mc_ports, 'index.json')
+
+        # Check if collection exists:
+        if not os.path.exists(collection_path):
+            MCPortsCollectionAPI.post (self, chassis, media_controller)
+
+        if mc_ports in members:
+            resp = 404
+            return resp
         try:
             global config
-            global foo
-
-            wildcards = {'c_id':chassis,'n_id': media_controller, 'p_id': mc_ports, 'rb': g.rest_base}
+            wildcards = {'c_id':chassis,'mc_id': media_controller, 'p_id': mc_ports, 'rb': g.rest_base}
             config=get_MCPorts_instance(wildcards)
-
-            members.append(config)
-            member_ids.append({'@odata.id': config['@odata.id']})
-
-            # Create instances of subordinate resources, then call put operation
-            # not implemented yet
-
-            path = create_path(self.root, self.chassis, chassis, self.media_controllers, media_controller, self.mc_ports, mc_ports)
-            if not os.path.exists(path):
-                os.mkdir(path)
-            else:
-                # This will execute when POST is called for more than one time for a resource
-                return config, 500
-            with open(os.path.join(path, "index.json"), "w") as fd:
-                fd.write(json.dumps(config, indent=4, sort_keys=True))
-
-
-            # update the collection json file with new added resource
-            collection_path = os.path.join(self.root, self.chassis, chassis, self.media_controllers, media_controller, self.mc_ports, 'index.json')
-            update_collections_json(path=collection_path, link=config['@odata.id'])
-
-
-
+            config = create_and_patch_object (config, members, member_ids, path, collection_path)
+            #Add default placeholder collections to instance.
             resp = config, 200
         except Exception:
             traceback.print_exc()
             resp = INTERNAL_ERROR
-        logging.info('MCPortsAPI put exit')
+        logging.info('MCPortsAPI POST exit')
         return resp
+
 	# HTTP PATCH
     def patch(self, chassis, media_controller, mc_ports):
         path = os.path.join(self.root, self.chassis, chassis, self.media_controllers, media_controller, self.mc_ports, mc_ports, 'index.json')
-        try:
-            # Read json from file.
-            with open(path, 'r') as mc_ports_json:
-                data = json.load(mc_ports_json)
-                mc_ports_json.close()
+        patch_object(path)
+        return self.get(chassis, media_controller, mc_ports)
 
-            request_data = json.loads(request.data)
-
-            if request_data:
-                # Update the keys of payload in json file.
-                for key, value in request_data.items():
-                    if key in data and data[key]:
-                        data[key] = value
-
-            # Write the updated json to file.
-            with open(path, 'w') as f:
-                json.dump(data, f)
-                f.close()
-
-        except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        json_data = self.get(chassis, media_controller, mc_ports)
-        return json_data
+	# HTTP PUT
+    def put(self, chassis, media_controller, mc_ports):
+        path = os.path.join(self.root, self.chassis, chassis, self.media_controllers, media_controller, self.mc_ports, mc_ports, 'index.json')
+        put_object(path)
+        return self.get(chassis, media_controller, mc_ports)
 
     # HTTP DELETE
     def delete(self, chassis, media_controller, mc_ports):
-
-        path = os.path.join(self.root, self.chassis, chassis, self.media_controllers, media_controller, self.mc_ports, mc_ports).replace("\\","/")
-        print (path)
-        delPath = path.replace('Resources','/redfish/v1')
-        path2 = os.path.join(self.root, self.chassis, chassis, self.media_controllers, media_controller, self.mc_ports, 'index.json').replace("\\","/")
-        try:
-            with open(path2,"r") as pdata:
-                pdata = json.load(pdata)
-
-            data = {
-            "@odata.id":delPath
-            }
-            resp = 200
-            jdata = data["@odata.id"].split('/')
-
-            path1 = os.path.join(self.root, self.chassis, chassis, self.media_controllers, media_controller, self.mc_ports, jdata[len(jdata)-1])
-
-            shutil.rmtree(path1)
-            pdata['Members'].remove(data)
-            pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
-
-            with open(path2,"w") as jdata:
-                json.dump(pdata,jdata)
-
-
-        except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(resp)
-
+        #Set path to object, then call delete_object:
+        path = create_path(self.root, self.chassis, chassis, self.media_controllers, media_controller, self.mc_ports, mc_ports)
+        base_path = create_path(self.root, self.chassis, chassis, self.media_controllers, media_controller, self.mc_ports)
+        return delete_object(path, base_path)
 
 # MCPorts Collection API
 class MCPortsCollectionAPI(Resource):
@@ -193,84 +124,35 @@ class MCPortsCollectionAPI(Resource):
 
     def get(self, chassis, media_controller):
         path = os.path.join(self.root, self.chassis, chassis, self.media_controllers, media_controller, self.mc_ports, 'index.json')
-        logging.info('Path 1 ==' + path)
-        try:
-            storage_controller_json = open(path)
-            data = json.load(storage_controller_json)
-        except Exception as e:
-            traceback.print_exc()
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(data)
+        return get_json_data (path)
 
     def verify(self, config):
         # TODO: Implement a method to verify that the POST body is valid
         return True,{}
 
     # HTTP POST
-    # POST should allow adding multiple instances to a collection.
-    # For now, this only adds one instance.
-    # TODO: 'id' should be obtained from the request data.
     def post(self, chassis, media_controller):
-        logging.info('MCPortsCollectionAPI POST called')
-        try:
-            config = request.get_json(force=True)
-            ok, msg = self.verify(config)
-            if ok:
-                # Save the new singleton
-                singleton_name = os.path.basename(config['@odata.id'])
-                path = os.path.join(self.root, self.chassis, chassis, self.media_controllers, media_controller, self.mc_ports, singleton_name)
-                if not os.path.exists(path):
-                    os.mkdir(path)
-                with open(os.path.join(path, "index.json"), "w") as fd:
-                    fd.write(json.dumps(config, indent=4, sort_keys=True))
-                # Update the collection
-                collection_path = os.path.join(self.root, self.chassis, chassis, self.media_controllers, media_controller, self.mc_ports, 'index.json')
-                update_collections_json(collection_path, config['@odata.id'])
-                # Return a copy of the new singleton with a Created response
-                resp = config, 201
-            else:
-                resp = msg, 400
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        return resp
-
-
-class CreateMCPort (Resource):
-    def __init__(self):
         self.root = PATHS['Root']
         self.chassis = PATHS['Chassis']['path']
         self.media_controllers = PATHS['Chassis']['media_controllers']
         self.mc_ports = PATHS['Chassis']['mc_ports']
 
-    # Attach APIs for subordinate resource(s). Attach the APIs for a resource collection and its singletons
-    def put(self,chassis, media_controller):
-        logging.info('CreateMCPort put started.')
-        try:
-            path = create_path(self.root, self.chassis, chassis, self.media_controllers, media_controller, self.mc_ports)
-            logging.info('Path 2 ==' + path)
-            if not os.path.exists(path):
-                os.mkdir(path)
-            else:
-                logging.info('The given path : {} already Exist.'.format(path))
-            config={
-                      "@Redfish.Copyright": "Copyright 2015-2021 SNIA. All rights reserved.",
-                      "@odata.type": "#PortCollection.PortCollection",
-                      "Name": "Port Collection",
-                      "Members@odata.count": 0,
-                      "Members": [
-                      ],
-                      "Permissions": [
-                                {"Read": "True"},
-                                {"Write": "True"}]
-                    }
-            with open(os.path.join(path, "index.json"), "w") as fd:
-                fd.write(json.dumps(config, indent=4, sort_keys=True))
+        if media_controller in members:
+            resp = 404
+            return resp
 
-            resp = config, 200
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        logging.info('CreateMCPort put exit.')
-        return resp
+        path = create_path(self.root, self.chassis, chassis, self.media_controllers, media_controller, self.mc_ports)
+        return create_collection (path, 'Port')
+
+    # HTTP PUT
+    def put(self, chassis, media_controller):
+        path = os.path.join(self.root, self.chassis, chassis, self.media_controllers, media_controller, self.mc_ports, 'index.json')
+        put_object(path)
+        return self.get(chassis)
+
+    # HTTP DELETE
+    def delete(self, chassis, media_controller):
+        #Set path to object, then call delete_object:
+        path = create_path(self.root, self.chassis, chassis, self.media_controllers, media_controller, self.mc_ports)
+        base_path = create_path(self.root, self.chassis, chassis, self.media_controllers, media_controller)
+        return delete_collection(path, base_path)

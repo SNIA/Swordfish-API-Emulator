@@ -37,23 +37,18 @@ from flask import json
 _TEMPLATE = \
 {
   "@Redfish.Copyright": "Copyright 2015-2021 SNIA. All rights reserved.",
-  "@odata.id": "{rb}Storage/{id}",
-  "@odata.type": "#StorageCollection.StorageCollection",
-  "Name": "Storage Collection",
-  "Id":"{id}",
+  "@odata.id": "{rb}Storage/{s_id}",
+  "@odata.type": "#Storage.v1_11_0.Storage",
+  "Name": "Storage Instance",
+  "Id":"{s_id}",
   "Links":[],
-  "Drives": {"@odata.id": "{rb}Chassis/{id}/Drives"},
-  "EndpointGroups": {"@odata.id": "{rb}Storage/{chassis_id}/EndpointGroups"},
-  "Endpoints": {"@odata.id": "{rb}Fabrics/{fabric_id}/Endpoints"},
-  "StorageGroups": {"@odata.id": "{rb}Storage/{id}/StorageGroups"},
-  "StoragePools": {"@odata.id": "{rb}Storage/{id}/StoragePools"},
+  "StoragePools": {"@odata.id": "{rb}Storage/{s_id}/StoragePools"},
   "Volumes": {
-    "@odata.id": "{rb}Storage/{id}/Volumes"
+    "@odata.id": "{rb}Storage/{s_id}/Volumes"
   },
-
-  "Permissions": [
-              {"Read": "True"},
-              {"Write": "True"}],
+  "Controllers": {
+      "@odata.id": "{rb}Storage/{s_id}/Controllers"
+    },
   "Oem": []
 }
 
@@ -69,12 +64,8 @@ def get_Storage_instance(wildcards):
     c = copy.deepcopy(_TEMPLATE)
     c['@odata.id'] = c['@odata.id'].format(**wildcards)
     c['Id'] = c['Id'].format(**wildcards)
-    c['Drives']['@odata.id']=c['Drives']['@odata.id'].format(**wildcards)
-    c['EndpointGroups']['@odata.id']=c['EndpointGroups']['@odata.id'].format(**wildcards)
-    c['Endpoints']['@odata.id']=c['Endpoints']['@odata.id'].format(**wildcards)
-    c['StorageGroups']['@odata.id']=c['StorageGroups']['@odata.id'].format(**wildcards)
     c['StoragePools'] ['@odata.id']=c['StoragePools']['@odata.id'].format(**wildcards)
     c['Volumes']['@odata.id']=c['Volumes']['@odata.id'].format(**wildcards)
-    c['FileSystems']['@odata.id']=c['FileSystems']['@odata.id'].format(**wildcards)
+    c['Controllers']['@odata.id']=c['Controllers']['@odata.id'].format(**wildcards)
 
     return c

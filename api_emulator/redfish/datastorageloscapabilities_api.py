@@ -41,7 +41,7 @@ import urllib3
 
 from flask import jsonify, request
 from flask_restful import Resource
-from api_emulator.utils import update_collections_json
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 from .constants import *
 from .templates.datastorageloscapabilities import get_DataStorageLoSCapabilities_instance
 
@@ -50,13 +50,6 @@ member_ids = []
 foo = False
 config = {}
 INTERNAL_ERROR = 500
-
-
-
-def create_path(*args):
-    trimmed = [str(arg).strip('/') for arg in args]
-    return os.path.join(*trimmed)
-
 
 # DataStorageLoSCapabilities API
 class DataStorageLoSCapabilitiesAPI(Resource):
@@ -69,15 +62,8 @@ class DataStorageLoSCapabilitiesAPI(Resource):
     # HTTP GET
     def get(self, storage_service):
         path = os.path.join(self.root, self.storage_services, storage_service, self.data_storage_los_capabilities, 'index.json')
-        try:
-            data_storage_los_capabilities_json = open(path)
-            data = json.load(data_storage_los_capabilities_json)
-            print (data)
-        except Exception as e:
-            traceback.print_exc()
-            raise Exception("Unable read file because of following error::{}".format(e))
-        return jsonify(data)
-        print (data)
+        return get_json_data (path)
+    
 	# HTTP PATCH
     def patch(self, storage_service):
         path = os.path.join(self.root, self.storage_services, storage_service,

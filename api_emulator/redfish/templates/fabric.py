@@ -36,14 +36,18 @@ from flask import json
 _TEMPLATE = \
 {
   "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-  "@odata.id": "{rb}Chassis/{s_id}/Fabrics/{d_id}",
-  "@odata.type": "#FabricCollection.FabricCollection",
+  "@odata.id": "{rb}Fabrics/{f_id}",
+  "@odata.type": "#Fabric.v1_2_2.Fabric",
   "Name": "Fabric",
-  "Description": "",
-  "Id": "{d_id}",
-
+  "Description": "Fabric Instance {f_id}",
+  "Id": "{f_id}",
+  "Links":[],
+  "Endpoints": {"@odata.id": "{rb}Fabrics/{f_id}/Endpoints"},
+  "Connections": {"@odata.id": "{rb}Fabrics/{f_id}/Connections"},
+  "Zones": {"@odata.id": "{rb}Fabrics/{f_id}/Zones"},
+  "Switches": {"@odata.id": "{rb}Fabrics/{f_id}/Switches"},
+  "Oem": []
 }
-
 
 def get_Fabric_instance(wildcards):
     """
@@ -54,16 +58,14 @@ def get_Fabric_instance(wildcards):
     """
     c = copy.deepcopy(_TEMPLATE)
     d = json.dumps(c)
-    g = d.replace('{d_id}', 'NUv')
+    g = d.replace('{f_id}', 'NUv')
     g = g.replace('{rb}', 'NUb')
-    g = g.replace('{s_id}', 'NUs')
     g = g.replace('{{', '~~!')
     g = g.replace('}}', '!!~')
     g = g.replace('{', '~!')
     g = g.replace('}', '!~')
-    g = g.replace('NUv', '{d_id}')
+    g = g.replace('NUv', '{f_id}')
     g = g.replace('NUb', '{rb}')
-    g = g.replace('NUs', '{s_id}')
     g = g.format(**wildcards)
     g = g.replace('~~!', '{{')
     g = g.replace('!!~', '}}')

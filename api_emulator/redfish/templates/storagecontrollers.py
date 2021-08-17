@@ -55,8 +55,7 @@ _TEMPLATE = \
   ],
   "SupportedDeviceProtocols": [
     "SAS", "SATA", "NVMe"
-  ],
-  "Links": { }
+  ]
 }
 
 

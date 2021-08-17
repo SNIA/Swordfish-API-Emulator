@@ -39,23 +39,18 @@ import shutil
 
 from flask import jsonify, request
 from flask_restful import Resource
-from api_emulator.utils import update_collections_json
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 from .constants import *
 from .templates.Storage import get_Storage_instance
 
+from api_emulator.redfish.storagecontrollers_api import *
+from api_emulator.redfish.volumes_api import *
+from api_emulator.redfish.storagepools_api import *
 
 members =[]
 member_ids = []
-foo = False
 config = {}
 INTERNAL_ERROR = 500
-
-
-
-def create_path(*args):
-    trimmed = [str(arg).strip('/') for arg in args]
-    return os.path.join(*trimmed)
-
 
 # StorageAPI
 class StorageAPI(Resource):
@@ -64,128 +59,65 @@ class StorageAPI(Resource):
         self.root = PATHS['Root']
         self.storage = PATHS['Storage']['path']
 
-
     # HTTP GET
-    def get(self, ident):
-        if ident in members:
-            resp = 404
-            return resp
-        path = create_path(self.root, self.storage, ident, 'index.json')
-        try:
-            storage_json = open(path)
-            data = json.load(storage_json)
-        except Exception as e:
-            traceback.print_exc()
-            raise Exception("Unable read file because of following error::{}".format(e))
-        return jsonify(data)
+    def get(self, storage):
+        path = create_path(self.root, self.storage, storage, 'index.json')
+        return get_json_data (path)
 
     # HTTP POST
     # - Create the resource (since URI variables are available)
     # - Update the members and members.id lists
     # - Attach the APIs of subordinate resources (do this only once)
-    # - Finally, create an instance of the subordiante resources
+    # - Finally, create an instance of the subordinate resources
     def post(self, storage):
-        logging.info('StorageAPI post called')
+        logging.info('StorageAPI POST called')
+        path = create_path(self.root,  self.storage, storage)
+        collection_path = os.path.join(self.root, self.storage, 'index.json')
+        # Check if collection exists:
+        if not os.path.exists(collection_path):
+            StorageCollectionAPI.post (self)
+
+        if storage in members:
+            resp = 404
+            return resp
         try:
             global config
-            global foo
-
             wildcards = {'s_id':storage, 'rb': g.rest_base}
             config=get_Storage_instance(wildcards)
 
-            members.append(config)
-            member_ids.append({'@odata.id': config['@odata.id']})
+            config = create_and_patch_object (config, members, member_ids, path, collection_path)
 
-            # Create instances of subordinate resources, then call put operation
-            # not implemented yet
-
-            path = create_path(self.root, self.storage, storage)
-            if not os.path.exists(path):
-                os.mkdir(path)
-            else:
-                # This will execute when POST is called for more than one time for a resource
-                return config, 500
-            with open(os.path.join(path, "index.json"), "w") as fd:
-                fd.write(json.dumps(config, indent=4, sort_keys=True))
-
-
-            # update the collection json file with new added resource
-            collection_path = os.path.join(self.root, self.storage, 'index.json')
-            update_collections_json(path=collection_path, link=config['@odata.id'])
-
-            cfg = CreateVolume()
-            cfg.put(storage)
-            cfg = CreateStoragePools()
-            cfg.put(storage)
-            cfg = CreateDrives()
-            cfg.put(storage_service)
+            #Add default placeholder collections to instance.
+            VolumesCollectionAPI.post (self, storage)
+            StoragePoolsCollectionAPI.post (self, storage)
+            StorageControllersCollectionAPI.post (self, storage)
 
             resp = config, 200
         except Exception:
             traceback.print_exc()
             resp = INTERNAL_ERROR
-        logging.info('StorageAPI put exit')
+        logging.info('StorageAPI POST exit')
         return resp
+
+    # HTTP PUT
+    def put(self, storage):
+        path = create_path(self.root, self.storage, storage, 'index.json')
+        put_object(path)
+        return self.get(storage)
 
 	# HTTP PATCH
     def patch(self, storage):
-        path = os.path.join(self.root, self.storage, storage, 'index.json')
-        try:
-            # Read json from file.
-            with open(path, 'r') as storage_json:
-                data = json.load(storage_json)
-                storage_json.close()
-
-            request_data = json.loads(request.data)
-
-            if request_data:
-                # Update the keys of payload in json file.
-                for key, value in request_data.items():
-                    if key in data and data[key]:
-                        data[key] = value
-
-            # Write the updated json to file.
-            with open(path, 'w') as f:
-                json.dump(data, f)
-                f.close()
-
-        except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        json_data = self.get(storage)
-        return json_data
+        #Set path to object, then call patch_object:
+        path = create_path(self.root, self.storage, storage, 'index.json')
+        patch_object(path)
+        return self.get(storage)
 
     # HTTP DELETE
-    def delete(self,storage):
-
-        path = os.path.join(self.root, self.storage, storage).replace("\\","/")
-        print (path)
-        delPath = path.replace('Resources','/redfish/v1')
-        path2 = os.path.join(self.root, self.storage, 'index.json').replace("\\","/")
-        try:
-            with open(path2,"r") as pdata:
-                pdata = json.load(pdata)
-
-            data = {
-            "@odata.id":delPath
-            }
-            resp = 200
-            jdata = data["@odata.id"].split('/')
-
-            path1 = os.path.join(self.root, self.storage, jdata[len(jdata)-1])
-
-            shutil.rmtree(path1)
-            pdata['Members'].remove(data)
-            pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
-
-            with open(path2,"w") as jdata:
-                json.dump(pdata,jdata)
-
-
-        except Exception as e:
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(resp)
+    def delete(self, storage):
+        #Set path to object, then call delete_object:
+        path = create_path(self.root, self.storage, storage)
+        base_path = create_path(self.root, self.storage)
+        return delete_object(path, base_path)
 
 
 # Storage Collection API
@@ -197,48 +129,32 @@ class StorageCollectionAPI(Resource):
 
     def get(self):
         path = os.path.join(self.root, self.storage, 'index.json')
-        try:
-            storage_json = open(path)
-            data = json.load(storage_json)
-        except Exception as e:
-            traceback.print_exc()
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
-
-        return jsonify(data)
+        return get_json_data (path)
 
     def verify(self, config):
         # TODO: Implement a method to verify that the POST body is valid
         return True,{}
 
-    # HTTP POST
-    # POST should allow adding multiple instances to a collection.
-    # For now, this only adds one instance.
-    # TODO: 'id' should be obtained from the request data.
+    # HTTP POST Collection
     def post(self):
-        logging.info('StorageCollectionAPI POST called')
-        try:
-            config = request.get_json(force=True)
-            ok, msg = self.verify(config)
-            if ok:
-                # Save the new singleton
-                singleton_name = os.path.basename(config['@odata.id'])
-                path = os.path.join(self.root, self.storage, singleton_name)
-                if not os.path.exists(path):
-                    os.mkdir(path)
-                with open(os.path.join(path, "index.json"), "w") as fd:
-                    fd.write(json.dumps(config, indent=4, sort_keys=True))
-                # Update the collection
-                collection_path = os.path.join(self.root, self.storage, 'index.json')
-                update_collections_json(collection_path, config['@odata.id'])
-                # Return a copy of the new singleton with a Created response
-                resp = config, 201
-            else:
-                resp = msg, 400
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        return resp
+        self.root = PATHS['Root']
+        self.storage = PATHS['Storage']['path']
 
+        path = create_path(self.root, self.storage)
+        return create_collection (path, 'Storage')
+
+    # HTTP PUT
+    def put(self):
+        path = os.path.join(self.root, self.storage, 'index.json')
+        put_object(path)
+        return self.get(self.root)
+
+    # HTTP DELETE
+    def delete(self):
+        #Set path to object, then call delete_object:
+        path = create_path(self.root, self.storage)
+        base_path = create_path(self.root)
+        return delete_collection(path, base_path)
 
 class CreateStorage (Resource):
 
@@ -252,9 +168,9 @@ class CreateStorage (Resource):
             logging.debug(wildcards)#, wildcards.keys())
 
     # Attach APIs for subordinate resource(s). Attach the APIs for a resource collection and its singletons
-    def put(self,ident):
+    def put(self,storage):
         logging.info('CreateStorage put started.')
-        if ident in members:
+        if storage in members:
             resp = 404
             return resp
         try:
@@ -263,17 +179,8 @@ class CreateStorage (Resource):
                 os.mkdir(path)
             else:
                 logging.info('The given path : {} already exists.'.format(path))
-            config={
-                      "@Redfish.Copyright": "Copyright 2015-2021 SNIA. All rights reserved.",
-                      "@odata.type": "#StorageCollection.StorageCollection",
-                      "Name": "Storage Collection",
-                      "Members@odata.count": 0,
-                      "Members": [
-                      ],
-                      "Permissions": [
-                                {"Read": "True"},
-                                {"Write": "True"}]
-                    }
+                wildcards = {'s_id':storage, 'rb': g.rest_base}
+                config=get_Storage_instance(wildcards)
             with open(os.path.join(path, "index.json"), "w") as fd:
                 fd.write(json.dumps(config, indent=4, sort_keys=True))
 

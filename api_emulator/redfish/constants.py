@@ -44,8 +44,8 @@ PATHS = {
     'Chassis': {
          'path': 'Chassis/',
          'drives': 'Drives/',
-         'c_memory': 'Memory/',
-         'memory_domains': 'MemoryDomains/',
+         'memory': 'Memory/',
+         'memory_domain': 'MemoryDomains/',
          'md_chunks': 'MemoryChunks/',
          'network_adapter': 'NetworkAdapters/',
          'network_device_functions': 'NetworkDeviceFunctions/',
@@ -57,7 +57,7 @@ PATHS = {
    'Fabrics': {
        'path': 'Fabrics/',
        'f_switch': 'Switches/',
-       'f_switch_port': 'Ports/',
+       'fs_port': 'Ports/',
        'f_endpoint': 'Endpoints/',
        'f_zone': 'Zones/',
        'f_connection': 'Connections/',
@@ -67,10 +67,10 @@ PATHS = {
     'Storage': {
         'path': 'Storage/',
         'storage_groups': 'StorageGroups/',
-        'storage_pools': 'StoragePools/',
-        'storage_controllers': 'Controllers/',
+        'storagepool': 'StoragePools/',
+        'storagecontroller': 'Controllers/',
         'capacity_sources': 'CapacitySources/',
-        'volumes': 'Volumes/',
+        'volume': 'Volumes/',
         'client_end_point_groups': 'ClientEndpointGroups/',
         'server_end_point_groups': 'ServerEndpointGroups/',
         'drives': 'Drives/',
@@ -101,7 +101,6 @@ PATHS = {
         'ioperformance_los_capabilities': 'IOPerformanceLoSCapabilities/',
         'endpoints': 'Endpoints/',
         'endpoint_groups': 'EndpointGroups/',
-	    'storage_subsystems':'StorageSubsystems/',
         'file_systems': 'FileSystems/'
 
     },

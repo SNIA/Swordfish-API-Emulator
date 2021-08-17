@@ -41,31 +41,9 @@ _TEMPLATE = \
     "Id": "{c_id}",
     "Name": "Connection info",
     "ConnectionType": "Storage",
-    "VolumeInfo": [
-        {
-            "AccessCapabilities": [
-                "Read",
-                "Write"
-            ],
-            "Volume": {
-                "@odata.id": "{rb}Storage/{f_id}/Volumes/1"
-            }
-        },
-        {
-            "AccessCapabilities": [
-                "Read",
-                "Write"
-            ],
-            "Volume": {
-                "@odata.id": "{rb}Storage/{f_id}/Volumes/3"
-            }
-        }
-    ],
+    "VolumeInfo": [ ],
     "Links": {
         "InitiatorEndpoints": [
-            {
-                "@odata.id": "{rb}Fabrics/{f_id}/Endpoints/Initiator1"
-            }
         ]
     }
 }
@@ -80,16 +58,16 @@ def get_Connections_instance(wildcards):
     """
     c = copy.deepcopy(_TEMPLATE)
     d = json.dumps(c)
-    g = d.replace('{ep_id}', 'NUv')
+    g = d.replace('{c_id}', 'NUv')
     g = g.replace('{rb}', 'NUb')
-    g = g.replace('{s_id}', 'NUs')
+    g = g.replace('{f_id}', 'NUs')
     g = g.replace('{{', '~~!')
     g = g.replace('}}', '!!~')
     g = g.replace('{', '~!')
     g = g.replace('}', '!~')
-    g = g.replace('NUv', '{ep_id}')
+    g = g.replace('NUv', '{c_id}')
     g = g.replace('NUb', '{rb}')
-    g = g.replace('NUs', '{s_id}')
+    g = g.replace('NUs', '{f_id}')
     g = g.format(**wildcards)
     g = g.replace('~~!', '{{')
     g = g.replace('!!~', '}}')

@@ -44,22 +44,22 @@ import os
 from flask import request, make_response, render_template, jsonify
 from flask_restful import reqparse, Api, Resource
 from .constants import *
-from api_emulator.utils import update_collections_json
-from .volumes_api import CreateVolume
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+
 from .templates.StorageServices import get_StorageServices_instance
-from .storagepools_api import StoragePoolsAPI, CreateStoragePools
-from .filesystems_api import FileSystemsAPI, CreateFileSystems
-from .drives_api import DrivesAPI, CreateDrives
-from .endpoints_api import EndpointsAPI, CreateEndpoints
-from .endpointgroups_api import EndpointGroupsAPI, CreateEndpointGroups
-from .classesofservice_api import ClassesOfServiceAPI, CreateClassesOfService, ClassesOfServiceCollectionAPI
-from .dataprotectionloscapabilities_api import DataProtectionLoSCapabilitiesAPI, CreateDataProtectionLoSCapabilities
-from .storagegroups_api import StorageGroupsAPI, CreateStorageGroups
-from .storagesubsystems_api import StorageSubsystemsAPI, CreateStorageSubsystems
-from .datasecurityloscapabilities_api import DataSecurityLoSCapabilitiesAPI, CreateDataSecurityLoSCapabilities
-from .datastorageloscapabilities_api import DataStorageLoSCapabilitiesAPI, CreateDataStorageLoSCapabilities
-from .ioperformanceloscapabilities_api import IOPerformanceLoSCapabilitiesAPI, CreateIOPerformanceLoSCapabilities
-from .ioconnectivityloscapabilities_api import IOConnectivityLoSCapabilitiesAPI, CreateIOConnectivityLoSCapabilities
+from .volumes_api import VolumesAPI, VolumesCollectionAPI
+from .storagepools_api import StoragePoolsAPI
+from .filesystems_api import FileSystemsAPI
+#from .drives_api import DrivesAPI, CreateDrives
+from .endpoints_api import EndpointsAPI
+from .endpointgroups_api import EndpointGroupsAPI
+from .classesofservice_api import ClassesOfServiceAPI, ClassesOfServiceCollectionAPI
+from .dataprotectionloscapabilities_api import DataProtectionLoSCapabilitiesAPI
+from .storagegroups_api import StorageGroupsAPI
+from .datasecurityloscapabilities_api import DataSecurityLoSCapabilitiesAPI
+from .datastorageloscapabilities_api import DataStorageLoSCapabilitiesAPI
+from .ioperformanceloscapabilities_api import IOPerformanceLoSCapabilitiesAPI
+from .ioconnectivityloscapabilities_api import IOConnectivityLoSCapabilitiesAPI
 
 
 # config is instantiated by CreateStorageServices()
@@ -68,11 +68,6 @@ member_ids = []
 foo = False
 config = {}
 INTERNAL_ERROR = 500
-
-
-def create_path(*args):
-    trimmed = [str(arg).strip('/') for arg in args]
-    return os.path.join(*trimmed)
 
 # StorageServices API
 class StorageServicesAPI(Resource):
@@ -85,13 +80,7 @@ class StorageServicesAPI(Resource):
     # HTTP GET
     def get(self, storage_service):
         path = os.path.join(self.root, self.storage_services, storage_service, 'index.json')
-        try:
-            storage_service_json = open(path)
-            data = json.load(storage_service_json)
-        except Exception as e:
-            traceback.print_exc()
-            raise Exception("Unable read file because of following error::{}".format(e))
-        return jsonify(data)
+        return get_json_data (path)
 
     # HTTP POST
     # - Create the resource (since URI variables are available)
@@ -124,37 +113,31 @@ class StorageServicesAPI(Resource):
 
             # Create instances of subordinate resources, then call put operation
 
-
-            cfg = CreateVolume()
-            cfg.put(storage_service)
-            cfg = CreateStoragePools()
-            cfg.put(storage_service)
-            cfg = CreateFileSystems()
-            cfg.put(storage_service)
-            cfg = CreateDrives()
-            cfg.put(storage_service)
-            cfg = CreateStorageGroups()
-            cfg.put(storage_service)
-            cfg = CreateDataProtectionLoSCapabilities()
-            cfg.put(storage_service)
-            cfg = CreateDataSecurityLoSCapabilities()
-            cfg.put(storage_service)
-            cfg = CreateDataStorageLoSCapabilities()
-            cfg.put(storage_service)
-            cfg = CreateIOPerformanceLoSCapabilities()
-            cfg.put(storage_service)
-            cfg = CreateIOConnectivityLoSCapabilities()
-            cfg.put(storage_service)
-            cfg = CreateEndpoints()
-            cfg.put(storage_service)
-            cfg = CreateEndpointGroups()
-            cfg.put(storage_service)
-            cfg = CreateClassesOfService()
-            cfg.put(storage_service)
-            cfg = CreateStorageSubsystems()
-            cfg.put(storage_service)
-
-
+            # Instantiate sub-collections:
+            # Volumes
+            # StoragePools
+            #cfg = CreateFileSystems()
+            #cfg.put(storage_service)
+            #cfg = CreateDrives()
+            #cfg.put(storage_service)
+            #cfg = CreateStorageGroups()
+            #cfg.put(storage_service)
+            #cfg = CreateDataProtectionLoSCapabilities()
+            #cfg.put(storage_service)
+            #cfg = CreateDataSecurityLoSCapabilities()
+            #cfg.put(storage_service)
+            #cfg = CreateDataStorageLoSCapabilities()
+            #cfg.put(storage_service)
+            #cfg = CreateIOPerformanceLoSCapabilities()
+            #cfg.put(storage_service)
+            #cfg = CreateIOConnectivityLoSCapabilities()
+            #cfg.put(storage_service)
+            #cfg = CreateEndpoints()
+            #cfg.put(storage_service)
+            #cfg = CreateEndpointGroups()
+            #cfg.put(storage_service)
+            #cfg = CreateClassesOfService()
+            #cfg.put(storage_service)
 
             resp = config, 200
         except Exception:
@@ -188,36 +171,36 @@ class StorageServicesAPI(Resource):
             return {"error": "Unable read file because of following error::{}".format(e)}, 500
 
         json_data = self.get(storage_service)
-        return json_data    
-    
+        return json_data
+
     # HTTP DELETE
     def delete(self,storage_service):
-        
+
         path = os.path.join(self.root, self.storage_services, storage_service)
         delPath = path.replace('Resources','/redfish/v1')
         path2 = os.path.join(self.root, self.storage_services, 'index.json')
 
-        
+
         try:
             with open(path2,"r") as pdata:
                 pdata = json.load(pdata)
-                
+
             data = {
             "@odata.id":delPath
             }
-            
+
             resp = 200
-            jdata = data["@odata.id"].split('/')                          
-           
-            path1 = os.path.join(self.root, self.storage_services, jdata[len(jdata)-1])            
+            jdata = data["@odata.id"].split('/')
+
+            path1 = os.path.join(self.root, self.storage_services, jdata[len(jdata)-1])
             shutil.rmtree(path1)
             pdata['Members'].remove(data)
             pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
-          
-            with open(path2,"w") as jdata:                
-                
+
+            with open(path2,"w") as jdata:
+
                 json.dump(pdata,jdata)
-            
+
         except Exception as e:
             return {"error": "Unable read file because of following error::{}".format(e)}, 500
 
@@ -233,15 +216,8 @@ class StorageServicesCollectionAPI(Resource):
 
     def get(self):
         path = os.path.join(self.root, self.storage_services, 'index.json')
-        try:
-            storage_services_json = open(path)
-            data = json.load(storage_services_json)
-        except Exception as e:
-            traceback.print_exc()
-            return {"error": "Unable read file because of following error::{}".format(e)}, 500
+        return get_json_data (path)
 
-        return jsonify(data)
-    
     def verify(self, config):
         # TODO: Implement a method to verify that the POST body is valid
         return True,{}

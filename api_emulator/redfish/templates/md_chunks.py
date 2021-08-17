@@ -36,10 +36,10 @@ from flask import json
 _TEMPLATE = \
 {
   "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-  "@odata.id": "{rb}Chassis/{c_id}/MemoryDomains/{mc_id}/MemoryChunks/{p_id}",
+  "@odata.id": "{rb}Chassis/{c_id}/MemoryDomains/{md_id}/MemoryChunks/{mc_id}",
   "@odata.type": "#MemoryChunks.v1_0_0.MemoryChunks",
-  "Id": "{p_id}",
-  "Name": "Port",
+  "Id": "{mc_id}",
+  "Name": "Memory Domain Chunk {mc_id}",
 }
 
 
@@ -52,16 +52,18 @@ def get_MDChunks_instance(wildcards):
     """
     c = copy.deepcopy(_TEMPLATE)
     d = json.dumps(c)
-    g = d.replace('{n_id}', 'NUv')
+    g = d.replace('{c_id}', 'NUv')
     g = g.replace('{rb}', 'NUb')
-    g = g.replace('{c_id}', 'NUs')
+    g = g.replace('{md_id}', 'NUs')
+    g = g.replace('{mc_id}', 'NUr')
     g = g.replace('{{', '~~!')
     g = g.replace('}}', '!!~')
     g = g.replace('{', '~!')
     g = g.replace('}', '!~')
-    g = g.replace('NUv', '{n_id}')
+    g = g.replace('NUv', '{c_id}')
     g = g.replace('NUb', '{rb}')
-    g = g.replace('NUs', '{c_id}')
+    g = g.replace('NUs', '{md_id}')
+    g = g.replace('NUr', '{mc_id}')
     g = g.format(**wildcards)
     g = g.replace('~~!', '{{')
     g = g.replace('!!~', '}}')

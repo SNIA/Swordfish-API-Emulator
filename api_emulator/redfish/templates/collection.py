@@ -28,7 +28,7 @@
 #  THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-# get_StorageSubsystems_instance()
+# get_Collection_instance()
 
 import copy
 from flask import json
@@ -36,16 +36,15 @@ from flask import json
 _TEMPLATE = \
 {
   "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-  "@odata.id": "{rb}StorageServices/{s_id}/StorageSubsystems",
-  "@odata.type": "#StorageSubsystemsCollection.StorageSubsystemsCollection",
-  "Name": "StorageSubsystems",
-  "Description": "",
-
-
+  "@odata.id": "{path}",
+  "@odata.type": "#{cType}Collection.{cType}Collection",
+  "Name": "{cType} Collection",
+  "Members@odata.count": 0,
+  "Members": [ ]
 }
 
 
-def get_StorageSubsystems_instance(wildcards):
+def get_Collection_instance(wildcards):
     """
     Instantiates and formats the template
 
@@ -54,15 +53,14 @@ def get_StorageSubsystems_instance(wildcards):
     """
     c = copy.deepcopy(_TEMPLATE)
     d = json.dumps(c)
-    g = d.replace('{rb}', 'NUb')
-    g = g.replace('{s_id}', 'NUs')
+    g = d.replace('{cType}', 'NUv')
+    g = g.replace('{path}', 'NUb')
     g = g.replace('{{', '~~!')
     g = g.replace('}}', '!!~')
     g = g.replace('{', '~!')
     g = g.replace('}', '!~')
-    g = g.replace('NUv', '{ssu_id}')
-    g = g.replace('NUb', '{rb}')
-    g = g.replace('NUs', '{s_id}')
+    g = g.replace('NUv', '{cType}')
+    g = g.replace('NUb', '{path}')
     g = g.format(**wildcards)
     g = g.replace('~~!', '{{')
     g = g.replace('!!~', '}}')

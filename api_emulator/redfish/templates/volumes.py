@@ -36,10 +36,9 @@ from flask import json
 _TEMPLATE = \
 {
   "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-  "@odata.id": "{rb}StorageServices/{s_id}/Volumes/{v_id}",
-  "@odata.type": "#VolumeCollection.VolumeCollection",
-  "Name": "Volumes",
-  "Members@odata.count": 6,
+  "@odata.id": "{rb}Storage/{s_id}/Volumes/{v_id}",
+  "@odata.type": "#Volume.v1_6_2.Volume",
+  "Name": "Volume {v_id}",
   "Description": "",
   "Id": '{v_id}',
   "Identifiers": [
@@ -72,19 +71,11 @@ _TEMPLATE = \
       "GuaranteedBytes": 536870912,
       "ProvisionedBytes": 1099511627776,
       "Links": {
-        "ClassOfService": {
-          "@odata.id": "{rb}StorageServices/{s_id}/ClassesOfService/SilverBoston"
-        },
         "ProvidingPool": {
-            "Members": [{"@odata.id": "{rb}StorageServices/{s_id}/StoragePools/SpecialPool"}]
-        },
-        "StorageGroups": {
-    "@odata.id": "{rb}StorageServices/{s_id}/Volumes/{v_id}/StorageGroups"
-       },
-        "ProvidingVolume": None,
-        "AllocatedPools": None
-
+            "Members": [{"@odata.id": "{rb}StorageServices/{s_id}/StoragePools/{p_id}"}]
         }
+
+      }
     }],
 
   "Capacity":[
@@ -108,18 +99,10 @@ _TEMPLATE = \
   }
 ],
   "ReplicaInfos": [{
-  "ReplicaState": "Synchronized",
-  "ReplicaProgressStatus": "Completed",
-  "ReplicaRole": "Target",
-  "@odata.id": {
-    "Replica": "{rb}StorageServices/{s_id}/Volumes/{v_id}"
-  }
-  }],
-  "Permissions": [
-              {"Read": "True"},
-              {"Write": "True"}]
-
-
+    "ReplicaState": "Synchronized",
+    "ReplicaProgressStatus": "Completed",
+    "ReplicaRole": "Target"
+  }]
 }
 
 

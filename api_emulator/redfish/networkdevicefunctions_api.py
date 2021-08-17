@@ -59,8 +59,8 @@ class NetworkDeviceFunctionsAPI(Resource):
         self.network_device_functions = PATHS['Chassis']['network_device_functions']
 
     # HTTP GET
-    def get(self, chassis, network_device_function):
-        path = create_path(self.root, self.chassis, chassis, self.network_device_functions, network_device_function, 'index.json')
+    def get(self, chassis, network_adapter, network_device_function):
+        path = create_path(self.root, self.chassis, chassis, self.network_adapters, network_adapter, self.network_device_functions, network_device_function, 'index.json')
         return get_json_data (path)
 
     # HTTP POST

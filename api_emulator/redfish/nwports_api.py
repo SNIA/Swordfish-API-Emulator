@@ -59,8 +59,8 @@ class NWPortsAPI(Resource):
         self.nw_ports = PATHS['Chassis']['nw_ports']
 
     # HTTP GET
-    def get(self, chassis, nw_port):
-        path = create_path(self.root, self.chassis, chassis, self.nw_ports, nw_port, 'index.json')
+    def get(self, chassis, network_adapter, nw_port):
+        path = create_path(self.root, self.chassis, chassis, self.network_adapters, network_adapter, self.nw_ports, nw_port, 'index.json')
         return get_json_data (path)
 
     # HTTP POST

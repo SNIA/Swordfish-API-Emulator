@@ -44,8 +44,8 @@ PATHS = {
     'Chassis': {
          'path': 'Chassis/',
          'drives': 'Drives/',
-         'c_memory': 'Memory/',
-         'memory_domains': 'MemoryDomains/',
+         'memory': 'Memory/',
+         'memory_domain': 'MemoryDomains/',
          'md_chunks': 'MemoryChunks/',
          'network_adapter': 'NetworkAdapters/',
          'network_device_functions': 'NetworkDeviceFunctions/',

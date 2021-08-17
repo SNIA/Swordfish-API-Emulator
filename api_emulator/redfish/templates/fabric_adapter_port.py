@@ -31,8 +31,9 @@
 # FabricAdapterPort Template File
 
 import copy
+from flask import json
 
-FabricAdapterPort_TEMPLATE={
+_TEMPLATE={
     "@odata.type": "Port.v1_4_0.Port",
     "@odata.id": "{rb}Systems/{s_id}/FabricAdapters/{fa_id}/Ports/{fap_id}",
 
@@ -59,13 +60,25 @@ FabricAdapterPort_TEMPLATE={
 
 
 
-def get_FabricAdapterPorts_instance(rest_base,sw_id,ident):
+def get_FabricAdapterPorts_instance(wildcards):
 
-    c = copy.deepcopy(FabricAdapterPort_TEMPLATE)
-
-    c['@odata.context']=c['@odata.context'].format(rb=rest_base,sw_id=sw_id)
-    c['@odata.id']=c['@odata.id'].format(rb=rest_base,sw_id=sw_id,id=ident)
-    c['Id'] = c['Id'].format(id=ident)
-    c['Actions']['#PCIePort.SetState']['target']=c['Actions']['#PCIePort.SetState']['target'].format(rb=rest_base,sw_id=sw_id,id=ident)
-
-    return c
+    c = copy.deepcopy(_TEMPLATE)
+    d = json.dumps(c)
+    g = d.replace('{s_id}', 'NUv')
+    g = g.replace('{rb}', 'NUb')
+    g = g.replace('{fa_id}', 'NUf')
+    g = g.replace('{fap_id}', 'NUp')
+    g = g.replace('{{', '~~!')
+    g = g.replace('}}', '!!~')
+    g = g.replace('{', '~!')
+    g = g.replace('}', '!~')
+    g = g.replace('NUv', '{s_id}')
+    g = g.replace('NUb', '{rb}')
+    g = g.replace('NUf', '{fa_id}')
+    g = g.replace('NUp', '{fap_id}')
+    g = g.format(**wildcards)
+    g = g.replace('~~!', '{{')
+    g = g.replace('!!~', '}}')
+    g = g.replace('~!', '{')
+    g = g.replace('!~', '}')
+    return json.loads(g)

@@ -152,5 +152,5 @@ class DrivesCollectionAPI(Resource):
     def delete(self, chassis):
         #Set path to object, then call delete_object:
         path = create_path(self.root, self.chassis, chassis, self.drives)
-        base_path = create_path(self.root, self.chassis)
+        base_path = create_path(self.root, self.chassis, chassis)
         return delete_collection(path, base_path)

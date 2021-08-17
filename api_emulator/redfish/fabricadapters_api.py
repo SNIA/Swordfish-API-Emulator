@@ -109,7 +109,7 @@ class FabricAdaptersAPI(Resource):
 
     # HTTP DELETE
     def delete(self, system, fabric_adapter):
-        path = create_path(self.root, self.systems, system, self.fabric_adapters, f_switch)
+        path = create_path(self.root, self.systems, system, self.fabric_adapters, fabric_adapter)
         base_path = create_path(self.root, self.systems, system, self.fabric_adapters)
         return delete_object(path, base_path)
 

@@ -28,7 +28,7 @@
 #  THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-# get_MemoryDomain_instance()
+# get_ChassisMemoryDomain_instance()
 
 import copy
 from flask import json
@@ -36,16 +36,16 @@ from flask import json
 _TEMPLATE = \
 {
   "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-  "@odata.id": "{rb}Chassis/{s_id}/MemoryDomains/{d_id}",
-  "@odata.type": "#MemoryDomainCollection.MemoryDomainCollection",
+  "@odata.id": "{rb}Chassis/{c_id}/MemoryDomains/{md_id}",
+  "@odata.type": "#MemoryDomain.v1_3_0.MemoryDomain",
   "Name": "MemoryDomains",
-  "Description": "",
-  "Id": "{d_id}",
+  "Description": "Memory Domain {md_id}",
+  "Id": "{md_id}"
 
 }
 
 
-def get_MemoryDomain_instance(wildcards):
+def get_ChassisMemoryDomain_instance(wildcards):
     """
     Instantiates and formats the template
 
@@ -54,16 +54,16 @@ def get_MemoryDomain_instance(wildcards):
     """
     c = copy.deepcopy(_TEMPLATE)
     d = json.dumps(c)
-    g = d.replace('{d_id}', 'NUv')
+    g = d.replace('{md_id}', 'NUv')
     g = g.replace('{rb}', 'NUb')
-    g = g.replace('{s_id}', 'NUs')
+    g = g.replace('{c_id}', 'NUs')
     g = g.replace('{{', '~~!')
     g = g.replace('}}', '!!~')
     g = g.replace('{', '~!')
     g = g.replace('}', '!~')
-    g = g.replace('NUv', '{d_id}')
+    g = g.replace('NUv', '{md_id}')
     g = g.replace('NUb', '{rb}')
-    g = g.replace('NUs', '{s_id}')
+    g = g.replace('NUs', '{c_id}')
     g = g.format(**wildcards)
     g = g.replace('~~!', '{{')
     g = g.replace('!!~', '}}')

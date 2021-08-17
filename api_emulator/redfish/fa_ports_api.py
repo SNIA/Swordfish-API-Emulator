@@ -82,7 +82,7 @@ class FabricAdapterPortsAPI(Resource):
             return resp
         try:
             global config
-            wildcards = {'s_id':system, 'fa_id': fabric_adapter, 'fap_id': fabric_adapter_port, 'rb': g.rest_base}
+            wildcards = {'s_id': system, 'fa_id': fabric_adapter, 'fap_id': fabric_adapter_port, 'rb': g.rest_base}
             config=get_FabricAdapterPorts_instance(wildcards)
             config = create_and_patch_object (config, members, member_ids, path, collection_path)
 
@@ -101,7 +101,7 @@ class FabricAdapterPortsAPI(Resource):
         patch_object(path)
         return self.get(system, fabric_adapter)
 
-	# HTTP PATCH
+	# HTTP PUT
     def put(self, system, fabric_adapter, fabric_adapter_port):
         path = os.path.join(self.root, self.systems, system, self.fabric_adapters, fabric_adapter, self.fabric_adapter_ports, fabric_adapter_port, 'index.json')
         put_object(path)
@@ -145,8 +145,21 @@ class FabricAdapterPortsCollectionAPI(Resource):
         if fabric_adapter in members:
             resp = 404
             return resp
-        path = os.path.join(self.root, self.systems, system, self.fabric_adapters, fabric_adapters, self.fabric_adapter_ports)
+        path = create_path(self.root, self.systems, system, self.fabric_adapters, fabric_adapter, self.fabric_adapter_ports)
         return create_collection (path, 'Port')
+
+    # HTTP PUT
+    def put(self, system, fabric_adapter):
+        path = os.path.join(self.root, self.systems, system, self.fabric_adapters, fabric_adapter, self.fabric_adapter_ports, 'index.json')
+        put_object(path)
+        return self.get(system)
+
+    # HTTP DELETE
+    def delete(self, system, fabric_adapter):
+        #Set path to object, then call delete_object:
+        path = create_path(self.root, self.systems, system, self.fabric_adapters, fabric_adapter, self.fabric_adapter_ports)
+        base_path = create_path(self.root, self.systems, system, self.fabric_adapters, fabric_adapter)
+        return delete_collection(path, base_path)
 
 class CreateFabricAdapterPorts (Resource):
     def __init__(self):

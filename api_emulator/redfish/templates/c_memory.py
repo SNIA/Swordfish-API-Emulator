@@ -36,12 +36,11 @@ from flask import json
 _TEMPLATE = \
 {
   "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-  "@odata.id": "{rb}Chassis/{s_id}/Memory/{d_id}",
-  "@odata.type": "#MemoryCollection.MemoryCollection",
+  "@odata.id": "{rb}Chassis/{c_id}/Memory/{m_id}",
+  "@odata.type": "#Memory.v1_4_1.Memory",
   "Name": "Memory",
   "Description": "",
-  "Id": "{d_id}",
-
+  "Id": "{d_id}"
 }
 
 
@@ -54,16 +53,16 @@ def get_ChassisMemory_instance(wildcards):
     """
     c = copy.deepcopy(_TEMPLATE)
     d = json.dumps(c)
-    g = d.replace('{d_id}', 'NUv')
+    g = d.replace('{m_id}', 'NUv')
     g = g.replace('{rb}', 'NUb')
-    g = g.replace('{s_id}', 'NUs')
+    g = g.replace('{c_id}', 'NUs')
     g = g.replace('{{', '~~!')
     g = g.replace('}}', '!!~')
     g = g.replace('{', '~!')
     g = g.replace('}', '!~')
-    g = g.replace('NUv', '{d_id}')
+    g = g.replace('NUv', '{m_id}')
     g = g.replace('NUb', '{rb}')
-    g = g.replace('NUs', '{s_id}')
+    g = g.replace('NUs', '{c_id}')
     g = g.format(**wildcards)
     g = g.replace('~~!', '{{')
     g = g.replace('!!~', '}}')

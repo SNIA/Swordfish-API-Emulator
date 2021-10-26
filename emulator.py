@@ -30,6 +30,7 @@ from api_emulator.static_resource_manager import StaticResourceManager
 from api_emulator.exceptions import CreatePooledNodeError, ConfigurationError, RemovePooledNodeError
 from api_emulator.resource_dictionary import ResourceDictionary
 from api_emulator.redfish.serviceroot_api import *
+from api_emulator.utils import *
 
 from infragen.populate import populate
 
@@ -138,6 +139,7 @@ def output_json(data, code, headers=None):
     """
     Overriding how JSON is returned by the server so that it looks nice
     """
+    data = remove_json_object(data, "@Redfish.Copyright")
     resp = make_response(json.dumps(data, indent=4), code)
     resp.headers.extend(headers or {})
     return resp

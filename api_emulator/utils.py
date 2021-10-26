@@ -44,6 +44,7 @@ import json
 import datetime
 import traceback
 import shutil
+import logging
 
 from flask import jsonify, request
 from functools import wraps
@@ -141,6 +142,7 @@ def get_json_data(path):
     try:
         json_data = open(path)
         data = json.load(json_data)
+        data = remove_json_object(data, "@Redfish.Copyright")
     except Exception as e:
         traceback.print_exc()
         return {"error": "Unable to read file because of the following error::{}".format(e)}, 404
@@ -302,8 +304,7 @@ def create_collection (collection_path, collection_type):
 def remove_json_object (config, property_id):
     # Iterate through the objects in the JSON and pop (remove)
     # the obj once we find it.
-    for i in xrange(len(config)):
-        if obj[i][property_id]:
-            obj.pop(i)
-            break
+
+    if property_id in config:
+        config.pop (property_id, None)
     return config

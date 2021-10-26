@@ -298,3 +298,12 @@ def create_collection (collection_path, collection_type):
         traceback.print_exc()
         resp = 500
     return resp
+
+def remove_json_object (config, property_id):
+    # Iterate through the objects in the JSON and pop (remove)
+    # the obj once we find it.
+    for i in xrange(len(config)):
+        if obj[i][property_id]:
+            obj.pop(i)
+            break
+    return config

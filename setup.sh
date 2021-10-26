@@ -127,6 +127,7 @@ echo "Applying Swordfish additions..."
 cp -r -f $BASE_DIR/api_emulator $WORK_DIR/
 cp -r -f $BASE_DIR/Resources $WORK_DIR/
 cp -r -f $BASE_DIR/emulator-config.json $WORK_DIR/
+cp -r -f $BASE_DIR/emulator.py $WORK_DIR/
 
 if [ "$SETUP_ONLY" == "true" ]; then
     echo ""

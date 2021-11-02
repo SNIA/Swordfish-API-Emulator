@@ -1,9 +1,37 @@
-#!/usr/bin/env python2
-#
 # Copyright Notice:
-# Copyright 2016-2021 DMTF. All rights reserved.
+# Copyright 2016-2021 Distributed Management Task Force, Inc. All rights reserved.
 # License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-Interface-Emulator/blob/master/LICENSE.md
-
+#
+# The original DMTF contents of this file have been modified to support
+# The SNIA Swordfish API Emulator. These modifications are subject to the following:
+# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# Neither the name of The Storage Networking Industry Association (SNIA) nor
+# the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+#  THE POSSIBILITY OF SUCH DAMAGE.
+#
 # Redfish Interface Emulator - main
 #   python emulator.py
 
@@ -30,6 +58,7 @@ from api_emulator.static_resource_manager import StaticResourceManager
 from api_emulator.exceptions import CreatePooledNodeError, ConfigurationError, RemovePooledNodeError
 from api_emulator.resource_dictionary import ResourceDictionary
 from api_emulator.redfish.serviceroot_api import *
+from api_emulator.utils import *
 
 from infragen.populate import populate
 
@@ -138,6 +167,7 @@ def output_json(data, code, headers=None):
     """
     Overriding how JSON is returned by the server so that it looks nice
     """
+    data = remove_json_object(data, "@Redfish.Copyright")
     resp = make_response(json.dumps(data, indent=4), code)
     resp.headers.extend(headers or {})
     return resp

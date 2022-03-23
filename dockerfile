@@ -1,23 +1,19 @@
 FROM python:3-slim
 
 # For healthcheck
-RUN apt-get update && apk upgrade && \ 
-	apk add --no-cache bash pip python git openssh curl 
+RUN apt-get update && apt-get install bash pip python git curl -y
 
-RUN git clone https://github.com/DMTF/Redfish-Interface-Emulator
+RUN git clone https://github.com/DMTF/Redfish-Interface-Emulator && git clone https://github.com/SNIA/Swordfish-API-Emulator
 
-COPY Redfish-Interface-Emulator/requirements.txt /tmp/
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r /tmp/requirements.txt
+    pip install --no-cache-dir -r Redfish-Interface-Emulator/requirements.txt
 
-RUN git clone https://github/SNIA/Swordfish-API-Emulator
+RUN /bin/bash -c 'rm -rf Redfish-Interface-Emulator/api_emulator/redfish/static'
 
-cd Redfish-Interface-Emulator
-rm -rf api_emulator/redfish/static
-cp -r -f ../Swordfish_API_Emulator/api_emulator .
-cp -r -f ../Swordfish_API_Emulator/Resources .
-cp -r -f ../Swordfish_API_Emulator/emulator-config.json .
-cp -r -f ../Swordfish_API_Emulator/emulator.py .
+RUN /bin/bash -c 'cp -r -f Swordfish-API-Emulator/api_emulator Redfish-Interface_Emulator/'
+RUN /bin/bash -c 'cp -r -f Swordfish-API-Emulator/Resources Redfish-Interface_Emulator/'
+RUN /bin/bash -c 'cp -r -f Swordfish-API-Emulator/emulator-config.json Redfish-Interface_Emulator/'
+RUN /bin/bash -c 'cp -r -f Swordfish-API-Emulator/emulator.py Redfish-Interface_Emulator/'
 
 # Copy server files
 COPY . /usr/src/app/.

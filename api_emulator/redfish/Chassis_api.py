@@ -1,4 +1,3 @@
-# Copyright Notice:
 #
 # Copyright (c) 2017-2021, The Storage Networking Industry Association.
 #
@@ -27,189 +26,110 @@
 #  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
-#
-# Copyright 2015-2021 DMTF. All rights reserved.
-# License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-Interface-Emulator/blob/master/LICENSE.md
 
-# Chassis API File
-
-"""
-Collection API:  GET, POST, DELETE, PUT
-Singleton  API:  GET, POST, PATCH, PUT, DELETE
-"""
+# Resource implementation for - /redfish/v1/Chassis/{ChassisId}
+# Program name - Chassis_api.py
 
 import g
-
 import json, os
-import sys, traceback
+import traceback
 import logging
-import copy
 
-from flask import jsonify
-from flask import Flask, request, make_response, render_template
-from flask_restful import reqparse, Api, Resource
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
-
-# Resource and SubResource imports
-from .templates.Chassis import get_Chassis_instance
-from .thermal_api import ThermalAPI, CreateThermal
-from .power_api import PowerAPI, CreatePower
+from flask import Flask, request
+from flask_restful import Resource
 from .constants import *
+from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from .templates.Chassis import get_Chassis_instance
 
 members = []
 member_ids = []
-config = {}
-wildcards = {}
 INTERNAL_ERROR = 500
-
-# Chassis Singleton API
-class ChassisAPI(Resource):
-
-    # kwargs is used to pass in the wildcards values to be replaced
-    # when an instance is created via get_<resource>_instance().
-    #
-    # The call to attach the API establishes the contents of kwargs.
-    # All subsequent HTTP calls go through __init__.
-    #
-    # __init__ stores kwargs in wildcards, which is used to pass
-    # values to the get_<resource>_instance() call.
-    def __init__(self, **kwargs):
-        logging.info('ChassisAPI init called')
-        self.root = PATHS['Root']
-        self.chassis = PATHS['Chassis']['path']
-
-    # HTTP GET
-    def get(self, ident):
-        path = os.path.join(self.root, self.chassis, ident, 'index.json')
-        return get_json_data (path)
-
-    # HTTP POST
-    # - Create the resource (since URI variables are available)
-    # - Update the members and members.id lists
-    # - Attach the APIs of subordinate resources (do this only once)
-    # - Finally, create an instance of the subordinate resources
-    def post(self, ident):
-        logging.info('ChassisAPI POST called')
-        path = create_path(self.root,  self.chassis, ident)
-        collection_path = os.path.join(self.root, self.chassis, 'index.json')
-        # Check if collection exists:
-        if not os.path.exists(collection_path):
-            ChassisCollectionAPI.post (self)
-
-        if ident in members:
-            resp = 404
-            return resp
-        try:
-            global config
-
-            wildcards['id'] = ident
-            wildcards['linkSystem'] = ['UpdateWithPATCH']
-            wildcards['linkResourceBlocks'] = ['UpdateWithPATCH']
-            wildcards['linkMgr'] = 'UpdateWithPATCH'
-            wildcards['rb'] = g.rest_base
-            config=get_Chassis_instance(wildcards)
-            config = create_and_patch_object (config, members, member_ids, path, collection_path)
-
-            resp = config, 200
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        return resp
-
-    # HTTP PUT
-    def put(self, ident):
-        path = create_path(self.root, self.chassis, ident, 'index.json')
-        put_object(path)
-        return self.get(ident)
-
-    # HTTP PATCH
-    def patch(self, ident):
-        #Set path to object, then call patch_object:
-        path = create_path(self.root, self.chassis, ident, 'index.json')
-        patch_object(path)
-        return self.get(ident)
-
-    # HTTP DELETE
-    def delete(self, ident):
-        #Set path to object, then call delete_object:
-        path = create_path(self.root, self.chassis, ident)
-        base_path = create_path(self.root, self.chassis)
-        return delete_object(path, base_path)
-
 
 # Chassis Collection API
 class ChassisCollectionAPI(Resource):
+	def __init__(self):
+		logging.info('Chassis Collection init called')
+		self.root = PATHS['Root']
 
-    def __init__(self):
-        self.root = PATHS['Root']
-        self.chassis = PATHS['Chassis']['path']
+	# HTTP GET
+	def get(self):
+		logging.info('Chassis Collection get called')
+		path = os.path.join(self.root, 'Chassis', 'index.json')
+		return get_json_data (path)
 
-    def get(self):
-        path = os.path.join(self.root, self.chassis, 'index.json')
-        return get_json_data (path)
+	# HTTP POST Collection
+	def post(self):
+		logging.info('Chassis Collection post called')
 
-    def verify(self, config):
-        # TODO: Implement a method to verify that the POST body is valid
-        return True,{}
+		path = create_path(self.root, 'Chassis')
+		return create_collection (path, 'Chassis')
 
-    # HTTP POST Collection
-    def post(self):
-        self.root = PATHS['Root']
-        self.chassis = PATHS['Chassis']['path']
+	# HTTP PUT Collection
+	def put(self):
+		path = os.path.join(self.root, 'Chassis', 'index.json')
+		put_object (path)
+		return self.get(self.root)
 
-        path = create_path(self.root, self.chassis)
-        return create_collection (path, 'Chassis')
+# Chassis API
+class ChassisAPI(Resource):
+	def __init__(self):
+		logging.info('Chassis init called')
+		self.root = PATHS['Root']
 
-    # HTTP PUT
-    def put(self):
-        path = os.path.join(self.root, self.chassis, 'index.json')
-        put_object(path)
-        return self.get(self.root)
+	# HTTP GET
+	def get(self, ChassisId):
+		logging.info('Chassis get called')
+		path = create_path(self.root, 'Chassis/{0}', 'index.json').format(ChassisId)
+		return get_json_data (path)
 
-    def verify(self, config):
-        #TODO: Implement a method to verify that the POST body is valid
-        return True,{}
+	# HTTP POST
+	# - Create the resource (since URI variables are available)
+	# - Update the members and members.id lists
+	# - Attach the APIs of subordinate resources (do this only once)
+	# - Finally, create an instance of the subordiante resources
+	def post(self, ChassisId):
+		logging.info('Chassis post called')
+		path = create_path(self.root, 'Chassis/{0}').format(ChassisId)
+		collection_path = os.path.join(self.root, 'Chassis', 'index.json').format()
 
-    # HTTP DELETE
-    def delete(self):
-        #Set path to object, then call delete_object:
-        path = create_path(self.root, self.chassis)
-        base_path = create_path(self.root)
-        return delete_collection(path, base_path)
+		# Check if collection exists:
+		if not os.path.exists(collection_path):
+			ChassisCollectionAPI.post(self, )
 
+		if ChassisId in members:
+			resp = 404
+			return resp
+		try:
+			global config
+			wildcards = {'ChassisId':ChassisId, 'rb':g.rest_base}
+			config=get_Chassis_instance(wildcards)
+			config = create_and_patch_object (config, members, member_ids, path, collection_path)
+			resp = config, 200
 
-# CreateChassis
-#
-# Called internally to create instances of a resource. If the
-# resource has subordinate resources, those subordinate resource(s)
-# are created automatically.
-#
-# Note: In 'init', the first time through, kwargs may not have any
-# values, so we need to check. The call to 'init' stores the path
-# wildcards. The wildcards are used to modify the resource template
-# when subsequent calls are made to instantiate resources.
-class CreateChassis(Resource):
+		except Exception:
+			traceback.print_exc()
+			resp = INTERNAL_ERROR
+		logging.info('ChassisAPI POST exit')
+		return resp
 
-    def __init__(self, **kwargs):
-        logging.info('CreateChassis init called')
-        if 'resource_class_kwargs' in kwargs:
-            global wildcards
-            wildcards = copy.deepcopy(kwargs['resource_class_kwargs'])
-        self.root = PATHS['Root']
-        self.chassis = PATHS['Chassis']['path']
+	# HTTP PUT
+	def put(self, ChassisId):
+		logging.info('Chassis put called')
+		path = os.path.join(self.root, 'Chassis/{0}', 'index.json').format(ChassisId)
+		put_object(path)
+		return self.get(ChassisId)
 
-    # Create instance
-    def put(self, ident):
-        logging.info('CreateChassis put called')
-        try:
-            global config
-            global wildcards
-            wildcards['id'] = ident
-            config = get_Chassis_instance(wildcards)
-            members[ident] = config
-            resp = config, 200
-        except Exception:
-            traceback.print_exc()
-            resp = INTERNAL_ERROR
-        logging.info('CreateChassis init exit')
-        return resp
+	# HTTP PATCH
+	def patch(self, ChassisId):
+		logging.info('Chassis patch called')
+		path = os.path.join(self.root, 'Chassis/{0}', 'index.json').format(ChassisId)
+		patch_object(path)
+		return self.get(ChassisId)
+
+	# HTTP DELETE
+	def delete(self, ChassisId):
+		logging.info('Chassis delete called')
+		path = create_path(self.root, 'Chassis/{0}').format(ChassisId)
+		base_path = create_path(self.root, 'Chassis')
+		return delete_object(path, base_path)
+

@@ -1,0 +1,29 @@
+{
+    "@odata.type": "#Fabric.v1_2_1.Fabric",
+    "Id": "Ethernet",
+    "Name": "Ethernet Fabric",
+    "FabricType": "Ethernet",
+    "Description": "An Ethernet fabric - containing switch attach EBOF with 2 Ethernet-attached drives.",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "Zones": {
+        "@odata.id": "/redfish/v1/Fabrics/Ethernet/Zones"
+    },
+    "Endpoints": {
+        "@odata.id": "/redfish/v1/Fabrics/Ethernet/Endpoints"
+    },
+    "Switches": {
+        "@odata.id": "/redfish/v1/Fabrics/Ethernet/Switches"
+    },
+    "Links": {
+        "Oem": {}
+    },
+    "Actions": {
+        "Oem": {}
+    },
+    "Oem": {},
+    "@odata.id": "/redfish/v1/Fabrics/Ethernet",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

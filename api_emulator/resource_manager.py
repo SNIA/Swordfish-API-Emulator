@@ -36,6 +36,34 @@
 # Resource Manager Module
 
 # External imports
+
+from api_emulator.redfish.Chassis_api import ChassisAPI, ChassisCollectionAPI
+from api_emulator.redfish.Connection_api import ConnectionAPI, ConnectionCollectionAPI
+from api_emulator.redfish.Drive1_api import Drive1API, Drive1CollectionAPI
+from api_emulator.redfish.Endpoint0_api import Endpoint0API, Endpoint0CollectionAPI
+from api_emulator.redfish.EndpointGroup3_api import EndpointGroup3API, EndpointGroup3CollectionAPI
+from api_emulator.redfish.EthernetInterface0_api import EthernetInterface0API, EthernetInterface0CollectionAPI
+from api_emulator.redfish.EthernetInterface6_api import EthernetInterface6API, EthernetInterface6CollectionAPI
+from api_emulator.redfish.Fabric_api import FabricAPI, FabricCollectionAPI
+from api_emulator.redfish.LogEntry0_api import LogEntry0API, LogEntry0CollectionAPI
+from api_emulator.redfish.LogService0_api import LogService0API, LogService0CollectionAPI
+from api_emulator.redfish.ManagerNetworkProtocol_api import ManagerNetworkProtocolAPI
+from api_emulator.redfish.Manager_api import ManagerAPI, ManagerCollectionAPI
+from api_emulator.redfish.MessageRegistryFile_api import MessageRegistryFileAPI, MessageRegistryFileCollectionAPI
+from api_emulator.redfish.NetworkAdapter_api import NetworkAdapterAPI, NetworkAdapterCollectionAPI
+from api_emulator.redfish.NetworkDeviceFunction_api import NetworkDeviceFunctionAPI, NetworkDeviceFunctionCollectionAPI
+from api_emulator.redfish.Port0_api import Port0API, Port0CollectionAPI
+from api_emulator.redfish.Port17_api import Port17API, Port17CollectionAPI
+from api_emulator.redfish.SessionService_api import SessionServiceAPI
+from api_emulator.redfish.Session_api import SessionAPI, SessionCollectionAPI
+from api_emulator.redfish.Storage0_api import Storage0API, Storage0CollectionAPI
+from api_emulator.redfish.StorageController0_api import StorageController0API, StorageController0CollectionAPI
+from api_emulator.redfish.Switch_api import SwitchAPI, SwitchCollectionAPI
+from api_emulator.redfish.Thermal_api import ThermalAPI
+from api_emulator.redfish.Volume8_api import Volume8API, Volume8CollectionAPI
+from api_emulator.redfish.Zone0_api import Zone0API, Zone0CollectionAPI
+
+from . import utils
 import os
 import json
 import urllib3
@@ -47,97 +75,9 @@ import copy
 import g
 
 from api_emulator.redfish.serviceroot_api import *
-
-from api_emulator.redfish.storage_api import *
-from api_emulator.redfish.drives_api import *
-from api_emulator.redfish.volumes_api import *
-from api_emulator.redfish.storagecontrollers_api import *
-from api_emulator.redfish.storagepools_api import *
-from api_emulator.redfish.filesystems_api import *
-from api_emulator.redfish.storagegroups_api import *
-
-from api_emulator.redfish.fabric_api import *
-from api_emulator.redfish.f_switches_api import *
-from api_emulator.redfish.f_switch_ports_api import *
-
-from api_emulator.redfish.f_connections_api import *
-from api_emulator.redfish.f_zones_api import *
-
-from api_emulator.redfish.f_endpoints_api import *
-from api_emulator.redfish.f_endpointgroups_api import *
-
-from api_emulator.redfish.networkadapters_api import *
-from api_emulator.redfish.networkdevicefunctions_api import *
-from api_emulator.redfish.nwports_api import *
-
-from api_emulator.redfish.storageservices_api import *
-from api_emulator.redfish.endpoints_api import *
-from api_emulator.redfish.endpointgroups_api import *
-from api_emulator.redfish.classesofservice_api import *
-from api_emulator.redfish.dataprotectionloscapabilities_api import *
-from api_emulator.redfish.datasecurityloscapabilities_api import *
-from api_emulator.redfish.datastorageloscapabilities_api import *
-from api_emulator.redfish.ioperformanceloscapabilities_api import *
-from api_emulator.redfish.ioconnectivityloscapabilities_api import *
-from api_emulator.redfish.storagesystems_api import *
-
-from . import utils
-from .resource_dictionary import ResourceDictionary
-
 from .static_loader import load_static
-# Local imports (special case)
-from .redfish.ComputerSystem_api import ComputerSystemCollectionAPI, ComputerSystemAPI, CreateComputerSystem
-from .redfish.computer_systems import ComputerSystemCollection
-from .exceptions import CreatePooledNodeError, RemovePooledNodeError, EventSubscriptionError
-from .redfish.event_service import EventService, Subscriptions
-from .redfish.event import Event
-# EventService imports
-from .redfish.EventService_api import EventServiceAPI, CreateEventService
-from .redfish.Subscriptions_api import SubscriptionCollectionAPI, SubscriptionAPI, CreateSubscription
-
-# SessionService imports
-from .redfish.SessionService_api import SessionServiceAPI, CreateSessionService
-from .redfish.sessions_api import SessionCollectionAPI, SessionAPI, CreateSession
-
-# Chassis imports
-from .redfish.Chassis_api import ChassisCollectionAPI, ChassisAPI, CreateChassis
-from .redfish.power_api import PowerAPI, CreatePower
-from .redfish.thermal_api import ThermalAPI, CreateThermal
-# Manager imports
-from .redfish.Manager_api import ManagerCollectionAPI, ManagerAPI, CreateManager
-# EgResource imports
-from .redfish.eg_resource_api import EgResourceCollectionAPI, EgResourceAPI, CreateEgResource
-from .redfish.eg_subresource_api import EgSubResourceCollectionAPI, EgSubResourceAPI, CreateEgSubResource
-# ComputerSystem imports
-from .redfish.ComputerSystem_api import ComputerSystemCollectionAPI, ComputerSystemAPI, CreateComputerSystem
-from .redfish.processor import Processor, Processors
-from .redfish.memory import Memory, MemoryCollection
-from .redfish.simplestorage import SimpleStorage, SimpleStorageCollection
-from .redfish.ethernetinterface import EthernetInterfaceCollection, EthernetInterface
-from .redfish.ResetActionInfo_api import ResetActionInfo_API
-from .redfish.ResetAction_api import ResetAction_API
-
-# FabricAdapters
-from .redfish.fabricadapters_api import *
-from .redfish.fa_ports_api import *
-
-# MediaControllers
-from .redfish.mediacontrollers_api import *
-from .redfish.mc_ports_api import *
-
-# Chassis Memory
-from .redfish.c_memory_api import *
-
-# MemoryDomains
-from .redfish.memory_domains_api import *
-from .redfish.md_chunks_api import *
-
-# PCIe Switch imports
-#from .redfish.pcie_switch_api import PCIeSwitchesAPI, PCIeSwitchAPI
-# CompositionService imports
-from .redfish.CompositionService_api import CompositionServiceAPI
-from .redfish.ResourceBlock_api import ResourceBlockCollectionAPI, ResourceBlockAPI, CreateResourceBlock
-from .redfish.ResourceZone_api import ResourceZoneCollectionAPI, ResourceZoneAPI, CreateResourceZone
+from .resource_dictionary import ResourceDictionary
+from .exceptions import CreatePooledNodeError, RemovePooledNodeError
 
 mockupfolders = []
 
@@ -236,249 +176,78 @@ class ResourceManager(object):
         # Attach APIs for dynamic resources
         g.api.add_resource(ServiceRootAPI, '/redfish/v1/')
 
-        # EventService Resources
-        g.api.add_resource(EventServiceAPI, '/redfish/v1/EventService',
-                resource_class_kwargs={'rb': g.rest_base, 'id': "EventService"})
-        # EventService SubResources
-        g.api.add_resource(SubscriptionCollectionAPI, '/redfish/v1/EventService/Subscriptions')
-        g.api.add_resource(SubscriptionAPI, '/redfish/v1/EventService/Subscriptions/<string:ident>',
-                resource_class_kwargs={'rb': g.rest_base})
-
-        # SessionService Resources
-        g.api.add_resource(SessionServiceAPI, '/redfish/v1/SessionService',
-                resource_class_kwargs={'rb': g.rest_base, 'id': "SessionService"})
-        # SessionService SubResources
-        g.api.add_resource(SessionCollectionAPI, '/redfish/v1/SessionService/Sessions')
-        g.api.add_resource(SessionAPI, '/redfish/v1/SessionService/Sessions/<string:ident>',
-                resource_class_kwargs={'rb': g.rest_base})
-
-        # Chassis Resources
         g.api.add_resource(ChassisCollectionAPI, '/redfish/v1/Chassis')
-        g.api.add_resource(ChassisAPI, '/redfish/v1/Chassis/<string:ident>',
-                resource_class_kwargs={'rb': g.rest_base})
-        # Chassis SubResources
-        g.api.add_resource(ThermalAPI, '/redfish/v1/Chassis/<string:ident>/Thermal',
-                resource_class_kwargs={'rb': g.rest_base})
-        # Chassis SubResources
-        g.api.add_resource(PowerAPI, '/redfish/v1/Chassis/<string:ident>/Power',
-                resource_class_kwargs={'rb': g.rest_base})
+        g.api.add_resource(ChassisAPI, '/redfish/v1/Chassis/<string:ChassisId>')
 
-        g.api.add_resource(DrivesCollectionAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/Drives')
-        g.api.add_resource(DrivesAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/Drives/<string:drive>')
+        g.api.add_resource(Drive1CollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/Drives')
+        g.api.add_resource(Drive1API, '/redfish/v1/Chassis/<string:ChassisId>/Drives/<string:DriveId>')
 
-        # Memory SubResources
-        g.api.add_resource(ChassisMemoryCollectionAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/Memory')
-        g.api.add_resource(ChassisMemoryAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/Memory/<string:memory>')
+        g.api.add_resource(NetworkAdapterCollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters')
+        g.api.add_resource(NetworkAdapterAPI, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>')
 
-        # Memory SubResources
-        g.api.add_resource(MemoryDomainsCollectionAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/MemoryDomains')
-        g.api.add_resource(MemoryDomainsAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/MemoryDomains/<string:memory_domain>')
-        g.api.add_resource(MDChunksCollectionAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/MemoryDomains/<string:memory_domain>/MemoryChunks')
-        g.api.add_resource(MDChunksAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/MemoryDomains/<string:memory_domain>/MemoryChunks/<string:md_chunks>')
+        g.api.add_resource(ThermalAPI, '/redfish/v1/Chassis/<string:ChassisId>/Thermal')
 
-        g.api.add_resource(NetworkAdaptersCollectionAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/NetworkAdapters')
-        g.api.add_resource(NetworkAdaptersAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/NetworkAdapters/<string:network_adapter>')
+        g.api.add_resource(NetworkDeviceFunctionCollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/NetworkDeviceFunctions')
+        g.api.add_resource(NetworkDeviceFunctionAPI, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/NetworkDeviceFunctions/<string:NetworkDeviceFunctionId>')
 
-        g.api.add_resource(NetworkDeviceFunctionsCollectionAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/NetworkAdapters/<string:network_adapter>/NetworkDeviceFunctions')
-        g.api.add_resource(NetworkDeviceFunctionsAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/NetworkAdapters/<string:network_adapter>/NetworkDeviceFunctions/<string:network_device_function>')
+        g.api.add_resource(Port17CollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Ports')
+        g.api.add_resource(Port17API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Ports/<string:PortId>')
 
-        g.api.add_resource(NWPortsCollectionAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/NetworkAdapters/<string:network_adapter>/Ports')
-        g.api.add_resource(NWPortsAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/NetworkAdapters/<string:network_adapter>/Ports/<string:nw_port>')
+        g.api.add_resource(EthernetInterface6CollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdaptersId>/NetworkDeviceFunctions/<string:NetworkDeviceFunctionId>/EthernetInterfaces')
+        g.api.add_resource(EthernetInterface6API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdaptersId>/NetworkDeviceFunctions/<string:NetworkDeviceFunctionId>/EthernetInterfaces/<string:EthernetInterfaceId>')
 
-        # MediaController resources
-        g.api.add_resource(MediaControllersCollectionAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/MediaControllers')
-        g.api.add_resource(MediaControllersAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/MediaControllers/<string:media_controller>')
-
-        g.api.add_resource(MCPortsCollectionAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/MediaControllers/<string:media_controller>/Ports')
-        g.api.add_resource(MCPortsAPI,
-                            '/redfish/v1/Chassis/<string:chassis>/MediaControllers/<string:media_controller>/Ports/<string:mc_ports>')
-
-
-        # Manager Resources
-        g.api.add_resource(ManagerCollectionAPI, '/redfish/v1/Managers')
-        g.api.add_resource(ManagerAPI, '/redfish/v1/Managers/<string:ident>', resource_class_kwargs={'rb': g.rest_base})
-
-        # EgResource Resources (Example entries for attaching APIs)
-        # g.api.add_resource(EgResourceCollectionAPI,
-        #     '/redfish/v1/EgResources')
-        # g.api.add_resource(EgResourceAPI,
-        #     '/redfish/v1/EgResources/<string:ident>',
-        #     resource_class_kwargs={'rb': g.rest_base})
-        #
-        # EgResource SubResources (Example entries for attaching APIs)
-        # g.api.add_resource(EgSubResourceCollection,
-        #     '/redfish/v1/EgResources/<string:ident>/EgSubResources',
-        #     resource_class_kwargs={'rb': g.rest_base})
-        # g.api.add_resource(EgSubResource,
-        #     '/redfish/v1/EgResources/<string:ident1>/EgSubResources/<string:ident2>',
-        #     resource_class_kwargs={'rb': g.rest_base})
-
-        # System Resources
-        g.api.add_resource(ComputerSystemCollectionAPI, '/redfish/v1/Systems')
-        g.api.add_resource(ComputerSystemAPI, '/redfish/v1/Systems/<string:ident>',
-                resource_class_kwargs={'rb': g.rest_base})
-        # System SubResources
-        g.api.add_resource(Processors, '/redfish/v1/Systems/<string:ident>/Processors',
-                resource_class_kwargs={'rb': g.rest_base,'suffix':'Systems'})
-        g.api.add_resource(Processor, '/redfish/v1/Systems/<string:ident1>/Processors/<string:ident2>',
-                '/redfish/v1/CompositionService/ResourceBlocks/<string:ident1>/Processors/<string:ident2>')
-        # System SubResources
-        g.api.add_resource(MemoryCollection, '/redfish/v1/Systems/<string:ident>/Memory',
-                 '/redfish/v1/Chassis/<string:chassis>/Memory',
-                 resource_class_kwargs={'rb': g.rest_base,'suffix':'Systems'})
-        g.api.add_resource(Memory, '/redfish/v1/Systems/<string:ident1>/Memory/<string:ident2>',
-                '/redfish/v1/Chassis/<string:chassis>/Memory/<string:ident2>',
-                '/redfish/v1/CompositionService/ResourceBlocks/<string:ident1>/Memory/<string:ident2>')
-        # System SubResources
-        g.api.add_resource(SimpleStorageCollection, '/redfish/v1/Systems/<string:ident>/SimpleStorage',
-                resource_class_kwargs={'rb': g.rest_base,'suffix':'Systems'})
-        g.api.add_resource(SimpleStorage, '/redfish/v1/Systems/<string:ident1>/SimpleStorage/<string:ident2>',
-                '/redfish/v1/CompositionService/ResourceBlocks/<string:ident1>/SimpleStorage/<string:ident2>')
-        # System SubResources
-        g.api.add_resource(EthernetInterfaceCollection, '/redfish/v1/Systems/<string:ident>/EthernetInterfaces',
-                resource_class_kwargs={'rb': g.rest_base,'suffix':'Systems'})
-        g.api.add_resource(EthernetInterface, '/redfish/v1/Systems/<string:ident1>/EthernetInterfaces/<string:ident2>',
-                '/redfish/v1/CompositionService/ResourceBlocks/<string:ident1>/EthernetInterfaces/<string:ident2>')
-
-        # System SubResources
-        g.api.add_resource(ResetActionInfo_API, '/redfish/v1/Systems/<string:ident>/ResetActionInfo',
-                resource_class_kwargs={'rb': g.rest_base})
-        g.api.add_resource(ResetAction_API, '/redfish/v1/Systems/<string:ident>/Actions/ComputerSystem.Reset',
-                resource_class_kwargs={'rb': g.rest_base})
-
-
-        # System SubResources - FabricAdapters
-        g.api.add_resource(FabricAdaptersCollectionAPI,
-                            '/redfish/v1/Systems/<string:system>/FabricAdapters')
-        g.api.add_resource(FabricAdaptersAPI,
-                           '/redfish/v1/Systems/<string:system>/FabricAdapters/<string:fabric_adapter>')
-        g.api.add_resource(FabricAdapterPortsCollectionAPI,
-                            '/redfish/v1/Systems/<string:system>/FabricAdapters/<string:fabric_adapter>/Ports')
-        g.api.add_resource(FabricAdapterPortsAPI,
-                           '/redfish/v1/Systems/<string:system>/FabricAdapters/<string:fabric_adapter>/Ports/<string:fabric_adapter_port>')
-
-
-        # Storage Resources
-        g.api.add_resource(StorageCollectionAPI, '/redfish/v1/Storage')
-        g.api.add_resource(StorageAPI, '/redfish/v1/Storage/<string:storage>')
-        # Storage SubResources
-        g.api.add_resource(StorageGroupsCollectionAPI,
-                            '/redfish/v1/Storage/<string:storage>/StorageGroups')
-        g.api.add_resource(StorageGroupsAPI,
-                           '/redfish/v1/Storage/<string:storage>/StorageGroups/<string:storage_groups>')
-        g.api.add_resource(StoragePoolsCollectionAPI,
-                           '/redfish/v1/Storage/<string:storage>/StoragePools')
-        g.api.add_resource(StoragePoolsAPI,
-                            '/redfish/v1/Storage/<string:storage>/StoragePools/<string:storagepool>')
-        g.api.add_resource(VolumesCollectionAPI,
-                            '/redfish/v1/Storage/<string:storage>/Volumes')
-        g.api.add_resource(VolumesAPI,
-                            '/redfish/v1/Storage/<string:storage>/Volumes/<string:volume>')
-        g.api.add_resource(StorageControllersCollectionAPI,
-                            '/redfish/v1/Storage/<string:storage>/Controllers')
-        g.api.add_resource(StorageControllersAPI,
-                            '/redfish/v1/Storage/<string:storage>/Controllers/<string:storagecontroller>')
-
-        # Fabric Resources
         g.api.add_resource(FabricCollectionAPI, '/redfish/v1/Fabrics')
-        g.api.add_resource(FabricAPI, '/redfish/v1/Fabrics/<string:fabric>',
-                        '/redfish/v1/Fabrics/<string:fabric>')
-        # Fabric SubResources
-        g.api.add_resource(FabricsEndpointsCollectionAPI,
-                            '/redfish/v1/Fabrics/<string:fabric>/Endpoints')
-        g.api.add_resource(FabricsEndpointsAPI,
-                            '/redfish/v1/Fabrics/<string:fabric>/Endpoints/<string:f_endpoint>')
-        g.api.add_resource(FabricsEndpointGroupsCollectionAPI,
-                            '/redfish/v1/Fabrics/<string:fabric>/EndpointGroups')
-        g.api.add_resource(FabricsEndpointGroupsAPI,
-                            '/redfish/v1/Fabrics/<string:fabric>/EndpointGroups/<string:f_endpoint_group>')
-        g.api.add_resource(FabricsZonesCollectionAPI,
-                            '/redfish/v1/Fabrics/<string:fabric>/Zones')
-        g.api.add_resource(FabricsZonesAPI,
-                            '/redfish/v1/Fabrics/<string:fabric>/Zones/<string:f_zone>')
-        g.api.add_resource(FabricsConnectionsCollectionAPI,
-                            '/redfish/v1/Fabrics/<string:fabric>/Connections')
-        g.api.add_resource(FabricsConnectionsAPI,
-                            '/redfish/v1/Fabrics/<string:fabric>/Connections/<string:f_connection>')
-        g.api.add_resource(FabricsSwitchesCollectionAPI,
-                            '/redfish/v1/Fabrics/<string:fabric>/Switches')
-        g.api.add_resource(FabricsSwitchesAPI,
-                            '/redfish/v1/Fabrics/<string:fabric>/Switches/<string:f_switch>')
-        g.api.add_resource(FabricsSwitchPortsCollectionAPI,
-                            '/redfish/v1/Fabrics/<string:fabric>/Switches/<string:f_switch>/Ports/')
-        g.api.add_resource(FabricsSwitchPortsAPI,
-                            '/redfish/v1/Fabrics/<string:fabric>/Switches/<string:f_switch>/Ports/<string:fs_port>')
-        # FileSystems
-        g.api.add_resource(FileSystemsCollectionAPI,
-                            '/redfish/v1/Storage/<string:storage>/FileSystems')
-        g.api.add_resource(FileSystemsAPI,
-                            '/redfish/v1/Storage/<string:storage>/FileSystems/<string:file_systems>')
+        g.api.add_resource(FabricAPI, '/redfish/v1/Fabrics/<string:FabricId>')
 
-        # PCIe Switch Resources
-        #g.api.add_resource(PCIeSwitchesAPI, '/redfish/v1/PCIeSwitches')
-        #g.api.add_resource(PCIeSwitchAPI, '/redfish/v1/PCIeSwitches/<string:ident>',
-        #        resource_class_kwargs={'rb': g.rest_base})
+        g.api.add_resource(Endpoint0CollectionAPI, '/redfish/v1/Fabrics/<string:FabricId>/Endpoints')
+        g.api.add_resource(Endpoint0API, '/redfish/v1/Fabrics/<string:FabricId>/Endpoints/<string:EndpointId>')
 
-        # Composition Service Resources
-        g.api.add_resource(CompositionServiceAPI, '/redfish/v1/CompositionService',
-                resource_class_kwargs={'rb': g.rest_base, 'id': "CompositionService"})
-        # Composition Service SubResources
-        g.api.add_resource(ResourceBlockCollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks')
-        g.api.add_resource(ResourceBlockAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ident>',
-                resource_class_kwargs={'rb': g.rest_base})
-        # Composition Service SubResources
-        g.api.add_resource(ResourceZoneCollectionAPI, '/redfish/v1/CompositionService/ResourceZones')
-        g.api.add_resource(ResourceZoneAPI, '/redfish/v1/CompositionService/ResourceZones/<string:ident>',
-                resource_class_kwargs={'rb': g.rest_base})
+        g.api.add_resource(SwitchCollectionAPI, '/redfish/v1/Fabrics/<string:FabricId>/Switches')
+        g.api.add_resource(SwitchAPI, '/redfish/v1/Fabrics/<string:FabricId>/Switches/<string:SwitchId>')
 
-        # Storage Services - API and Collection
-        g.api.add_resource(StorageServicesCollectionAPI, '/redfish/v1/StorageServices')
-        g.api.add_resource(StorageServicesAPI, '/redfish/v1/StorageServices/<string:storage_service>')
-        #g.api.add_resource(StorageGroupsCollectionAPI,
-        #                    '/redfish/v1/StorageServices/<string:storage_service>/StorageGroups')
-        #g.api.add_resource(StorageGroupsAPI,
-        #                   '/redfish/v1/StorageServices/<string:storage_service>/StorageGroups/<string:storage_groups>')
-        #g.api.add_resource(StoragePoolsCollectionAPI,
-        #                   '/redfish/v1/StorageServices/<string:storage_service>/StoragePools')
-        #g.api.add_resource(StoragePoolsAPI,
-        #                    '/redfish/v1/StorageServices/<string:storage_service>/StoragePools/<string:storage_pools>')
+        g.api.add_resource(Zone0CollectionAPI, '/redfish/v1/Fabrics/<string:FabricId>/Zones')
+        g.api.add_resource(Zone0API, '/redfish/v1/Fabrics/<string:FabricId>/Zones/<string:ZoneId>')
 
-        g.api.add_resource(ClassesOfServiceCollectionAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/ClassesOfService')
-        g.api.add_resource(ClassesOfServiceAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/ClassesOfService/<string:classes_of_service>')
-        g.api.add_resource(DataProtectionLoSCapabilitiesAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/DataProtectionLoSCapabilities')
-        g.api.add_resource(DataSecurityLoSCapabilitiesAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/DataSecurityLoSCapabilities')
+        g.api.add_resource(Port0CollectionAPI, '/redfish/v1/Fabrics/<string:FabricId>/Switches/<string:SwitchId>/Ports')
+        g.api.add_resource(Port0API, '/redfish/v1/Fabrics/<string:FabricId>/Switches/<string:SwitchId>/Ports/<string:PortId>')
 
-        g.api.add_resource(DataStorageLoSCapabilitiesAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/DataStorageLoSCapabilities')
-        g.api.add_resource(IOConnectivityLoSCapabilitiesAPI,
-                           '/redfish/v1/StorageServices/<string:storage_service>/IOConnectivityLoSCapabilities')
-        g.api.add_resource(IOPerformanceLoSCapabilitiesAPI,
-                            '/redfish/v1/StorageServices/<string:storage_service>/IOPerformanceLoSCapabilities')
+        g.api.add_resource(ConnectionCollectionAPI, '/redfish/v1/Fabrics/<string:FabricId>/Connections')
+        g.api.add_resource(ConnectionAPI, '/redfish/v1/Fabrics/<string:FabricId>/Connections/<string:ConnectionId>')
 
-        # Storage Systems - API and Collection
-        g.api.add_resource(StorageSystemsCollectionAPI, '/redfish/v1/StorageSystems')
-        g.api.add_resource(StorageSystemsAPI, '/redfish/v1/StorageSystems/<string:storage_systems>')
+        g.api.add_resource(EndpointGroup3CollectionAPI, '/redfish/v1/Fabrics/<string:FabricId>/EndpointGroups')
+        g.api.add_resource(EndpointGroup3API, '/redfish/v1/Fabrics/<string:FabricId>/EndpointGroups/<string:EndpointGroupId>')
+
+        g.api.add_resource(ManagerCollectionAPI, '/redfish/v1/Managers')
+        g.api.add_resource(ManagerAPI, '/redfish/v1/Managers/<string:ManagerId>')
+
+        g.api.add_resource(EthernetInterface0CollectionAPI, '/redfish/v1/Managers/<string:ManagerId>/EthernetInterfaces')
+        g.api.add_resource(EthernetInterface0API, '/redfish/v1/Managers/<string:ManagerId>/EthernetInterfaces/<string:EthernetInterfaceId>')
+
+        g.api.add_resource(LogService0CollectionAPI, '/redfish/v1/Managers/<string:ManagerId>/LogServices')
+        g.api.add_resource(LogService0API, '/redfish/v1/Managers/<string:ManagerId>/LogServices/<string:LogServiceId>')
+
+        g.api.add_resource(ManagerNetworkProtocolAPI, '/redfish/v1/Managers/<string:ManagerId>/NetworkProtocol')
+
+        g.api.add_resource(LogEntry0CollectionAPI, '/redfish/v1/Managers/<string:ManagerId>/LogServices/<string:LogServiceId>/Entries')
+        g.api.add_resource(LogEntry0API, '/redfish/v1/Managers/<string:ManagerId>/LogServices/<string:LogServiceId>/Entries/<string:LogEntryId>')
+
+        g.api.add_resource(MessageRegistryFileCollectionAPI, '/redfish/v1/Registries')
+        g.api.add_resource(MessageRegistryFileAPI, '/redfish/v1/Registries/<string:MessageRegistryFileId>')
+
+        g.api.add_resource(SessionServiceAPI, '/redfish/v1/SessionService')
+
+        g.api.add_resource(SessionCollectionAPI, '/redfish/v1/SessionService/Sessions')
+        g.api.add_resource(SessionAPI, '/redfish/v1/SessionService/Sessions/<string:SessionId>')
+
+        g.api.add_resource(Storage0CollectionAPI, '/redfish/v1/Storage')
+        g.api.add_resource(Storage0API, '/redfish/v1/Storage/<string:StorageId>')
+
+        g.api.add_resource(StorageController0CollectionAPI, '/redfish/v1/Storage/<string:StorageId>/Controllers')
+        g.api.add_resource(StorageController0API, '/redfish/v1/Storage/<string:StorageId>/Controllers/<string:ControllerId>')
+
+        g.api.add_resource(Volume8CollectionAPI, '/redfish/v1/Storage/<string:StorageId>/Volumes')
+        g.api.add_resource(Volume8API, '/redfish/v1/Storage/<string:StorageId>/Volumes/<string:VolumeId>')
+
 
     @property
     def configuration(self):

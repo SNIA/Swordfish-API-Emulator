@@ -60,7 +60,7 @@ from api_emulator.resource_dictionary import ResourceDictionary
 from api_emulator.redfish.serviceroot_api import *
 from api_emulator.utils import *
 
-from infragen.populate import populate
+# from infragen.populate import populate
 
 
 # Trays to load into the resource manager
@@ -450,7 +450,7 @@ def get_odata():
 #
 # If any other RESTful request, send to RedfishAPI object for processing. Note: <path:path> specifies any path
 #
-g.api.add_resource(RedfishAPI, '/redfish/v1/', '/redfish/v1/<path:path>')
+# g.api.add_resource(RedfishAPI, '/redfish/v1/', '/redfish/v1/<path:path>')    -- Reeya
 
 #
 #

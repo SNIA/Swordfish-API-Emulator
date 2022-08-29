@@ -1,0 +1,23 @@
+{
+    "@odata.type": "#EndpointGroup.v1_3_1.EndpointGroup",
+    "Id": "1",
+    "Name": "Endpoint group for all initiators",
+    "GroupType": "Initiator",
+    "Links": {
+        "Endpoints": [
+            {
+                "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Endpoints/Initiator1"
+            },
+            {
+                "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Endpoints/Initiator2"
+            }
+        ],
+        "Connections": [
+            {
+                "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Connections/3"
+            }
+        ]
+    },
+    "@odata.id": "/redfish/v1/Fabrics/NVMeoF/EndpointGroups/1",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

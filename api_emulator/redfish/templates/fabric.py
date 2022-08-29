@@ -26,49 +26,41 @@
 #  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
-#
 
-# get_Fabric_instance()
+# Template for - Fabric
+# Program name - Fabric.py
 
 import copy
 from flask import json
 
 _TEMPLATE = \
 {
-  "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-  "@odata.id": "{rb}Fabrics/{f_id}",
-  "@odata.type": "#Fabric.v1_2_2.Fabric",
-  "Name": "Fabric",
-  "Description": "Fabric Instance {f_id}",
-  "Id": "{f_id}",
-  "Links":[],
-  "Endpoints": {"@odata.id": "{rb}Fabrics/{f_id}/Endpoints"},
-  "Connections": {"@odata.id": "{rb}Fabrics/{f_id}/Connections"},
-  "Zones": {"@odata.id": "{rb}Fabrics/{f_id}/Zones"},
-  "Switches": {"@odata.id": "{rb}Fabrics/{f_id}/Switches"},
-  "Oem": []
+	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
+	"@odata.id": "{rb}Fabrics/{FabricId}",
+	"@odata.type": "#Fabric.v1_3_0.Fabric",
+	"Id": "{FabricId}",
+	"Name": "Fabric",
 }
 
 def get_Fabric_instance(wildcards):
-    """
-    Instantiates and formats the template
-
-    Arguments:
-        wildcard - A dictionary of wildcards strings and their repalcement values
-    """
-    c = copy.deepcopy(_TEMPLATE)
-    d = json.dumps(c)
-    g = d.replace('{f_id}', 'NUv')
-    g = g.replace('{rb}', 'NUb')
-    g = g.replace('{{', '~~!')
-    g = g.replace('}}', '!!~')
-    g = g.replace('{', '~!')
-    g = g.replace('}', '!~')
-    g = g.replace('NUv', '{f_id}')
-    g = g.replace('NUb', '{rb}')
-    g = g.format(**wildcards)
-    g = g.replace('~~!', '{{')
-    g = g.replace('!!~', '}}')
-    g = g.replace('~!', '{')
-    g = g.replace('!~', '}')
-    return json.loads(g)
+		"""
+		Instantiates and formats the template
+		Arguments:
+			wildcard - A dictionary of wildcards strings and their repalcement values
+		"""
+		c = copy.deepcopy(_TEMPLATE)
+		d = json.dumps(c)
+		g = d.replace('{FabricId}', '0')
+		g = g.replace('{rb}', 'NUb')
+		g = g.replace('{{', '~~!')
+		g = g.replace('}}', '!!~')
+		g = g.replace('{', '~!')
+		g = g.replace('}', '!~')
+		g = g.replace('0', '{FabricId}')
+		g = g.replace('NUb', '{rb}')
+		g = g.format(**wildcards)
+		g = g.replace('~~!', '{{')
+		g = g.replace('!!~', '}}')
+		g = g.replace('~!', '{')
+		g = g.replace('!~', '}')
+		return json.loads(g)

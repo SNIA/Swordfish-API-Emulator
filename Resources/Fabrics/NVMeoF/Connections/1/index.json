@@ -1,0 +1,42 @@
+{
+    "@odata.type": "#Connection.v1_0_0.Connection",
+    "@Redfish.ReleaseStatus": "WorkInProgress",
+    "Id": "1",
+    "Name": "Host Connection 1",
+    "Description": "Connection info for host 1",
+    "ConnectionType": "Storage",
+    "VolumeInfo": [
+        {
+            "AccessCapabilities": [
+                "Read",
+                "Write"
+            ],
+            "Volume": {
+                "@odata.id": "/redfish/v1/Storage/IPAttachedDrive1/Volumes/SimpleNamespace"
+            }
+        },
+        {
+            "AccessCapabilities": [
+                "Read",
+                "Write"
+            ],
+            "Volume": {
+                "@odata.id": "/redfish/v1/Storage/IPAttachedDrive2/Volumes/SimpleNamespace"
+            }
+        }
+    ],
+    "Links": {
+        "InitiatorEndpoints": [
+            {
+                "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Endpoints/Initiator1"
+            }
+        ],
+        "TargetEndpointGroups": [
+            {
+                "@odata.id": "/redfish/v1/Fabrics/NVMeoF/EndpointGroups/TargetEPs"
+            }
+        ]
+    },
+    "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Connections/1",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

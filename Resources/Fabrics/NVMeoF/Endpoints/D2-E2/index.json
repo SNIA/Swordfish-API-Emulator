@@ -1,0 +1,49 @@
+{
+    "@odata.type": "#Endpoint.v1_6_1.Endpoint",
+    "Id": "D1-E2",
+    "Name": "Drive 2 Endpoint",
+    "Description": "Endpoint for Drive in EBOF",
+    "EndpointProtocol": "NVMeOverFabrics",
+    "ConnectedEntities": [
+        {
+            "EntityType": "StorageSubsystem",
+            "EntityRole": "Target",
+            "EntityLink": {
+                "@odata.id": "/redfish/v1/Storage/IPAttachedDrive2"
+            }
+        },
+        {
+            "EntityType": "NetworkController",
+            "EntityRole": "Target",
+            "EntityLink": {
+                "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/NetworkDeviceFunctions/11100"
+            }
+        }
+    ],
+    "Identifiers": [
+        {
+            "DurableNameFormat": "NQN",
+            "DurableName": "nqn.2014-08.org.nvmexpress:uuid:6c5fe566-10e6-4fb6-aad4-8b4159f50246"
+        }
+    ],
+    "IPTransportDetails": [
+        {
+            "TransportProtocol": "Ethernet",
+            "IPv4Address": {
+                "Address": "192.168.155.23"
+            },
+            "Port": 4420
+        }
+    ],
+    "Links": {
+      "Connections": [{
+        "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Connections/3"
+      },
+      {
+        "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Connections/1"
+        }]
+    },
+    "Links": {},
+    "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Endpoints/D1-E2",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

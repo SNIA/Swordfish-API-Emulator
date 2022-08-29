@@ -195,7 +195,7 @@ def delete_object (path, base_path):
         pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
 
         with open(path2,"w") as jdata:
-            json.dump(pdata,jdata)
+            json.dump(pdata,jdata, indent=4, sort_keys=True)
 
     except Exception as e:
         return {"error": "Unable to read file because of the following error::{}".format(e)}, 404

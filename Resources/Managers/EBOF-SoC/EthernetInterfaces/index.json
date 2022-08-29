@@ -1,0 +1,14 @@
+{
+    "@odata.type": "#EthernetInterfaceCollection.EthernetInterfaceCollection",
+    "Name": "Ethernet Network Interface Collection",
+    "Description": "Collection of EthernetInterfaces for this Manager",
+    "Members@odata.count": 1,
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Managers/EBOF-SoC/EthernetInterfaces/Dedicated"
+        }
+    ],
+    "Oem": {},
+    "@odata.id": "/redfish/v1/Managers/EBOF-SoC/EthernetInterfaces",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

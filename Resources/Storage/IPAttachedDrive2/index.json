@@ -1,0 +1,37 @@
+{
+    "@odata.type": "#Storage.v1_13_0.Storage",
+    "Id": "1",
+    "Name": "NVMe IP Attached Drive Configuration",
+    "Description": "An NVM Express Subsystem is an NVMe device that contains one or more NVM Express controllers and may contain one or more namespaces.",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK",
+        "HealthRollup": "OK"
+    },
+    "Identifiers": [
+        {
+            "DurableNameFormat": "NQN",
+            "DurableName": "nqn.2014-08.org.nvmexpress:uuid:6c5fe566-10e6-4fb6-aad4-8b4159f50246"
+        }
+    ],
+    "Controllers": {
+        "@odata.id": "/redfish/v1/Storage/IPAttachedDrive2/Controllers"
+    },
+    "Drives": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/Drives/IPAttachedDrive2"
+        }
+    ],
+    "Volumes": {
+        "@odata.id": "/redfish/v1/Storage/IPAttachedDrive2/Volumes"
+    },
+    "Links": {
+        "Enclosures": [
+            {
+                "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure"
+            }
+        ]
+    },
+    "@odata.id": "/redfish/v1/Storage/IPAttachedDrive2",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

@@ -1,0 +1,39 @@
+{
+  "@odata.type": "#NetworkDeviceFunction.v1_8_0.NetworkDeviceFunction",
+  "Id": "11101",
+  "Name": "Network Device Function View",
+  "Description": "Network Device Function attached to EBOF enclosure network interface.",
+  "NetDevFuncType": "Ethernet",
+  "DeviceEnabled": true,
+  "NetDevFuncCapabilities": [
+    "Ethernet",
+    "FibreChannel"
+  ],
+  "Ethernet": {
+    "PermanentMACAddress": "00:0C:29:9A:98:01",
+    "MACAddress": "00:0C:29:9A:98:01",
+    "MTUSize": 1500,
+    "MTUSizeMaximum": 1500,
+    "EthernetInterfaces": {
+      "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a1/NetworkDeviceFunctions/11101/EthernetInterfaces"
+    }
+  },
+  "AssignablePhysicalNetworkPorts": [{
+      "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a1/Ports/1"
+    },
+    {
+      "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a1/Ports/2"
+    }
+  ],
+  "Links": {
+    "PhysicalNetworkPortAssignment": {
+      "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a1/Ports/2"
+    },
+    "Endpoints": []
+  },
+  "BootMode": "Disabled",
+  "VirtualFunctionsEnabled": true,
+  "MaxVirtualFunctions": 16,
+  "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a1/NetworkDeviceFunctions/11101",
+  "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

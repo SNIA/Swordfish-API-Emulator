@@ -1,0 +1,15 @@
+{
+    "@odata.type": "#SwitchCollection.SwitchCollection",
+    "Name": "Switch Collection",
+    "Members@odata.count": 2,
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Fabrics/Ethernet/Switches/Switch1"
+        },
+        {
+            "@odata.id": "/redfish/v1/Fabrics/Ethernet/Switches/Switch2"
+        }
+    ],
+    "@odata.id": "/redfish/v1/Fabrics/Ethernet/Switches",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

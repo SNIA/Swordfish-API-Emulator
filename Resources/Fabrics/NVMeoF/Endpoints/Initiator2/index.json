@@ -1,0 +1,36 @@
+{
+    "@odata.type": "#Endpoint.v1_7_0.Endpoint",
+    "Id": "Initiator2",
+    "Name": "NVMe-oF Initiator (Host)",
+    "EndpointProtocol": "NVMeOverFabrics",
+    "Identifiers": [
+        {
+            "DurableName": "host.corp.com:nvme:nvm-subsys-sn-9254",
+            "DurableNameFormat": "NQN"
+        }
+    ],
+    "ConnectedEntities": [
+        {
+            "EntityType": "NetworkController",
+            "EntityRole": "Initiator"
+        }
+    ],
+    "IPTransportDetails": [
+        {
+            "TransportProtocol": "Ethernet",
+            "IPv4Address": {
+                "Address": "10.3.5.233"
+            },
+            "Port": 13244
+        }
+    ],
+    "Links": {
+        "Connections": [
+            {
+                "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Connections/3"
+            }
+        ]
+    },
+    "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Endpoints/Initiator2",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

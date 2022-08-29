@@ -1,0 +1,51 @@
+{
+    "@odata.type": "#Port.v1_6_1.Port",
+    "Id": "4",
+    "Name": "Ethernet Switch Port 4",
+    "Description": "Ethernet Switch Port 4",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "CurrentSpeedGbps": 100,
+    "Ethernet": {
+        "AssociatedMACAddresses": [],
+        "EEEEnabled": false,
+        "FlowControlConfiguration": "None",
+        "FlowControlStatus": "None",
+        "WakeOnLANEnabled": false
+    },
+    "LinkConfiguration": [{
+      "CapableLinkSpeedGbps": [
+        10000
+      ],
+      "AutoSpeedNegotiationCapable": true,
+      "AutoSpeedNegotiationEnabled": false,
+      "ConfiguredNetworkLinks": [{
+        "ConfiguredLinkSpeedGbps": 100,
+        "ConfiguredWidth": 4
+      }]
+    }],
+    "PortId": "4",
+    "PortProtocol": "Ethernet",
+    "PortType": "BidirectionalPort",
+    "PortMedium": "Electrical",
+    "LinkNetworkTechnology": "Ethernet",
+    "InterfaceEnabled": true,
+    "SignalDetected": true,
+    "LinkTransitionIndicator": 4,
+    "LinkState": "Enabled",
+    "LinkStatus": "LinkUp",
+    "MaxFrameSize": 1518,
+    "MaxSpeedGbps": 400,
+    "Width": 4,
+    "Actions": {
+        "Oem": {}
+    },
+    "Links": {
+        "AssociatedEndpoints": []
+    },
+    "Oem": {},
+    "@odata.id": "/redfish/v1/Fabrics/Ethernet/Switches/Switch2/Ports/4",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

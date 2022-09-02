@@ -1,0 +1,37 @@
+g.api.add_resource(ServiceRoot0API, '/redfish/v1')
+
+g.api.add_resource(ServiceRoot1API, '/redfish/v1/')
+
+g.api.add_resource(ThermalAPI, '/redfish/v1/Chassis/<string:ChassisId>/Thermal')
+
+g.api.add_resource(LogService0CollectionAPI, '/redfish/v1/Managers/<string:ManagerId>/LogServices')
+g.api.add_resource(LogService0API, '/redfish/v1/Managers/<string:ManagerId>/LogServices/<string:LogServiceId>')
+
+g.api.add_resource(LogService1CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/LogServices')
+g.api.add_resource(LogService1API, '/redfish/v1/Systems/<string:ComputerSystemId>/LogServices/<string:LogServiceId>')
+
+g.api.add_resource(LogService2CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/LogServices')
+g.api.add_resource(LogService2API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/LogServices/<string:LogServiceId>')
+
+g.api.add_resource(LogService3CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/LogServices')
+g.api.add_resource(LogService3API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/LogServices/<string:LogServiceId>')
+
+g.api.add_resource(LogService4CollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/LogServices')
+g.api.add_resource(LogService4API, '/redfish/v1/Chassis/<string:ChassisId>/LogServices/<string:LogServiceId>')
+
+g.api.add_resource(LogService5API, '/redfish/v1/JobService/Log')
+
+g.api.add_resource(LogService6API, '/redfish/v1/TelemetryService/LogService')
+
+g.api.add_resource(LogService7API, '/redfish/v1/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/DeviceLog')
+
+g.api.add_resource(ManagerNetworkProtocolAPI, '/redfish/v1/Managers/<string:ManagerId>/NetworkProtocol')
+
+g.api.add_resource(MessageRegistryFileCollectionAPI, '/redfish/v1/Registries')
+g.api.add_resource(MessageRegistryFileAPI, '/redfish/v1/Registries/<string:MessageRegistryFileId>')
+
+g.api.add_resource(SessionServiceAPI, '/redfish/v1/SessionService')
+
+g.api.add_resource(SessionCollectionAPI, '/redfish/v1/SessionService/Sessions')
+g.api.add_resource(SessionAPI, '/redfish/v1/SessionService/Sessions/<string:SessionId>')
+

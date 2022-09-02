@@ -1,0 +1,276 @@
+g.api.add_resource(ChassisCollectionAPI, '/redfish/v1/Chassis')
+g.api.add_resource(ChassisAPI, '/redfish/v1/Chassis/<string:ChassisId>')
+
+g.api.add_resource(Drive0CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Drives')
+g.api.add_resource(Drive0API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Drives/<string:DriveId>')
+
+g.api.add_resource(Drive1CollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/Drives')
+g.api.add_resource(Drive1API, '/redfish/v1/Chassis/<string:ChassisId>/Drives/<string:DriveId>')
+
+g.api.add_resource(Drive2CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Drives')
+g.api.add_resource(Drive2API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Drives/<string:DriveId>')
+
+g.api.add_resource(Drive3CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Drives')
+g.api.add_resource(Drive3API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Drives/<string:DriveId>')
+
+g.api.add_resource(Drive4CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Drives')
+g.api.add_resource(Drive4API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Drives/<string:DriveId>')
+
+g.api.add_resource(Drive5CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Drives')
+g.api.add_resource(Drive5API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Drives/<string:DriveId>')
+
+g.api.add_resource(Drive6CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Drives')
+g.api.add_resource(Drive6API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Drives/<string:DriveId>')
+
+g.api.add_resource(Drive7CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Drives')
+g.api.add_resource(Drive7API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Drives/<string:DriveId>')
+
+g.api.add_resource(NetworkAdapterCollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters')
+g.api.add_resource(NetworkAdapterAPI, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>')
+
+g.api.add_resource(NetworkDeviceFunctionCollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/NetworkDeviceFunctions')
+g.api.add_resource(NetworkDeviceFunctionAPI, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/NetworkDeviceFunctions/<string:NetworkDeviceFunctionId>')
+
+g.api.add_resource(Port0CollectionAPI, '/redfish/v1/Fabrics/<string:FabricId>/Switches/<string:SwitchId>/Ports')
+g.api.add_resource(Port0API, '/redfish/v1/Fabrics/<string:FabricId>/Switches/<string:SwitchId>/Ports/<string:PortId>')
+
+g.api.add_resource(Port1CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports')
+g.api.add_resource(Port1API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>')
+
+g.api.add_resource(Port2CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports')
+g.api.add_resource(Port2API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>')
+
+g.api.add_resource(Port3CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/FabricAdapters/<string:FabricAdapterId>/Ports')
+g.api.add_resource(Port3API, '/redfish/v1/Systems/<string:ComputerSystemId>/FabricAdapters/<string:FabricAdapterId>/Ports/<string:PortId>')
+
+g.api.add_resource(Port4CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/GraphicsControllers/<string:ControllerId>/Ports')
+g.api.add_resource(Port4API, '/redfish/v1/Systems/<string:ComputerSystemId>/GraphicsControllers/<string:ControllerId>/Ports/<string:PortId>')
+
+g.api.add_resource(Port5CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/USBControllers/<string:ControllerId>/Ports')
+g.api.add_resource(Port5API, '/redfish/v1/Systems/<string:ComputerSystemId>/USBControllers/<string:ControllerId>/Ports/<string:PortId>')
+
+g.api.add_resource(Port6CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/Ports')
+g.api.add_resource(Port6API, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/Ports/<string:PortId>')
+
+g.api.add_resource(Port7CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports')
+g.api.add_resource(Port7API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>')
+
+g.api.add_resource(Port8CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports')
+g.api.add_resource(Port8API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>')
+
+g.api.add_resource(Port9CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports')
+g.api.add_resource(Port9API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>')
+
+g.api.add_resource(Port10CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports')
+g.api.add_resource(Port10API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>')
+
+g.api.add_resource(Port11CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports')
+g.api.add_resource(Port11API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>')
+
+g.api.add_resource(Port12CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports')
+g.api.add_resource(Port12API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>')
+
+g.api.add_resource(Port13CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports')
+g.api.add_resource(Port13API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>')
+
+g.api.add_resource(Port14CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports')
+g.api.add_resource(Port14API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>')
+
+g.api.add_resource(Port15CollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/MediaControllers/<string:MediaControllerId>/Ports')
+g.api.add_resource(Port15API, '/redfish/v1/Chassis/<string:ChassisId>/MediaControllers/<string:MediaControllerId>/Ports/<string:PortId>')
+
+g.api.add_resource(Port16CollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/FabricAdapters/<string:FabricAdapterId>/Ports')
+g.api.add_resource(Port16API, '/redfish/v1/Chassis/<string:ChassisId>/FabricAdapters/<string:FabricAdapterId>/Ports/<string:PortId>')
+
+g.api.add_resource(Port17CollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Ports')
+g.api.add_resource(Port17API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Ports/<string:PortId>')
+
+g.api.add_resource(Port18CollectionAPI, '/redfish/v1/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports')
+g.api.add_resource(Port18API, '/redfish/v1/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>')
+
+g.api.add_resource(Port19CollectionAPI, '/redfish/v1/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports')
+g.api.add_resource(Port19API, '/redfish/v1/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>')
+
+g.api.add_resource(Port20CollectionAPI, '/redfish/v1/Managers/<string:ManagerId>/USBPorts')
+g.api.add_resource(Port20API, '/redfish/v1/Managers/<string:ManagerId>/USBPorts/<string:PortId>')
+
+g.api.add_resource(EthernetInterface0CollectionAPI, '/redfish/v1/Managers/<string:ManagerId>/EthernetInterfaces')
+g.api.add_resource(EthernetInterface0API, '/redfish/v1/Managers/<string:ManagerId>/EthernetInterfaces/<string:EthernetInterfaceId>')
+
+g.api.add_resource(EthernetInterface1CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/EthernetInterfaces')
+g.api.add_resource(EthernetInterface1API, '/redfish/v1/Systems/<string:ComputerSystemId>/EthernetInterfaces/<string:EthernetInterfaceId>')
+
+g.api.add_resource(EthernetInterface2CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/EthernetInterfaces')
+g.api.add_resource(EthernetInterface2API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/EthernetInterfaces/<string:EthernetInterfaceId>')
+
+g.api.add_resource(EthernetInterface3CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/EthernetInterfaces')
+g.api.add_resource(EthernetInterface3API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/EthernetInterfaces/<string:EthernetInterfaceId>')
+
+g.api.add_resource(EthernetInterface4CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/EthernetInterfaces')
+g.api.add_resource(EthernetInterface4API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/EthernetInterfaces/<string:EthernetInterfaceId>')
+
+g.api.add_resource(EthernetInterface5CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/EthernetInterfaces')
+g.api.add_resource(EthernetInterface5API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/EthernetInterfaces/<string:EthernetInterfaceId>')
+
+g.api.add_resource(EthernetInterface6CollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdaptersId>/NetworkDeviceFunctions/<string:NetworkDeviceFunctionId>/EthernetInterfaces')
+g.api.add_resource(EthernetInterface6API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdaptersId>/NetworkDeviceFunctions/<string:NetworkDeviceFunctionId>/EthernetInterfaces/<string:EthernetInterfaceId>')
+
+g.api.add_resource(FabricCollectionAPI, '/redfish/v1/Fabrics')
+g.api.add_resource(FabricAPI, '/redfish/v1/Fabrics/<string:FabricId>')
+
+g.api.add_resource(Endpoint0CollectionAPI, '/redfish/v1/Fabrics/<string:FabricId>/Endpoints')
+g.api.add_resource(Endpoint0API, '/redfish/v1/Fabrics/<string:FabricId>/Endpoints/<string:EndpointId>')
+
+g.api.add_resource(Endpoint1CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/Endpoints')
+g.api.add_resource(Endpoint1API, '/redfish/v1/StorageServices/<string:StorageServiceId>/Endpoints/<string:EndpointId>')
+
+g.api.add_resource(Endpoint2CollectionAPI, '/redfish/v1/Storage/<string:StorageId>/Endpoints')
+g.api.add_resource(Endpoint2API, '/redfish/v1/Storage/<string:StorageId>/Endpoints/<string:EndpointId>')
+
+g.api.add_resource(SwitchCollectionAPI, '/redfish/v1/Fabrics/<string:FabricId>/Switches')
+g.api.add_resource(SwitchAPI, '/redfish/v1/Fabrics/<string:FabricId>/Switches/<string:SwitchId>')
+
+g.api.add_resource(Zone0CollectionAPI, '/redfish/v1/Fabrics/<string:FabricId>/Zones')
+g.api.add_resource(Zone0API, '/redfish/v1/Fabrics/<string:FabricId>/Zones/<string:ZoneId>')
+
+g.api.add_resource(Zone1CollectionAPI, '/redfish/v1/CompositionService/ResourceZones')
+g.api.add_resource(Zone1API, '/redfish/v1/CompositionService/ResourceZones/<string:ZoneId>')
+
+g.api.add_resource(ConnectionCollectionAPI, '/redfish/v1/Fabrics/<string:FabricId>/Connections')
+g.api.add_resource(ConnectionAPI, '/redfish/v1/Fabrics/<string:FabricId>/Connections/<string:ConnectionId>')
+
+g.api.add_resource(EndpointGroup0CollectionAPI, '/redfish/v1/Storage/<string:StorageId>/EndpointGroups')
+g.api.add_resource(EndpointGroup0API, '/redfish/v1/Storage/<string:StorageId>/EndpointGroups/<string:EndpointGroupId>')
+
+g.api.add_resource(EndpointGroup1CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/EndpointGroups')
+g.api.add_resource(EndpointGroup1API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/EndpointGroups/<string:EndpointGroupId>')
+
+g.api.add_resource(EndpointGroup2CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/EndpointGroups')
+g.api.add_resource(EndpointGroup2API, '/redfish/v1/StorageServices/<string:StorageServiceId>/EndpointGroups/<string:EndpointGroupId>')
+
+g.api.add_resource(EndpointGroup3CollectionAPI, '/redfish/v1/Fabrics/<string:FabricId>/EndpointGroups')
+g.api.add_resource(EndpointGroup3API, '/redfish/v1/Fabrics/<string:FabricId>/EndpointGroups/<string:EndpointGroupId>')
+
+g.api.add_resource(ManagerCollectionAPI, '/redfish/v1/Managers')
+g.api.add_resource(ManagerAPI, '/redfish/v1/Managers/<string:ManagerId>')
+
+g.api.add_resource(LogEntry0CollectionAPI, '/redfish/v1/Managers/<string:ManagerId>/LogServices/<string:LogServiceId>/Entries')
+g.api.add_resource(LogEntry0API, '/redfish/v1/Managers/<string:ManagerId>/LogServices/<string:LogServiceId>/Entries/<string:LogEntryId>')
+
+g.api.add_resource(LogEntry1CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/LogServices/<string:LogServiceId>/Entries')
+g.api.add_resource(LogEntry1API, '/redfish/v1/Systems/<string:ComputerSystemId>/LogServices/<string:LogServiceId>/Entries/<string:LogEntryId>')
+
+g.api.add_resource(LogEntry2CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/LogServices/<string:LogServiceId>/Entries')
+g.api.add_resource(LogEntry2API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/LogServices/<string:LogServiceId>/Entries/<string:LogEntryId>')
+
+g.api.add_resource(LogEntry3CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/LogServices/<string:LogServiceId>/Entries')
+g.api.add_resource(LogEntry3API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/LogServices/<string:LogServiceId>/Entries/<string:LogEntryId>')
+
+g.api.add_resource(LogEntry4CollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/LogServices/<string:LogServiceId>/Entries')
+g.api.add_resource(LogEntry4API, '/redfish/v1/Chassis/<string:ChassisId>/LogServices/<string:LogServiceId>/Entries/<string:LogEntryId>')
+
+g.api.add_resource(LogEntry5CollectionAPI, '/redfish/v1/JobService/Log/Entries')
+g.api.add_resource(LogEntry5API, '/redfish/v1/JobService/Log/Entries/<string:LogEntryId>')
+
+g.api.add_resource(LogEntry6CollectionAPI, '/redfish/v1/TelemetryService/LogService/Entries')
+g.api.add_resource(LogEntry6API, '/redfish/v1/TelemetryService/LogService/Entries/<string:LogEntryId>')
+
+g.api.add_resource(LogEntry7CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/DeviceLog/Entries')
+g.api.add_resource(LogEntry7API, '/redfish/v1/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/DeviceLog/Entries/<string:LogEntryId>')
+
+g.api.add_resource(Storage0CollectionAPI, '/redfish/v1/Storage')
+g.api.add_resource(Storage0API, '/redfish/v1/Storage/<string:StorageId>')
+
+g.api.add_resource(Storage1CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage')
+g.api.add_resource(Storage1API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>')
+
+g.api.add_resource(Storage2CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage')
+g.api.add_resource(Storage2API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>')
+
+g.api.add_resource(Storage3CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage')
+g.api.add_resource(Storage3API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>')
+
+g.api.add_resource(Storage4CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage')
+g.api.add_resource(Storage4API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>')
+
+g.api.add_resource(Storage5CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage')
+g.api.add_resource(Storage5API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>')
+
+g.api.add_resource(StorageController0CollectionAPI, '/redfish/v1/Storage/<string:StorageId>/Controllers')
+g.api.add_resource(StorageController0API, '/redfish/v1/Storage/<string:StorageId>/Controllers/<string:ControllerId>')
+
+g.api.add_resource(StorageController1CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers')
+g.api.add_resource(StorageController1API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:ControllerId>')
+
+g.api.add_resource(StorageController2CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers')
+g.api.add_resource(StorageController2API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:ControllerId>')
+
+g.api.add_resource(StorageController3CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers')
+g.api.add_resource(StorageController3API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:ControllerId>')
+
+g.api.add_resource(StorageController4CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers')
+g.api.add_resource(StorageController4API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:ControllerId>')
+
+g.api.add_resource(StorageController5CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers')
+g.api.add_resource(StorageController5API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:ControllerId>')
+
+g.api.add_resource(Volume0CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Volumes')
+g.api.add_resource(Volume0API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Volumes/<string:VolumeId>')
+
+g.api.add_resource(Volume1CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Volumes')
+g.api.add_resource(Volume1API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Volumes/<string:VolumeId>')
+
+g.api.add_resource(Volume2CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Volumes')
+g.api.add_resource(Volume2API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Volumes/<string:VolumeId>')
+
+g.api.add_resource(Volume3CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Volumes')
+g.api.add_resource(Volume3API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Volumes/<string:VolumeId>')
+
+g.api.add_resource(Volume4CollectionAPI, '/redfish/v1/Storage/<string:StorageId>/ConsistencyGroups/<string:ConsistencyGroupId>/Volumes')
+g.api.add_resource(Volume4API, '/redfish/v1/Storage/<string:StorageId>/ConsistencyGroups/<string:ConsistencyGroupId>/Volumes/<string:VolumeId>')
+
+g.api.add_resource(Volume5CollectionAPI, '/redfish/v1/Storage/<string:StorageId>/FileSystems/<string:FileSystemId>/CapacitySources/<string:CapacitySourceId>/ProvidingVolumes')
+g.api.add_resource(Volume5API, '/redfish/v1/Storage/<string:StorageId>/FileSystems/<string:FileSystemId>/CapacitySources/<string:CapacitySourceId>/ProvidingVolumes/<string:VolumeId>')
+
+g.api.add_resource(Volume6CollectionAPI, '/redfish/v1/Storage/<string:StorageId>/StoragePools/<string:StoragePoolId>/AllocatedVolumes')
+g.api.add_resource(Volume6API, '/redfish/v1/Storage/<string:StorageId>/StoragePools/<string:StoragePoolId>/AllocatedVolumes/<string:VolumeId>')
+
+g.api.add_resource(Volume7CollectionAPI, '/redfish/v1/Storage/<string:StorageId>/StoragePools/<string:StoragePoolId>/CapacitySources/<string:CapacitySourceId>/ProvidingVolumes')
+g.api.add_resource(Volume7API, '/redfish/v1/Storage/<string:StorageId>/StoragePools/<string:StoragePoolId>/CapacitySources/<string:CapacitySourceId>/ProvidingVolumes/<string:VolumeId>')
+
+g.api.add_resource(Volume8CollectionAPI, '/redfish/v1/Storage/<string:StorageId>/Volumes')
+g.api.add_resource(Volume8API, '/redfish/v1/Storage/<string:StorageId>/Volumes/<string:VolumeId>')
+
+g.api.add_resource(Volume9CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/ConsistencyGroups/<string:ConsistencyGroupId>/Volumes')
+g.api.add_resource(Volume9API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/ConsistencyGroups/<string:ConsistencyGroupId>/Volumes/<string:VolumeId>')
+
+g.api.add_resource(Volume10CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/FileSystems/<string:FileSystemId>/CapacitySources/<string:CapacitySourceId>/ProvidingVolumes')
+g.api.add_resource(Volume10API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/FileSystems/<string:FileSystemId>/CapacitySources/<string:CapacitySourceId>/ProvidingVolumes/<string:VolumeId>')
+
+g.api.add_resource(Volume11CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StoragePools/<string:StoragePoolId>/AllocatedVolumes')
+g.api.add_resource(Volume11API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StoragePools/<string:StoragePoolId>/AllocatedVolumes/<string:VolumeId>')
+
+g.api.add_resource(Volume12CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StoragePools/<string:StoragePoolId>/CapacitySources/<string:CapacitySourceId>/ProvidingVolumes')
+g.api.add_resource(Volume12API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StoragePools/<string:StoragePoolId>/CapacitySources/<string:CapacitySourceId>/ProvidingVolumes/<string:VolumeId>')
+
+g.api.add_resource(Volume13CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Volumes')
+g.api.add_resource(Volume13API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Volumes/<string:VolumeId>')
+
+g.api.add_resource(Volume14CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/ConsistencyGroups/<string:ConsistencyGroupId>/Volumes')
+g.api.add_resource(Volume14API, '/redfish/v1/StorageServices/<string:StorageServiceId>/ConsistencyGroups/<string:ConsistencyGroupId>/Volumes/<string:VolumeId>')
+
+g.api.add_resource(Volume15CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/FileSystems/<string:FileSystemId>/CapacitySources/<string:CapacitySourceId>/ProvidingVolumes')
+g.api.add_resource(Volume15API, '/redfish/v1/StorageServices/<string:StorageServiceId>/FileSystems/<string:FileSystemId>/CapacitySources/<string:CapacitySourceId>/ProvidingVolumes/<string:VolumeId>')
+
+g.api.add_resource(Volume16CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/StoragePools/<string:StoragePoolId>/AllocatedVolumes')
+g.api.add_resource(Volume16API, '/redfish/v1/StorageServices/<string:StorageServiceId>/StoragePools/<string:StoragePoolId>/AllocatedVolumes/<string:VolumeId>')
+
+g.api.add_resource(Volume17CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/StoragePools/<string:StoragePoolId>/CapacitySources/<string:CapacitySourceId>/ProvidingVolumes')
+g.api.add_resource(Volume17API, '/redfish/v1/StorageServices/<string:StorageServiceId>/StoragePools/<string:StoragePoolId>/CapacitySources/<string:CapacitySourceId>/ProvidingVolumes/<string:VolumeId>')
+
+g.api.add_resource(Volume18CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/Volumes')
+g.api.add_resource(Volume18API, '/redfish/v1/StorageServices/<string:StorageServiceId>/Volumes/<string:VolumeId>')
+
+g.api.add_resource(Volume19CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/Volumes/<string:VolumeId>/CapacitySources/<string:CapacitySourceId>/ProvidingVolumes')
+g.api.add_resource(Volume19API, '/redfish/v1/StorageServices/<string:StorageServiceId>/Volumes/<string:VolumeId>/CapacitySources/<string:CapacitySourceId>/ProvidingVolumes/<string:ProvidingVolumeId>')
+

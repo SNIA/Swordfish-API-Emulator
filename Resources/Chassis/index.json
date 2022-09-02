@@ -1,12 +1,12 @@
 {
-    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved.",
-    "@odata.id": "/redfish/v1/Chassis",
     "@odata.type": "#ChassisCollection.ChassisCollection",
+    "Name": "Chassis Collection",
+    "Members@odata.count": 1,
     "Members": [
         {
             "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure"
         }
     ],
-    "Members@odata.count": 1,
-    "Name": "Chassis Collection"
+    "@odata.id": "/redfish/v1/Chassis",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
 }

@@ -90,11 +90,11 @@ class Storage0API(Resource):
 	def post(self, StorageId):
 		logging.info('Storage0 post called')
 		path = create_path(self.root, 'Storage/{0}').format(StorageId)
-		collection_path = os.path.join(self.root, 'Storage', 'index.json').format()
+		collection_path = os.path.join(self.root, 'Storage', 'index.json')
 
 		# Check if collection exists:
 		if not os.path.exists(collection_path):
-			Storage0CollectionAPI.post(self, )
+			Storage0CollectionAPI.post(self)
 
 		if StorageId in members:
 			resp = 404

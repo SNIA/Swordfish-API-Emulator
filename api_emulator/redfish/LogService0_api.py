@@ -44,9 +44,6 @@ config = {}
 
 INTERNAL_ERROR = 500
 
-# LogService0 does not have a Collection API
-
-
 # LogService0 Collection API
 class LogService0CollectionAPI(Resource):
 	def __init__(self):

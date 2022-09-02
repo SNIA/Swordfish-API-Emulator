@@ -90,11 +90,11 @@ class ManagerAPI(Resource):
 	def post(self, ManagerId):
 		logging.info('Manager post called')
 		path = create_path(self.root, 'Managers/{0}').format(ManagerId)
-		collection_path = os.path.join(self.root, 'Managers', 'index.json').format()
+		collection_path = os.path.join(self.root, 'Managers', 'index.json')
 
 		# Check if collection exists:
 		if not os.path.exists(collection_path):
-			ManagerCollectionAPI.post(self, )
+			ManagerCollectionAPI.post(self)
 
 		if ManagerId in members:
 			resp = 404

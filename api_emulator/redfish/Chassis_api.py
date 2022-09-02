@@ -90,11 +90,11 @@ class ChassisAPI(Resource):
 	def post(self, ChassisId):
 		logging.info('Chassis post called')
 		path = create_path(self.root, 'Chassis/{0}').format(ChassisId)
-		collection_path = os.path.join(self.root, 'Chassis', 'index.json').format()
+		collection_path = os.path.join(self.root, 'Chassis', 'index.json')
 
 		# Check if collection exists:
 		if not os.path.exists(collection_path):
-			ChassisCollectionAPI.post(self, )
+			ChassisCollectionAPI.post(self)
 
 		if ChassisId in members:
 			resp = 404

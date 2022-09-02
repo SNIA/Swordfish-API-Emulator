@@ -57,7 +57,7 @@ from api_emulator.resource_manager import ResourceManager
 from api_emulator.static_resource_manager import StaticResourceManager
 from api_emulator.exceptions import CreatePooledNodeError, ConfigurationError, RemovePooledNodeError
 from api_emulator.resource_dictionary import ResourceDictionary
-from api_emulator.redfish.serviceroot_api import *
+from api_emulator.redfish.ServiceRoot1_api import *
 from api_emulator.utils import *
 
 # from infragen.populate import populate
@@ -251,7 +251,7 @@ class RedfishAPI(Resource):
                 config = self.get_configuration(resource_manager, path)
            else:
                 # path is None, fetch ServiceRoot
-                config = ServiceRootAPI.get (self)
+                config = ServiceRoot1API.get (self)
                # config = resource_manager.configuration
                 return config
         except PathError:

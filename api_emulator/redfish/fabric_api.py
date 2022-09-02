@@ -90,11 +90,11 @@ class FabricAPI(Resource):
 	def post(self, FabricId):
 		logging.info('Fabric post called')
 		path = create_path(self.root, 'Fabrics/{0}').format(FabricId)
-		collection_path = os.path.join(self.root, 'Fabrics', 'index.json').format()
+		collection_path = os.path.join(self.root, 'Fabrics', 'index.json')
 
 		# Check if collection exists:
 		if not os.path.exists(collection_path):
-			FabricCollectionAPI.post(self, )
+			FabricCollectionAPI.post(self)
 
 		if FabricId in members:
 			resp = 404

@@ -54,6 +54,7 @@ from api_emulator.redfish.NetworkAdapter_api import NetworkAdapterAPI, NetworkAd
 from api_emulator.redfish.NetworkDeviceFunction_api import NetworkDeviceFunctionAPI, NetworkDeviceFunctionCollectionAPI
 from api_emulator.redfish.Port0_api import Port0API, Port0CollectionAPI
 from api_emulator.redfish.Port17_api import Port17API, Port17CollectionAPI
+from api_emulator.redfish.ServiceRoot1_api import ServiceRoot1API
 from api_emulator.redfish.SessionService_api import SessionServiceAPI
 from api_emulator.redfish.Session_api import SessionAPI, SessionCollectionAPI
 from api_emulator.redfish.Storage0_api import Storage0API, Storage0CollectionAPI
@@ -74,7 +75,6 @@ import copy
 # Local imports
 import g
 
-from api_emulator.redfish.serviceroot_api import *
 from .static_loader import load_static
 from .resource_dictionary import ResourceDictionary
 from .exceptions import CreatePooledNodeError, RemovePooledNodeError
@@ -174,7 +174,7 @@ class ResourceManager(object):
 #            self.StorageSystems = load_static('StorageSystems', 'redfish', mode, rest_base, self.resource_dictionary)
 
         # Attach APIs for dynamic resources
-        g.api.add_resource(ServiceRootAPI, '/redfish/v1/')
+        g.api.add_resource(ServiceRoot1API, '/redfish/v1/')
 
         g.api.add_resource(ChassisCollectionAPI, '/redfish/v1/Chassis')
         g.api.add_resource(ChassisAPI, '/redfish/v1/Chassis/<string:ChassisId>')

@@ -122,6 +122,10 @@ venv/bin/pip install -q -r requirements.txt
 # Remove Redfish static / starting mockups
 rm -r $WORK_DIR/api_emulator/redfish/static
 
+# Remove Redfish templates, and .py files.
+rm -rf $WORK_DIR/api_emulator/templates
+rm -rf $WORK_DIR/api_emulator/*.py
+
 # Copy over the Swordfish bits
 echo "Applying Swordfish additions..."
 cp -r -f $BASE_DIR/api_emulator $WORK_DIR/

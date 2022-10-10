@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}Managers/{ManagerId}/EthernetInterfaces/{EthernetInterfaceId}",
 	"@odata.type": "#EthernetInterface.v1_8_0.EthernetInterface",
 	"Id": "{EthernetInterfaceId}",
-	"Name": "Manager Ethernet Interface",
+	"Name": "EthernetInterface",
 }
 
 def get_EthernetInterface0_instance(wildcards):
@@ -51,7 +51,7 @@ def get_EthernetInterface0_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{ManagerId}', '0')
-		g = g.replace('{EthernetInterfaceId}', '0')
+		g = g.replace('{EthernetInterfaceId}', '1')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

@@ -44,6 +44,9 @@ config = {}
 
 INTERNAL_ERROR = 500
 
+# ManagerNetworkProtocol does not have a Collection API
+
+
 # ManagerNetworkProtocol API
 class ManagerNetworkProtocolAPI(Resource):
 	def __init__(self):

@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}Chassis/{ChassisId}/Drives/{DriveId}",
 	"@odata.type": "#Drive.v1_15_0.Drive",
 	"Id": "{DriveId}",
-	"Name": "NVMe IPAttachedDrive Drive",
+	"Name": "Drive",
 }
 
 def get_Drive1_instance(wildcards):
@@ -51,7 +51,7 @@ def get_Drive1_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{ChassisId}', '0')
-		g = g.replace('{DriveId}', '0')
+		g = g.replace('{DriveId}', '1')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

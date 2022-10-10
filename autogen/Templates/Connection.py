@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}Fabrics/{FabricId}/Connections/{ConnectionId}",
 	"@odata.type": "#Connection.v1_1_0.Connection",
 	"Id": "{ConnectionId}",
-	"Name": "Host Connection",
+	"Name": "Connection",
 }
 
 def get_Connection_instance(wildcards):
@@ -51,7 +51,7 @@ def get_Connection_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{FabricId}', '0')
-		g = g.replace('{ConnectionId}', '0')
+		g = g.replace('{ConnectionId}', '1')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

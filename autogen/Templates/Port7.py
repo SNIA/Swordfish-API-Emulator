@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Ports/{PortId}",
 	"@odata.type": "#Port.v1_6_1.Port",
 	"Id": "{PortId}",
-	"Name": "Port View 1",
+	"Name": "Port",
 }
 
 def get_Port7_instance(wildcards):
@@ -50,19 +50,19 @@ def get_Port7_instance(wildcards):
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('ResourceBlocks', '0')
-		g = g.replace('Storage', '0')
-		g = g.replace('StorageControllers', '1')
-		g = g.replace('Ports', '2')
+		g = d.replace('{ResourceBlockId}', '0')
+		g = g.replace('{StorageId}', '1')
+		g = g.replace('{StorageControllerId}', '2')
+		g = g.replace('{PortId}', '3')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')
 		g = g.replace('{', '~!')
 		g = g.replace('}', '!~')
-		g = g.replace('0', 'ResourceBlocks')
-		g = g.replace('1', 'Storage')
-		g = g.replace('2', 'StorageControllers')
-		g = g.replace('3', 'Ports')
+		g = g.replace('0', '{ResourceBlockId}')
+		g = g.replace('1', '{StorageId}')
+		g = g.replace('2', '{StorageControllerId}')
+		g = g.replace('3', '{PortId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)
 		g = g.replace('~~!', '{{')

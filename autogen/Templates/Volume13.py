@@ -37,9 +37,9 @@ _TEMPLATE = \
 {
 	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
 	"@odata.id": "{rb}Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes/{VolumeId}",
-	"@odata.type": "#Volume.v1_6_2.Volume",
+	"@odata.type": "#Volume.v1_8_0.Volume",
 	"Id": "{VolumeId}",
-	"Name": "Namespace 1",
+	"Name": "Volume",
 }
 
 def get_Volume13_instance(wildcards):
@@ -51,8 +51,8 @@ def get_Volume13_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{ComputerSystemId}', '0')
-		g = g.replace('{StorageId}', '0')
-		g = g.replace('{VolumeId}', '1')
+		g = g.replace('{StorageId}', '1')
+		g = g.replace('{VolumeId}', '2')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

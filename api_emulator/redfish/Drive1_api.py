@@ -69,6 +69,8 @@ class Drive1CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, ChassisId):
+		logging.info('Drive1 Collection put called')
+
 		path = os.path.join(self.root, 'Chassis/{0}/Drives', 'index.json').format(ChassisId)
 		put_object (path)
 		return self.get(ChassisId)

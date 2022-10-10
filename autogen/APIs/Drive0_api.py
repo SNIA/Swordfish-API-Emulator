@@ -69,6 +69,8 @@ class Drive0CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId, StorageId):
+		logging.info('Drive0 Collection put called')
+
 		path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/Drives', 'index.json').format(ComputerSystemId, StorageId)
 		put_object (path)
 		return self.get(ComputerSystemId)

@@ -69,6 +69,8 @@ class Volume4CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, StorageId, ConsistencyGroupId):
+		logging.info('Volume4 Collection put called')
+
 		path = os.path.join(self.root, 'Storage/{0}/ConsistencyGroups/{1}/Volumes', 'index.json').format(StorageId, ConsistencyGroupId)
 		put_object (path)
 		return self.get(StorageId)

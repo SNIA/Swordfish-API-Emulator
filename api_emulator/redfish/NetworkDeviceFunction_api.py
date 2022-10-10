@@ -69,6 +69,8 @@ class NetworkDeviceFunctionCollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, ChassisId, NetworkAdapterId):
+		logging.info('NetworkDeviceFunction Collection put called')
+
 		path = os.path.join(self.root, 'Chassis/{0}/NetworkAdapters/{1}/NetworkDeviceFunctions', 'index.json').format(ChassisId, NetworkAdapterId)
 		put_object (path)
 		return self.get(ChassisId)

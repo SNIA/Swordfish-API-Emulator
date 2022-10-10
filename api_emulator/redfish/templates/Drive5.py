@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Drives/{DriveId}",
 	"@odata.type": "#Drive.v1_15_0.Drive",
 	"Id": "{DriveId}",
-	"Name": "abc",
+	"Name": "Drive",
 }
 
 def get_Drive5_instance(wildcards):
@@ -51,8 +51,8 @@ def get_Drive5_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{ResourceBlockId}', '0')
-		g = g.replace('{StorageId}', '0')
-		g = g.replace('{DriveId}', '1')
+		g = g.replace('{StorageId}', '1')
+		g = g.replace('{DriveId}', '2')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

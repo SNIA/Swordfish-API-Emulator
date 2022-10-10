@@ -69,6 +69,8 @@ class EthernetInterface2CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId):
+		logging.info('EthernetInterface2 Collection put called')
+
 		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/EthernetInterfaces', 'index.json').format(ResourceBlockId)
 		put_object (path)
 		return self.get(ResourceBlockId)

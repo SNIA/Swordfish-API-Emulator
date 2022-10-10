@@ -69,6 +69,8 @@ class Port1CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId, StorageId, StorageControllerId):
+		logging.info('Port1 Collection put called')
+
 		path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/StorageControllers/{2}/Ports', 'index.json').format(ComputerSystemId, StorageId, StorageControllerId)
 		put_object (path)
 		return self.get(ComputerSystemId)

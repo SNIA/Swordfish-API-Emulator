@@ -37,9 +37,9 @@ _TEMPLATE = \
 {
 	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
 	"@odata.id": "{rb}CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Volumes/{VolumeId}",
-	"@odata.type": "#Volume.v1_6_2.Volume",
+	"@odata.type": "#Volume.v1_8_0.Volume",
 	"Id": "{VolumeId}",
-	"Name": "Namespace 1",
+	"Name": "Volume",
 }
 
 def get_Volume0_instance(wildcards):
@@ -50,17 +50,17 @@ def get_Volume0_instance(wildcards):
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('ResourceBlocks', '0')
-		g = g.replace('Storage', '0')
-		g = g.replace('Volumes', '1')
+		g = d.replace('{ResourceBlockId}', '0')
+		g = g.replace('{StorageId}', '1')
+		g = g.replace('{VolumeId}', '2')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')
 		g = g.replace('{', '~!')
 		g = g.replace('}', '!~')
-		g = g.replace('0', 'ResourceBlocks')
-		g = g.replace('1', 'Storage')
-		g = g.replace('2', 'Volumes')
+		g = g.replace('0', '{ResourceBlockId}')
+		g = g.replace('1', '{StorageId}')
+		g = g.replace('2', '{VolumeId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)
 		g = g.replace('~~!', '{{')

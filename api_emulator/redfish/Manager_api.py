@@ -66,6 +66,8 @@ class ManagerCollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self):
+		logging.info('Manager Collection put called')
+
 		path = os.path.join(self.root, 'Managers', 'index.json')
 		put_object (path)
 		return self.get(self.root)

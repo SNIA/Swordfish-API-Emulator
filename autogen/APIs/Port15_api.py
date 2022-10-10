@@ -69,6 +69,8 @@ class Port15CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, ChassisId, MediaControllerId):
+		logging.info('Port15 Collection put called')
+
 		path = os.path.join(self.root, 'Chassis/{0}/MediaControllers/{1}/Ports', 'index.json').format(ChassisId, MediaControllerId)
 		put_object (path)
 		return self.get(ChassisId)

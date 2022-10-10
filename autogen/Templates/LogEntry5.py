@@ -36,11 +36,11 @@ from flask import json
 _TEMPLATE = \
 {
 	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-	"EntryType": "Event",
+	"EntryType": "Log Entry",
 	"@odata.id": "{rb}JobService/Log/Entries/{LogEntryId}",
 	"@odata.type": "#LogEntry.v1_12_0.LogEntry",
 	"Id": "{LogEntryId}",
-	"Name": "Log Entry",
+	"Name": "LogEntry",
 }
 
 def get_LogEntry5_instance(wildcards):
@@ -51,15 +51,13 @@ def get_LogEntry5_instance(wildcards):
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('Log', '0')
-		g = g.replace('{LogEntryId}', '0')
+		g = d.replace('{LogEntryId}', '0')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')
 		g = g.replace('{', '~!')
 		g = g.replace('}', '!~')
-		g = g.replace('0', 'Log')
-		g = g.replace('1', '{LogEntryId}')
+		g = g.replace('0', '{LogEntryId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)
 		g = g.replace('~~!', '{{')

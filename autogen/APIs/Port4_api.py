@@ -69,6 +69,8 @@ class Port4CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId, ControllerId):
+		logging.info('Port4 Collection put called')
+
 		path = os.path.join(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports', 'index.json').format(ComputerSystemId, ControllerId)
 		put_object (path)
 		return self.get(ComputerSystemId)

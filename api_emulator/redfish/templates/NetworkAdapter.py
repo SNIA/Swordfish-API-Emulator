@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}",
 	"@odata.type": "#NetworkAdapter.v1_9_0.NetworkAdapter",
 	"Id": "{NetworkAdapterId}",
-	"Name": "Network Adapter View",
+	"Name": "NetworkAdapter",
 }
 
 def get_NetworkAdapter_instance(wildcards):
@@ -51,7 +51,7 @@ def get_NetworkAdapter_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{ChassisId}', '0')
-		g = g.replace('{NetworkAdapterId}', '0')
+		g = g.replace('{NetworkAdapterId}', '1')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

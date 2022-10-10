@@ -66,6 +66,8 @@ class ChassisCollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self):
+		logging.info('Chassis Collection put called')
+
 		path = os.path.join(self.root, 'Chassis', 'index.json')
 		put_object (path)
 		return self.get(self.root)

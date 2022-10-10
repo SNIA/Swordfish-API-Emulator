@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/EthernetInterfaces/{EthernetInterfaceId}",
 	"@odata.type": "#EthernetInterface.v1_8_0.EthernetInterface",
 	"Id": "{EthernetInterfaceId}",
-	"Name": "ResourceBlock Ethernet Interface",
+	"Name": "EthernetInterface",
 }
 
 def get_EthernetInterface3_instance(wildcards):
@@ -50,17 +50,17 @@ def get_EthernetInterface3_instance(wildcards):
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('ResourceBlocks', '0')
-		g = g.replace('Systems', '0')
-		g = g.replace('EthernetInterfaces', '1')
+		g = d.replace('{ResourceBlockId}', '0')
+		g = g.replace('{ComputerSystemId}', '1')
+		g = g.replace('{EthernetInterfaceId}', '2')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')
 		g = g.replace('{', '~!')
 		g = g.replace('}', '!~')
-		g = g.replace('0', 'ResourceBlocks')
-		g = g.replace('1', 'Systems')
-		g = g.replace('2', 'EthernetInterfaces')
+		g = g.replace('0', '{ResourceBlockId}')
+		g = g.replace('1', '{ComputerSystemId}')
+		g = g.replace('2', '{EthernetInterfaceId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)
 		g = g.replace('~~!', '{{')

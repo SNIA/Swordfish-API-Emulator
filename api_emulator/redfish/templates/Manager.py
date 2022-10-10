@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}Managers/{ManagerId}",
 	"@odata.type": "#Manager.v1_15_0.Manager",
 	"Id": "{ManagerId}",
-	"Name": "EBOF-SoC Manager",
+	"Name": "Manager",
 }
 
 def get_Manager_instance(wildcards):

@@ -69,6 +69,8 @@ class EndpointGroup0CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, StorageId):
+		logging.info('EndpointGroup0 Collection put called')
+
 		path = os.path.join(self.root, 'Storage/{0}/EndpointGroups', 'index.json').format(StorageId)
 		put_object (path)
 		return self.get(StorageId)

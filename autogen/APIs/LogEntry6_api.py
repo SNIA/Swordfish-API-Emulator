@@ -66,6 +66,8 @@ class LogEntry6CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self):
+		logging.info('LogEntry6 Collection put called')
+
 		path = os.path.join(self.root, 'TelemetryService/LogService/Entries', 'index.json')
 		put_object (path)
 		return self.get(self.root)

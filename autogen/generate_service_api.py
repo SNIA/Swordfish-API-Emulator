@@ -3,7 +3,7 @@ import socket
 import urllib, xmltodict, json
 
 from generate_api import create_folder_under_current_directory, safe_input
-from resource_list_file import add_service_resource_file
+from resource_list_file import add_import_statement, add_service_resource_file
 from service_api_writer import write_service_program_header, write_service_singleton_api, write_servicetype_collection_api, write_servicetype_singleton_api
 
 xml_schema_examples='''
@@ -37,36 +37,57 @@ def get_resource_paths(url):
         json_data = json.dumps(xml_schema, indent=4)
         schema = json.loads(json_data)
 
-        # try:
-        #     # get service type from Namespace (Ex. SessionService, AccountService, etc)
-        #     resource = schema['edmx:Edmx']['edmx:DataServices']['Schema'][0]['@Namespace']
-        # except:
-        #      # get registry type from Namespace (Ex. MessageRegistryFileCollection)
-        #     resource = schema['edmx:Edmx']['edmx:DataServices']['Schema']['@Namespace']
-        #     resource = resource[7:15]
-
+        path_list = None
         schema_data = schema['edmx:Edmx']['edmx:DataServices']['Schema']
         if type(schema_data) == list:
-            if type(schema_data[0]['EntityType']) == dict:
-                for key, item in schema_data[0]['EntityType'].items():
-                    if key == 'Annotation':
-                        path_list = item[5]["Collection"]["String"]    
+            if 'EntityType' in schema_data[0]:
+                if type(schema_data[0]['EntityType']) == dict:
+                    for key, item in schema_data[0]['EntityType'].items():
+                        if key == 'Annotation':
+                            res = next((sub for sub in item if sub["@Term"] == "Redfish.Uris"), None)
+                            if res != None:
+                                path_list = res.get("Collection").get("String", None)
+                            else:
+                                path_list = None  
+                else:
+                    for key, item in schema_data[0]['EntityType'][0].items():
+                        if key == 'Annotation':
+                            res = next((sub for sub in item if sub["@Term"] == "Redfish.Uris"), None)
+                            if res != None:
+                                path_list = res.get("Collection").get("String", None)
+                            else:
+                                path_list = None
             else:
-                for key, item in schema_data[0]['EntityType'][0].items():
-                    if key == 'Annotation':
-                        path_list = item[5]["Collection"]["String"]
+                path_list = None
         else:
-            if type(schema_data['EntityType']) == dict:
-                for key, item in schema_data['EntityType'].items():
-                    if key == 'Annotation':
-                        path_list = item[5]["Collection"]["String"]    
+            if schema_data.get('EntityType') :
+                if type(schema_data['EntityType']) == dict:
+                    for key, item in schema_data['EntityType'].items():
+                        if key == 'Annotation':
+                            res = next((sub for sub in item if sub["@Term"] == "Redfish.Uris"), None)
+                            if res != None:
+                                path_list = res.get("Collection").get("String", None)
+                            else:
+                                path_list = None    
+                else:
+                    for key, item in schema_data['EntityType'][0].items():
+                        if key == 'Annotation':
+                            res = next((sub for sub in item if sub["@Term"] == "Redfish.Uris"), None)
+                            if res != None:
+                                path_list = res.get("Collection").get("String", None)
+                            else:
+                                path_list = None
             else:
-                for key, item in schema_data['EntityType'][0].items():
-                    if key == 'Annotation':
-                        path_list = item[5]["Collection"]["String"]
+                path_list = None
 
         # get resource type from Namespace (Ex. Chassis, Port, NetworkAdapter, Manager, etc)
-        resource = schema['edmx:Edmx']['edmx:DataServices']['Schema'][0]['@Namespace']
+        if path_list != None:   
+            if type(schema_data) == list:
+                resource = schema['edmx:Edmx']['edmx:DataServices']['Schema'][0]['@Namespace']
+            else:
+                resource = schema['edmx:Edmx']['edmx:DataServices']['Schema'].get('@Namespace')
+        else:
+            resource = None
         return resource, path_list
 
     except urllib.error.HTTPError as e:
@@ -83,7 +104,7 @@ def create_service_api_program(resource_path, program_name, resource, collection
         return 'Created program {0}'.format(program_name)
 
 if __name__=='__main__':
-    schema_url = safe_input("Enter the schema URL for your resource type: ")
+    schema_url = safe_input("Enter the XML schema URL for your resource type: ")
     resource, resource_paths = get_resource_paths(schema_url)
     num = 0
 
@@ -94,6 +115,8 @@ if __name__=='__main__':
 
     # if Redfish URIs has only one path
     if(type(resource_paths) is str):
+        if resource_paths == '/redfish/v1':
+            resource_paths = resource_paths + '/'
         head, tail= os.path.split(resource_paths)
         head = head.replace('/redfish/v1', '')
         resource_num = resource
@@ -102,10 +125,13 @@ if __name__=='__main__':
         print(status)
 
         # creates add_resource lines of code for resource_manager.py
+        print(add_import_statement(resource_num))
         print(add_service_resource_file(resource_num, resource_paths))
     # if Redfish URIs has list of paths
     elif(type(resource_paths) is list):
         for path in resource_paths:
+            if path == '/redfish/v1':
+                path = path + '/'
             head, tail= os.path.split(path)
             head = head.replace('/redfish/v1', '')
             # base program name is different for different paths
@@ -116,4 +142,5 @@ if __name__=='__main__':
             print(status)
 
             # creates add_resource lines of code for resource_manager.py
+            print(add_import_statement(resource_num))
             print(add_service_resource_file(resource_num, path))

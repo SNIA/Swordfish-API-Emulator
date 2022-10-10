@@ -112,6 +112,8 @@ def write_collection_api(outfile, resource, resource_num, collection_path):
         outfile.write("\tdef put(self):\n")
     else:
         outfile.write("\tdef put(self, {0}):\n".format(arg_str))
+
+    outfile.write("\t\tlogging.info('{0} Collection put called')\n\n".format(resource_num))
     
     if collection_path == '':
         outfile.write("\t\tpath = os.path.join(self.root, 'index.json')\n")

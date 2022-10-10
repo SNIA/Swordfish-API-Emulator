@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}Chassis/{ChassisId}/NetworkAdapters/{NetworkAdaptersId}/NetworkDeviceFunctions/{NetworkDeviceFunctionId}/EthernetInterfaces/{EthernetInterfaceId}",
 	"@odata.type": "#EthernetInterface.v1_8_0.EthernetInterface",
 	"Id": "{EthernetInterfaceId}",
-	"Name": "Ethernet Interface",
+	"Name": "EthernetInterface",
 }
 
 def get_EthernetInterface6_instance(wildcards):
@@ -51,9 +51,9 @@ def get_EthernetInterface6_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{ChassisId}', '0')
-		g = g.replace('{NetworkAdaptersId}', '0')
-		g = g.replace('{NetworkDeviceFunctionId}', '1')
-		g = g.replace('{EthernetInterfaceId}', '2')
+		g = g.replace('{NetworkAdaptersId}', '1')
+		g = g.replace('{NetworkDeviceFunctionId}', '2')
+		g = g.replace('{EthernetInterfaceId}', '3')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

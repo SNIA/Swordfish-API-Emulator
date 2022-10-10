@@ -69,6 +69,8 @@ class Port0CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, FabricId, SwitchId):
+		logging.info('Port0 Collection put called')
+
 		path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports', 'index.json').format(FabricId, SwitchId)
 		put_object (path)
 		return self.get(FabricId)

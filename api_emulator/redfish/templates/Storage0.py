@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}Storage/{StorageId}",
 	"@odata.type": "#Storage.v1_13_0.Storage",
 	"Id": "{StorageId}",
-	"Name": "NVMe IP Attached Drive Configuration",
+	"Name": "Storage",
 }
 
 def get_Storage0_instance(wildcards):

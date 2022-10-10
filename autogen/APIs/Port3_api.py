@@ -69,6 +69,8 @@ class Port3CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId, FabricAdapterId):
+		logging.info('Port3 Collection put called')
+
 		path = os.path.join(self.root, 'Systems/{0}/FabricAdapters/{1}/Ports', 'index.json').format(ComputerSystemId, FabricAdapterId)
 		put_object (path)
 		return self.get(ComputerSystemId)

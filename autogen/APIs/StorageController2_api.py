@@ -69,6 +69,8 @@ class StorageController2CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, StorageId):
+		logging.info('StorageController2 Collection put called')
+
 		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers', 'index.json').format(ResourceBlockId, StorageId)
 		put_object (path)
 		return self.get(ResourceBlockId)

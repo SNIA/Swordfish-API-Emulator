@@ -66,6 +66,8 @@ class Zone1CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self):
+		logging.info('Zone1 Collection put called')
+
 		path = os.path.join(self.root, 'CompositionService/ResourceZones', 'index.json')
 		put_object (path)
 		return self.get(self.root)

@@ -69,6 +69,8 @@ class Volume16CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, StorageServiceId, StoragePoolId):
+		logging.info('Volume16 Collection put called')
+
 		path = os.path.join(self.root, 'StorageServices/{0}/StoragePools/{1}/AllocatedVolumes', 'index.json').format(StorageServiceId, StoragePoolId)
 		put_object (path)
 		return self.get(StorageServiceId)

@@ -69,6 +69,8 @@ class Port10CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId):
+		logging.info('Port10 Collection put called')
+
 		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}/Ports', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
 		put_object (path)
 		return self.get(ResourceBlockId)

@@ -44,6 +44,9 @@ config = {}
 
 INTERNAL_ERROR = 500
 
+# Thermal does not have a Collection API
+
+
 # Thermal API
 class ThermalAPI(Resource):
 	def __init__(self):

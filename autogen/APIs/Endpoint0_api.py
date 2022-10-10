@@ -69,6 +69,8 @@ class Endpoint0CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, FabricId):
+		logging.info('Endpoint0 Collection put called')
+
 		path = os.path.join(self.root, 'Fabrics/{0}/Endpoints', 'index.json').format(FabricId)
 		put_object (path)
 		return self.get(FabricId)

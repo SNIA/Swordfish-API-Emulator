@@ -60,22 +60,22 @@ class AccountService1API(Resource):
 		return get_json_data (path)
 
 	# HTTP POST
-	def post(self):
+	def post(self, ManagerId):
 		logging.info('AccountService1 post called')
 		return 'POST is not a supported command for AccountService1API', 405
 
 	# HTTP PUT
-	def put(self):
+	def put(self, ManagerId):
 		logging.info('AccountService1 put called')
 		return 'PUT is not a supported command for AccountService1API', 405
 
 	# HTTP PATCH
-	def patch(self):
+	def patch(self, ManagerId):
 		logging.info('AccountService1 patch called')
 		return 'PATCH is not a supported command for AccountService1API', 405
 
 	# HTTP DELETE
-	def delete(self):
+	def delete(self, ManagerId):
 		logging.info('AccountService1 delete called')
 		return 'DELETE is not a supported command for AccountService1API', 405
 

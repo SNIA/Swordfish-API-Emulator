@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}Fabrics/{FabricId}/Switches/{SwitchId}",
 	"@odata.type": "#Switch.v1_8_0.Switch",
 	"Id": "{SwitchId}",
-	"Name": "EBOF Embedded Ethernet Switch",
+	"Name": "Switch",
 }
 
 def get_Switch_instance(wildcards):
@@ -51,7 +51,7 @@ def get_Switch_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{FabricId}', '0')
-		g = g.replace('{SwitchId}', '0')
+		g = g.replace('{SwitchId}', '1')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

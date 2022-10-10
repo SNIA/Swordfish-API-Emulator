@@ -69,6 +69,8 @@ class Storage1CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId):
+		logging.info('Storage1 Collection put called')
+
 		path = os.path.join(self.root, 'Systems/{0}/Storage', 'index.json').format(ComputerSystemId)
 		put_object (path)
 		return self.get(ComputerSystemId)

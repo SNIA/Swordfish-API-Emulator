@@ -69,6 +69,8 @@ class LogEntry1CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId, LogServiceId):
+		logging.info('LogEntry1 Collection put called')
+
 		path = os.path.join(self.root, 'Systems/{0}/LogServices/{1}/Entries', 'index.json').format(ComputerSystemId, LogServiceId)
 		put_object (path)
 		return self.get(ComputerSystemId)

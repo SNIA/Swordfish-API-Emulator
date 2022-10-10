@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}",
 	"@odata.type": "#Storage.v1_13_0.Storage",
 	"Id": "{StorageId}",
-	"Name": "Resource Block Storage Configuration",
+	"Name": "Storage",
 }
 
 def get_Storage2_instance(wildcards):
@@ -50,15 +50,15 @@ def get_Storage2_instance(wildcards):
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('ResourceBlocks', '0')
-		g = g.replace('Storage', '0')
+		g = d.replace('{ResourceBlockId}', '0')
+		g = g.replace('{StorageId}', '1')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')
 		g = g.replace('{', '~!')
 		g = g.replace('}', '!~')
-		g = g.replace('0', 'ResourceBlocks')
-		g = g.replace('1', 'Storage')
+		g = g.replace('0', '{ResourceBlockId}')
+		g = g.replace('1', '{StorageId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)
 		g = g.replace('~~!', '{{')

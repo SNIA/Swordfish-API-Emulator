@@ -69,6 +69,8 @@ class Port5CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId, ControllerId):
+		logging.info('Port5 Collection put called')
+
 		path = os.path.join(self.root, 'Systems/{0}/USBControllers/{1}/Ports', 'index.json').format(ComputerSystemId, ControllerId)
 		put_object (path)
 		return self.get(ComputerSystemId)

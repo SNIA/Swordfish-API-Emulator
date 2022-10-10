@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}CompositionService/ResourceBlocks/{ResourceBlockId}/Drives/{DriveId}",
 	"@odata.type": "#Drive.v1_15_0.Drive",
 	"Id": "{DriveId}",
-	"Name": "abc",
+	"Name": "Drive",
 }
 
 def get_Drive3_instance(wildcards):
@@ -50,15 +50,15 @@ def get_Drive3_instance(wildcards):
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('ResourceBlocks', '0')
-		g = g.replace('Drives', '0')
+		g = d.replace('{ResourceBlockId}', '0')
+		g = g.replace('{DriveId}', '1')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')
 		g = g.replace('{', '~!')
 		g = g.replace('}', '!~')
-		g = g.replace('0', 'ResourceBlocks')
-		g = g.replace('1', 'Drives')
+		g = g.replace('0', '{ResourceBlockId}')
+		g = g.replace('1', '{DriveId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)
 		g = g.replace('~~!', '{{')

@@ -69,6 +69,8 @@ class Drive6CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId):
+		logging.info('Drive6 Collection put called')
+
 		path = os.path.join(self.root, 'ResourceBlocks/{0}/Drives', 'index.json').format(ResourceBlockId)
 		put_object (path)
 		return self.get(ResourceBlockId)

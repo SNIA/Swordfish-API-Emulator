@@ -69,6 +69,8 @@ class SwitchCollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, FabricId):
+		logging.info('Switch Collection put called')
+
 		path = os.path.join(self.root, 'Fabrics/{0}/Switches', 'index.json').format(FabricId)
 		put_object (path)
 		return self.get(FabricId)

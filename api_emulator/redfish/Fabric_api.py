@@ -66,6 +66,8 @@ class FabricCollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self):
+		logging.info('Fabric Collection put called')
+
 		path = os.path.join(self.root, 'Fabrics', 'index.json')
 		put_object (path)
 		return self.get(self.root)

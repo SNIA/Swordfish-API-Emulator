@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/NetworkDeviceFunctions/{NetworkDeviceFunctionId}",
 	"@odata.type": "#NetworkDeviceFunction.v1_8_0.NetworkDeviceFunction",
 	"Id": "{NetworkDeviceFunctionId}",
-	"Name": "Network Device Function View 11100",
+	"Name": "NetworkDeviceFunction",
 }
 
 def get_NetworkDeviceFunction_instance(wildcards):
@@ -51,8 +51,8 @@ def get_NetworkDeviceFunction_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{ChassisId}', '0')
-		g = g.replace('{NetworkAdapterId}', '0')
-		g = g.replace('{NetworkDeviceFunctionId}', '1')
+		g = g.replace('{NetworkAdapterId}', '1')
+		g = g.replace('{NetworkDeviceFunctionId}', '2')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

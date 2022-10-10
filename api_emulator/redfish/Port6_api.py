@@ -69,6 +69,8 @@ class Port6CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId, ProcessorId):
+		logging.info('Port6 Collection put called')
+
 		path = os.path.join(self.root, 'Systems/{0}/Processors/{1}/Ports', 'index.json').format(ComputerSystemId, ProcessorId)
 		put_object (path)
 		return self.get(ComputerSystemId)

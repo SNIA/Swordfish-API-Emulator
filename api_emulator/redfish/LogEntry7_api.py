@@ -69,6 +69,8 @@ class LogEntry7CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId, MemoryId):
+		logging.info('LogEntry7 Collection put called')
+
 		path = os.path.join(self.root, 'Systems/{0}/Memory/{1}/DeviceLog/Entries', 'index.json').format(ComputerSystemId, MemoryId)
 		put_object (path)
 		return self.get(ComputerSystemId)

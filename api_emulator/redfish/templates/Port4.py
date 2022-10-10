@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}Systems/{ComputerSystemId}/GraphicsControllers/{ControllerId}/Ports/{PortId}",
 	"@odata.type": "#Port.v1_6_1.Port",
 	"Id": "{PortId}",
-	"Name": "Port View 1",
+	"Name": "Port",
 }
 
 def get_Port4_instance(wildcards):
@@ -51,8 +51,8 @@ def get_Port4_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{ComputerSystemId}', '0')
-		g = g.replace('{ControllerId}', '0')
-		g = g.replace('{PortId}', '1')
+		g = g.replace('{ControllerId}', '1')
+		g = g.replace('{PortId}', '2')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

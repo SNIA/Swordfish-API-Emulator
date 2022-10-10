@@ -69,6 +69,8 @@ class Port8CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, StorageId, StorageControllerId):
+		logging.info('Port8 Collection put called')
+
 		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId)
 		put_object (path)
 		return self.get(ResourceBlockId)

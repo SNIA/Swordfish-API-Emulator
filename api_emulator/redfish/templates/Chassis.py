@@ -36,11 +36,11 @@ from flask import json
 _TEMPLATE = \
 {
 	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-	"ChassisType": "IPBasedDrive",
+	"ChassisType": "IP based Chassis",
 	"@odata.id": "{rb}Chassis/{ChassisId}",
 	"@odata.type": "#Chassis.v1_20_0.Chassis",
 	"Id": "{ChassisId}",
-	"Name": "IPAttachedDrive",
+	"Name": "Chassis",
 }
 
 def get_Chassis_instance(wildcards):

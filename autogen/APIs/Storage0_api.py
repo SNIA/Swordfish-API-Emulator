@@ -66,6 +66,8 @@ class Storage0CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self):
+		logging.info('Storage0 Collection put called')
+
 		path = os.path.join(self.root, 'Storage', 'index.json')
 		put_object (path)
 		return self.get(self.root)

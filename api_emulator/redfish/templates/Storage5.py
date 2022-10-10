@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}",
 	"@odata.type": "#Storage.v1_13_0.Storage",
 	"Id": "{StorageId}",
-	"Name": "Storage Configuration",
+	"Name": "Storage",
 }
 
 def get_Storage5_instance(wildcards):
@@ -51,8 +51,8 @@ def get_Storage5_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{ResourceBlockId}', '0')
-		g = g.replace('{ComputerSystemId}', '0')
-		g = g.replace('{StorageId}', '1')
+		g = g.replace('{ComputerSystemId}', '1')
+		g = g.replace('{StorageId}', '2')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

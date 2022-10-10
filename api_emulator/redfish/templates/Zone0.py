@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}Fabrics/{FabricId}/Zones/{ZoneId}",
 	"@odata.type": "#Zone.v1_6_1.Zone",
 	"Id": "{ZoneId}",
-	"Name": "Ethernet Zone",
+	"Name": "Zone",
 }
 
 def get_Zone0_instance(wildcards):
@@ -51,7 +51,7 @@ def get_Zone0_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{FabricId}', '0')
-		g = g.replace('{ZoneId}', '0')
+		g = g.replace('{ZoneId}', '1')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

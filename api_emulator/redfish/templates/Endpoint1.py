@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}StorageServices/{StorageServiceId}/Endpoints/{EndpointId}",
 	"@odata.type": "#Endpoint.v1_7_0.Endpoint",
 	"Id": "{EndpointId}",
-	"Name": "Storage EndPoint",
+	"Name": "Endpoint",
 }
 
 def get_Endpoint1_instance(wildcards):
@@ -51,7 +51,7 @@ def get_Endpoint1_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{StorageServiceId}', '0')
-		g = g.replace('{EndpointId}', '0')
+		g = g.replace('{EndpointId}', '1')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

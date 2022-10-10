@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Ports/{PortId}",
 	"@odata.type": "#Port.v1_6_1.Port",
 	"Id": "{PortId}",
-	"Name": "Port View 1",
+	"Name": "Port",
 }
 
 def get_Port14_instance(wildcards):
@@ -51,10 +51,10 @@ def get_Port14_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{ResourceBlockId}', '0')
-		g = g.replace('{ComputerSystemId}', '0')
-		g = g.replace('{StorageId}', '1')
-		g = g.replace('{StorageControllerId}', '2')
-		g = g.replace('{PortId}', '3')
+		g = g.replace('{ComputerSystemId}', '1')
+		g = g.replace('{StorageId}', '2')
+		g = g.replace('{StorageControllerId}', '3')
+		g = g.replace('{PortId}', '4')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

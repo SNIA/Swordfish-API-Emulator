@@ -69,6 +69,8 @@ class Port20CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, ManagerId):
+		logging.info('Port20 Collection put called')
+
 		path = os.path.join(self.root, 'Managers/{0}/USBPorts', 'index.json').format(ManagerId)
 		put_object (path)
 		return self.get(ManagerId)

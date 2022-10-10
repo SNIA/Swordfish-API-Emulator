@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}Fabrics/{FabricId}/Endpoints/{EndpointId}",
 	"@odata.type": "#Endpoint.v1_7_0.Endpoint",
 	"Id": "{EndpointId}",
-	"Name": "Drive1 NDF 111000 (Target)",
+	"Name": "Endpoint",
 }
 
 def get_Endpoint0_instance(wildcards):
@@ -51,7 +51,7 @@ def get_Endpoint0_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{FabricId}', '0')
-		g = g.replace('{EndpointId}', '0')
+		g = g.replace('{EndpointId}', '1')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

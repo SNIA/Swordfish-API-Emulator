@@ -48,7 +48,7 @@ def write_template(outfile, resource_path, json_schema):
     outfile.write('\t"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",\n')
 
     # All the template will have required properties -
-    #  "@odata.id", "@odata.type", "Id", "Name"
+    #  "@odata.id", "@odata.type", "Id", "Name", etc
     resource = json_schema['$ref'].split('/')[-1]
     required_properties = json_schema["definitions"][resource]["required"]
 
@@ -62,24 +62,24 @@ def write_template(outfile, resource_path, json_schema):
             outfile.write('\t"Id": "{0}",\n'.format(resource_path.split("/")[-1]))
         elif req_prop == 'Name':
             # Get value for "Name" property from user
-            name = input("Give value to the property 'Name' of {0}:".format(resource_path))
-            outfile.write('\t"Name": "{0}",\n'.format(name))
+            # name = input("Give value to the property 'Name' of {0}:".format(resource_path))
+            outfile.write('\t"Name": "{0}",\n'.format(resource))
         else:
             req_prop_value = input("Enter the string value for required property {0} : ".format(req_prop))
             outfile.write('\t"{0}": "{1}",\n'.format(req_prop, req_prop_value))
 
     # Giving option to user to add more properties and its values.
-    follow = input("Do you want to add more properties to the template file (y/n)?")
-    if follow == 'y':
-        while True:
-            added_data = input("Add new property and it's value (to stop, press enter): ")
-            if added_data != '':
-                outfile.write("\t"+ added_data)
-                outfile.write("\n")
-            else:
-                break
-    else:
-        pass
+    # follow = input("Do you want to add more properties to the template file (y/n)?")
+    # if follow == 'y':
+    #     while True:
+    #         added_data = input("Add new property and it's value (to stop, press enter): ")
+    #         if added_data != '':
+    #             outfile.write("\t"+ added_data)
+    #             outfile.write("\n")
+    #         else:
+    #             break
+    # else:
+    #     pass
 
     outfile.write("}\n\n")
     return
@@ -99,6 +99,7 @@ def write_program_end(outfile, base_template_name, resource_path):
     arg_list = get_path_variables(resource_path)
     num = 0
     outfile.write("\t\tg = d.replace('{0}', '{1}')\n".format(arg_list[0], num))
+    num = num + 1
     for i in range(len(arg_list)-1):
         outfile.write("\t\tg = g.replace('{0}', '{1}')\n".format(arg_list[i+1], num))
         num = num + 1

@@ -4,7 +4,7 @@ import socket
 import urllib, xmltodict
 import json
 
-from resource_list_file import add_resource_file
+from resource_list_file import add_import_statement, add_resource_file
 
 xml_schema_examples='''
 https://redfish.dmtf.org/schemas/v1/Port_v1.xml
@@ -37,28 +37,57 @@ def get_resource_paths(url):
         json_data = json.dumps(xml_schema, indent=4)
         schema = json.loads(json_data)
 
+        path_list = None
         schema_data = schema['edmx:Edmx']['edmx:DataServices']['Schema']
         if type(schema_data) == list:
-            if type(schema_data[0]['EntityType']) == dict:
-                for key, item in schema_data[0]['EntityType'].items():
-                    if key == 'Annotation':
-                        path_list = item[5]["Collection"]["String"]    
+            if 'EntityType' in schema_data[0]:
+                if type(schema_data[0]['EntityType']) == dict:
+                    for key, item in schema_data[0]['EntityType'].items():
+                        if key == 'Annotation':
+                            res = next((sub for sub in item if sub["@Term"] == "Redfish.Uris"), None)
+                            if res != None:
+                                path_list = res.get("Collection").get("String", None)
+                            else:
+                                path_list = None  
+                else:
+                    for key, item in schema_data[0]['EntityType'][0].items():
+                        if key == 'Annotation':
+                            res = next((sub for sub in item if sub["@Term"] == "Redfish.Uris"), None)
+                            if res != None:
+                                path_list = res.get("Collection").get("String", None)
+                            else:
+                                path_list = None
             else:
-                for key, item in schema_data[0]['EntityType'][0].items():
-                    if key == 'Annotation':
-                        path_list = item[5]["Collection"]["String"]
+                path_list = None
         else:
-            if type(schema_data['EntityType']) == dict:
-                for key, item in schema_data['EntityType'].items():
-                    if key == 'Annotation':
-                        path_list = item[5]["Collection"]["String"]    
+            if schema_data.get('EntityType') :
+                if type(schema_data['EntityType']) == dict:
+                    for key, item in schema_data['EntityType'].items():
+                        if key == 'Annotation':
+                            res = next((sub for sub in item if sub["@Term"] == "Redfish.Uris"), None)
+                            if res != None:
+                                path_list = res.get("Collection").get("String", None)
+                            else:
+                                path_list = None    
+                else:
+                    for key, item in schema_data['EntityType'][0].items():
+                        if key == 'Annotation':
+                            res = next((sub for sub in item if sub["@Term"] == "Redfish.Uris"), None)
+                            if res != None:
+                                path_list = res.get("Collection").get("String", None)
+                            else:
+                                path_list = None
             else:
-                for key, item in schema_data['EntityType'][0].items():
-                    if key == 'Annotation':
-                        path_list = item[5]["Collection"]["String"]
+                path_list = None
 
         # get resource type from Namespace (Ex. Chassis, Port, NetworkAdapter, Manager, etc)
-        resource = schema['edmx:Edmx']['edmx:DataServices']['Schema'][0]['@Namespace']
+        if path_list != None:   
+            if type(schema_data) == list:
+                resource = schema['edmx:Edmx']['edmx:DataServices']['Schema'][0]['@Namespace']
+            else:
+                resource = schema['edmx:Edmx']['edmx:DataServices']['Schema'].get('@Namespace')
+        else:
+            resource = None
         return resource, path_list
 
     except urllib.error.HTTPError as e:
@@ -101,6 +130,7 @@ if __name__=='__main__':
         print(status)
 
         # creates add_resource lines of code for resource_manager.py
+        print(add_import_statement(resource_num))
         print(add_resource_file(resource_num, resource_paths))
     # if Redfish URIs has list of paths
     elif(type(resource_paths) is list):
@@ -115,4 +145,5 @@ if __name__=='__main__':
             print(status)
 
             # creates add_resource lines of code for resource_manager.py
+            print(add_import_statement(resource_num))
             print(add_resource_file(resource_num, path))

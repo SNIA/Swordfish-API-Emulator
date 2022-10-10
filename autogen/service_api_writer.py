@@ -1,3 +1,4 @@
+import os
 import re
 from api_writer_utils import get_function_parameters, get_path_parameters
 
@@ -50,7 +51,8 @@ def write_service_program_header(resource_path, outfile, resource):
     outfile.write("config = {}\n\n")
     outfile.write("INTERNAL_ERROR = 500\n\n")
 
-    if('Service' in resource):
+    head, tail = os.path.split(resource_path)
+    if('{' not in tail):
         outfile.write("# {0} does not have a Collection API\n\n".format(resource))
         outfile.write("\n")
     return

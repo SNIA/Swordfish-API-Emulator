@@ -69,6 +69,8 @@ class Port16CollectionAPI(Resource):
 
 	# HTTP PUT Collection
 	def put(self, ChassisId, FabricAdapterId):
+		logging.info('Port16 Collection put called')
+
 		path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports', 'index.json').format(ChassisId, FabricAdapterId)
 		put_object (path)
 		return self.get(ChassisId)

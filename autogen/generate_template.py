@@ -24,7 +24,7 @@ def write_program(outfile, base_template_name, resource_path, json_schema):
     write_program_end(outfile, base_template_name, resource_path)
 
 def create_folder_under_current_directory(folder_name):
-    """ Create a folder for API program file under current directory """
+    """ Create a folder for template program file under current directory """
     current_path = os.getcwd()
     global orig_path
     orig_path = current_path

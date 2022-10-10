@@ -39,7 +39,7 @@ _TEMPLATE = \
 	"@odata.id": "{rb}Storage/{StorageId}/Controllers/{ControllerId}",
 	"@odata.type": "#StorageController.v1_6_0.StorageController",
 	"Id": "{ControllerId}",
-	"Name": "NVMe I/O Controller",
+	"Name": "StorageController",
 }
 
 def get_StorageController0_instance(wildcards):
@@ -51,7 +51,7 @@ def get_StorageController0_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{StorageId}', '0')
-		g = g.replace('{ControllerId}', '0')
+		g = g.replace('{ControllerId}', '1')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

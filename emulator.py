@@ -206,9 +206,10 @@ def before_request():
 
     global location
     if session.get('UserName') == None and location != None:
-        session_id = os.path.split(location)
-        session_obj = SessionAPI()
-        session_obj.delete(session_id[1])
+        split_path = os.path.split(location)
+        path = location.replace('/redfish/v1', 'Resources')
+        delete_object(path, split_path[0].replace('/redfish/v1', 'Resources'))
+        print("location deleted")
         location = None
 
 

@@ -27,8 +27,8 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Template for - ManagerAccount
-# Program name - ManagerAccount0.py
+# Template for - Session
+# Program name - Session.py
 
 import copy
 from flask import json
@@ -36,14 +36,13 @@ from flask import json
 _TEMPLATE = \
 {
 	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-	"@odata.id": "{rb}/AccountService/Accounts/{ManagerAccountId}",
-	"@odata.type": "#ManagerAccount.v1_9_0.ManagerAccount",
-	"Id": "{ManagerAccountId}",
-	"Name": "User Account",
-	"AccountTypes": "Redfish"
+	"@odata.id": "{rb}SessionService/Sessions/{SessionId}",
+	"@odata.type": "#Session.v1_4_0.Session",
+	"Id": "{SessionId}",
+	"Name": "User Session",
 }
 
-def get_ManagerAccount0_instance(wildcards):
+def get_Session_instance(wildcards):
 		"""
 		Instantiates and formats the template
 		Arguments:
@@ -51,13 +50,13 @@ def get_ManagerAccount0_instance(wildcards):
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{ManagerAccountId}', '0')
+		g = d.replace('{SessionId}', '0')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')
 		g = g.replace('{', '~!')
 		g = g.replace('}', '!~')
-		g = g.replace('0', '{ManagerAccountId}')
+		g = g.replace('0', '{SessionId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)
 		g = g.replace('~~!', '{{')

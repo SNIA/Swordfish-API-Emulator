@@ -39,16 +39,17 @@ import os
 import json
 import argparse
 import traceback
-import xml.etree.ElementTree as ET
 import logging
 import copy
+import jwt
+
 
 logging.basicConfig(level=logging.DEBUG)
 
 import g
 
 # Flask Imports
-from flask import Flask, request, make_response, render_template
+from flask import Flask, request, make_response, render_template, session
 from flask_restful import reqparse, Api, Resource
 
 # Emulator Imports
@@ -59,6 +60,7 @@ from api_emulator.exceptions import CreatePooledNodeError, ConfigurationError, R
 from api_emulator.resource_dictionary import ResourceDictionary
 from api_emulator.redfish.ServiceRoot1_api import *
 from api_emulator.utils import *
+from api_emulator.redfish.Session_api import SessionAPI
 
 # from infragen.populate import populate
 
@@ -70,6 +72,7 @@ MODE = None
 MOCKUPFOLDERS = None
 STATIC = None
 
+location = None
 CONFIG = 'emulator-config.json'
 
 # Base URL of the RESTful interface
@@ -83,6 +86,8 @@ resource_dictionary = None
 # Parse REST request for Action
 parser = reqparse.RequestParser()
 parser.add_argument('Action', type=str, required=True)
+
+config = {}
 
 # Read emulator-config file.
 # If running on Cloud, use dyanaically assigned port
@@ -122,7 +127,7 @@ def init_resource_manager():
         resource_manager = StaticResourceManager(REST_BASE, SPEC,MODE,TRAYS)
     else:
         print (' * Using dynamic emulation')
-        resource_manager = ResourceManager(REST_BASE, SPEC,MODE,TRAYS)
+        resource_manager = ResourceManager(REST_BASE, SPEC,MODE,AUTHENTICATION_MODE,TRAYS)
 
 
     # If POPULATE is specified in emulator-config.json, INFRAGEN is called to populate emulator (i.e. with Chassi, CS, Resource Blocks, etc) according to specified file
@@ -168,10 +173,43 @@ def output_json(data, code, headers=None):
     Overriding how JSON is returned by the server so that it looks nice
     """
     data = remove_json_object(data, "@Redfish.Copyright")
-    resp = make_response(json.dumps(data, indent=4), code)
-    resp.headers.extend(headers or {})
+    global location
+
+    if 'UserName' not in data or 'Password' not in data:
+        resp = make_response(json.dumps(data, indent=4), code)
+        resp.headers.extend(headers or {})
+        resp.headers['OData-Version'] = 4.0
+
+        # if session timed out then delete the cookie as well
+        if session.get('UserName') == None and request.cookies:
+            print("deleting cookie")
+            resp.delete_cookie("session")
+            location = None
+
+    else: 
+        location = data['@odata.id']
+        token = jwt.encode({'Username' : data['UserName'], 'Password' : data['Password']}, g.app.config['SECRET_KEY'])
+
+        del data['Password']
+
+        resp = make_response(data, code)
+        resp.headers.extend(headers or {})
+        resp.headers['Location'] = location
+        resp.headers['X-Auth-Token'] = token
+        resp.headers['OData-Version'] = 4.0
+
     return resp
 
+@g.app.before_request
+def before_request():
+    session.modified = True
+
+    global location
+    if session.get('UserName') == None and location != None:
+        session_id = os.path.split(location)
+        session_obj = SessionAPI()
+        session_obj.delete(session_id[1])
+        location = None
 
 
 # The following code provides a mechanism for the Redfish client to either
@@ -407,7 +445,7 @@ def get_metadata():
                 md_xml += line
 
         resp = make_response(md_xml, 200)
-        resp.headers['Content-Type'] = 'text/xml'
+        resp.headers['Content-Type'] = 'application/xml'
         return resp
 
     except Exception:
@@ -483,6 +521,7 @@ def main():
     global TRAYS
     global MOCKUPFOLDERS
     global SPEC
+    global AUTHENTICATION_MODE
 
     # Open the emulator configuration file
     with open(CONFIG, 'r') as f:
@@ -490,6 +529,16 @@ def main():
 
     HTTPS = config['HTTPS']
     assert HTTPS.lower() in ['enable', 'disable'], 'Unknown HTTPS setting:' + HTTPS
+
+    # implementation of different authentication methods
+    AUTHENTICATION_MODE = config['AUTHORIZATION_MODE']
+    assert AUTHENTICATION_MODE.lower() in ['none', 'basic', 'session'], 'Unknown authentication mode:' + AUTHENTICATION_MODE
+
+    if (AUTHENTICATION_MODE == 'Basic' or AUTHENTICATION_MODE == 'Session') and (HTTPS != 'Enable'):
+        HTTPS = 'Enable'
+    else:
+        pass
+
 
     try:
         TRAYS = config['TRAYS']

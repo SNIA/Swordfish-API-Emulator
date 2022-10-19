@@ -736,7 +736,7 @@ class ResourceManager(object):
     Defines ServiceRoot
     """
 
-    def __init__(self, rest_base, spec, mode, trays=None):
+    def __init__(self, rest_base, spec, mode, auth_mode, trays=None):
         """
         Arguments:
             rest_base - Base URL for the REST interface
@@ -1225,8 +1225,8 @@ class ResourceManager(object):
         g.api.add_resource(Certificate65CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/KeyManagement/KMIPCertificates')
         g.api.add_resource(Certificate65API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/KeyManagement/KMIPCertificates/<string:CertificateId>')
 
-        g.api.add_resource(ChassisCollectionAPI, '/redfish/v1/Chassis')
-        g.api.add_resource(ChassisAPI, '/redfish/v1/Chassis/<string:ChassisId>')
+        g.api.add_resource(ChassisCollectionAPI, '/redfish/v1/Chassis', resource_class_kwargs={'auth_mode': auth_mode})
+        g.api.add_resource(ChassisAPI, '/redfish/v1/Chassis/<string:ChassisId>', resource_class_kwargs={'auth_mode': auth_mode})
 
         g.api.add_resource(Circuit0CollectionAPI, '/redfish/v1/PowerEquipment/RackPDUs/<string:PowerDistributionId>/Mains')
         g.api.add_resource(Circuit0API, '/redfish/v1/PowerEquipment/RackPDUs/<string:PowerDistributionId>/Mains/<string:CircuitId>')
@@ -2409,8 +2409,8 @@ class ResourceManager(object):
 
         g.api.add_resource(SessionServiceAPI, '/redfish/v1/SessionService')
 
-        g.api.add_resource(SessionCollectionAPI, '/redfish/v1/SessionService/Sessions')
-        g.api.add_resource(SessionAPI, '/redfish/v1/SessionService/Sessions/<string:SessionId>')
+        g.api.add_resource(SessionCollectionAPI, '/redfish/v1/SessionService/Sessions', resource_class_kwargs={'auth_mode': auth_mode})
+        g.api.add_resource(SessionAPI, '/redfish/v1/SessionService/Sessions/<string:SessionId>', resource_class_kwargs={'auth_mode': auth_mode})
 
         g.api.add_resource(SwitchMetricsAPI, '/redfish/v1/Fabrics/<string:FabricId>/Switches/<string:SwitchId>/SwitchMetrics')
 

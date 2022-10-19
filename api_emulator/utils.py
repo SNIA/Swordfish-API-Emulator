@@ -45,8 +45,11 @@ import datetime
 import traceback
 import shutil
 import logging
+import jwt
+from api_emulator.account_service import AccountService
+import g
 
-from flask import jsonify, request
+from flask import jsonify, request, session
 from functools import wraps
 from api_emulator.redfish.templates.collection import get_Collection_instance
 
@@ -143,6 +146,8 @@ def get_json_data(path):
         json_data = open(path)
         data = json.load(json_data)
         data = remove_json_object(data, "@Redfish.Copyright")
+        if 'Password' in data:
+            remove_json_object(data, 'Password')
     except Exception as e:
         traceback.print_exc()
         return {"error": "Unable to read file because of the following error::{}".format(e)}, 404
@@ -281,10 +286,10 @@ def put_object(path):
 def create_collection (collection_path, collection_type):
 
     try:
-        if not os.path.exists(collection_path):
-            os.mkdir(collection_path)
-        else:
-            return {"error": "The collection {} already exists.::{}"}, 404
+        # if not os.path.exists(collection_path):
+        #     os.mkdir(collection_path)
+        # else:
+        #     return {"error": "The collection {} already exists.::{}"}, 404
 
         global config
 
@@ -308,3 +313,65 @@ def remove_json_object (config, property_id):
     if property_id in config:
         config.pop (property_id, None)
     return config
+
+def check_session_authentication():
+    if 'X-Auth-Token' in request.headers:
+        jwt_token = request.headers.get('X-Auth-Token')
+        if jwt_token:
+            try:
+                payload = jwt.decode(jwt_token, g.app.config['SECRET_KEY'], algorithms=["HS256"])
+                return payload, 200
+            except:
+                return "Invalid token", 403
+        else:
+            return "Missing token", 403
+    else:
+        return "Missing Header", 400
+    
+def check_basic_authentication():
+    auth = request.authorization
+    as_obj = AccountService()
+    actual_password = as_obj.getPassword(auth.username)
+    if auth and auth.password == actual_password:
+        return "Successfully authorized", 200
+    else:
+        return "Could not verify your login", 403
+
+def check_authentication(mode):
+    if mode == 'None':
+        pass
+    elif mode == 'Basic':
+        msg, code = check_basic_authentication()
+        if code == 200:
+            pass
+        else:
+            return msg, code
+    elif mode =='Session':
+        if session.get('UserName') != None:
+            msg, code = check_session_authentication()
+            if code == 200:
+                pass
+            else:
+                return msg, code
+        else:
+            return get_sessionValidation_error(), 403
+    return "Success..", 200        
+
+def get_sessionValidation_error():
+    error_messgae = {
+        "error": {
+            "code": "Base.1.14.0.NoValidSession",
+            "message": "There is no valid session established with the implementation.",
+            "@Message.ExtendedInfo": [
+                {
+                    "@odata.type": "#Message.v1_1_1.Message",
+                    "MessageId": "Base.1.14.0.NoValidSession",
+                    "Message": "There is no valid session established with the implementation.",
+                    "Severity": "Critical",
+                    "MessageSeverity": "Critical",
+                    "Resolution": "Establish a session before attempting any operations."
+                }
+            ]
+        }
+    }
+    return error_messgae

@@ -31,7 +31,7 @@
 # Program name - Memory3_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class Memory3CollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory').format(ResourceBlockId, ComputerSystemId)
-		return create_collection (path, 'Memory')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'Memory')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return Memory3API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return Memory3API.post(self, str(res))
+		else:
+			return Memory3API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, ComputerSystemId):

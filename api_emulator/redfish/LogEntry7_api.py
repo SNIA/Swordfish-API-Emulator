@@ -31,7 +31,7 @@
 # Program name - LogEntry7_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class LogEntry7CollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'Systems/{0}/Memory/{1}/DeviceLog/Entries').format(ComputerSystemId, MemoryId)
-		return create_collection (path, 'LogEntry')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'LogEntry')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return LogEntry7API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return LogEntry7API.post(self, str(res))
+		else:
+			return LogEntry7API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId, MemoryId):

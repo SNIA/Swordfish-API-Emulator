@@ -31,7 +31,7 @@
 # Program name - Key0_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -62,7 +62,19 @@ class Key0CollectionAPI(Resource):
 		logging.info('Key0 Collection post called')
 
 		path = create_path(self.root, 'KeyService/NVMeoFSecrets')
-		return create_collection (path, 'Key')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'Key')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return Key0API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return Key0API.post(self, str(res))
+		else:
+			return Key0API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self):

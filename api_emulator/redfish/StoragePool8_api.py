@@ -31,7 +31,7 @@
 # Program name - StoragePool8_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class StoragePool8CollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'Storage/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingPools').format(StorageId, StoragePoolId, CapacitySourceId)
-		return create_collection (path, 'StoragePool')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'StoragePool')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return StoragePool8API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return StoragePool8API.post(self, str(res))
+		else:
+			return StoragePool8API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, StorageId, StoragePoolId, CapacitySourceId):

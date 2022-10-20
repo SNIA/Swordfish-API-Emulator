@@ -31,7 +31,7 @@
 # Program name - AllowDeny5_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class AllowDeny5CollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId)
-		return create_collection (path, 'AllowDeny')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'AllowDeny')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return AllowDeny5API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return AllowDeny5API.post(self, str(res))
+		else:
+			return AllowDeny5API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId):

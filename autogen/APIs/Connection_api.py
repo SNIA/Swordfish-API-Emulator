@@ -31,7 +31,7 @@
 # Program name - Connection_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class ConnectionCollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'Fabrics/{0}/Connections').format(FabricId)
-		return create_collection (path, 'Connection')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'Connection')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return ConnectionAPI.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return ConnectionAPI.post(self, str(res))
+		else:
+			return ConnectionAPI.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, FabricId):

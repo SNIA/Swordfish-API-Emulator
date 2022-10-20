@@ -31,7 +31,7 @@
 # Program name - EthernetInterface1_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class EthernetInterface1CollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'Systems/{0}/EthernetInterfaces').format(ComputerSystemId)
-		return create_collection (path, 'EthernetInterface')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'EthernetInterface')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return EthernetInterface1API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return EthernetInterface1API.post(self, str(res))
+		else:
+			return EthernetInterface1API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId):

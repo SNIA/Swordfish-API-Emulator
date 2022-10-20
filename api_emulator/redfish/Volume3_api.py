@@ -31,7 +31,7 @@
 # Program name - Volume3_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class Volume3CollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Volumes').format(ResourceBlockId, ComputerSystemId, StorageId)
-		return create_collection (path, 'Volume')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'Volume')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return Volume3API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return Volume3API.post(self, str(res))
+		else:
+			return Volume3API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, ComputerSystemId, StorageId):

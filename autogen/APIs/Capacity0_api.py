@@ -31,7 +31,7 @@
 # Program name - Capacity0_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class Capacity0CollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources').format(StorageServiceId, StoragePoolId)
-		return create_collection (path, 'Capacity')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'Capacity')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return Capacity0API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return Capacity0API.post(self, str(res))
+		else:
+			return Capacity0API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, StorageServiceId, StoragePoolId):

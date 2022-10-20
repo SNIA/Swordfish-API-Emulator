@@ -31,7 +31,7 @@
 # Program name - StorageController1_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class StorageController1CollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'Systems/{0}/Storage/{1}/Controllers').format(ComputerSystemId, StorageId)
-		return create_collection (path, 'StorageController')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'StorageController')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return StorageController1API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return StorageController1API.post(self, str(res))
+		else:
+			return StorageController1API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId, StorageId):

@@ -31,7 +31,7 @@
 # Program name - CompositionReservation_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -62,7 +62,19 @@ class CompositionReservationCollectionAPI(Resource):
 		logging.info('CompositionReservation Collection post called')
 
 		path = create_path(self.root, 'CompositionService/CompositionReservations')
-		return create_collection (path, 'CompositionReservation')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'CompositionReservation')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return CompositionReservationAPI.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return CompositionReservationAPI.post(self, str(res))
+		else:
+			return CompositionReservationAPI.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self):

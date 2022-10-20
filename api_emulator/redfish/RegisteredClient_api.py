@@ -31,7 +31,7 @@
 # Program name - RegisteredClient_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -62,7 +62,19 @@ class RegisteredClientCollectionAPI(Resource):
 		logging.info('RegisteredClient Collection post called')
 
 		path = create_path(self.root, 'RegisteredClients')
-		return create_collection (path, 'RegisteredClient')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'RegisteredClient')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return RegisteredClientAPI.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return RegisteredClientAPI.post(self, str(res))
+		else:
+			return RegisteredClientAPI.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self):

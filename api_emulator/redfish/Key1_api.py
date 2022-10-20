@@ -31,7 +31,7 @@
 # Program name - Key1_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class Key1CollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'AccountService/Accounts/{0}/Keys').format(ManagerAccountId)
-		return create_collection (path, 'Key')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'Key')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return Key1API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return Key1API.post(self, str(res))
+		else:
+			return Key1API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ManagerAccountId):

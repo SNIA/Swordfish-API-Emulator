@@ -31,7 +31,7 @@
 # Program name - MediaController_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class MediaControllerCollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'Chassis/{0}/MediaControllers').format(ChassisId)
-		return create_collection (path, 'MediaController')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'MediaController')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return MediaControllerAPI.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return MediaControllerAPI.post(self, str(res))
+		else:
+			return MediaControllerAPI.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ChassisId):

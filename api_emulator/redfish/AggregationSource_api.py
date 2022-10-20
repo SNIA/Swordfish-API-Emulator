@@ -31,7 +31,7 @@
 # Program name - AggregationSource_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -62,7 +62,19 @@ class AggregationSourceCollectionAPI(Resource):
 		logging.info('AggregationSource Collection post called')
 
 		path = create_path(self.root, 'AggregationService/AggregationSources')
-		return create_collection (path, 'AggregationSource')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'AggregationSource')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return AggregationSourceAPI.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return AggregationSourceAPI.post(self, str(res))
+		else:
+			return AggregationSourceAPI.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self):

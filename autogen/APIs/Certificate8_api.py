@@ -31,7 +31,7 @@
 # Program name - Certificate8_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class Certificate8CollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'Managers/{0}/NetworkProtocol/HTTPS/Certificates').format(ManagerId)
-		return create_collection (path, 'Certificate')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'Certificate')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return Certificate8API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return Certificate8API.post(self, str(res))
+		else:
+			return Certificate8API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ManagerId):

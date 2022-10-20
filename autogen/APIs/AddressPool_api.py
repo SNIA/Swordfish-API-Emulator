@@ -31,7 +31,7 @@
 # Program name - AddressPool_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class AddressPoolCollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'Fabrics/{0}/AddressPools').format(FabricId)
-		return create_collection (path, 'AddressPool')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'AddressPool')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return AddressPoolAPI.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return AddressPoolAPI.post(self, str(res))
+		else:
+			return AddressPoolAPI.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, FabricId):

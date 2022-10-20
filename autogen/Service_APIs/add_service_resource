@@ -408,7 +408,7 @@ g.api.add_resource(SecureBoot2API, '/redfish/v1/ResourceBlocks/<string:ResourceB
 
 g.api.add_resource(ServiceConditionsAPI, '/redfish/v1/ServiceConditions')
 
-g.api.add_resource(ServiceRoot0API, '/redfish/v1')
+g.api.add_resource(ServiceRoot0API, '/redfish/v1/')
 
 g.api.add_resource(ServiceRoot1API, '/redfish/v1/')
 
@@ -443,15 +443,11 @@ g.api.add_resource(DataProtectionLineOfService0API, '/redfish/v1/StorageServices
 g.api.add_resource(DataProtectionLineOfService1CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/DataProtectionLinesOfService')
 g.api.add_resource(DataProtectionLineOfService1API, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/DataProtectionLinesOfService/<string:DataProtectionLineOfServiceId>')
 
-g.api.add_resource(DataProtectionLoSCapabilitiesAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/DataProtectionLoSCapabilities')
-
 g.api.add_resource(DataSecurityLineOfService0CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/DataSecurityLinesOfService')
 g.api.add_resource(DataSecurityLineOfService0API, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/DataSecurityLinesOfService/<string:DataSecurityLineOfServiceId>')
 
 g.api.add_resource(DataSecurityLineOfService1CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/DataSecurityLinesOfService')
 g.api.add_resource(DataSecurityLineOfService1API, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/DataSecurityLinesOfService/<string:DataSecurityLineOfServiceId>')
-
-g.api.add_resource(DataSecurityLoSCapabilitiesAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/DataSecurityLoSCapabilities')
 
 g.api.add_resource(DataStorageLineOfService0CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/DataStorageLinesOfService')
 g.api.add_resource(DataStorageLineOfService0API, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/DataStorageLinesOfService/<string:DataStorageLineOfServiceId>')
@@ -459,25 +455,17 @@ g.api.add_resource(DataStorageLineOfService0API, '/redfish/v1/StorageServices/<s
 g.api.add_resource(DataStorageLineOfService1CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/DataStorageLinesOfService')
 g.api.add_resource(DataStorageLineOfService1API, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/DataStorageLinesOfService/<string:DataStorageLineOfServiceId>')
 
-g.api.add_resource(DataStorageLoSCapabilitiesAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/DataStorageLoSCapabilities')
-
-g.api.add_resource(HostedStorageServicesAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/HostedServices')
-
 g.api.add_resource(IOConnectivityLineOfService0CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/IOConnectivityLinesOfService')
 g.api.add_resource(IOConnectivityLineOfService0API, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/IOConnectivityLinesOfService/<string:IOConnectivityLineOfServiceId>')
 
 g.api.add_resource(IOConnectivityLineOfService1CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/IOConnectivityLinesOfService')
 g.api.add_resource(IOConnectivityLineOfService1API, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/IOConnectivityLinesOfService/<string:IOConnectivityLineOfServiceId>')
 
-g.api.add_resource(IOConnectivityLoSCapabilitiesAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/IOConnectivityLoSCapabilities')
-
 g.api.add_resource(IOPerformanceLineOfService0CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/IOPerformanceLinesOfService')
 g.api.add_resource(IOPerformanceLineOfService0API, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/IOPerformanceLinesOfService/<string:IOPerformanceLineOfServiceId>')
 
 g.api.add_resource(IOPerformanceLineOfService1CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/IOPerformanceLinesOfService')
 g.api.add_resource(IOPerformanceLineOfService1API, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/IOPerformanceLinesOfService/<string:IOPerformanceLineOfServiceId>')
-
-g.api.add_resource(IOPerformanceLoSCapabilitiesAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/IOPerformanceLoSCapabilities')
 
 g.api.add_resource(StorageService0CollectionAPI, '/redfish/v1/StorageServices')
 g.api.add_resource(StorageService0API, '/redfish/v1/StorageServices/<string:StorageServiceId>')

@@ -31,7 +31,7 @@
 # Program name - VCATEntry0_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class VCATEntry0CollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/VCAT').format(FabricId, SwitchId, PortId)
-		return create_collection (path, 'VCATEntry')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'VCATEntry')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return VCATEntry0API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return VCATEntry0API.post(self, str(res))
+		else:
+			return VCATEntry0API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, FabricId, SwitchId, PortId):

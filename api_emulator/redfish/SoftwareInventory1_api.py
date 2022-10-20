@@ -31,7 +31,7 @@
 # Program name - SoftwareInventory1_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -62,7 +62,19 @@ class SoftwareInventory1CollectionAPI(Resource):
 		logging.info('SoftwareInventory1 Collection post called')
 
 		path = create_path(self.root, 'UpdateService/FirmwareInventory')
-		return create_collection (path, 'SoftwareInventory')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'SoftwareInventory')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return SoftwareInventory1API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return SoftwareInventory1API.post(self, str(res))
+		else:
+			return SoftwareInventory1API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self):

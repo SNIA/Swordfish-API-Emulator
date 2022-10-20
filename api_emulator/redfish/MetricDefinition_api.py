@@ -31,7 +31,7 @@
 # Program name - MetricDefinition_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -39,9 +39,10 @@ from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
 from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from .templates.MetricDefinition import get_MetricDefinition_instance
 
-config = {}
-
+members = []
+member_ids = []
 INTERNAL_ERROR = 500
 
 # MetricDefinition Collection API
@@ -56,26 +57,32 @@ class MetricDefinitionCollectionAPI(Resource):
 		path = os.path.join(self.root, 'TelemetryService/MetricDefinitions', 'index.json')
 		return get_json_data (path)
 
-	# HTTP POST
+	# HTTP POST Collection
 	def post(self):
 		logging.info('MetricDefinition Collection post called')
-		return 'POST is not a supported command for MetricDefinitionCollectionAPI', 405
 
-	# HTTP PUT
+		path = create_path(self.root, 'TelemetryService/MetricDefinitions')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'MetricDefinition')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return MetricDefinitionAPI.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return MetricDefinitionAPI.post(self, str(res))
+		else:
+			return MetricDefinitionAPI.post(self, str(res))
+
+	# HTTP PUT Collection
 	def put(self):
 		logging.info('MetricDefinition Collection put called')
-		return 'PUT is not a supported command for MetricDefinitionCollectionAPI', 405
 
-	# HTTP PATCH
-	def patch(self):
-		logging.info('MetricDefinition Collection patch called')
-		return 'PATCH is not a supported command for MetricDefinitionCollectionAPI', 405
-
-	# HTTP DELETE
-	def delete(self):
-		logging.info('MetricDefinition Collection delete called')
-		return 'DELETE is not a supported command for MetricDefinitionCollectionAPI', 405
-
+		path = os.path.join(self.root, 'TelemetryService/MetricDefinitions', 'index.json')
+		put_object (path)
+		return self.get(self.root)
 
 # MetricDefinition API
 class MetricDefinitionAPI(Resource):
@@ -90,23 +97,53 @@ class MetricDefinitionAPI(Resource):
 		return get_json_data (path)
 
 	# HTTP POST
-	def post(self):
+	# - Create the resource (since URI variables are available)
+	# - Update the members and members.id lists
+	# - Attach the APIs of subordinate resources (do this only once)
+	# - Finally, create an instance of the subordiante resources
+	def post(self, MetricDefinitionId):
 		logging.info('MetricDefinition post called')
-		return 'POST is not a supported command for MetricDefinitionAPI', 405
+		path = create_path(self.root, 'TelemetryService/MetricDefinitions/{0}').format(MetricDefinitionId)
+		collection_path = os.path.join(self.root, 'TelemetryService/MetricDefinitions', 'index.json')
+
+		# Check if collection exists:
+		if not os.path.exists(collection_path):
+			MetricDefinitionCollectionAPI.post(self)
+
+		if MetricDefinitionId in members:
+			resp = 404
+			return resp
+		try:
+			global config
+			wildcards = {'MetricDefinitionId':MetricDefinitionId, 'rb':g.rest_base}
+			config=get_MetricDefinition_instance(wildcards)
+			config = create_and_patch_object (config, members, member_ids, path, collection_path)
+			resp = config, 200
+
+		except Exception:
+			traceback.print_exc()
+			resp = INTERNAL_ERROR
+		logging.info('MetricDefinitionAPI POST exit')
+		return resp
 
 	# HTTP PUT
-	def put(self):
+	def put(self, MetricDefinitionId):
 		logging.info('MetricDefinition put called')
-		return 'PUT is not a supported command for MetricDefinitionAPI', 405
+		path = os.path.join(self.root, 'TelemetryService/MetricDefinitions/{0}', 'index.json').format(MetricDefinitionId)
+		put_object(path)
+		return self.get(MetricDefinitionId)
 
 	# HTTP PATCH
-	def patch(self):
+	def patch(self, MetricDefinitionId):
 		logging.info('MetricDefinition patch called')
-		return 'PATCH is not a supported command for MetricDefinitionAPI', 405
+		path = os.path.join(self.root, 'TelemetryService/MetricDefinitions/{0}', 'index.json').format(MetricDefinitionId)
+		patch_object(path)
+		return self.get(MetricDefinitionId)
 
 	# HTTP DELETE
-	def delete(self):
+	def delete(self, MetricDefinitionId):
 		logging.info('MetricDefinition delete called')
-		return 'DELETE is not a supported command for MetricDefinitionAPI', 405
-
+		path = create_path(self.root, 'TelemetryService/MetricDefinitions/{0}').format(MetricDefinitionId)
+		base_path = create_path(self.root, 'TelemetryService/MetricDefinitions')
+		return delete_object(path, base_path)
 

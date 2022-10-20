@@ -31,7 +31,7 @@
 # Program name - Certificate27_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class Certificate27CollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/Certificates').format(ResourceBlockId, ProcessorId)
-		return create_collection (path, 'Certificate')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'Certificate')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return Certificate27API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return Certificate27API.post(self, str(res))
+		else:
+			return Certificate27API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, ProcessorId):

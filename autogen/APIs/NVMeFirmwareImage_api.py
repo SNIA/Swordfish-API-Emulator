@@ -31,7 +31,7 @@
 # Program name - NVMeFirmwareImage_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class NVMeFirmwareImageCollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'NVMeDomains/{0}/AvailableFirmwareImages').format(DomainId)
-		return create_collection (path, 'NVMeFirmwareImage')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'NVMeFirmwareImage')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return NVMeFirmwareImageAPI.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return NVMeFirmwareImageAPI.post(self, str(res))
+		else:
+			return NVMeFirmwareImageAPI.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, DomainId):

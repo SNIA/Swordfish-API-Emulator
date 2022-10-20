@@ -31,7 +31,7 @@
 # Program name - Volume4_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class Volume4CollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'Storage/{0}/ConsistencyGroups/{1}/Volumes').format(StorageId, ConsistencyGroupId)
-		return create_collection (path, 'Volume')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'Volume')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return Volume4API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return Volume4API.post(self, str(res))
+		else:
+			return Volume4API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, StorageId, ConsistencyGroupId):

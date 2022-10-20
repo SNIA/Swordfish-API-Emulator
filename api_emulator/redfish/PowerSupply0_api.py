@@ -31,7 +31,7 @@
 # Program name - PowerSupply0_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class PowerSupply0CollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'Chassis/{0}/PowerSubsystem/PowerSupplies').format(ChassisId)
-		return create_collection (path, 'PowerSupply')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'PowerSupply')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return PowerSupply0API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return PowerSupply0API.post(self, str(res))
+		else:
+			return PowerSupply0API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ChassisId):

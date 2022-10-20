@@ -31,7 +31,7 @@
 # Program name - Port7_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class Port7CollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/StorageControllers/{2}/Ports').format(ResourceBlockId, StorageId, StorageControllerId)
-		return create_collection (path, 'Port')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'Port')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return Port7API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return Port7API.post(self, str(res))
+		else:
+			return Port7API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, StorageId, StorageControllerId):

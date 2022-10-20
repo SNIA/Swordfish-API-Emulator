@@ -31,7 +31,7 @@
 # Program name - StorageGroup2_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class StorageGroup2CollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'Storage/{0}/StorageGroups').format(StorageId)
-		return create_collection (path, 'StorageGroup')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'StorageGroup')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return StorageGroup2API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return StorageGroup2API.post(self, str(res))
+		else:
+			return StorageGroup2API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, StorageId):

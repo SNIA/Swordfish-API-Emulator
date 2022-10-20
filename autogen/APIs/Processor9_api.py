@@ -31,7 +31,7 @@
 # Program name - Processor9_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class Processor9CollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'ResourceBlocks/{0}/Processors').format(ResourceBlockId)
-		return create_collection (path, 'Processor')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'Processor')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return Processor9API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return Processor9API.post(self, str(res))
+		else:
+			return Processor9API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId):

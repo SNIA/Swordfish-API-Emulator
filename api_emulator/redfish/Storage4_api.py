@@ -31,7 +31,7 @@
 # Program name - Storage4_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class Storage4CollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'ResourceBlocks/{0}/Storage').format(ResourceBlockId)
-		return create_collection (path, 'Storage')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'Storage')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return Storage4API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return Storage4API.post(self, str(res))
+		else:
+			return Storage4API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId):

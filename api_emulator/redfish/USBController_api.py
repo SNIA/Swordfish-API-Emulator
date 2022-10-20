@@ -31,7 +31,7 @@
 # Program name - USBController_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class USBControllerCollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'Systems/{0}/USBControllers').format(ComputerSystemId)
-		return create_collection (path, 'USBController')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'USBController')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return USBControllerAPI.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return USBControllerAPI.post(self, str(res))
+		else:
+			return USBControllerAPI.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId):

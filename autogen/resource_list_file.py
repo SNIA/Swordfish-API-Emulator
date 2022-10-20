@@ -53,8 +53,6 @@ def add_service_resource_file(resource_num, path):
     for i in range(len(sub_path)-3):
         collection_path =  collection_path + '/' + sub_path[i+2]
 
-    add_resource_instance = ''
-    add_resource_collection = ''
     if 'string' not in sub_path[-1]:
         add_resource_instance = 'g.api.add_resource({0}API, \'{1}\')\n\n'.format(resource_num, object_path)
     else:
@@ -73,7 +71,7 @@ def add_service_resource_file(resource_num, path):
         with open("add_service_resource", "a+") as file:
             file.seek(0)
             for line in file:
-                if add_resource_instance in line:
+                if add_resource_instance in line or add_resource_collection in line:
                     break
             else:
                 if add_resource_collection:

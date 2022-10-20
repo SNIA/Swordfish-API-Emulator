@@ -38,7 +38,7 @@ def write_program_header(resource_path, outfile, resource_num):
     outfile.write('# Program name - {0}_api.py\n'.format(resource_num))
     outfile.write('\n')
     outfile.write('import g\n')
-    outfile.write('import json, os\n')
+    outfile.write('import json, os, random, string\n')
     outfile.write('import traceback\n')
     outfile.write('import logging\n')
     outfile.write('\n')
@@ -104,7 +104,21 @@ def write_collection_api(outfile, resource, resource_num, collection_path):
         outfile.write("\t\tpath = create_path(self.root, '{0}')\n".format(collection_path[1:]))
     else:
         outfile.write("\t\tpath = create_path(self.root, '{0}').format({1})\n".format(new_collection_path, arg_str))
-    outfile.write("\t\treturn create_collection (path, '{0}')\n\n".format(resource))
+
+    outfile.write("\t\tif not os.path.exists(path):\n")
+    outfile.write("\t\t\tos.mkdir(path)\n")
+    outfile.write("\t\t\tcreate_collection (path, '{0}')\n\n".format(resource))
+
+    outfile.write("\t\tres = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))\n")
+    outfile.write("\t\tif request.data:\n")
+    outfile.write("\t\t\tconfig = json.loads(request.data)\n")
+    outfile.write("\t\t\tif \"@odata.id\" in config:\n")
+    outfile.write("\t\t\t\treturn {0}API.post(self, os.path.basename(config['@odata.id']))\n".format(resource_num))
+    outfile.write("\t\t\telse:\n")
+    outfile.write("\t\t\t\treturn {0}API.post(self, str(res))\n".format(resource_num))
+    outfile.write("\t\telse:\n")
+    outfile.write("\t\t\treturn {0}API.post(self, str(res))\n\n".format(resource_num))
+
 
     # Write PUT method
     outfile.write("\t# HTTP PUT Collection\n")

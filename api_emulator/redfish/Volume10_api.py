@@ -31,7 +31,7 @@
 # Program name - Volume10_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -65,7 +65,19 @@ class Volume10CollectionAPI(Resource):
 			resp = 404
 			return resp
 		path = create_path(self.root, 'Systems/{0}/Storage/{1}/FileSystems/{2}/CapacitySources/{3}/ProvidingVolumes').format(ComputerSystemId, StorageId, FileSystemId, CapacitySourceId)
-		return create_collection (path, 'Volume')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'Volume')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return Volume10API.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return Volume10API.post(self, str(res))
+		else:
+			return Volume10API.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId, StorageId, FileSystemId, CapacitySourceId):

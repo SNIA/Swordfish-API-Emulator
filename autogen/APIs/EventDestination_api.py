@@ -31,7 +31,7 @@
 # Program name - EventDestination_api.py
 
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
@@ -62,7 +62,19 @@ class EventDestinationCollectionAPI(Resource):
 		logging.info('EventDestination Collection post called')
 
 		path = create_path(self.root, 'EventService/Subscriptions')
-		return create_collection (path, 'EventDestination')
+		if not os.path.exists(path):
+			os.mkdir(path)
+			create_collection (path, 'EventDestination')
+
+		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.id" in config:
+				return EventDestinationAPI.post(self, os.path.basename(config['@odata.id']))
+			else:
+				return EventDestinationAPI.post(self, str(res))
+		else:
+			return EventDestinationAPI.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self):

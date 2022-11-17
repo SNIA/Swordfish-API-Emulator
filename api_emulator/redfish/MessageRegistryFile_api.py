@@ -86,7 +86,10 @@ class MessageRegistryFileAPI(Resource):
 	# HTTP GET
 	def get(self, MessageRegistryFileId):
 		logging.info('MessageRegistryFile get called')
-		path = create_path(self.root, 'Registries/{0}', 'index.json').format(MessageRegistryFileId)
+		if '.json' not in MessageRegistryFileId:
+			path = create_path(self.root, 'Registries/{0}', 'index.json').format(MessageRegistryFileId)
+		else:
+			path = create_path(self.root, 'Registries/{0}').format(MessageRegistryFileId)
 		return get_json_data (path)
 
 	# HTTP POST

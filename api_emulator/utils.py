@@ -326,7 +326,7 @@ def check_session_authentication():
         else:
             return "Missing token", 403
     else:
-        return "Missing Header", 400
+        return "Missing Header", 403
     
 def check_basic_authentication():
     auth = request.authorization

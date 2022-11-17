@@ -31,15 +31,17 @@
 # Program name - ManagerAccount0_api.py
 
 import copy
+import random
+import string
 import g
-import json, os, random, string
+import json, os
 import traceback
 import logging
 
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import remove_json_object, update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, remove_json_object, update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 from .templates.ManagerAccount0 import get_ManagerAccount0_instance
 
 members = []
@@ -48,15 +50,21 @@ INTERNAL_ERROR = 500
 
 # ManagerAccount0 Collection API
 class ManagerAccount0CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('ManagerAccount0 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self):
 		logging.info('ManagerAccount0 Collection get called')
-		path = os.path.join(self.root, 'AccountService/Accounts', 'index.json')
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'AccountService/Accounts', 'index.json')
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self):
@@ -80,22 +88,32 @@ class ManagerAccount0CollectionAPI(Resource):
 	# HTTP PUT Collection
 	def put(self):
 		logging.info('ManagerAccount0 Collection put called')
+		msg, code = check_authentication(self.auth)
 
-		path = os.path.join(self.root, 'AccountService/Accounts', 'index.json')
-		put_object (path)
-		return self.get(self.root)
+		if code == 200:
+			path = os.path.join(self.root, 'AccountService/Accounts', 'index.json')
+			put_object (path)
+			return self.get(self.root)
+		else:
+			return msg, code
 
 # ManagerAccount0 API
 class ManagerAccount0API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('ManagerAccount0 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ManagerAccountId):
 		logging.info('ManagerAccount0 get called')
-		path = create_path(self.root, 'AccountService/Accounts/{0}', 'index.json').format(ManagerAccountId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'AccountService/Accounts/{0}', 'index.json').format(ManagerAccountId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -104,72 +122,92 @@ class ManagerAccount0API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ManagerAccountId):
 		logging.info('ManagerAccount0 post called')
-		path = create_path(self.root, 'AccountService/Accounts/{0}').format(ManagerAccountId)
-		collection_path = os.path.join(self.root, 'AccountService/Accounts', 'index.json')
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			ManagerAccount0CollectionAPI.post(self)
+		if code == 200:
+			path = create_path(self.root, 'AccountService/Accounts/{0}').format(ManagerAccountId)
+			collection_path = os.path.join(self.root, 'AccountService/Accounts', 'index.json')
 
-		if ManagerAccountId in members:
-			resp = 404
-			return resp
-		try:
-			global config
-			wildcards = {'ManagerAccountId':ManagerAccountId, 'rb':g.rest_base}
-			config = get_ManagerAccount0_instance(wildcards)
-			
-			if request.data:
-				request_data = json.loads(request.data)
-        		# Update the keys of payload in json file.
-				for key, value in request_data.items():
-					config[key] = value
-			
-			members.append(config)
-			member_ids.append({'@odata.id': config['@odata.id']})
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				ManagerAccount0CollectionAPI.post(self)
 
-			if not config['UserName'] or not config['Password'] or not config['RoleId']:
-				return "The authentication credentials are missing", 401
-			else:
-				if not os.path.exists(path):
-					os.mkdir(path)
-				else:
-					# This will execute when POST is called for more than one time for a resource
-					return "A creation request could not be completed because of conflict, 409", 409
-				with open(os.path.join(path, "index.json"), "w") as fd:
-					data = copy.deepcopy(config)
-					fd.write(json.dumps(data, indent=4, sort_keys=True))
+			if ManagerAccountId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ManagerAccountId':ManagerAccountId, 'rb':g.rest_base}
+				config = get_ManagerAccount0_instance(wildcards)
 				
-				# update the collection json file with new added resource
-				update_collections_json(path=collection_path, link=config['@odata.id'])
+				if request.data:
+					request_data = json.loads(request.data)
+					# Update the keys of payload in json file.
+					for key, value in request_data.items():
+						config[key] = value
+				
+				members.append(config)
+				member_ids.append({'@odata.id': config['@odata.id']})
 
-				config = remove_json_object(config, 'Password')
-				resp = config, 200
+				if not config['UserName'] or not config['Password'] or not config['RoleId']:
+					return "The authentication credentials are missing", 401
+				else:
+					if not os.path.exists(path):
+						os.mkdir(path)
+					else:
+						# This will execute when POST is called for more than one time for a resource
+						return "A creation request could not be completed because of conflict, 409", 409
+					with open(os.path.join(path, "index.json"), "w") as fd:
+						data = copy.deepcopy(config)
+						fd.write(json.dumps(data, indent=4, sort_keys=True))
+					
+					# update the collection json file with new added resource
+					update_collections_json(path=collection_path, link=config['@odata.id'])
 
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('ManagerAccount0API POST exit')
-		return resp
+					config = remove_json_object(config, 'Password')
+					resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('ManagerAccount0API POST exit')
+			return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ManagerAccountId):
 		logging.info('ManagerAccount0 put called')
-		path = os.path.join(self.root, 'AccountService/Accounts/{0}', 'index.json').format(ManagerAccountId)
-		put_object(path)
-		return self.get(ManagerAccountId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'AccountService/Accounts/{0}', 'index.json').format(ManagerAccountId)
+			put_object(path)
+			return self.get(ManagerAccountId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ManagerAccountId):
 		logging.info('ManagerAccount0 patch called')
-		path = os.path.join(self.root, 'AccountService/Accounts/{0}', 'index.json').format(ManagerAccountId)
-		patch_object(path)
-		return self.get(ManagerAccountId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'AccountService/Accounts/{0}', 'index.json').format(ManagerAccountId)
+			patch_object(path)
+			return self.get(ManagerAccountId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ManagerAccountId):
 		logging.info('ManagerAccount0 delete called')
-		path = create_path(self.root, 'AccountService/Accounts/{0}').format(ManagerAccountId)
-		base_path = create_path(self.root, 'AccountService/Accounts')
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'AccountService/Accounts/{0}').format(ManagerAccountId)
+			base_path = create_path(self.root, 'AccountService/Accounts')
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

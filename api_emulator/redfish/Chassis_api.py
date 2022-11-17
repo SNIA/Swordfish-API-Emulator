@@ -30,13 +30,15 @@
 # Resource implementation for - /redfish/v1/Chassis/{ChassisId}
 # Program name - Chassis_api.py
 
+import random
+import string
 import g
-import json, os, random, string
+import json, os
 import traceback
 import logging
 import jwt
 
-from flask import Flask, session, request
+from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
 from api_emulator.utils import check_authentication, get_sessionValidation_error, update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
@@ -51,12 +53,12 @@ class ChassisCollectionAPI(Resource):
 	def __init__(self, **kwargs):
 		logging.info('Chassis Collection init called')
 		self.root = PATHS['Root']
-		self.auth_mode = kwargs['auth_mode']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self):
 		logging.info('Chassis Collection get called')
-		msg, code = check_authentication(self.auth_mode)
+		msg, code = check_authentication(self.auth)
 		
 		if code == 200:
 			path = os.path.join(self.root, 'Chassis', 'index.json')
@@ -66,28 +68,27 @@ class ChassisCollectionAPI(Resource):
 
 	# HTTP POST Collection
 	def post(self):
-		logging.info('Chassis Collection post called')
+			logging.info('Chassis Collection post called')
 
-		path = create_path(self.root, 'Chassis')
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'Chassis')
+			path = create_path(self.root, 'Chassis')
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'Chassis')
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return ChassisAPI.post(self, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return ChassisAPI.post(self, os.path.basename(config['@odata.id']))
+				else:
+					return ChassisAPI.post(self, str(res))
 			else:
 				return ChassisAPI.post(self, str(res))
-		else:
-			return ChassisAPI.post(self, str(res))
 
 	# HTTP PUT Collection
 	def put(self):
 		logging.info('Chassis Collection put called')
-
-		msg, code = check_authentication(self.auth_mode)
+		msg, code = check_authentication(self.auth)
 		if code == 200:
 			path = os.path.join(self.root, 'Chassis', 'index.json')
 			put_object (path)
@@ -100,13 +101,13 @@ class ChassisAPI(Resource):
 	def __init__(self, **kwargs):
 		logging.info('Chassis init called')
 		self.root = PATHS['Root']
-		self.auth_mode = kwargs['auth_mode']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ChassisId):
 		logging.info('Chassis get called')
+		msg, code = check_authentication(self.auth)
 
-		msg, code = check_authentication(self.auth_mode)
 		if code == 200:
 			path = create_path(self.root, 'Chassis/{0}', 'index.json').format(ChassisId)
 			return get_json_data (path)
@@ -120,8 +121,8 @@ class ChassisAPI(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ChassisId):
 		logging.info('Chassis post called')
-		
-		msg, code = check_authentication(self.auth_mode)
+		msg, code = check_authentication(self.auth)
+
 		if code == 200:
 			path = create_path(self.root, 'Chassis/{0}').format(ChassisId)
 			collection_path = os.path.join(self.root, 'Chassis', 'index.json')
@@ -152,10 +153,10 @@ class ChassisAPI(Resource):
 	# HTTP PUT
 	def put(self, ChassisId):
 		logging.info('Chassis put called')
+		msg, code = check_authentication(self.auth)
 
-		msg, code = check_authentication(self.auth_mode)
-		if code == 200:		
-			path = os.path.join(self.root, 'Chassis/{0}', 'index.json').format(ChassisId)	
+		if code == 200:
+			path = os.path.join(self.root, 'Chassis/{0}', 'index.json').format(ChassisId)
 			put_object(path)
 			return self.get(ChassisId)
 		else:
@@ -164,25 +165,23 @@ class ChassisAPI(Resource):
 	# HTTP PATCH
 	def patch(self, ChassisId):
 		logging.info('Chassis patch called')
-		
-		msg, code = check_authentication(self.auth_mode)
+		msg, code = check_authentication(self.auth)
+
 		if code == 200:
 			path = os.path.join(self.root, 'Chassis/{0}', 'index.json').format(ChassisId)
 			patch_object(path)
 			return self.get(ChassisId)
 		else:
-			return msg, code
-
+				return msg, code
 
 	# HTTP DELETE
 	def delete(self, ChassisId):
 		logging.info('Chassis delete called')
+		msg, code = check_authentication(self.auth)
 
-		msg, code = check_authentication(self.auth_mode)
 		if code == 200:
 			path = create_path(self.root, 'Chassis/{0}').format(ChassisId)
 			base_path = create_path(self.root, 'Chassis')
 			return delete_object(path, base_path)
 		else:
 			return msg, code
-

@@ -35,6 +35,8 @@ from datetime import timedelta
 from email import message
 import json
 import string
+
+import requests
 from api_emulator.account_service import AccountService
 from api_emulator.redfish.templates.Session import get_Session_instance
 import g
@@ -43,7 +45,7 @@ import traceback
 import logging
 import random
 
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify, session, Response
 import jwt
 from flask_restful import Resource
 from .constants import *
@@ -58,13 +60,12 @@ class SessionCollectionAPI(Resource):
 	def __init__(self, **kwargs):
 		logging.info('Session Collection init called')
 		self.root = PATHS['Root']
-		self.auth_mode = kwargs['auth_mode']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self):
 		logging.info('Session Collection get called')
-		# if session.get('UserName') != None:
-		msg, code = check_authentication(self.auth_mode)
+		msg, code = check_authentication(self.auth)
 
 		if code == 200:
 			path = os.path.join(self.root, 'SessionService/Sessions', 'index.json')
@@ -85,10 +86,13 @@ class SessionCollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
+				print("Session Object : "+config['@odata.id'])
 				return SessionAPI.post(self, os.path.basename(config['@odata.id']))
 			else:
+				print("Session Object : "+str(res))
 				return SessionAPI.post(self, str(res))
 		else:
+			print("Session Object : "+str(res))
 			return SessionAPI.post(self, str(res))
 
 	# HTTP PUT
@@ -112,12 +116,12 @@ class SessionAPI(Resource):
 	def __init__(self, **kwargs):
 		logging.info('Session init called')
 		self.root = PATHS['Root']
-		self.auth_mode = kwargs['auth_mode']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, SessionId):
 		logging.info('Session get called')
-		msg, code = check_authentication(self.auth_mode)
+		msg, code = check_authentication(self.auth)
 
 		if code == 200:
 			path = create_path(self.root, 'SessionService/Sessions/{0}', 'index.json').format(SessionId)
@@ -187,7 +191,8 @@ class SessionAPI(Resource):
 			
 			g.app.permanent_session_lifetime = timedelta(seconds=sessionTimeout)
 			session['UserName'] = config['UserName']
-			print("Session has been started")
+			print(session.get('UserName'))
+			print("Session has been started with timeout : "+str(sessionTimeout))
 
     		# update the collection json file with new added resource
 			update_collections_json(path=collection_path, link=config['@odata.id'])
@@ -213,11 +218,16 @@ class SessionAPI(Resource):
 	# HTTP DELETE
 	def delete(self, SessionId):
 		logging.info('Session delete called')
+		print("Deleting object : "+SessionId)
+		msg, code = check_authentication(self.auth)
 
-		if session.get('UserName'):
-			session.pop('UserName', None)
-			print("Session Deleted")
+		if code == 200:
+			if session.get('UserName'):
+				session.pop('UserName', None)
+				print("Session Deleted")
 
-		path = create_path(self.root, 'SessionService/Sessions/{0}').format(SessionId)
-		base_path = create_path(self.root, 'SessionService/Sessions')
-		return delete_object(path, base_path)
+			path = create_path(self.root, 'SessionService/Sessions/{0}').format(SessionId)
+			base_path = create_path(self.root, 'SessionService/Sessions')
+			return delete_object(path, base_path)
+		else:
+			return msg, code

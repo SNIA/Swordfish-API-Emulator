@@ -1,9 +1,9 @@
 {
   "MODE": "Local",
-  "HTTPS": "Enable",
+  "HTTPS": "Disable",
   "TRAYS": [],
   "STATIC": "Disable",
   "SPEC": "Redfish",
   "MOCKUPFOLDERS": ["Mockups"],
-  "AUTHORIZATION_MODE": "Session"
+  "AUTHENTICATION": "Enable"
 }

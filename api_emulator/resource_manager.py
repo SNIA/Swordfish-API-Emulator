@@ -736,7 +736,7 @@ class ResourceManager(object):
     Defines ServiceRoot
     """
 
-    def __init__(self, rest_base, spec, mode, auth_mode, trays=None):
+    def __init__(self, rest_base, spec, mode, auth, trays=None):
         """
         Arguments:
             rest_base - Base URL for the REST interface
@@ -1225,8 +1225,8 @@ class ResourceManager(object):
         g.api.add_resource(Certificate65CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/KeyManagement/KMIPCertificates')
         g.api.add_resource(Certificate65API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/KeyManagement/KMIPCertificates/<string:CertificateId>')
 
-        g.api.add_resource(ChassisCollectionAPI, '/redfish/v1/Chassis', resource_class_kwargs={'auth_mode': auth_mode})
-        g.api.add_resource(ChassisAPI, '/redfish/v1/Chassis/<string:ChassisId>', resource_class_kwargs={'auth_mode': auth_mode})
+        g.api.add_resource(ChassisCollectionAPI, '/redfish/v1/Chassis', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(ChassisAPI, '/redfish/v1/Chassis/<string:ChassisId>', resource_class_kwargs={'auth': auth})
 
         g.api.add_resource(Circuit0CollectionAPI, '/redfish/v1/PowerEquipment/RackPDUs/<string:PowerDistributionId>/Mains')
         g.api.add_resource(Circuit0API, '/redfish/v1/PowerEquipment/RackPDUs/<string:PowerDistributionId>/Mains/<string:CircuitId>')
@@ -1459,14 +1459,14 @@ class ResourceManager(object):
         g.api.add_resource(LogEntry7CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/DeviceLog/Entries')
         g.api.add_resource(LogEntry7API, '/redfish/v1/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/DeviceLog/Entries/<string:LogEntryId>')
 
-        g.api.add_resource(ManagerAccount0CollectionAPI, '/redfish/v1/AccountService/Accounts')
-        g.api.add_resource(ManagerAccount0API, '/redfish/v1/AccountService/Accounts/<string:ManagerAccountId>')
+        g.api.add_resource(ManagerAccount0CollectionAPI, '/redfish/v1/AccountService/Accounts', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(ManagerAccount0API, '/redfish/v1/AccountService/Accounts/<string:ManagerAccountId>', resource_class_kwargs={'auth': auth})
 
         g.api.add_resource(ManagerAccount1CollectionAPI, '/redfish/v1/Managers/<string:ManagerId>/RemoteAccountService/Accounts')
         g.api.add_resource(ManagerAccount1API, '/redfish/v1/Managers/<string:ManagerId>/RemoteAccountService/Accounts/<string:ManagerAccountId>')
 
-        g.api.add_resource(ManagerCollectionAPI, '/redfish/v1/Managers')
-        g.api.add_resource(ManagerAPI, '/redfish/v1/Managers/<string:ManagerId>')
+        g.api.add_resource(ManagerCollectionAPI, '/redfish/v1/Managers', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(ManagerAPI, '/redfish/v1/Managers/<string:ManagerId>', resource_class_kwargs={'auth': auth})
 
         g.api.add_resource(MediaControllerCollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/MediaControllers')
         g.api.add_resource(MediaControllerAPI, '/redfish/v1/Chassis/<string:ChassisId>/MediaControllers/<string:MediaControllerId>')
@@ -1753,8 +1753,8 @@ class ResourceManager(object):
         g.api.add_resource(ResourceBlock1CollectionAPI, '/redfish/v1/ResourceBlocks')
         g.api.add_resource(ResourceBlock1API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>')
 
-        g.api.add_resource(Role0CollectionAPI, '/redfish/v1/AccountService/Roles')
-        g.api.add_resource(Role0API, '/redfish/v1/AccountService/Roles/<string:RoleId>')
+        g.api.add_resource(Role0CollectionAPI, '/redfish/v1/AccountService/Roles', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Role0API, '/redfish/v1/AccountService/Roles/<string:RoleId>', resource_class_kwargs={'auth': auth})
 
         g.api.add_resource(Role1CollectionAPI, '/redfish/v1/Managers/<string:ManagerId>/RemoteAccountService/Roles')
         g.api.add_resource(Role1API, '/redfish/v1/Managers/<string:ManagerId>/RemoteAccountService/Roles/<string:RoleId>')
@@ -1993,7 +1993,7 @@ class ResourceManager(object):
         g.api.add_resource(Zone1CollectionAPI, '/redfish/v1/CompositionService/ResourceZones')
         g.api.add_resource(Zone1API, '/redfish/v1/CompositionService/ResourceZones/<string:ZoneId>')
 
-        g.api.add_resource(AccountService0API, '/redfish/v1/AccountService')
+        g.api.add_resource(AccountService0API, '/redfish/v1/AccountService', resource_class_kwargs={'auth': auth})
 
         g.api.add_resource(AccountService1API, '/redfish/v1/Managers/<string:ManagerId>/RemoteAccountService')
 
@@ -2252,7 +2252,7 @@ class ResourceManager(object):
 
         g.api.add_resource(ManagerDiagnosticDataAPI, '/redfish/v1/Managers/<string:ManagerId>/ManagerDiagnosticData')
 
-        g.api.add_resource(ManagerNetworkProtocolAPI, '/redfish/v1/Managers/<string:ManagerId>/NetworkProtocol')
+        g.api.add_resource(ManagerNetworkProtocolAPI, '/redfish/v1/Managers/<string:ManagerId>/NetworkProtocol', resource_class_kwargs={'auth': auth})
 
         g.api.add_resource(MemoryMetrics0API, '/redfish/v1/Systems/<string:ComputerSystemId>/MemorySummary/MemoryMetrics')
 
@@ -2407,10 +2407,10 @@ class ResourceManager(object):
 
         g.api.add_resource(ServiceRoot1API, '/redfish/v1/')
 
-        g.api.add_resource(SessionServiceAPI, '/redfish/v1/SessionService')
+        g.api.add_resource(SessionServiceAPI, '/redfish/v1/SessionService', resource_class_kwargs={'auth': auth})
 
-        g.api.add_resource(SessionCollectionAPI, '/redfish/v1/SessionService/Sessions', resource_class_kwargs={'auth_mode': auth_mode})
-        g.api.add_resource(SessionAPI, '/redfish/v1/SessionService/Sessions/<string:SessionId>', resource_class_kwargs={'auth_mode': auth_mode})
+        g.api.add_resource(SessionCollectionAPI, '/redfish/v1/SessionService/Sessions', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(SessionAPI, '/redfish/v1/SessionService/Sessions/<string:SessionId>', resource_class_kwargs={'auth': auth})
 
         g.api.add_resource(SwitchMetricsAPI, '/redfish/v1/Fabrics/<string:FabricId>/Switches/<string:SwitchId>/SwitchMetrics')
 

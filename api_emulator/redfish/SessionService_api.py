@@ -35,10 +35,10 @@ import json, os
 import traceback
 import logging
 
-from flask import Flask, request
+from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, get_sessionValidation_error, update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
@@ -49,15 +49,21 @@ INTERNAL_ERROR = 500
 
 # SessionService API
 class SessionServiceAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('SessionService init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self):
 		logging.info('SessionService get called')
-		path = os.path.join(self.root, 'SessionService', 'index.json')
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'SessionService', 'index.json')
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	def post(self):

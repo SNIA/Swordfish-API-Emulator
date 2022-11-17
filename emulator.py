@@ -34,22 +34,24 @@
 #
 # Redfish Interface Emulator - main
 #   python emulator.py
-
+s
 import os
 import json
 import argparse
 import traceback
 import logging
 import copy
+from urllib import response
+import flask_login
 import jwt
-
+import requests
 
 logging.basicConfig(level=logging.DEBUG)
 
 import g
 
 # Flask Imports
-from flask import Flask, request, make_response, render_template, session
+from flask import Flask, request, make_response, render_template
 from flask_restful import reqparse, Api, Resource
 
 # Emulator Imports
@@ -60,7 +62,6 @@ from api_emulator.exceptions import CreatePooledNodeError, ConfigurationError, R
 from api_emulator.resource_dictionary import ResourceDictionary
 from api_emulator.redfish.ServiceRoot1_api import *
 from api_emulator.utils import *
-from api_emulator.redfish.Session_api import SessionAPI
 
 # from infragen.populate import populate
 
@@ -127,7 +128,7 @@ def init_resource_manager():
         resource_manager = StaticResourceManager(REST_BASE, SPEC,MODE,TRAYS)
     else:
         print (' * Using dynamic emulation')
-        resource_manager = ResourceManager(REST_BASE, SPEC,MODE,AUTHENTICATION_MODE,TRAYS)
+        resource_manager = ResourceManager(REST_BASE, SPEC,MODE,AUTHENTICATION,TRAYS)
 
 
     # If POPULATE is specified in emulator-config.json, INFRAGEN is called to populate emulator (i.e. with Chassi, CS, Resource Blocks, etc) according to specified file
@@ -178,10 +179,9 @@ def output_json(data, code, headers=None):
     if 'UserName' not in data or 'Password' not in data:
         resp = make_response(json.dumps(data, indent=4), code)
         resp.headers.extend(headers or {})
-        resp.headers['OData-Version'] = 4.0
 
-        # if session timed out then delete the cookie as well
-        if session.get('UserName') == None and request.cookies:
+        #if session timed out then delete the cookie as well
+        if (session.get('UserName') == None or location == None) and request.cookies:
             print("deleting cookie")
             resp.delete_cookie("session")
             location = None
@@ -196,8 +196,15 @@ def output_json(data, code, headers=None):
         resp.headers.extend(headers or {})
         resp.headers['Location'] = location
         resp.headers['X-Auth-Token'] = token
-        resp.headers['OData-Version'] = 4.0
+        resp.headers['Set-Cookie'] = {'session': 'Test cookie'}
+    
+    odata_version = request.headers.get('OData-Version')
+    if odata_version == '4.0' or odata_version == '' or odata_version == None:
+        pass
+    else:
+        return make_response('Unsupported OData Version in request header', 412)
 
+    header_handler(data,code,resp)
     return resp
 
 @g.app.before_request
@@ -205,13 +212,14 @@ def before_request():
     session.modified = True
 
     global location
-    if session.get('UserName') == None and location != None:
+    print('UserName' in session)
+    print(location)
+    if 'UserName' not in session and location != None:
         split_path = os.path.split(location)
         path = location.replace('/redfish/v1', 'Resources')
         delete_object(path, split_path[0].replace('/redfish/v1', 'Resources'))
-        print("location deleted")
+        print("location deleted : "+location)
         location = None
-
 
 # The following code provides a mechanism for the Redfish client to either
 #    - Emulator Service Root
@@ -418,7 +426,7 @@ def index():
 
 @g.app.route('/redfish')
 def serviceInfo():
-    return render_template('service.json')
+    return json.loads(render_template('service.json'))
 
 @g.app.route('/browse.html')
 def browse():
@@ -522,7 +530,7 @@ def main():
     global TRAYS
     global MOCKUPFOLDERS
     global SPEC
-    global AUTHENTICATION_MODE
+    global AUTHENTICATION
 
     # Open the emulator configuration file
     with open(CONFIG, 'r') as f:
@@ -532,14 +540,13 @@ def main():
     assert HTTPS.lower() in ['enable', 'disable'], 'Unknown HTTPS setting:' + HTTPS
 
     # implementation of different authentication methods
-    AUTHENTICATION_MODE = config['AUTHORIZATION_MODE']
-    assert AUTHENTICATION_MODE.lower() in ['none', 'basic', 'session'], 'Unknown authentication mode:' + AUTHENTICATION_MODE
+    AUTHENTICATION = config['AUTHENTICATION']
+    assert AUTHENTICATION.lower() in ['disable', 'enable'], 'Unknown authentication mode:' + AUTHENTICATION
 
-    if (AUTHENTICATION_MODE == 'Basic' or AUTHENTICATION_MODE == 'Session') and (HTTPS != 'Enable'):
+    if (AUTHENTICATION == 'Enable') and (HTTPS != 'Enable'):
         HTTPS = 'Enable'
     else:
         pass
-
 
     try:
         TRAYS = config['TRAYS']

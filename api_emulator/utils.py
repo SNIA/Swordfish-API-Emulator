@@ -151,7 +151,8 @@ def get_json_data(path):
     except Exception as e:
         traceback.print_exc()
         return {"error": "Unable to read file because of the following error::{}".format(e)}, 404
-    return jsonify(data)
+    # return jsonify(data)
+    return data
 
     # For POST Singleton API:
 def create_and_patch_object (config, members, member_ids, path, collection_path):
@@ -242,6 +243,11 @@ def patch_object(path):
         # If input body data, then update properties
         if request.data:
             request_data = json.loads(request.data)
+
+            if 'AssignedPrivileges' in request_data:
+                if request_data['AssignedPrivileges'] != data['AssignedPrivileges']:
+                    return 400
+        
             # Update the keys of payload in json file.
             for key, value in request_data.items():
                 data[key] = value
@@ -254,7 +260,7 @@ def patch_object(path):
     except Exception as e:
         return {"error": "Unable to read file because of the following error:{}".format(e)}, 404
 
-    return True
+    return 200
 
 def put_object(path):
     if not os.path.exists(path):
@@ -317,6 +323,7 @@ def remove_json_object (config, property_id):
 def check_session_authentication():
     if 'X-Auth-Token' in request.headers:
         jwt_token = request.headers.get('X-Auth-Token')
+        # print(jwt_token)
         if jwt_token:
             try:
                 payload = jwt.decode(jwt_token, g.app.config['SECRET_KEY'], algorithms=["HS256"])
@@ -328,8 +335,7 @@ def check_session_authentication():
     else:
         return "Missing Header", 403
     
-def check_basic_authentication():
-    auth = request.authorization
+def check_basic_authentication(auth):
     as_obj = AccountService()
     actual_password = as_obj.getPassword(auth.username)
     if auth and auth.password == actual_password:
@@ -338,40 +344,68 @@ def check_basic_authentication():
         return "Could not verify your login", 403
 
 def check_authentication(mode):
-    if mode == 'None':
+    if mode == 'Disable':
         pass
-    elif mode == 'Basic':
-        msg, code = check_basic_authentication()
-        if code == 200:
-            pass
-        else:
-            return msg, code
-    elif mode =='Session':
-        if session.get('UserName') != None:
+    elif mode == 'Enable':
+        auth = request.authorization
+        if auth:
+            print("Autherization data available")
+            msg, code = check_basic_authentication(auth)
+            if code == 200:
+                pass
+            else:
+                print(msg)
+                return msg, code
+        if session.get('UserName'):
             msg, code = check_session_authentication()
             if code == 200:
                 pass
             else:
+                print(msg)
                 return msg, code
-        else:
+        if not auth and session.get('UserName') == None:
             return get_sessionValidation_error(), 403
-    return "Success..", 200        
+    return "Success..", 200
 
 def get_sessionValidation_error():
     error_messgae = {
         "error": {
-            "code": "Base.1.14.0.NoValidSession",
-            "message": "There is no valid session established with the implementation.",
+            "code": "Base.1.14.0.ResourceAtUriUnauthorized",
+            "message": "While accessing the resource at '%1', the service received an authorization error '%2'.",
             "@Message.ExtendedInfo": [
                 {
                     "@odata.type": "#Message.v1_1_1.Message",
-                    "MessageId": "Base.1.14.0.NoValidSession",
-                    "Message": "There is no valid session established with the implementation.",
+                    "MessageId": "Base.1.14.0.ResourceAtUriUnauthorized",
+                    "Message": "While accessing the resource at '%1', the service received an authorization error '%2'.",
                     "Severity": "Critical",
                     "MessageSeverity": "Critical",
-                    "Resolution": "Establish a session before attempting any operations."
+                    "Resolution": "Ensure that the appropriate access is provided for the service in order for it to access the URI."
                 }
             ]
         }
     }
     return error_messgae
+
+def header_handler(data,code,resp):
+    resp.headers['OData-Version'] = 4.0
+    resp.headers['Cache-Control'] = 'No-store'
+    if '@odata.id' in data:
+        resp.headers['Link'] = data['@odata.id']+'; rel=describedby'
+
+    if code == 405:
+        resp.headers['Allow'] = 'GET, HEAD'
+    else:
+        if '@odata.type' in data:
+            resource_type = data['@odata.type'].lower()
+            if 'collection' in resource_type:
+                if 'session' in resource_type:
+                    resp.headers['Allow'] = 'GET, POST'
+                else:
+                    resp.headers['Allow'] = 'GET, POST, PUT'
+            else:
+                if 'session' in resource_type:
+                    resp.headers['Allow'] = 'GET, POST, DELETE'
+                elif ('serviceroot' or 'registry' or 'protocol' or 'service' or 'Thermal') in resource_type:
+                    resp.headers['Allow'] = 'GET'
+                else:
+                    resp.headers['Allow'] = 'GET, POST, PUT, PATCH, DELETE'

@@ -73,11 +73,11 @@ class NetworkAdapterCollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return NetworkAdapterAPI.post(self, os.path.basename(config['@odata.id']))
+				return NetworkAdapterAPI.post(self, ChassisId, os.path.basename(config['@odata.id']))
 			else:
-				return NetworkAdapterAPI.post(self, str(res))
+				return NetworkAdapterAPI.post(self, ChassisId, str(res))
 		else:
-			return NetworkAdapterAPI.post(self, str(res))
+			return NetworkAdapterAPI.post(self, ChassisId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ChassisId):

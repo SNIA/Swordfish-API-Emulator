@@ -73,11 +73,11 @@ class Storage5CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Storage5API.post(self, os.path.basename(config['@odata.id']))
+				return Storage5API.post(self, ResourceBlockId, ComputerSystemId, os.path.basename(config['@odata.id']))
 			else:
-				return Storage5API.post(self, str(res))
+				return Storage5API.post(self, ResourceBlockId, ComputerSystemId, str(res))
 		else:
-			return Storage5API.post(self, str(res))
+			return Storage5API.post(self, ResourceBlockId, ComputerSystemId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, ComputerSystemId):

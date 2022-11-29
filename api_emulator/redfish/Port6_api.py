@@ -73,11 +73,11 @@ class Port6CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Port6API.post(self, os.path.basename(config['@odata.id']))
+				return Port6API.post(self, ComputerSystemId, ProcessorId, os.path.basename(config['@odata.id']))
 			else:
-				return Port6API.post(self, str(res))
+				return Port6API.post(self, ComputerSystemId, ProcessorId, str(res))
 		else:
-			return Port6API.post(self, str(res))
+			return Port6API.post(self, ComputerSystemId, ProcessorId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId, ProcessorId):

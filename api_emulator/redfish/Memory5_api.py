@@ -73,11 +73,11 @@ class Memory5CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Memory5API.post(self, os.path.basename(config['@odata.id']))
+				return Memory5API.post(self, ResourceBlockId, ComputerSystemId, os.path.basename(config['@odata.id']))
 			else:
-				return Memory5API.post(self, str(res))
+				return Memory5API.post(self, ResourceBlockId, ComputerSystemId, str(res))
 		else:
-			return Memory5API.post(self, str(res))
+			return Memory5API.post(self, ResourceBlockId, ComputerSystemId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, ComputerSystemId):

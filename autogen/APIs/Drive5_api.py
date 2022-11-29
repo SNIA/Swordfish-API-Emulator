@@ -73,11 +73,11 @@ class Drive5CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Drive5API.post(self, os.path.basename(config['@odata.id']))
+				return Drive5API.post(self, ResourceBlockId, StorageId, os.path.basename(config['@odata.id']))
 			else:
-				return Drive5API.post(self, str(res))
+				return Drive5API.post(self, ResourceBlockId, StorageId, str(res))
 		else:
-			return Drive5API.post(self, str(res))
+			return Drive5API.post(self, ResourceBlockId, StorageId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, StorageId):

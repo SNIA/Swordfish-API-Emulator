@@ -73,11 +73,11 @@ class AccelerationFunction1CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return AccelerationFunction1API.post(self, os.path.basename(config['@odata.id']))
+				return AccelerationFunction1API.post(self, ResourceBlockId, ProcessorId, os.path.basename(config['@odata.id']))
 			else:
-				return AccelerationFunction1API.post(self, str(res))
+				return AccelerationFunction1API.post(self, ResourceBlockId, ProcessorId, str(res))
 		else:
-			return AccelerationFunction1API.post(self, str(res))
+			return AccelerationFunction1API.post(self, ResourceBlockId, ProcessorId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, ProcessorId):

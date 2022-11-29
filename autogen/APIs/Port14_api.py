@@ -73,11 +73,11 @@ class Port14CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Port14API.post(self, os.path.basename(config['@odata.id']))
+				return Port14API.post(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, os.path.basename(config['@odata.id']))
 			else:
-				return Port14API.post(self, str(res))
+				return Port14API.post(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, str(res))
 		else:
-			return Port14API.post(self, str(res))
+			return Port14API.post(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId):

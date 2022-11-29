@@ -73,11 +73,11 @@ class VLanNetworkInterface5CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return VLanNetworkInterface5API.post(self, os.path.basename(config['@odata.id']))
+				return VLanNetworkInterface5API.post(self, ResourceBlockId, EthernetInterfaceId, os.path.basename(config['@odata.id']))
 			else:
-				return VLanNetworkInterface5API.post(self, str(res))
+				return VLanNetworkInterface5API.post(self, ResourceBlockId, EthernetInterfaceId, str(res))
 		else:
-			return VLanNetworkInterface5API.post(self, str(res))
+			return VLanNetworkInterface5API.post(self, ResourceBlockId, EthernetInterfaceId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, EthernetInterfaceId):

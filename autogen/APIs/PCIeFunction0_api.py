@@ -73,11 +73,11 @@ class PCIeFunction0CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return PCIeFunction0API.post(self, os.path.basename(config['@odata.id']))
+				return PCIeFunction0API.post(self, ChassisId, PCIeDeviceId, os.path.basename(config['@odata.id']))
 			else:
-				return PCIeFunction0API.post(self, str(res))
+				return PCIeFunction0API.post(self, ChassisId, PCIeDeviceId, str(res))
 		else:
-			return PCIeFunction0API.post(self, str(res))
+			return PCIeFunction0API.post(self, ChassisId, PCIeDeviceId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ChassisId, PCIeDeviceId):

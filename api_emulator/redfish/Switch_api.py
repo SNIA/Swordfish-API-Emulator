@@ -73,11 +73,11 @@ class SwitchCollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return SwitchAPI.post(self, os.path.basename(config['@odata.id']))
+				return SwitchAPI.post(self, FabricId, os.path.basename(config['@odata.id']))
 			else:
-				return SwitchAPI.post(self, str(res))
+				return SwitchAPI.post(self, FabricId, str(res))
 		else:
-			return SwitchAPI.post(self, str(res))
+			return SwitchAPI.post(self, FabricId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, FabricId):

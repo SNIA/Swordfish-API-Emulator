@@ -73,11 +73,11 @@ class EthernetInterface2CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return EthernetInterface2API.post(self, os.path.basename(config['@odata.id']))
+				return EthernetInterface2API.post(self, ResourceBlockId, os.path.basename(config['@odata.id']))
 			else:
-				return EthernetInterface2API.post(self, str(res))
+				return EthernetInterface2API.post(self, ResourceBlockId, str(res))
 		else:
-			return EthernetInterface2API.post(self, str(res))
+			return EthernetInterface2API.post(self, ResourceBlockId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId):

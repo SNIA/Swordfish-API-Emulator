@@ -73,11 +73,11 @@ class StoragePool17CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return StoragePool17API.post(self, os.path.basename(config['@odata.id']))
+				return StoragePool17API.post(self, ComputerSystemId, StorageId, FileSystemId, CapacitySourceId, os.path.basename(config['@odata.id']))
 			else:
-				return StoragePool17API.post(self, str(res))
+				return StoragePool17API.post(self, ComputerSystemId, StorageId, FileSystemId, CapacitySourceId, str(res))
 		else:
-			return StoragePool17API.post(self, str(res))
+			return StoragePool17API.post(self, ComputerSystemId, StorageId, FileSystemId, CapacitySourceId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId, StorageId, FileSystemId, CapacitySourceId):

@@ -73,11 +73,11 @@ class Signature0CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Signature0API.post(self, os.path.basename(config['@odata.id']))
+				return Signature0API.post(self, ComputerSystemId, DatabaseId, os.path.basename(config['@odata.id']))
 			else:
-				return Signature0API.post(self, str(res))
+				return Signature0API.post(self, ComputerSystemId, DatabaseId, str(res))
 		else:
-			return Signature0API.post(self, str(res))
+			return Signature0API.post(self, ComputerSystemId, DatabaseId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId, DatabaseId):

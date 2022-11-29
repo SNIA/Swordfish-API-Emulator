@@ -73,11 +73,11 @@ class ConnectionCollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return ConnectionAPI.post(self, os.path.basename(config['@odata.id']))
+				return ConnectionAPI.post(self, FabricId, os.path.basename(config['@odata.id']))
 			else:
-				return ConnectionAPI.post(self, str(res))
+				return ConnectionAPI.post(self, FabricId, str(res))
 		else:
-			return ConnectionAPI.post(self, str(res))
+			return ConnectionAPI.post(self, FabricId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, FabricId):

@@ -73,11 +73,11 @@ class ComputerSystem1CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return ComputerSystem1API.post(self, os.path.basename(config['@odata.id']))
+				return ComputerSystem1API.post(self, ResourceBlockId, os.path.basename(config['@odata.id']))
 			else:
-				return ComputerSystem1API.post(self, str(res))
+				return ComputerSystem1API.post(self, ResourceBlockId, str(res))
 		else:
-			return ComputerSystem1API.post(self, str(res))
+			return ComputerSystem1API.post(self, ResourceBlockId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId):

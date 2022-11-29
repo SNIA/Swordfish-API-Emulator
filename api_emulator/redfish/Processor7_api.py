@@ -73,11 +73,11 @@ class Processor7CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Processor7API.post(self, os.path.basename(config['@odata.id']))
+				return Processor7API.post(self, ResourceBlockId, ComputerSystemId, ProcessorId, os.path.basename(config['@odata.id']))
 			else:
-				return Processor7API.post(self, str(res))
+				return Processor7API.post(self, ResourceBlockId, ComputerSystemId, ProcessorId, str(res))
 		else:
-			return Processor7API.post(self, str(res))
+			return Processor7API.post(self, ResourceBlockId, ComputerSystemId, ProcessorId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, ComputerSystemId, ProcessorId):

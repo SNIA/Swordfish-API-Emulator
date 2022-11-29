@@ -73,11 +73,11 @@ class FabricAdapter1CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return FabricAdapter1API.post(self, os.path.basename(config['@odata.id']))
+				return FabricAdapter1API.post(self, ChassisId, os.path.basename(config['@odata.id']))
 			else:
-				return FabricAdapter1API.post(self, str(res))
+				return FabricAdapter1API.post(self, ChassisId, str(res))
 		else:
-			return FabricAdapter1API.post(self, str(res))
+			return FabricAdapter1API.post(self, ChassisId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ChassisId):

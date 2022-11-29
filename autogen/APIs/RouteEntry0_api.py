@@ -73,11 +73,11 @@ class RouteEntry0CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return RouteEntry0API.post(self, os.path.basename(config['@odata.id']))
+				return RouteEntry0API.post(self, ChassisId, FabricAdapterId, PortId, os.path.basename(config['@odata.id']))
 			else:
-				return RouteEntry0API.post(self, str(res))
+				return RouteEntry0API.post(self, ChassisId, FabricAdapterId, PortId, str(res))
 		else:
-			return RouteEntry0API.post(self, str(res))
+			return RouteEntry0API.post(self, ChassisId, FabricAdapterId, PortId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ChassisId, FabricAdapterId, PortId):

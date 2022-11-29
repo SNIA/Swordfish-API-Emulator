@@ -73,11 +73,11 @@ class EndpointGroup2CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return EndpointGroup2API.post(self, os.path.basename(config['@odata.id']))
+				return EndpointGroup2API.post(self, StorageServiceId, os.path.basename(config['@odata.id']))
 			else:
-				return EndpointGroup2API.post(self, str(res))
+				return EndpointGroup2API.post(self, StorageServiceId, str(res))
 		else:
-			return EndpointGroup2API.post(self, str(res))
+			return EndpointGroup2API.post(self, StorageServiceId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, StorageServiceId):

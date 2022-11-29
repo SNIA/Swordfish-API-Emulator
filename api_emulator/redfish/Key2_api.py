@@ -73,11 +73,11 @@ class Key2CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Key2API.post(self, os.path.basename(config['@odata.id']))
+				return Key2API.post(self, ManagerId, ManagerAccountId, os.path.basename(config['@odata.id']))
 			else:
-				return Key2API.post(self, str(res))
+				return Key2API.post(self, ManagerId, ManagerAccountId, str(res))
 		else:
-			return Key2API.post(self, str(res))
+			return Key2API.post(self, ManagerId, ManagerAccountId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ManagerId, ManagerAccountId):

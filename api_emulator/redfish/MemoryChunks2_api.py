@@ -73,11 +73,11 @@ class MemoryChunks2CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return MemoryChunks2API.post(self, os.path.basename(config['@odata.id']))
+				return MemoryChunks2API.post(self, ResourceBlockId, ComputerSystemId, MemoryDomainId, os.path.basename(config['@odata.id']))
 			else:
-				return MemoryChunks2API.post(self, str(res))
+				return MemoryChunks2API.post(self, ResourceBlockId, ComputerSystemId, MemoryDomainId, str(res))
 		else:
-			return MemoryChunks2API.post(self, str(res))
+			return MemoryChunks2API.post(self, ResourceBlockId, ComputerSystemId, MemoryDomainId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, ComputerSystemId, MemoryDomainId):

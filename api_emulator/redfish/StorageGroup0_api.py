@@ -73,11 +73,11 @@ class StorageGroup0CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return StorageGroup0API.post(self, os.path.basename(config['@odata.id']))
+				return StorageGroup0API.post(self, StorageServiceId, os.path.basename(config['@odata.id']))
 			else:
-				return StorageGroup0API.post(self, str(res))
+				return StorageGroup0API.post(self, StorageServiceId, str(res))
 		else:
-			return StorageGroup0API.post(self, str(res))
+			return StorageGroup0API.post(self, StorageServiceId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, StorageServiceId):

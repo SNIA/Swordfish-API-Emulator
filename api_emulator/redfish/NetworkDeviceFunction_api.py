@@ -73,11 +73,11 @@ class NetworkDeviceFunctionCollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return NetworkDeviceFunctionAPI.post(self, os.path.basename(config['@odata.id']))
+				return NetworkDeviceFunctionAPI.post(self, ChassisId, NetworkAdapterId, os.path.basename(config['@odata.id']))
 			else:
-				return NetworkDeviceFunctionAPI.post(self, str(res))
+				return NetworkDeviceFunctionAPI.post(self, ChassisId, NetworkAdapterId, str(res))
 		else:
-			return NetworkDeviceFunctionAPI.post(self, str(res))
+			return NetworkDeviceFunctionAPI.post(self, ChassisId, NetworkAdapterId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ChassisId, NetworkAdapterId):

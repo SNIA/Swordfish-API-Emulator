@@ -73,11 +73,11 @@ class FileShare1CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return FileShare1API.post(self, os.path.basename(config['@odata.id']))
+				return FileShare1API.post(self, ComputerSystemsId, StorageId, FileSystemsId, os.path.basename(config['@odata.id']))
 			else:
-				return FileShare1API.post(self, str(res))
+				return FileShare1API.post(self, ComputerSystemsId, StorageId, FileSystemsId, str(res))
 		else:
-			return FileShare1API.post(self, str(res))
+			return FileShare1API.post(self, ComputerSystemsId, StorageId, FileSystemsId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemsId, StorageId, FileSystemsId):

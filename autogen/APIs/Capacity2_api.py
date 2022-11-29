@@ -73,11 +73,11 @@ class Capacity2CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Capacity2API.post(self, os.path.basename(config['@odata.id']))
+				return Capacity2API.post(self, StorageServiceId, FileSystemId, os.path.basename(config['@odata.id']))
 			else:
-				return Capacity2API.post(self, str(res))
+				return Capacity2API.post(self, StorageServiceId, FileSystemId, str(res))
 		else:
-			return Capacity2API.post(self, str(res))
+			return Capacity2API.post(self, StorageServiceId, FileSystemId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, StorageServiceId, FileSystemId):

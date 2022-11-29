@@ -73,11 +73,11 @@ class ConsistencyGroup1CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return ConsistencyGroup1API.post(self, os.path.basename(config['@odata.id']))
+				return ConsistencyGroup1API.post(self, ComputerSystemId, StorageId, os.path.basename(config['@odata.id']))
 			else:
-				return ConsistencyGroup1API.post(self, str(res))
+				return ConsistencyGroup1API.post(self, ComputerSystemId, StorageId, str(res))
 		else:
-			return ConsistencyGroup1API.post(self, str(res))
+			return ConsistencyGroup1API.post(self, ComputerSystemId, StorageId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId, StorageId):

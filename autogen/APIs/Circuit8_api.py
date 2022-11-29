@@ -73,11 +73,11 @@ class Circuit8CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Circuit8API.post(self, os.path.basename(config['@odata.id']))
+				return Circuit8API.post(self, PowerDistributionId, os.path.basename(config['@odata.id']))
 			else:
-				return Circuit8API.post(self, str(res))
+				return Circuit8API.post(self, PowerDistributionId, str(res))
 		else:
-			return Circuit8API.post(self, str(res))
+			return Circuit8API.post(self, PowerDistributionId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, PowerDistributionId):

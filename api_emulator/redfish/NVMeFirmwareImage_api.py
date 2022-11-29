@@ -73,11 +73,11 @@ class NVMeFirmwareImageCollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return NVMeFirmwareImageAPI.post(self, os.path.basename(config['@odata.id']))
+				return NVMeFirmwareImageAPI.post(self, DomainId, os.path.basename(config['@odata.id']))
 			else:
-				return NVMeFirmwareImageAPI.post(self, str(res))
+				return NVMeFirmwareImageAPI.post(self, DomainId, str(res))
 		else:
-			return NVMeFirmwareImageAPI.post(self, str(res))
+			return NVMeFirmwareImageAPI.post(self, DomainId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, DomainId):

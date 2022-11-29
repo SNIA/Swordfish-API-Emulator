@@ -73,11 +73,11 @@ class Control3CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Control3API.post(self, os.path.basename(config['@odata.id']))
+				return Control3API.post(self, PowerDistributionId, os.path.basename(config['@odata.id']))
 			else:
-				return Control3API.post(self, str(res))
+				return Control3API.post(self, PowerDistributionId, str(res))
 		else:
-			return Control3API.post(self, str(res))
+			return Control3API.post(self, PowerDistributionId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, PowerDistributionId):

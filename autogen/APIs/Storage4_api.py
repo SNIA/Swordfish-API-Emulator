@@ -73,11 +73,11 @@ class Storage4CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Storage4API.post(self, os.path.basename(config['@odata.id']))
+				return Storage4API.post(self, ResourceBlockId, os.path.basename(config['@odata.id']))
 			else:
-				return Storage4API.post(self, str(res))
+				return Storage4API.post(self, ResourceBlockId, str(res))
 		else:
-			return Storage4API.post(self, str(res))
+			return Storage4API.post(self, ResourceBlockId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId):

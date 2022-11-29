@@ -73,11 +73,11 @@ class Volume3CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Volume3API.post(self, os.path.basename(config['@odata.id']))
+				return Volume3API.post(self, ResourceBlockId, ComputerSystemId, StorageId, os.path.basename(config['@odata.id']))
 			else:
-				return Volume3API.post(self, str(res))
+				return Volume3API.post(self, ResourceBlockId, ComputerSystemId, StorageId, str(res))
 		else:
-			return Volume3API.post(self, str(res))
+			return Volume3API.post(self, ResourceBlockId, ComputerSystemId, StorageId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, ComputerSystemId, StorageId):

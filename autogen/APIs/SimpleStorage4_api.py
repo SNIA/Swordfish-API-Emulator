@@ -73,11 +73,11 @@ class SimpleStorage4CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return SimpleStorage4API.post(self, os.path.basename(config['@odata.id']))
+				return SimpleStorage4API.post(self, ResourceBlockId, ComputerSystemId, os.path.basename(config['@odata.id']))
 			else:
-				return SimpleStorage4API.post(self, str(res))
+				return SimpleStorage4API.post(self, ResourceBlockId, ComputerSystemId, str(res))
 		else:
-			return SimpleStorage4API.post(self, str(res))
+			return SimpleStorage4API.post(self, ResourceBlockId, ComputerSystemId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, ComputerSystemId):

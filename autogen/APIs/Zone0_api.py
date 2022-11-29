@@ -73,11 +73,11 @@ class Zone0CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Zone0API.post(self, os.path.basename(config['@odata.id']))
+				return Zone0API.post(self, FabricId, os.path.basename(config['@odata.id']))
 			else:
-				return Zone0API.post(self, str(res))
+				return Zone0API.post(self, FabricId, str(res))
 		else:
-			return Zone0API.post(self, str(res))
+			return Zone0API.post(self, FabricId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, FabricId):

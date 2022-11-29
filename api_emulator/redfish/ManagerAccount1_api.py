@@ -73,11 +73,11 @@ class ManagerAccount1CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return ManagerAccount1API.post(self, os.path.basename(config['@odata.id']))
+				return ManagerAccount1API.post(self, ManagerId, os.path.basename(config['@odata.id']))
 			else:
-				return ManagerAccount1API.post(self, str(res))
+				return ManagerAccount1API.post(self, ManagerId, str(res))
 		else:
-			return ManagerAccount1API.post(self, str(res))
+			return ManagerAccount1API.post(self, ManagerId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ManagerId):

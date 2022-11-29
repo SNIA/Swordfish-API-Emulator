@@ -73,11 +73,11 @@ class BootOption2CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return BootOption2API.post(self, os.path.basename(config['@odata.id']))
+				return BootOption2API.post(self, ResourceBlockId, ComputerSystemId, os.path.basename(config['@odata.id']))
 			else:
-				return BootOption2API.post(self, str(res))
+				return BootOption2API.post(self, ResourceBlockId, ComputerSystemId, str(res))
 		else:
-			return BootOption2API.post(self, str(res))
+			return BootOption2API.post(self, ResourceBlockId, ComputerSystemId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, ComputerSystemId):

@@ -73,11 +73,11 @@ class AllowDeny4CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return AllowDeny4API.post(self, os.path.basename(config['@odata.id']))
+				return AllowDeny4API.post(self, ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, os.path.basename(config['@odata.id']))
 			else:
-				return AllowDeny4API.post(self, str(res))
+				return AllowDeny4API.post(self, ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, str(res))
 		else:
-			return AllowDeny4API.post(self, str(res))
+			return AllowDeny4API.post(self, ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId):

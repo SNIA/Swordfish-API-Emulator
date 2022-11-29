@@ -113,11 +113,19 @@ def write_collection_api(outfile, resource, resource_num, collection_path):
     outfile.write("\t\tif request.data:\n")
     outfile.write("\t\t\tconfig = json.loads(request.data)\n")
     outfile.write("\t\t\tif \"@odata.id\" in config:\n")
-    outfile.write("\t\t\t\treturn {0}API.post(self, os.path.basename(config['@odata.id']))\n".format(resource_num))
-    outfile.write("\t\t\telse:\n")
-    outfile.write("\t\t\t\treturn {0}API.post(self, str(res))\n".format(resource_num))
-    outfile.write("\t\telse:\n")
-    outfile.write("\t\t\treturn {0}API.post(self, str(res))\n\n".format(resource_num))
+
+    if arg_str == '':
+        outfile.write("\t\t\t\treturn {0}API.post(self, os.path.basename(config['@odata.id']))\n".format(resource_num))
+        outfile.write("\t\t\telse:\n")
+        outfile.write("\t\t\t\treturn {0}API.post(self, str(res))\n".format(resource_num))
+        outfile.write("\t\telse:\n")
+        outfile.write("\t\t\treturn {0}API.post(self, str(res))\n\n".format(resource_num))
+    else:
+        outfile.write("\t\t\t\treturn {0}API.post(self, {1}, os.path.basename(config['@odata.id']))\n".format(resource_num, arg_str))
+        outfile.write("\t\t\telse:\n")
+        outfile.write("\t\t\t\treturn {0}API.post(self, {1}, str(res))\n".format(resource_num, arg_str))
+        outfile.write("\t\telse:\n")
+        outfile.write("\t\t\treturn {0}API.post(self, {1}, str(res))\n\n".format(resource_num, arg_str))
 
 
     # Write PUT method

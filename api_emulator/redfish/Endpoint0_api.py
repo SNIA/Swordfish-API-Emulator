@@ -73,11 +73,11 @@ class Endpoint0CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Endpoint0API.post(self, os.path.basename(config['@odata.id']))
+				return Endpoint0API.post(self, FabricId, os.path.basename(config['@odata.id']))
 			else:
-				return Endpoint0API.post(self, str(res))
+				return Endpoint0API.post(self, FabricId, str(res))
 		else:
-			return Endpoint0API.post(self, str(res))
+			return Endpoint0API.post(self, FabricId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, FabricId):

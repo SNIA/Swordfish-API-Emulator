@@ -73,11 +73,11 @@ class ExternalAccountProvider1CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return ExternalAccountProvider1API.post(self, os.path.basename(config['@odata.id']))
+				return ExternalAccountProvider1API.post(self, ManagerId, os.path.basename(config['@odata.id']))
 			else:
-				return ExternalAccountProvider1API.post(self, str(res))
+				return ExternalAccountProvider1API.post(self, ManagerId, str(res))
 		else:
-			return ExternalAccountProvider1API.post(self, str(res))
+			return ExternalAccountProvider1API.post(self, ManagerId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ManagerId):

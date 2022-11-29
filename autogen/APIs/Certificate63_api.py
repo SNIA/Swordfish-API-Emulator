@@ -73,11 +73,11 @@ class Certificate63CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Certificate63API.post(self, os.path.basename(config['@odata.id']))
+				return Certificate63API.post(self, ComputerSystemId, os.path.basename(config['@odata.id']))
 			else:
-				return Certificate63API.post(self, str(res))
+				return Certificate63API.post(self, ComputerSystemId, str(res))
 		else:
-			return Certificate63API.post(self, str(res))
+			return Certificate63API.post(self, ComputerSystemId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId):

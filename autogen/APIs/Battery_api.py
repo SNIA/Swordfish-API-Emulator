@@ -73,11 +73,11 @@ class BatteryCollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return BatteryAPI.post(self, os.path.basename(config['@odata.id']))
+				return BatteryAPI.post(self, ChassisId, os.path.basename(config['@odata.id']))
 			else:
-				return BatteryAPI.post(self, str(res))
+				return BatteryAPI.post(self, ChassisId, str(res))
 		else:
-			return BatteryAPI.post(self, str(res))
+			return BatteryAPI.post(self, ChassisId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ChassisId):

@@ -73,11 +73,11 @@ class Drive7CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Drive7API.post(self, os.path.basename(config['@odata.id']))
+				return Drive7API.post(self, ResourceBlockId, ComputerSystemId, StorageId, os.path.basename(config['@odata.id']))
 			else:
-				return Drive7API.post(self, str(res))
+				return Drive7API.post(self, ResourceBlockId, ComputerSystemId, StorageId, str(res))
 		else:
-			return Drive7API.post(self, str(res))
+			return Drive7API.post(self, ResourceBlockId, ComputerSystemId, StorageId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, ComputerSystemId, StorageId):

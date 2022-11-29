@@ -73,11 +73,11 @@ class USBControllerCollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return USBControllerAPI.post(self, os.path.basename(config['@odata.id']))
+				return USBControllerAPI.post(self, ComputerSystemId, os.path.basename(config['@odata.id']))
 			else:
-				return USBControllerAPI.post(self, str(res))
+				return USBControllerAPI.post(self, ComputerSystemId, str(res))
 		else:
-			return USBControllerAPI.post(self, str(res))
+			return USBControllerAPI.post(self, ComputerSystemId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId):

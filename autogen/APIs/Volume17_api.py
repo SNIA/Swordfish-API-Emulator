@@ -73,11 +73,11 @@ class Volume17CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Volume17API.post(self, os.path.basename(config['@odata.id']))
+				return Volume17API.post(self, StorageServiceId, StoragePoolId, CapacitySourceId, os.path.basename(config['@odata.id']))
 			else:
-				return Volume17API.post(self, str(res))
+				return Volume17API.post(self, StorageServiceId, StoragePoolId, CapacitySourceId, str(res))
 		else:
-			return Volume17API.post(self, str(res))
+			return Volume17API.post(self, StorageServiceId, StoragePoolId, CapacitySourceId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, StorageServiceId, StoragePoolId, CapacitySourceId):

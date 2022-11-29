@@ -73,11 +73,11 @@ class PowerDomainCollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return PowerDomainAPI.post(self, os.path.basename(config['@odata.id']))
+				return PowerDomainAPI.post(self, FacilityId, os.path.basename(config['@odata.id']))
 			else:
-				return PowerDomainAPI.post(self, str(res))
+				return PowerDomainAPI.post(self, FacilityId, str(res))
 		else:
-			return PowerDomainAPI.post(self, str(res))
+			return PowerDomainAPI.post(self, FacilityId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, FacilityId):

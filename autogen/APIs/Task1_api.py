@@ -73,11 +73,11 @@ class Task1CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Task1API.post(self, os.path.basename(config['@odata.id']))
+				return Task1API.post(self, TaskId, os.path.basename(config['@odata.id']))
 			else:
-				return Task1API.post(self, str(res))
+				return Task1API.post(self, TaskId, str(res))
 		else:
-			return Task1API.post(self, str(res))
+			return Task1API.post(self, TaskId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, TaskId):

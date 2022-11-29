@@ -73,11 +73,11 @@ class VirtualMedia2CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return VirtualMedia2API.post(self, os.path.basename(config['@odata.id']))
+				return VirtualMedia2API.post(self, ResourceBlockId, ComputerSystemId, os.path.basename(config['@odata.id']))
 			else:
-				return VirtualMedia2API.post(self, str(res))
+				return VirtualMedia2API.post(self, ResourceBlockId, ComputerSystemId, str(res))
 		else:
-			return VirtualMedia2API.post(self, str(res))
+			return VirtualMedia2API.post(self, ResourceBlockId, ComputerSystemId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, ComputerSystemId):

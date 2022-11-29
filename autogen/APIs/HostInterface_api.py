@@ -73,11 +73,11 @@ class HostInterfaceCollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return HostInterfaceAPI.post(self, os.path.basename(config['@odata.id']))
+				return HostInterfaceAPI.post(self, ManagerId, os.path.basename(config['@odata.id']))
 			else:
-				return HostInterfaceAPI.post(self, str(res))
+				return HostInterfaceAPI.post(self, ManagerId, str(res))
 		else:
-			return HostInterfaceAPI.post(self, str(res))
+			return HostInterfaceAPI.post(self, ManagerId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ManagerId):

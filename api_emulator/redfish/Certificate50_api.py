@@ -73,11 +73,11 @@ class Certificate50CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Certificate50API.post(self, os.path.basename(config['@odata.id']))
+				return Certificate50API.post(self, ResourceBlockId, StorageId, DriveId, os.path.basename(config['@odata.id']))
 			else:
-				return Certificate50API.post(self, str(res))
+				return Certificate50API.post(self, ResourceBlockId, StorageId, DriveId, str(res))
 		else:
-			return Certificate50API.post(self, str(res))
+			return Certificate50API.post(self, ResourceBlockId, StorageId, DriveId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, StorageId, DriveId):

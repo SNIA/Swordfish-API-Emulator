@@ -73,11 +73,11 @@ class VCATEntry2CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return VCATEntry2API.post(self, os.path.basename(config['@odata.id']))
+				return VCATEntry2API.post(self, SystemId, FabricAdapterId, os.path.basename(config['@odata.id']))
 			else:
-				return VCATEntry2API.post(self, str(res))
+				return VCATEntry2API.post(self, SystemId, FabricAdapterId, str(res))
 		else:
-			return VCATEntry2API.post(self, str(res))
+			return VCATEntry2API.post(self, SystemId, FabricAdapterId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, SystemId, FabricAdapterId):

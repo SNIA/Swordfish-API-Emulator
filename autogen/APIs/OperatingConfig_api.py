@@ -73,11 +73,11 @@ class OperatingConfigCollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return OperatingConfigAPI.post(self, os.path.basename(config['@odata.id']))
+				return OperatingConfigAPI.post(self, ComputerSystemId, ProcessorId, os.path.basename(config['@odata.id']))
 			else:
-				return OperatingConfigAPI.post(self, str(res))
+				return OperatingConfigAPI.post(self, ComputerSystemId, ProcessorId, str(res))
 		else:
-			return OperatingConfigAPI.post(self, str(res))
+			return OperatingConfigAPI.post(self, ComputerSystemId, ProcessorId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId, ProcessorId):

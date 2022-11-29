@@ -73,11 +73,11 @@ class NetworkPortCollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return NetworkPortAPI.post(self, os.path.basename(config['@odata.id']))
+				return NetworkPortAPI.post(self, ChassisId, NetworkAdapterId, os.path.basename(config['@odata.id']))
 			else:
-				return NetworkPortAPI.post(self, str(res))
+				return NetworkPortAPI.post(self, ChassisId, NetworkAdapterId, str(res))
 		else:
-			return NetworkPortAPI.post(self, str(res))
+			return NetworkPortAPI.post(self, ChassisId, NetworkAdapterId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ChassisId, NetworkAdapterId):

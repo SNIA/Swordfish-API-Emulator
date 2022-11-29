@@ -73,11 +73,11 @@ class Job1CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Job1API.post(self, os.path.basename(config['@odata.id']))
+				return Job1API.post(self, JobId, os.path.basename(config['@odata.id']))
 			else:
-				return Job1API.post(self, str(res))
+				return Job1API.post(self, JobId, str(res))
 		else:
-			return Job1API.post(self, str(res))
+			return Job1API.post(self, JobId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, JobId):

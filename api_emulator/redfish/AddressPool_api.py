@@ -73,11 +73,11 @@ class AddressPoolCollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return AddressPoolAPI.post(self, os.path.basename(config['@odata.id']))
+				return AddressPoolAPI.post(self, FabricId, os.path.basename(config['@odata.id']))
 			else:
-				return AddressPoolAPI.post(self, str(res))
+				return AddressPoolAPI.post(self, FabricId, str(res))
 		else:
-			return AddressPoolAPI.post(self, str(res))
+			return AddressPoolAPI.post(self, FabricId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, FabricId):

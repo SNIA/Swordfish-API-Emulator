@@ -73,11 +73,11 @@ class Storage3CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Storage3API.post(self, os.path.basename(config['@odata.id']))
+				return Storage3API.post(self, ResourceBlockId, ComputerSystemId, os.path.basename(config['@odata.id']))
 			else:
-				return Storage3API.post(self, str(res))
+				return Storage3API.post(self, ResourceBlockId, ComputerSystemId, str(res))
 		else:
-			return Storage3API.post(self, str(res))
+			return Storage3API.post(self, ResourceBlockId, ComputerSystemId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId, ComputerSystemId):

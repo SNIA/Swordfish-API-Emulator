@@ -73,11 +73,11 @@ class Port0CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Port0API.post(self, os.path.basename(config['@odata.id']))
+				return Port0API.post(self, FabricId, SwitchId, os.path.basename(config['@odata.id']))
 			else:
-				return Port0API.post(self, str(res))
+				return Port0API.post(self, FabricId, SwitchId, str(res))
 		else:
-			return Port0API.post(self, str(res))
+			return Port0API.post(self, FabricId, SwitchId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, FabricId, SwitchId):

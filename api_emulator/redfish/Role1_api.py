@@ -73,11 +73,11 @@ class Role1CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Role1API.post(self, os.path.basename(config['@odata.id']))
+				return Role1API.post(self, ManagerId, os.path.basename(config['@odata.id']))
 			else:
-				return Role1API.post(self, str(res))
+				return Role1API.post(self, ManagerId, str(res))
 		else:
-			return Role1API.post(self, str(res))
+			return Role1API.post(self, ManagerId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ManagerId):

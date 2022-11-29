@@ -73,11 +73,11 @@ class Memory1CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Memory1API.post(self, os.path.basename(config['@odata.id']))
+				return Memory1API.post(self, ChassisId, os.path.basename(config['@odata.id']))
 			else:
-				return Memory1API.post(self, str(res))
+				return Memory1API.post(self, ChassisId, str(res))
 		else:
-			return Memory1API.post(self, str(res))
+			return Memory1API.post(self, ChassisId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ChassisId):

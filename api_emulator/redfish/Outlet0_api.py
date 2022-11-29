@@ -73,11 +73,11 @@ class Outlet0CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return Outlet0API.post(self, os.path.basename(config['@odata.id']))
+				return Outlet0API.post(self, PowerDistributionId, os.path.basename(config['@odata.id']))
 			else:
-				return Outlet0API.post(self, str(res))
+				return Outlet0API.post(self, PowerDistributionId, str(res))
 		else:
-			return Outlet0API.post(self, str(res))
+			return Outlet0API.post(self, PowerDistributionId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, PowerDistributionId):

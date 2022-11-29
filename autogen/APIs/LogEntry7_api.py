@@ -73,11 +73,11 @@ class LogEntry7CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return LogEntry7API.post(self, os.path.basename(config['@odata.id']))
+				return LogEntry7API.post(self, ComputerSystemId, MemoryId, os.path.basename(config['@odata.id']))
 			else:
-				return LogEntry7API.post(self, str(res))
+				return LogEntry7API.post(self, ComputerSystemId, MemoryId, str(res))
 		else:
-			return LogEntry7API.post(self, str(res))
+			return LogEntry7API.post(self, ComputerSystemId, MemoryId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ComputerSystemId, MemoryId):

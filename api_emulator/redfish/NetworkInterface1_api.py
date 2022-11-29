@@ -73,11 +73,11 @@ class NetworkInterface1CollectionAPI(Resource):
 		if request.data:
 			config = json.loads(request.data)
 			if "@odata.id" in config:
-				return NetworkInterface1API.post(self, os.path.basename(config['@odata.id']))
+				return NetworkInterface1API.post(self, ResourceBlockId, os.path.basename(config['@odata.id']))
 			else:
-				return NetworkInterface1API.post(self, str(res))
+				return NetworkInterface1API.post(self, ResourceBlockId, str(res))
 		else:
-			return NetworkInterface1API.post(self, str(res))
+			return NetworkInterface1API.post(self, ResourceBlockId, str(res))
 
 	# HTTP PUT Collection
 	def put(self, ResourceBlockId):

@@ -61,13 +61,20 @@ class Zone0CollectionAPI(Resource):
 	def post(self, FabricId):
 		logging.info('Zone0 Collection post called')
 
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.type" in config:
+				if "Collection" in config["@odata.type"]:
+					return "Invalid data in POST body", 400
+
 		if FabricId in members:
 			resp = 404
 			return resp
 		path = create_path(self.root, 'Fabrics/{0}/Zones').format(FabricId)
+		parent_path = os.path.dirname(path)
 		if not os.path.exists(path):
 			os.mkdir(path)
-			create_collection (path, 'Zone')
+			create_collection (path, 'Zone', parent_path)
 
 		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 		if request.data:

@@ -61,13 +61,20 @@ class Volume15CollectionAPI(Resource):
 	def post(self, StorageServiceId, FileSystemId, CapacitySourceId):
 		logging.info('Volume15 Collection post called')
 
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.type" in config:
+				if "Collection" in config["@odata.type"]:
+					return "Invalid data in POST body", 400
+
 		if CapacitySourceId in members:
 			resp = 404
 			return resp
 		path = create_path(self.root, 'StorageServices/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingVolumes').format(StorageServiceId, FileSystemId, CapacitySourceId)
+		parent_path = os.path.dirname(path)
 		if not os.path.exists(path):
 			os.mkdir(path)
-			create_collection (path, 'Volume')
+			create_collection (path, 'Volume', parent_path)
 
 		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 		if request.data:

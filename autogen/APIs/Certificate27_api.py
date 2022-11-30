@@ -61,13 +61,20 @@ class Certificate27CollectionAPI(Resource):
 	def post(self, ResourceBlockId, ProcessorId):
 		logging.info('Certificate27 Collection post called')
 
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.type" in config:
+				if "Collection" in config["@odata.type"]:
+					return "Invalid data in POST body", 400
+
 		if ProcessorId in members:
 			resp = 404
 			return resp
 		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/Certificates').format(ResourceBlockId, ProcessorId)
+		parent_path = os.path.dirname(path)
 		if not os.path.exists(path):
 			os.mkdir(path)
-			create_collection (path, 'Certificate')
+			create_collection (path, 'Certificate', parent_path)
 
 		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 		if request.data:

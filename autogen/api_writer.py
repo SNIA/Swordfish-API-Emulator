@@ -92,6 +92,12 @@ def write_collection_api(outfile, resource, resource_num, collection_path):
         outfile.write("\tdef post(self, {0}):\n".format(arg_str))
     outfile.write("\t\tlogging.info('{0} Collection post called')\n\n".format(resource_num))
 
+    outfile.write("\t\tif request.data:\n")
+    outfile.write("\t\t\tconfig = json.loads(request.data)\n")
+    outfile.write("\t\t\tif \"@odata.type\" in config:\n")
+    outfile.write("\t\t\t\tif \"Collection\" in config[\"@odata.type\"]:\n")
+    outfile.write("\t\t\t\t\treturn \"Invalid data in POST body\", 400\n\n")
+
     if(arg_str != ''):
         sub_arg = re.split(', ', arg_str)
         outfile.write("\t\tif {0} in members:\n".format(sub_arg[-1]))
@@ -105,9 +111,10 @@ def write_collection_api(outfile, resource, resource_num, collection_path):
     else:
         outfile.write("\t\tpath = create_path(self.root, '{0}').format({1})\n".format(new_collection_path, arg_str))
 
+    outfile.write("\t\tparent_path = os.path.dirname(path)\n")
     outfile.write("\t\tif not os.path.exists(path):\n")
     outfile.write("\t\t\tos.mkdir(path)\n")
-    outfile.write("\t\t\tcreate_collection (path, '{0}')\n\n".format(resource))
+    outfile.write("\t\t\tcreate_collection (path, '{0}', parent_path)\n\n".format(resource))
 
     outfile.write("\t\tres = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))\n")
     outfile.write("\t\tif request.data:\n")

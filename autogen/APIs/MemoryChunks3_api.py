@@ -61,13 +61,20 @@ class MemoryChunks3CollectionAPI(Resource):
 	def post(self, ResourceBlockId, ComputerSystemId, MemoryDomainId):
 		logging.info('MemoryChunks3 Collection post called')
 
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.type" in config:
+				if "Collection" in config["@odata.type"]:
+					return "Invalid data in POST body", 400
+
 		if MemoryDomainId in members:
 			resp = 404
 			return resp
 		path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/MemoryDomains/{2}/MemoryChunks').format(ResourceBlockId, ComputerSystemId, MemoryDomainId)
+		parent_path = os.path.dirname(path)
 		if not os.path.exists(path):
 			os.mkdir(path)
-			create_collection (path, 'MemoryChunks')
+			create_collection (path, 'MemoryChunks', parent_path)
 
 		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 		if request.data:

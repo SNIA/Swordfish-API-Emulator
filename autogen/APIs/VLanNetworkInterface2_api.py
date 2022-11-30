@@ -61,13 +61,20 @@ class VLanNetworkInterface2CollectionAPI(Resource):
 	def post(self, ComputerSystemId, EthernetInterfaceId):
 		logging.info('VLanNetworkInterface2 Collection post called')
 
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.type" in config:
+				if "Collection" in config["@odata.type"]:
+					return "Invalid data in POST body", 400
+
 		if EthernetInterfaceId in members:
 			resp = 404
 			return resp
 		path = create_path(self.root, 'Systems/{0}/EthernetInterfaces/{1}/VLANs').format(ComputerSystemId, EthernetInterfaceId)
+		parent_path = os.path.dirname(path)
 		if not os.path.exists(path):
 			os.mkdir(path)
-			create_collection (path, 'VLanNetworkInterface')
+			create_collection (path, 'VLanNetworkInterface', parent_path)
 
 		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 		if request.data:

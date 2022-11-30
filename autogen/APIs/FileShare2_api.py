@@ -61,13 +61,20 @@ class FileShare2CollectionAPI(Resource):
 	def post(self, StorageServiceId, FileSystemsId):
 		logging.info('FileShare2 Collection post called')
 
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.type" in config:
+				if "Collection" in config["@odata.type"]:
+					return "Invalid data in POST body", 400
+
 		if FileSystemsId in members:
 			resp = 404
 			return resp
 		path = create_path(self.root, 'StorageServices/{0}/FileSystems/{1}/ExportedFileShares').format(StorageServiceId, FileSystemsId)
+		parent_path = os.path.dirname(path)
 		if not os.path.exists(path):
 			os.mkdir(path)
-			create_collection (path, 'FileShare')
+			create_collection (path, 'FileShare', parent_path)
 
 		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 		if request.data:

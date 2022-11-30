@@ -61,13 +61,20 @@ class Signature1CollectionAPI(Resource):
 	def post(self, ResourceBlockId, ComputerSystemId, DatabaseId):
 		logging.info('Signature1 Collection post called')
 
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.type" in config:
+				if "Collection" in config["@odata.type"]:
+					return "Invalid data in POST body", 400
+
 		if DatabaseId in members:
 			resp = 404
 			return resp
 		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/SecureBoot/SecureBootDatabases/{2}/Signatures').format(ResourceBlockId, ComputerSystemId, DatabaseId)
+		parent_path = os.path.dirname(path)
 		if not os.path.exists(path):
 			os.mkdir(path)
-			create_collection (path, 'Signature')
+			create_collection (path, 'Signature', parent_path)
 
 		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 		if request.data:

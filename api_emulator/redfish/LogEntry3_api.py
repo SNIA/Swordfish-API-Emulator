@@ -61,13 +61,20 @@ class LogEntry3CollectionAPI(Resource):
 	def post(self, ResourceBlockId, ComputerSystemId, LogServiceId):
 		logging.info('LogEntry3 Collection post called')
 
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.type" in config:
+				if "Collection" in config["@odata.type"]:
+					return "Invalid data in POST body", 400
+
 		if LogServiceId in members:
 			resp = 404
 			return resp
 		path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/LogServices/{2}/Entries').format(ResourceBlockId, ComputerSystemId, LogServiceId)
+		parent_path = os.path.dirname(path)
 		if not os.path.exists(path):
 			os.mkdir(path)
-			create_collection (path, 'LogEntry')
+			create_collection (path, 'LogEntry', parent_path)
 
 		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 		if request.data:

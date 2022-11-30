@@ -61,13 +61,20 @@ class AllowDeny2CollectionAPI(Resource):
 	def post(self, ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId):
 		logging.info('AllowDeny2 Collection post called')
 
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.type" in config:
+				if "Collection" in config["@odata.type"]:
+					return "Invalid data in POST body", 400
+
 		if NetworkDeviceFunctionsNetworkDeviceFunctionId in members:
 			resp = 404
 			return resp
 		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/NetworkInterfaces/{1}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny').format(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId)
+		parent_path = os.path.dirname(path)
 		if not os.path.exists(path):
 			os.mkdir(path)
-			create_collection (path, 'AllowDeny')
+			create_collection (path, 'AllowDeny', parent_path)
 
 		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 		if request.data:

@@ -49,7 +49,7 @@ import jwt
 from api_emulator.account_service import AccountService
 import g
 
-from flask import jsonify, request, session
+from flask import jsonify, make_response, request, session
 from functools import wraps
 from api_emulator.redfish.templates.collection import get_Collection_instance
 
@@ -135,6 +135,26 @@ def update_collections_json(path, link):
     # Write the updated json to file.
     with open(path, 'w') as file_json:
         json.dump(data, file_json)
+
+def update_collections_parent_json(path, type, link):
+    '''
+    Update json files in collection's parent folder respected resource.
+    :param path: (str)
+    :return: (None)
+    '''
+    # print("Update collection parent")
+    # Read json from file.
+    # print(path)
+    with open(path, 'r') as file_json:
+        data = json.load(file_json)
+
+    # Update the keys of payload in json file.
+    data[type] = {"@odata.id": link}
+    # print(data)
+
+    # Write the updated json to file.
+    with open(path, 'w') as file_json:
+        json.dump(data, file_json, indent=4)
 
 def create_path(*args):
     trimmed = [str(arg).strip('/') for arg in args]
@@ -289,7 +309,7 @@ def put_object(path):
 
     return True
 
-def create_collection (collection_path, collection_type):
+def create_collection (collection_path, collection_type, parent_path):
 
     try:
         # if not os.path.exists(collection_path):
@@ -302,10 +322,12 @@ def create_collection (collection_path, collection_type):
         path = collection_path.replace('Resources','/redfish/v1').replace("\\","/")
         wildcards = {'path': path, 'cType': collection_type}
         config=get_Collection_instance(wildcards)
+        collection_type = collection_type
 
         with open(os.path.join(collection_path, "index.json"), "w") as fd:
             fd.write(json.dumps(config, indent=4, sort_keys=True))
 
+        update_collections_parent_json(path=os.path.join(parent_path, "index.json"), type=collection_type, link=config['@odata.id'])
         resp = config, 200
     except Exception as e:
         traceback.print_exc()

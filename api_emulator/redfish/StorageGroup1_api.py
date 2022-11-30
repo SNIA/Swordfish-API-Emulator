@@ -61,13 +61,20 @@ class StorageGroup1CollectionAPI(Resource):
 	def post(self, StorageServiceId, VolumeId):
 		logging.info('StorageGroup1 Collection post called')
 
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.type" in config:
+				if "Collection" in config["@odata.type"]:
+					return "Invalid data in POST body", 400
+
 		if VolumeId in members:
 			resp = 404
 			return resp
 		path = create_path(self.root, 'StorageServices/{0}/Volumes/{1}/StorageGroups').format(StorageServiceId, VolumeId)
+		parent_path = os.path.dirname(path)
 		if not os.path.exists(path):
 			os.mkdir(path)
-			create_collection (path, 'StorageGroup')
+			create_collection (path, 'StorageGroup', parent_path)
 
 		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 		if request.data:

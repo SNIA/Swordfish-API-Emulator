@@ -61,13 +61,20 @@ class Key2CollectionAPI(Resource):
 	def post(self, ManagerId, ManagerAccountId):
 		logging.info('Key2 Collection post called')
 
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.type" in config:
+				if "Collection" in config["@odata.type"]:
+					return "Invalid data in POST body", 400
+
 		if ManagerAccountId in members:
 			resp = 404
 			return resp
 		path = create_path(self.root, 'Managers/{0}/RemoteAccountService/Accounts/{1}/Keys').format(ManagerId, ManagerAccountId)
+		parent_path = os.path.dirname(path)
 		if not os.path.exists(path):
 			os.mkdir(path)
-			create_collection (path, 'Key')
+			create_collection (path, 'Key', parent_path)
 
 		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 		if request.data:

@@ -61,13 +61,20 @@ class Port17CollectionAPI(Resource):
 	def post(self, ChassisId, NetworkAdapterId):
 		logging.info('Port17 Collection post called')
 
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.type" in config:
+				if "Collection" in config["@odata.type"]:
+					return "Invalid data in POST body", 400
+
 		if NetworkAdapterId in members:
 			resp = 404
 			return resp
 		path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports').format(ChassisId, NetworkAdapterId)
+		parent_path = os.path.dirname(path)
 		if not os.path.exists(path):
 			os.mkdir(path)
-			create_collection (path, 'Port')
+			create_collection (path, 'Port', parent_path)
 
 		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 		if request.data:

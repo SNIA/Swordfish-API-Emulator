@@ -61,13 +61,20 @@ class PCIeFunction2CollectionAPI(Resource):
 	def post(self, ResourceBlockId, ComputerSystemId, PCIeDeviceId):
 		logging.info('PCIeFunction2 Collection post called')
 
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.type" in config:
+				if "Collection" in config["@odata.type"]:
+					return "Invalid data in POST body", 400
+
 		if PCIeDeviceId in members:
 			resp = 404
 			return resp
 		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/PCIeDevices/{2}/PCIeFunctions').format(ResourceBlockId, ComputerSystemId, PCIeDeviceId)
+		parent_path = os.path.dirname(path)
 		if not os.path.exists(path):
 			os.mkdir(path)
-			create_collection (path, 'PCIeFunction')
+			create_collection (path, 'PCIeFunction', parent_path)
 
 		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 		if request.data:

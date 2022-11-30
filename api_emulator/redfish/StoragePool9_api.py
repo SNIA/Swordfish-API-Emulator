@@ -61,13 +61,20 @@ class StoragePool9CollectionAPI(Resource):
 	def post(self, StorageId, VolumeId, CapacitySourceId):
 		logging.info('StoragePool9 Collection post called')
 
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.type" in config:
+				if "Collection" in config["@odata.type"]:
+					return "Invalid data in POST body", 400
+
 		if CapacitySourceId in members:
 			resp = 404
 			return resp
 		path = create_path(self.root, 'Storage/{0}/Volumes/{1}/CapacitySources/{2}/ProvidingPools').format(StorageId, VolumeId, CapacitySourceId)
+		parent_path = os.path.dirname(path)
 		if not os.path.exists(path):
 			os.mkdir(path)
-			create_collection (path, 'StoragePool')
+			create_collection (path, 'StoragePool', parent_path)
 
 		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 		if request.data:

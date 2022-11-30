@@ -76,11 +76,18 @@ class SessionCollectionAPI(Resource):
 	# HTTP POST
 	def post(self):
 		logging.info('Session Collection post called')
+
+		if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
+
 		path = create_path(self.root, 'SessionService/Sessions')
-		# return create_collection (path, 'Session')
+		parent_path = os.path.dirname(path)
 		if not os.path.exists(path):
 			os.mkdir(path)
-			create_collection (path, 'Session')
+			create_collection (path, 'Session', parent_path)
 		
 		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 		if request.data:
@@ -143,7 +150,11 @@ class SessionAPI(Resource):
 
 		# Check if collection exists:
 		if not os.path.exists(collection_path):
-			SessionCollectionAPI.post(self)
+			# SessionCollectionAPI.post(self)
+			c_path = create_path(self.root, 'SessionService/Sessions')
+			parent_path = os.path.dirname(c_path)
+			os.mkdir(c_path)
+			create_collection (c_path, 'Session', parent_path)
 
 		if SessionId in members:
 			resp = 404

@@ -61,10 +61,17 @@ class CompositionReservationCollectionAPI(Resource):
 	def post(self):
 		logging.info('CompositionReservation Collection post called')
 
+		if request.data:
+			config = json.loads(request.data)
+			if "@odata.type" in config:
+				if "Collection" in config["@odata.type"]:
+					return "Invalid data in POST body", 400
+
 		path = create_path(self.root, 'CompositionService/CompositionReservations')
+		parent_path = os.path.dirname(path)
 		if not os.path.exists(path):
 			os.mkdir(path)
-			create_collection (path, 'CompositionReservation')
+			create_collection (path, 'CompositionReservation', parent_path)
 
 		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
 		if request.data:

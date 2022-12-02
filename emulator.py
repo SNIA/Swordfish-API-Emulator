@@ -34,7 +34,7 @@
 #
 # Redfish Interface Emulator - main
 #   python emulator.py
-s
+
 import os
 import json
 import argparse

@@ -117,6 +117,7 @@ git clone --depth 1 https://github.com/DMTF/Redfish-Interface-Emulator \
 echo "Setting up emulator Python virtualenv and requirements..."
 cd $WORK_DIR
 virtualenv --python=python3 venv
+venv/bin/pip install -q -r $BASE_DIR/requirements.txt
 venv/bin/pip install -q -r requirements.txt
 
 # Remove Redfish static / starting mockups

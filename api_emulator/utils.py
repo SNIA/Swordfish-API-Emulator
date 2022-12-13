@@ -390,7 +390,7 @@ def check_authentication(mode):
     return "Success..", 200
 
 def get_sessionValidation_error():
-    error_messgae = {
+    error_message = {
         "error": {
             "code": "Base.1.14.0.ResourceAtUriUnauthorized",
             "message": "While accessing the resource at '%1', the service received an authorization error '%2'.",
@@ -406,7 +406,7 @@ def get_sessionValidation_error():
             ]
         }
     }
-    return error_messgae
+    return error_message
 
 def header_handler(data,code,resp):
     resp.headers['OData-Version'] = 4.0

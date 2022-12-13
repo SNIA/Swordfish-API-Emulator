@@ -1,2 +1,8 @@
 flask_login
-jwt
+pyjwt
+flask
+xmltodict
+psutil
+urllib
+requests
+flask_restful

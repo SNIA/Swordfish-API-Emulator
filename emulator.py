@@ -548,6 +548,10 @@ def main():
     else:
         pass
 
+    # importing certififiacte and private key file names
+    CERTIFICATE = config['CERTIFICATE']
+    assert len(CERTIFICATE) == 2, 'Incorrect HTTPS certificate details provided'
+
     try:
         TRAYS = config['TRAYS']
     except:
@@ -596,7 +600,7 @@ def main():
     else:
         if (HTTPS == 'Enable'):
             print (' * Use HTTPS')
-            context = ('server.crt', 'server.key')
+            context = (CERTIFICATE[0], CERTIFICATE[1])
             kwargs = {'debug': args.debug, 'port': args.port, 'ssl_context' : context}
         else:
             print (' * Use HTTP')

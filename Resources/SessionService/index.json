@@ -8,7 +8,7 @@
         "Health": "OK"
     },
     "ServiceEnabled": true,
-    "SessionTimeout": 30,
+    "SessionTimeout": 1800,
     "Sessions": {
         "@odata.id": "/redfish/v1/SessionService/Sessions"
     },

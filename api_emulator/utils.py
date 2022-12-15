@@ -411,6 +411,8 @@ def get_sessionValidation_error():
 def header_handler(data,code,resp):
     resp.headers['OData-Version'] = 4.0
     resp.headers['Cache-Control'] = 'No-store'
+    if "ManagerAccount." in '@odata.type':
+        resp.headers['Etag'] = ''
     if '@odata.id' in data:
         resp.headers['Link'] = data['@odata.id']+'; rel=describedby'
 

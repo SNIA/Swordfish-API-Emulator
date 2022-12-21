@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.Port20 import get_Port20_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # Port20 Collection API
 class Port20CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Port20 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ManagerId):
 		logging.info('Port20 Collection get called')
-		path = os.path.join(self.root, 'Managers/{0}/USBPorts', 'index.json').format(ManagerId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Managers/{0}/USBPorts', 'index.json').format(ManagerId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, ManagerId):
 		logging.info('Port20 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if ManagerId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'Managers/{0}/USBPorts').format(ManagerId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'Port', parent_path)
+			if ManagerId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'Managers/{0}/USBPorts').format(ManagerId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'Port', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return Port20API.post(self, ManagerId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return Port20API.post(self, ManagerId, os.path.basename(config['@odata.id']))
+				else:
+					return Port20API.post(self, ManagerId, str(res))
 			else:
 				return Port20API.post(self, ManagerId, str(res))
 		else:
-			return Port20API.post(self, ManagerId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, ManagerId):
-		logging.info('Port20 Collection put called')
-
-		path = os.path.join(self.root, 'Managers/{0}/USBPorts', 'index.json').format(ManagerId)
-		put_object (path)
-		return self.get(ManagerId)
+			return msg, code
 
 # Port20 API
 class Port20API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Port20 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ManagerId, PortId):
 		logging.info('Port20 get called')
-		path = create_path(self.root, 'Managers/{0}/USBPorts/{1}', 'index.json').format(ManagerId, PortId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Managers/{0}/USBPorts/{1}', 'index.json').format(ManagerId, PortId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class Port20API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ManagerId, PortId):
 		logging.info('Port20 post called')
-		path = create_path(self.root, 'Managers/{0}/USBPorts/{1}').format(ManagerId, PortId)
-		collection_path = os.path.join(self.root, 'Managers/{0}/USBPorts', 'index.json').format(ManagerId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			Port20CollectionAPI.post(self, ManagerId)
+		if code == 200:
+			path = create_path(self.root, 'Managers/{0}/USBPorts/{1}').format(ManagerId, PortId)
+			collection_path = os.path.join(self.root, 'Managers/{0}/USBPorts', 'index.json').format(ManagerId)
 
-		if PortId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				Port20CollectionAPI.post(self, ManagerId)
+
+			if PortId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ManagerId':ManagerId, 'PortId':PortId, 'rb':g.rest_base}
+				config=get_Port20_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('Port20API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'ManagerId':ManagerId, 'PortId':PortId, 'rb':g.rest_base}
-			config=get_Port20_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('Port20API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ManagerId, PortId):
 		logging.info('Port20 put called')
-		path = create_path(self.root, 'Managers/{0}/USBPorts/{1}', 'index.json').format(ManagerId, PortId)
-		put_object(path)
-		return self.get(ManagerId, PortId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Managers/{0}/USBPorts/{1}', 'index.json').format(ManagerId, PortId)
+			put_object(path)
+			return self.get(ManagerId, PortId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ManagerId, PortId):
 		logging.info('Port20 patch called')
-		path = create_path(self.root, 'Managers/{0}/USBPorts/{1}', 'index.json').format(ManagerId, PortId)
-		patch_object(path)
-		return self.get(ManagerId, PortId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Managers/{0}/USBPorts/{1}', 'index.json').format(ManagerId, PortId)
+			patch_object(path)
+			return self.get(ManagerId, PortId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ManagerId, PortId):
 		logging.info('Port20 delete called')
-		path = create_path(self.root, 'Managers/{0}/USBPorts/{1}').format(ManagerId, PortId)
-		base_path = create_path(self.root, 'Managers/{0}/USBPorts').format(ManagerId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Managers/{0}/USBPorts/{1}').format(ManagerId, PortId)
+			base_path = create_path(self.root, 'Managers/{0}/USBPorts').format(ManagerId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

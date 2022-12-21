@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
@@ -46,15 +46,21 @@ INTERNAL_ERROR = 500
 
 # LogService2 Collection API
 class LogService2CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('LogService2 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ResourceBlockId, ComputerSystemId):
 		logging.info('LogService2 Collection get called')
-		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/LogServices', 'index.json').format(ResourceBlockId, ComputerSystemId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/LogServices', 'index.json').format(ResourceBlockId, ComputerSystemId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	def post(self, ResourceBlockId, ComputerSystemId):
@@ -79,15 +85,21 @@ class LogService2CollectionAPI(Resource):
 
 # LogService2 API
 class LogService2API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('LogService2 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ResourceBlockId, ComputerSystemId, LogServiceId):
 		logging.info('LogService2 get called')
-		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/LogServices/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, LogServiceId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/LogServices/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, LogServiceId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	def post(self, ResourceBlockId, ComputerSystemId, LogServiceId):

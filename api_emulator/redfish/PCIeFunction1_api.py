@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.PCIeFunction1 import get_PCIeFunction1_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # PCIeFunction1 Collection API
 class PCIeFunction1CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('PCIeFunction1 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ComputerSystemId, PCIeDeviceId):
 		logging.info('PCIeFunction1 Collection get called')
-		path = os.path.join(self.root, 'Systems/{0}/PCIeDevices/{1}/PCIeFunctions', 'index.json').format(ComputerSystemId, PCIeDeviceId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Systems/{0}/PCIeDevices/{1}/PCIeFunctions', 'index.json').format(ComputerSystemId, PCIeDeviceId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, ComputerSystemId, PCIeDeviceId):
 		logging.info('PCIeFunction1 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if PCIeDeviceId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'Systems/{0}/PCIeDevices/{1}/PCIeFunctions').format(ComputerSystemId, PCIeDeviceId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'PCIeFunction', parent_path)
+			if PCIeDeviceId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'Systems/{0}/PCIeDevices/{1}/PCIeFunctions').format(ComputerSystemId, PCIeDeviceId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'PCIeFunction', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return PCIeFunction1API.post(self, ComputerSystemId, PCIeDeviceId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return PCIeFunction1API.post(self, ComputerSystemId, PCIeDeviceId, os.path.basename(config['@odata.id']))
+				else:
+					return PCIeFunction1API.post(self, ComputerSystemId, PCIeDeviceId, str(res))
 			else:
 				return PCIeFunction1API.post(self, ComputerSystemId, PCIeDeviceId, str(res))
 		else:
-			return PCIeFunction1API.post(self, ComputerSystemId, PCIeDeviceId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, ComputerSystemId, PCIeDeviceId):
-		logging.info('PCIeFunction1 Collection put called')
-
-		path = os.path.join(self.root, 'Systems/{0}/PCIeDevices/{1}/PCIeFunctions', 'index.json').format(ComputerSystemId, PCIeDeviceId)
-		put_object (path)
-		return self.get(ComputerSystemId)
+			return msg, code
 
 # PCIeFunction1 API
 class PCIeFunction1API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('PCIeFunction1 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ComputerSystemId, PCIeDeviceId, PCIeFunctionId):
 		logging.info('PCIeFunction1 get called')
-		path = create_path(self.root, 'Systems/{0}/PCIeDevices/{1}/PCIeFunctions/{2}', 'index.json').format(ComputerSystemId, PCIeDeviceId, PCIeFunctionId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Systems/{0}/PCIeDevices/{1}/PCIeFunctions/{2}', 'index.json').format(ComputerSystemId, PCIeDeviceId, PCIeFunctionId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class PCIeFunction1API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ComputerSystemId, PCIeDeviceId, PCIeFunctionId):
 		logging.info('PCIeFunction1 post called')
-		path = create_path(self.root, 'Systems/{0}/PCIeDevices/{1}/PCIeFunctions/{2}').format(ComputerSystemId, PCIeDeviceId, PCIeFunctionId)
-		collection_path = os.path.join(self.root, 'Systems/{0}/PCIeDevices/{1}/PCIeFunctions', 'index.json').format(ComputerSystemId, PCIeDeviceId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			PCIeFunction1CollectionAPI.post(self, ComputerSystemId, PCIeDeviceId)
+		if code == 200:
+			path = create_path(self.root, 'Systems/{0}/PCIeDevices/{1}/PCIeFunctions/{2}').format(ComputerSystemId, PCIeDeviceId, PCIeFunctionId)
+			collection_path = os.path.join(self.root, 'Systems/{0}/PCIeDevices/{1}/PCIeFunctions', 'index.json').format(ComputerSystemId, PCIeDeviceId)
 
-		if PCIeFunctionId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				PCIeFunction1CollectionAPI.post(self, ComputerSystemId, PCIeDeviceId)
+
+			if PCIeFunctionId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ComputerSystemId':ComputerSystemId, 'PCIeDeviceId':PCIeDeviceId, 'PCIeFunctionId':PCIeFunctionId, 'rb':g.rest_base}
+				config=get_PCIeFunction1_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('PCIeFunction1API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'ComputerSystemId':ComputerSystemId, 'PCIeDeviceId':PCIeDeviceId, 'PCIeFunctionId':PCIeFunctionId, 'rb':g.rest_base}
-			config=get_PCIeFunction1_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('PCIeFunction1API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ComputerSystemId, PCIeDeviceId, PCIeFunctionId):
 		logging.info('PCIeFunction1 put called')
-		path = os.path.join(self.root, 'Systems/{0}/PCIeDevices/{1}/PCIeFunctions/{2}', 'index.json').format(ComputerSystemId, PCIeDeviceId, PCIeFunctionId)
-		put_object(path)
-		return self.get(ComputerSystemId, PCIeDeviceId, PCIeFunctionId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Systems/{0}/PCIeDevices/{1}/PCIeFunctions/{2}', 'index.json').format(ComputerSystemId, PCIeDeviceId, PCIeFunctionId)
+			put_object(path)
+			return self.get(ComputerSystemId, PCIeDeviceId, PCIeFunctionId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ComputerSystemId, PCIeDeviceId, PCIeFunctionId):
 		logging.info('PCIeFunction1 patch called')
-		path = os.path.join(self.root, 'Systems/{0}/PCIeDevices/{1}/PCIeFunctions/{2}', 'index.json').format(ComputerSystemId, PCIeDeviceId, PCIeFunctionId)
-		patch_object(path)
-		return self.get(ComputerSystemId, PCIeDeviceId, PCIeFunctionId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Systems/{0}/PCIeDevices/{1}/PCIeFunctions/{2}', 'index.json').format(ComputerSystemId, PCIeDeviceId, PCIeFunctionId)
+			patch_object(path)
+			return self.get(ComputerSystemId, PCIeDeviceId, PCIeFunctionId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ComputerSystemId, PCIeDeviceId, PCIeFunctionId):
 		logging.info('PCIeFunction1 delete called')
-		path = create_path(self.root, 'Systems/{0}/PCIeDevices/{1}/PCIeFunctions/{2}').format(ComputerSystemId, PCIeDeviceId, PCIeFunctionId)
-		base_path = create_path(self.root, 'Systems/{0}/PCIeDevices/{1}/PCIeFunctions').format(ComputerSystemId, PCIeDeviceId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Systems/{0}/PCIeDevices/{1}/PCIeFunctions/{2}').format(ComputerSystemId, PCIeDeviceId, PCIeFunctionId)
+			base_path = create_path(self.root, 'Systems/{0}/PCIeDevices/{1}/PCIeFunctions').format(ComputerSystemId, PCIeDeviceId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

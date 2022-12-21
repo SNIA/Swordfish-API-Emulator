@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.StorageGroup2 import get_StorageGroup2_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # StorageGroup2 Collection API
 class StorageGroup2CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('StorageGroup2 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, StorageId):
 		logging.info('StorageGroup2 Collection get called')
-		path = os.path.join(self.root, 'Storage/{0}/StorageGroups', 'index.json').format(StorageId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Storage/{0}/StorageGroups', 'index.json').format(StorageId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, StorageId):
 		logging.info('StorageGroup2 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if StorageId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'Storage/{0}/StorageGroups').format(StorageId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'StorageGroup', parent_path)
+			if StorageId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'Storage/{0}/StorageGroups').format(StorageId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'StorageGroup', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return StorageGroup2API.post(self, StorageId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return StorageGroup2API.post(self, StorageId, os.path.basename(config['@odata.id']))
+				else:
+					return StorageGroup2API.post(self, StorageId, str(res))
 			else:
 				return StorageGroup2API.post(self, StorageId, str(res))
 		else:
-			return StorageGroup2API.post(self, StorageId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, StorageId):
-		logging.info('StorageGroup2 Collection put called')
-
-		path = os.path.join(self.root, 'Storage/{0}/StorageGroups', 'index.json').format(StorageId)
-		put_object (path)
-		return self.get(StorageId)
+			return msg, code
 
 # StorageGroup2 API
 class StorageGroup2API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('StorageGroup2 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, StorageId, StorageGroupId):
 		logging.info('StorageGroup2 get called')
-		path = create_path(self.root, 'Storage/{0}/StorageGroups/{1}', 'index.json').format(StorageId, StorageGroupId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/StorageGroups/{1}', 'index.json').format(StorageId, StorageGroupId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class StorageGroup2API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, StorageId, StorageGroupId):
 		logging.info('StorageGroup2 post called')
-		path = create_path(self.root, 'Storage/{0}/StorageGroups/{1}').format(StorageId, StorageGroupId)
-		collection_path = os.path.join(self.root, 'Storage/{0}/StorageGroups', 'index.json').format(StorageId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			StorageGroup2CollectionAPI.post(self, StorageId)
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/StorageGroups/{1}').format(StorageId, StorageGroupId)
+			collection_path = os.path.join(self.root, 'Storage/{0}/StorageGroups', 'index.json').format(StorageId)
 
-		if StorageGroupId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				StorageGroup2CollectionAPI.post(self, StorageId)
+
+			if StorageGroupId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'StorageId':StorageId, 'StorageGroupId':StorageGroupId, 'rb':g.rest_base}
+				config=get_StorageGroup2_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('StorageGroup2API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'StorageId':StorageId, 'StorageGroupId':StorageGroupId, 'rb':g.rest_base}
-			config=get_StorageGroup2_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('StorageGroup2API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, StorageId, StorageGroupId):
 		logging.info('StorageGroup2 put called')
-		path = create_path(self.root, 'Storage/{0}/StorageGroups/{1}', 'index.json').format(StorageId, StorageGroupId)
-		put_object(path)
-		return self.get(StorageId, StorageGroupId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/StorageGroups/{1}', 'index.json').format(StorageId, StorageGroupId)
+			put_object(path)
+			return self.get(StorageId, StorageGroupId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, StorageId, StorageGroupId):
 		logging.info('StorageGroup2 patch called')
-		path = create_path(self.root, 'Storage/{0}/StorageGroups/{1}', 'index.json').format(StorageId, StorageGroupId)
-		patch_object(path)
-		return self.get(StorageId, StorageGroupId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/StorageGroups/{1}', 'index.json').format(StorageId, StorageGroupId)
+			patch_object(path)
+			return self.get(StorageId, StorageGroupId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, StorageId, StorageGroupId):
 		logging.info('StorageGroup2 delete called')
-		path = create_path(self.root, 'Storage/{0}/StorageGroups/{1}').format(StorageId, StorageGroupId)
-		base_path = create_path(self.root, 'Storage/{0}/StorageGroups').format(StorageId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/StorageGroups/{1}').format(StorageId, StorageGroupId)
+			base_path = create_path(self.root, 'Storage/{0}/StorageGroups').format(StorageId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.RouteSetEntry5 import get_RouteSetEntry5_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # RouteSetEntry5 Collection API
 class RouteSetEntry5CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('RouteSetEntry5 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ChassisId, FabricAdapterId, SSDTId):
 		logging.info('RouteSetEntry5 Collection get called')
-		path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}/RouteSet', 'index.json').format(ChassisId, FabricAdapterId, SSDTId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}/RouteSet', 'index.json').format(ChassisId, FabricAdapterId, SSDTId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, ChassisId, FabricAdapterId, SSDTId):
 		logging.info('RouteSetEntry5 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if SSDTId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}/RouteSet').format(ChassisId, FabricAdapterId, SSDTId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'RouteSetEntry', parent_path)
+			if SSDTId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}/RouteSet').format(ChassisId, FabricAdapterId, SSDTId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'RouteSetEntry', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return RouteSetEntry5API.post(self, ChassisId, FabricAdapterId, SSDTId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return RouteSetEntry5API.post(self, ChassisId, FabricAdapterId, SSDTId, os.path.basename(config['@odata.id']))
+				else:
+					return RouteSetEntry5API.post(self, ChassisId, FabricAdapterId, SSDTId, str(res))
 			else:
 				return RouteSetEntry5API.post(self, ChassisId, FabricAdapterId, SSDTId, str(res))
 		else:
-			return RouteSetEntry5API.post(self, ChassisId, FabricAdapterId, SSDTId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, ChassisId, FabricAdapterId, SSDTId):
-		logging.info('RouteSetEntry5 Collection put called')
-
-		path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}/RouteSet', 'index.json').format(ChassisId, FabricAdapterId, SSDTId)
-		put_object (path)
-		return self.get(ChassisId)
+			return msg, code
 
 # RouteSetEntry5 API
 class RouteSetEntry5API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('RouteSetEntry5 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ChassisId, FabricAdapterId, SSDTId, RouteId):
 		logging.info('RouteSetEntry5 get called')
-		path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}/RouteSet/{3}', 'index.json').format(ChassisId, FabricAdapterId, SSDTId, RouteId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}/RouteSet/{3}', 'index.json').format(ChassisId, FabricAdapterId, SSDTId, RouteId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class RouteSetEntry5API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ChassisId, FabricAdapterId, SSDTId, RouteId):
 		logging.info('RouteSetEntry5 post called')
-		path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}/RouteSet/{3}').format(ChassisId, FabricAdapterId, SSDTId, RouteId)
-		collection_path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}/RouteSet', 'index.json').format(ChassisId, FabricAdapterId, SSDTId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			RouteSetEntry5CollectionAPI.post(self, ChassisId, FabricAdapterId, SSDTId)
+		if code == 200:
+			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}/RouteSet/{3}').format(ChassisId, FabricAdapterId, SSDTId, RouteId)
+			collection_path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}/RouteSet', 'index.json').format(ChassisId, FabricAdapterId, SSDTId)
 
-		if RouteId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				RouteSetEntry5CollectionAPI.post(self, ChassisId, FabricAdapterId, SSDTId)
+
+			if RouteId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ChassisId':ChassisId, 'FabricAdapterId':FabricAdapterId, 'SSDTId':SSDTId, 'RouteId':RouteId, 'rb':g.rest_base}
+				config=get_RouteSetEntry5_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('RouteSetEntry5API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'ChassisId':ChassisId, 'FabricAdapterId':FabricAdapterId, 'SSDTId':SSDTId, 'RouteId':RouteId, 'rb':g.rest_base}
-			config=get_RouteSetEntry5_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('RouteSetEntry5API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ChassisId, FabricAdapterId, SSDTId, RouteId):
 		logging.info('RouteSetEntry5 put called')
-		path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}/RouteSet/{3}', 'index.json').format(ChassisId, FabricAdapterId, SSDTId, RouteId)
-		put_object(path)
-		return self.get(ChassisId, FabricAdapterId, SSDTId, RouteId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}/RouteSet/{3}', 'index.json').format(ChassisId, FabricAdapterId, SSDTId, RouteId)
+			put_object(path)
+			return self.get(ChassisId, FabricAdapterId, SSDTId, RouteId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ChassisId, FabricAdapterId, SSDTId, RouteId):
 		logging.info('RouteSetEntry5 patch called')
-		path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}/RouteSet/{3}', 'index.json').format(ChassisId, FabricAdapterId, SSDTId, RouteId)
-		patch_object(path)
-		return self.get(ChassisId, FabricAdapterId, SSDTId, RouteId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}/RouteSet/{3}', 'index.json').format(ChassisId, FabricAdapterId, SSDTId, RouteId)
+			patch_object(path)
+			return self.get(ChassisId, FabricAdapterId, SSDTId, RouteId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ChassisId, FabricAdapterId, SSDTId, RouteId):
 		logging.info('RouteSetEntry5 delete called')
-		path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}/RouteSet/{3}').format(ChassisId, FabricAdapterId, SSDTId, RouteId)
-		base_path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}/RouteSet').format(ChassisId, FabricAdapterId, SSDTId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}/RouteSet/{3}').format(ChassisId, FabricAdapterId, SSDTId, RouteId)
+			base_path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}/RouteSet').format(ChassisId, FabricAdapterId, SSDTId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

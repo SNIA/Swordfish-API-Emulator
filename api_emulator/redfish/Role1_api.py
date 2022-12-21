@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.Role1 import get_Role1_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # Role1 Collection API
 class Role1CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Role1 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ManagerId):
 		logging.info('Role1 Collection get called')
-		path = os.path.join(self.root, 'Managers/{0}/RemoteAccountService/Roles', 'index.json').format(ManagerId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Managers/{0}/RemoteAccountService/Roles', 'index.json').format(ManagerId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, ManagerId):
 		logging.info('Role1 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if ManagerId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'Managers/{0}/RemoteAccountService/Roles').format(ManagerId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'Role', parent_path)
+			if ManagerId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/Roles').format(ManagerId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'Role', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return Role1API.post(self, ManagerId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return Role1API.post(self, ManagerId, os.path.basename(config['@odata.id']))
+				else:
+					return Role1API.post(self, ManagerId, str(res))
 			else:
 				return Role1API.post(self, ManagerId, str(res))
 		else:
-			return Role1API.post(self, ManagerId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, ManagerId):
-		logging.info('Role1 Collection put called')
-
-		path = os.path.join(self.root, 'Managers/{0}/RemoteAccountService/Roles', 'index.json').format(ManagerId)
-		put_object (path)
-		return self.get(ManagerId)
+			return msg, code
 
 # Role1 API
 class Role1API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Role1 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ManagerId, RoleId):
 		logging.info('Role1 get called')
-		path = create_path(self.root, 'Managers/{0}/RemoteAccountService/Roles/{1}', 'index.json').format(ManagerId, RoleId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/Roles/{1}', 'index.json').format(ManagerId, RoleId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class Role1API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ManagerId, RoleId):
 		logging.info('Role1 post called')
-		path = create_path(self.root, 'Managers/{0}/RemoteAccountService/Roles/{1}').format(ManagerId, RoleId)
-		collection_path = os.path.join(self.root, 'Managers/{0}/RemoteAccountService/Roles', 'index.json').format(ManagerId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			Role1CollectionAPI.post(self, ManagerId)
+		if code == 200:
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/Roles/{1}').format(ManagerId, RoleId)
+			collection_path = os.path.join(self.root, 'Managers/{0}/RemoteAccountService/Roles', 'index.json').format(ManagerId)
 
-		if RoleId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				Role1CollectionAPI.post(self, ManagerId)
+
+			if RoleId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ManagerId':ManagerId, 'RoleId':RoleId, 'rb':g.rest_base}
+				config=get_Role1_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('Role1API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'ManagerId':ManagerId, 'RoleId':RoleId, 'rb':g.rest_base}
-			config=get_Role1_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('Role1API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ManagerId, RoleId):
 		logging.info('Role1 put called')
-		path = create_path(self.root, 'Managers/{0}/RemoteAccountService/Roles/{1}', 'index.json').format(ManagerId, RoleId)
-		put_object(path)
-		return self.get(ManagerId, RoleId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/Roles/{1}', 'index.json').format(ManagerId, RoleId)
+			put_object(path)
+			return self.get(ManagerId, RoleId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ManagerId, RoleId):
 		logging.info('Role1 patch called')
-		path = create_path(self.root, 'Managers/{0}/RemoteAccountService/Roles/{1}', 'index.json').format(ManagerId, RoleId)
-		patch_object(path)
-		return self.get(ManagerId, RoleId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/Roles/{1}', 'index.json').format(ManagerId, RoleId)
+			patch_object(path)
+			return self.get(ManagerId, RoleId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ManagerId, RoleId):
 		logging.info('Role1 delete called')
-		path = create_path(self.root, 'Managers/{0}/RemoteAccountService/Roles/{1}').format(ManagerId, RoleId)
-		base_path = create_path(self.root, 'Managers/{0}/RemoteAccountService/Roles').format(ManagerId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/Roles/{1}').format(ManagerId, RoleId)
+			base_path = create_path(self.root, 'Managers/{0}/RemoteAccountService/Roles').format(ManagerId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.Control4 import get_Control4_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # Control4 Collection API
 class Control4CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Control4 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, PowerDistributionId):
 		logging.info('Control4 Collection get called')
-		path = os.path.join(self.root, 'PowerEquipment/TransferSwitches/{0}/Controls', 'index.json').format(PowerDistributionId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'PowerEquipment/TransferSwitches/{0}/Controls', 'index.json').format(PowerDistributionId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, PowerDistributionId):
 		logging.info('Control4 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if PowerDistributionId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Controls').format(PowerDistributionId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'Control', parent_path)
+			if PowerDistributionId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Controls').format(PowerDistributionId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'Control', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return Control4API.post(self, PowerDistributionId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return Control4API.post(self, PowerDistributionId, os.path.basename(config['@odata.id']))
+				else:
+					return Control4API.post(self, PowerDistributionId, str(res))
 			else:
 				return Control4API.post(self, PowerDistributionId, str(res))
 		else:
-			return Control4API.post(self, PowerDistributionId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, PowerDistributionId):
-		logging.info('Control4 Collection put called')
-
-		path = os.path.join(self.root, 'PowerEquipment/TransferSwitches/{0}/Controls', 'index.json').format(PowerDistributionId)
-		put_object (path)
-		return self.get(PowerDistributionId)
+			return msg, code
 
 # Control4 API
 class Control4API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Control4 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, PowerDistributionId, ControlId):
 		logging.info('Control4 get called')
-		path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Controls/{1}', 'index.json').format(PowerDistributionId, ControlId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Controls/{1}', 'index.json').format(PowerDistributionId, ControlId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class Control4API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, PowerDistributionId, ControlId):
 		logging.info('Control4 post called')
-		path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Controls/{1}').format(PowerDistributionId, ControlId)
-		collection_path = os.path.join(self.root, 'PowerEquipment/TransferSwitches/{0}/Controls', 'index.json').format(PowerDistributionId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			Control4CollectionAPI.post(self, PowerDistributionId)
+		if code == 200:
+			path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Controls/{1}').format(PowerDistributionId, ControlId)
+			collection_path = os.path.join(self.root, 'PowerEquipment/TransferSwitches/{0}/Controls', 'index.json').format(PowerDistributionId)
 
-		if ControlId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				Control4CollectionAPI.post(self, PowerDistributionId)
+
+			if ControlId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'PowerDistributionId':PowerDistributionId, 'ControlId':ControlId, 'rb':g.rest_base}
+				config=get_Control4_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('Control4API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'PowerDistributionId':PowerDistributionId, 'ControlId':ControlId, 'rb':g.rest_base}
-			config=get_Control4_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('Control4API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, PowerDistributionId, ControlId):
 		logging.info('Control4 put called')
-		path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Controls/{1}', 'index.json').format(PowerDistributionId, ControlId)
-		put_object(path)
-		return self.get(PowerDistributionId, ControlId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Controls/{1}', 'index.json').format(PowerDistributionId, ControlId)
+			put_object(path)
+			return self.get(PowerDistributionId, ControlId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, PowerDistributionId, ControlId):
 		logging.info('Control4 patch called')
-		path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Controls/{1}', 'index.json').format(PowerDistributionId, ControlId)
-		patch_object(path)
-		return self.get(PowerDistributionId, ControlId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Controls/{1}', 'index.json').format(PowerDistributionId, ControlId)
+			patch_object(path)
+			return self.get(PowerDistributionId, ControlId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, PowerDistributionId, ControlId):
 		logging.info('Control4 delete called')
-		path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Controls/{1}').format(PowerDistributionId, ControlId)
-		base_path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Controls').format(PowerDistributionId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Controls/{1}').format(PowerDistributionId, ControlId)
+			base_path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Controls').format(PowerDistributionId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

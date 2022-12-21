@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.StoragePool2 import get_StoragePool2_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # StoragePool2 Collection API
 class StoragePool2CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('StoragePool2 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, StorageServiceId, StoragePoolId, CapacitySourceId):
 		logging.info('StoragePool2 Collection get called')
-		path = os.path.join(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingPools', 'index.json').format(StorageServiceId, StoragePoolId, CapacitySourceId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingPools', 'index.json').format(StorageServiceId, StoragePoolId, CapacitySourceId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, StorageServiceId, StoragePoolId, CapacitySourceId):
 		logging.info('StoragePool2 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if CapacitySourceId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingPools').format(StorageServiceId, StoragePoolId, CapacitySourceId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'StoragePool', parent_path)
+			if CapacitySourceId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingPools').format(StorageServiceId, StoragePoolId, CapacitySourceId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'StoragePool', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return StoragePool2API.post(self, StorageServiceId, StoragePoolId, CapacitySourceId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return StoragePool2API.post(self, StorageServiceId, StoragePoolId, CapacitySourceId, os.path.basename(config['@odata.id']))
+				else:
+					return StoragePool2API.post(self, StorageServiceId, StoragePoolId, CapacitySourceId, str(res))
 			else:
 				return StoragePool2API.post(self, StorageServiceId, StoragePoolId, CapacitySourceId, str(res))
 		else:
-			return StoragePool2API.post(self, StorageServiceId, StoragePoolId, CapacitySourceId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, StorageServiceId, StoragePoolId, CapacitySourceId):
-		logging.info('StoragePool2 Collection put called')
-
-		path = os.path.join(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingPools', 'index.json').format(StorageServiceId, StoragePoolId, CapacitySourceId)
-		put_object (path)
-		return self.get(StorageServiceId)
+			return msg, code
 
 # StoragePool2 API
 class StoragePool2API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('StoragePool2 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, StorageServiceId, StoragePoolId, CapacitySourceId, ProvidingPoolId):
 		logging.info('StoragePool2 get called')
-		path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingPools/{3}', 'index.json').format(StorageServiceId, StoragePoolId, CapacitySourceId, ProvidingPoolId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingPools/{3}', 'index.json').format(StorageServiceId, StoragePoolId, CapacitySourceId, ProvidingPoolId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class StoragePool2API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, StorageServiceId, StoragePoolId, CapacitySourceId, ProvidingPoolId):
 		logging.info('StoragePool2 post called')
-		path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingPools/{3}').format(StorageServiceId, StoragePoolId, CapacitySourceId, ProvidingPoolId)
-		collection_path = os.path.join(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingPools', 'index.json').format(StorageServiceId, StoragePoolId, CapacitySourceId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			StoragePool2CollectionAPI.post(self, StorageServiceId, StoragePoolId, CapacitySourceId)
+		if code == 200:
+			path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingPools/{3}').format(StorageServiceId, StoragePoolId, CapacitySourceId, ProvidingPoolId)
+			collection_path = os.path.join(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingPools', 'index.json').format(StorageServiceId, StoragePoolId, CapacitySourceId)
 
-		if ProvidingPoolId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				StoragePool2CollectionAPI.post(self, StorageServiceId, StoragePoolId, CapacitySourceId)
+
+			if ProvidingPoolId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'StorageServiceId':StorageServiceId, 'StoragePoolId':StoragePoolId, 'CapacitySourceId':CapacitySourceId, 'ProvidingPoolId':ProvidingPoolId, 'rb':g.rest_base}
+				config=get_StoragePool2_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('StoragePool2API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'StorageServiceId':StorageServiceId, 'StoragePoolId':StoragePoolId, 'CapacitySourceId':CapacitySourceId, 'ProvidingPoolId':ProvidingPoolId, 'rb':g.rest_base}
-			config=get_StoragePool2_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('StoragePool2API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, StorageServiceId, StoragePoolId, CapacitySourceId, ProvidingPoolId):
 		logging.info('StoragePool2 put called')
-		path = os.path.join(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingPools/{3}', 'index.json').format(StorageServiceId, StoragePoolId, CapacitySourceId, ProvidingPoolId)
-		put_object(path)
-		return self.get(StorageServiceId, StoragePoolId, CapacitySourceId, ProvidingPoolId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingPools/{3}', 'index.json').format(StorageServiceId, StoragePoolId, CapacitySourceId, ProvidingPoolId)
+			put_object(path)
+			return self.get(StorageServiceId, StoragePoolId, CapacitySourceId, ProvidingPoolId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, StorageServiceId, StoragePoolId, CapacitySourceId, ProvidingPoolId):
 		logging.info('StoragePool2 patch called')
-		path = os.path.join(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingPools/{3}', 'index.json').format(StorageServiceId, StoragePoolId, CapacitySourceId, ProvidingPoolId)
-		patch_object(path)
-		return self.get(StorageServiceId, StoragePoolId, CapacitySourceId, ProvidingPoolId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingPools/{3}', 'index.json').format(StorageServiceId, StoragePoolId, CapacitySourceId, ProvidingPoolId)
+			patch_object(path)
+			return self.get(StorageServiceId, StoragePoolId, CapacitySourceId, ProvidingPoolId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, StorageServiceId, StoragePoolId, CapacitySourceId, ProvidingPoolId):
 		logging.info('StoragePool2 delete called')
-		path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingPools/{3}').format(StorageServiceId, StoragePoolId, CapacitySourceId, ProvidingPoolId)
-		base_path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingPools').format(StorageServiceId, StoragePoolId, CapacitySourceId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingPools/{3}').format(StorageServiceId, StoragePoolId, CapacitySourceId, ProvidingPoolId)
+			base_path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingPools').format(StorageServiceId, StoragePoolId, CapacitySourceId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

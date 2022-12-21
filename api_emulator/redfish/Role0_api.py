@@ -66,38 +66,30 @@ class Role0CollectionAPI(Resource):
 	# HTTP POST Collection
 	def post(self):
 		logging.info('Role0 Collection post called')
-
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
-
-		path = create_path(self.root, 'AccountService/Roles')
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'Role', parent_path)
-
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return Role0API.post(self, os.path.basename(config['@odata.id']))
-			else:
-				return Role0API.post(self, str(res))
-		else:
-			return Role0API.post(self, str(res))
-
-	# HTTP PUT Collection
-	def put(self):
-		logging.info('Role0 Collection put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'AccountService/Roles', 'index.json')
-			put_object (path)
-			return self.get(self.root)
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
+
+			path = create_path(self.root, 'AccountService/Roles')
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'Role', parent_path)
+
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return Role0API.post(self, os.path.basename(config['@odata.id']))
+				else:
+					return Role0API.post(self, str(res))
+			else:
+				return Role0API.post(self, str(res))
 		else:
 			return msg, code
 

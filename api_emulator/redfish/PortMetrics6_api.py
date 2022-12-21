@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
@@ -49,15 +49,21 @@ INTERNAL_ERROR = 500
 
 # PortMetrics6 API
 class PortMetrics6API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('PortMetrics6 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ComputerSystemId, ControllerId, PortId):
 		logging.info('PortMetrics6 get called')
-		path = create_path(self.root, 'Systems/{0}/USBControllers/{1}/Ports/{2}/Metrics', 'index.json').format(ComputerSystemId, ControllerId, PortId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Systems/{0}/USBControllers/{1}/Ports/{2}/Metrics', 'index.json').format(ComputerSystemId, ControllerId, PortId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	def post(self, ComputerSystemId, ControllerId, PortId):

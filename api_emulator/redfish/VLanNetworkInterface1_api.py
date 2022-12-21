@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.VLanNetworkInterface1 import get_VLanNetworkInterface1_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # VLanNetworkInterface1 Collection API
 class VLanNetworkInterface1CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('VLanNetworkInterface1 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ManagerId, EthernetInterfaceId):
 		logging.info('VLanNetworkInterface1 Collection get called')
-		path = os.path.join(self.root, 'Managers/{0}/EthernetInterfaces/{1}/VLANs', 'index.json').format(ManagerId, EthernetInterfaceId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Managers/{0}/EthernetInterfaces/{1}/VLANs', 'index.json').format(ManagerId, EthernetInterfaceId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, ManagerId, EthernetInterfaceId):
 		logging.info('VLanNetworkInterface1 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if EthernetInterfaceId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'Managers/{0}/EthernetInterfaces/{1}/VLANs').format(ManagerId, EthernetInterfaceId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'VLanNetworkInterface', parent_path)
+			if EthernetInterfaceId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'Managers/{0}/EthernetInterfaces/{1}/VLANs').format(ManagerId, EthernetInterfaceId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'VLanNetworkInterface', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return VLanNetworkInterface1API.post(self, ManagerId, EthernetInterfaceId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return VLanNetworkInterface1API.post(self, ManagerId, EthernetInterfaceId, os.path.basename(config['@odata.id']))
+				else:
+					return VLanNetworkInterface1API.post(self, ManagerId, EthernetInterfaceId, str(res))
 			else:
 				return VLanNetworkInterface1API.post(self, ManagerId, EthernetInterfaceId, str(res))
 		else:
-			return VLanNetworkInterface1API.post(self, ManagerId, EthernetInterfaceId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, ManagerId, EthernetInterfaceId):
-		logging.info('VLanNetworkInterface1 Collection put called')
-
-		path = os.path.join(self.root, 'Managers/{0}/EthernetInterfaces/{1}/VLANs', 'index.json').format(ManagerId, EthernetInterfaceId)
-		put_object (path)
-		return self.get(ManagerId)
+			return msg, code
 
 # VLanNetworkInterface1 API
 class VLanNetworkInterface1API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('VLanNetworkInterface1 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ManagerId, EthernetInterfaceId, VLanNetworkInterfaceId):
 		logging.info('VLanNetworkInterface1 get called')
-		path = create_path(self.root, 'Managers/{0}/EthernetInterfaces/{1}/VLANs/{2}', 'index.json').format(ManagerId, EthernetInterfaceId, VLanNetworkInterfaceId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Managers/{0}/EthernetInterfaces/{1}/VLANs/{2}', 'index.json').format(ManagerId, EthernetInterfaceId, VLanNetworkInterfaceId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class VLanNetworkInterface1API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ManagerId, EthernetInterfaceId, VLanNetworkInterfaceId):
 		logging.info('VLanNetworkInterface1 post called')
-		path = create_path(self.root, 'Managers/{0}/EthernetInterfaces/{1}/VLANs/{2}').format(ManagerId, EthernetInterfaceId, VLanNetworkInterfaceId)
-		collection_path = os.path.join(self.root, 'Managers/{0}/EthernetInterfaces/{1}/VLANs', 'index.json').format(ManagerId, EthernetInterfaceId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			VLanNetworkInterface1CollectionAPI.post(self, ManagerId, EthernetInterfaceId)
+		if code == 200:
+			path = create_path(self.root, 'Managers/{0}/EthernetInterfaces/{1}/VLANs/{2}').format(ManagerId, EthernetInterfaceId, VLanNetworkInterfaceId)
+			collection_path = os.path.join(self.root, 'Managers/{0}/EthernetInterfaces/{1}/VLANs', 'index.json').format(ManagerId, EthernetInterfaceId)
 
-		if VLanNetworkInterfaceId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				VLanNetworkInterface1CollectionAPI.post(self, ManagerId, EthernetInterfaceId)
+
+			if VLanNetworkInterfaceId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ManagerId':ManagerId, 'EthernetInterfaceId':EthernetInterfaceId, 'VLanNetworkInterfaceId':VLanNetworkInterfaceId, 'rb':g.rest_base}
+				config=get_VLanNetworkInterface1_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('VLanNetworkInterface1API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'ManagerId':ManagerId, 'EthernetInterfaceId':EthernetInterfaceId, 'VLanNetworkInterfaceId':VLanNetworkInterfaceId, 'rb':g.rest_base}
-			config=get_VLanNetworkInterface1_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('VLanNetworkInterface1API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ManagerId, EthernetInterfaceId, VLanNetworkInterfaceId):
 		logging.info('VLanNetworkInterface1 put called')
-		path = os.path.join(self.root, 'Managers/{0}/EthernetInterfaces/{1}/VLANs/{2}', 'index.json').format(ManagerId, EthernetInterfaceId, VLanNetworkInterfaceId)
-		put_object(path)
-		return self.get(ManagerId, EthernetInterfaceId, VLanNetworkInterfaceId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Managers/{0}/EthernetInterfaces/{1}/VLANs/{2}', 'index.json').format(ManagerId, EthernetInterfaceId, VLanNetworkInterfaceId)
+			put_object(path)
+			return self.get(ManagerId, EthernetInterfaceId, VLanNetworkInterfaceId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ManagerId, EthernetInterfaceId, VLanNetworkInterfaceId):
 		logging.info('VLanNetworkInterface1 patch called')
-		path = os.path.join(self.root, 'Managers/{0}/EthernetInterfaces/{1}/VLANs/{2}', 'index.json').format(ManagerId, EthernetInterfaceId, VLanNetworkInterfaceId)
-		patch_object(path)
-		return self.get(ManagerId, EthernetInterfaceId, VLanNetworkInterfaceId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Managers/{0}/EthernetInterfaces/{1}/VLANs/{2}', 'index.json').format(ManagerId, EthernetInterfaceId, VLanNetworkInterfaceId)
+			patch_object(path)
+			return self.get(ManagerId, EthernetInterfaceId, VLanNetworkInterfaceId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ManagerId, EthernetInterfaceId, VLanNetworkInterfaceId):
 		logging.info('VLanNetworkInterface1 delete called')
-		path = create_path(self.root, 'Managers/{0}/EthernetInterfaces/{1}/VLANs/{2}').format(ManagerId, EthernetInterfaceId, VLanNetworkInterfaceId)
-		base_path = create_path(self.root, 'Managers/{0}/EthernetInterfaces/{1}/VLANs').format(ManagerId, EthernetInterfaceId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Managers/{0}/EthernetInterfaces/{1}/VLANs/{2}').format(ManagerId, EthernetInterfaceId, VLanNetworkInterfaceId)
+			base_path = create_path(self.root, 'Managers/{0}/EthernetInterfaces/{1}/VLANs').format(ManagerId, EthernetInterfaceId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

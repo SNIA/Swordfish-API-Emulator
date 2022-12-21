@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.ConnectionMethod import get_ConnectionMethod_instance
 
 members = []
@@ -47,61 +47,69 @@ INTERNAL_ERROR = 500
 
 # ConnectionMethod Collection API
 class ConnectionMethodCollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('ConnectionMethod Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self):
 		logging.info('ConnectionMethod Collection get called')
-		path = os.path.join(self.root, 'AggregationService/ConnectionMethods', 'index.json')
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'AggregationService/ConnectionMethods', 'index.json')
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self):
 		logging.info('ConnectionMethod Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		path = create_path(self.root, 'AggregationService/ConnectionMethods')
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'ConnectionMethod', parent_path)
+			path = create_path(self.root, 'AggregationService/ConnectionMethods')
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'ConnectionMethod', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return ConnectionMethodAPI.post(self, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return ConnectionMethodAPI.post(self, os.path.basename(config['@odata.id']))
+				else:
+					return ConnectionMethodAPI.post(self, str(res))
 			else:
 				return ConnectionMethodAPI.post(self, str(res))
 		else:
-			return ConnectionMethodAPI.post(self, str(res))
-
-	# HTTP PUT Collection
-	def put(self):
-		logging.info('ConnectionMethod Collection put called')
-
-		path = os.path.join(self.root, 'AggregationService/ConnectionMethods', 'index.json')
-		put_object (path)
-		return self.get(self.root)
+			return msg, code
 
 # ConnectionMethod API
 class ConnectionMethodAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('ConnectionMethod init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ConnectionMethodId):
 		logging.info('ConnectionMethod get called')
-		path = create_path(self.root, 'AggregationService/ConnectionMethods/{0}', 'index.json').format(ConnectionMethodId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'AggregationService/ConnectionMethods/{0}', 'index.json').format(ConnectionMethodId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -110,47 +118,67 @@ class ConnectionMethodAPI(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ConnectionMethodId):
 		logging.info('ConnectionMethod post called')
-		path = create_path(self.root, 'AggregationService/ConnectionMethods/{0}').format(ConnectionMethodId)
-		collection_path = os.path.join(self.root, 'AggregationService/ConnectionMethods', 'index.json')
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			ConnectionMethodCollectionAPI.post(self)
+		if code == 200:
+			path = create_path(self.root, 'AggregationService/ConnectionMethods/{0}').format(ConnectionMethodId)
+			collection_path = os.path.join(self.root, 'AggregationService/ConnectionMethods', 'index.json')
 
-		if ConnectionMethodId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				ConnectionMethodCollectionAPI.post(self)
+
+			if ConnectionMethodId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ConnectionMethodId':ConnectionMethodId, 'rb':g.rest_base}
+				config=get_ConnectionMethod_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('ConnectionMethodAPI POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'ConnectionMethodId':ConnectionMethodId, 'rb':g.rest_base}
-			config=get_ConnectionMethod_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('ConnectionMethodAPI POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ConnectionMethodId):
 		logging.info('ConnectionMethod put called')
-		path = os.path.join(self.root, 'AggregationService/ConnectionMethods/{0}', 'index.json').format(ConnectionMethodId)
-		put_object(path)
-		return self.get(ConnectionMethodId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'AggregationService/ConnectionMethods/{0}', 'index.json').format(ConnectionMethodId)
+			put_object(path)
+			return self.get(ConnectionMethodId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ConnectionMethodId):
 		logging.info('ConnectionMethod patch called')
-		path = os.path.join(self.root, 'AggregationService/ConnectionMethods/{0}', 'index.json').format(ConnectionMethodId)
-		patch_object(path)
-		return self.get(ConnectionMethodId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'AggregationService/ConnectionMethods/{0}', 'index.json').format(ConnectionMethodId)
+			patch_object(path)
+			return self.get(ConnectionMethodId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ConnectionMethodId):
 		logging.info('ConnectionMethod delete called')
-		path = create_path(self.root, 'AggregationService/ConnectionMethods/{0}').format(ConnectionMethodId)
-		base_path = create_path(self.root, 'AggregationService/ConnectionMethods')
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'AggregationService/ConnectionMethods/{0}').format(ConnectionMethodId)
+			base_path = create_path(self.root, 'AggregationService/ConnectionMethods')
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

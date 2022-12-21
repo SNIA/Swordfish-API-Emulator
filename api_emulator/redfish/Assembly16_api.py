@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
@@ -49,15 +49,21 @@ INTERNAL_ERROR = 500
 
 # Assembly16 API
 class Assembly16API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Assembly16 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ComputerSystemId, PCIeDeviceId):
 		logging.info('Assembly16 get called')
-		path = create_path(self.root, 'Systems/{0}/PCIeDevices/{1}/Assembly', 'index.json').format(ComputerSystemId, PCIeDeviceId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Systems/{0}/PCIeDevices/{1}/Assembly', 'index.json').format(ComputerSystemId, PCIeDeviceId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	def post(self, ComputerSystemId, PCIeDeviceId):

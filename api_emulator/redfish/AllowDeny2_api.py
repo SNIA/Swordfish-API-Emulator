@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.AllowDeny2 import get_AllowDeny2_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # AllowDeny2 Collection API
 class AllowDeny2CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('AllowDeny2 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId):
 		logging.info('AllowDeny2 Collection get called')
-		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/NetworkInterfaces/{1}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny', 'index.json').format(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/NetworkInterfaces/{1}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny', 'index.json').format(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId):
 		logging.info('AllowDeny2 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if NetworkDeviceFunctionsNetworkDeviceFunctionId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/NetworkInterfaces/{1}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny').format(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'AllowDeny', parent_path)
+			if NetworkDeviceFunctionsNetworkDeviceFunctionId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/NetworkInterfaces/{1}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny').format(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'AllowDeny', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return AllowDeny2API.post(self, ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return AllowDeny2API.post(self, ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, os.path.basename(config['@odata.id']))
+				else:
+					return AllowDeny2API.post(self, ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, str(res))
 			else:
 				return AllowDeny2API.post(self, ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, str(res))
 		else:
-			return AllowDeny2API.post(self, ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId):
-		logging.info('AllowDeny2 Collection put called')
-
-		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/NetworkInterfaces/{1}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny', 'index.json').format(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId)
-		put_object (path)
-		return self.get(ResourceBlockId)
+			return msg, code
 
 # AllowDeny2 API
 class AllowDeny2API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('AllowDeny2 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, AllowDenyId):
 		logging.info('AllowDeny2 get called')
-		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/NetworkInterfaces/{1}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny/{3}', 'index.json').format(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, AllowDenyId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/NetworkInterfaces/{1}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny/{3}', 'index.json').format(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, AllowDenyId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class AllowDeny2API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, AllowDenyId):
 		logging.info('AllowDeny2 post called')
-		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/NetworkInterfaces/{1}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny/{3}').format(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, AllowDenyId)
-		collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/NetworkInterfaces/{1}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny', 'index.json').format(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			AllowDeny2CollectionAPI.post(self, ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId)
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/NetworkInterfaces/{1}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny/{3}').format(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, AllowDenyId)
+			collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/NetworkInterfaces/{1}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny', 'index.json').format(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId)
 
-		if AllowDenyId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				AllowDeny2CollectionAPI.post(self, ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId)
+
+			if AllowDenyId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'NetworkInterfaceId':NetworkInterfaceId, 'NetworkDeviceFunctionsNetworkDeviceFunctionId':NetworkDeviceFunctionsNetworkDeviceFunctionId, 'AllowDenyId':AllowDenyId, 'rb':g.rest_base}
+				config=get_AllowDeny2_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('AllowDeny2API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'ResourceBlockId':ResourceBlockId, 'NetworkInterfaceId':NetworkInterfaceId, 'NetworkDeviceFunctionsNetworkDeviceFunctionId':NetworkDeviceFunctionsNetworkDeviceFunctionId, 'AllowDenyId':AllowDenyId, 'rb':g.rest_base}
-			config=get_AllowDeny2_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('AllowDeny2API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, AllowDenyId):
 		logging.info('AllowDeny2 put called')
-		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/NetworkInterfaces/{1}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny/{3}', 'index.json').format(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, AllowDenyId)
-		put_object(path)
-		return self.get(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, AllowDenyId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/NetworkInterfaces/{1}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny/{3}', 'index.json').format(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, AllowDenyId)
+			put_object(path)
+			return self.get(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, AllowDenyId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, AllowDenyId):
 		logging.info('AllowDeny2 patch called')
-		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/NetworkInterfaces/{1}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny/{3}', 'index.json').format(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, AllowDenyId)
-		patch_object(path)
-		return self.get(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, AllowDenyId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/NetworkInterfaces/{1}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny/{3}', 'index.json').format(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, AllowDenyId)
+			patch_object(path)
+			return self.get(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, AllowDenyId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, AllowDenyId):
 		logging.info('AllowDeny2 delete called')
-		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/NetworkInterfaces/{1}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny/{3}').format(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, AllowDenyId)
-		base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/NetworkInterfaces/{1}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny').format(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/NetworkInterfaces/{1}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny/{3}').format(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId, AllowDenyId)
+			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/NetworkInterfaces/{1}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny').format(ResourceBlockId, NetworkInterfaceId, NetworkDeviceFunctionsNetworkDeviceFunctionId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

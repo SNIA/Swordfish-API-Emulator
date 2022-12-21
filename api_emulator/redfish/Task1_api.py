@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.Task1 import get_Task1_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # Task1 Collection API
 class Task1CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Task1 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, TaskId):
 		logging.info('Task1 Collection get called')
-		path = os.path.join(self.root, 'TaskService/Tasks/{0}/SubTasks', 'index.json').format(TaskId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'TaskService/Tasks/{0}/SubTasks', 'index.json').format(TaskId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, TaskId):
 		logging.info('Task1 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if TaskId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'TaskService/Tasks/{0}/SubTasks').format(TaskId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'Task', parent_path)
+			if TaskId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'TaskService/Tasks/{0}/SubTasks').format(TaskId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'Task', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return Task1API.post(self, TaskId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return Task1API.post(self, TaskId, os.path.basename(config['@odata.id']))
+				else:
+					return Task1API.post(self, TaskId, str(res))
 			else:
 				return Task1API.post(self, TaskId, str(res))
 		else:
-			return Task1API.post(self, TaskId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, TaskId):
-		logging.info('Task1 Collection put called')
-
-		path = os.path.join(self.root, 'TaskService/Tasks/{0}/SubTasks', 'index.json').format(TaskId)
-		put_object (path)
-		return self.get(TaskId)
+			return msg, code
 
 # Task1 API
 class Task1API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Task1 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, TaskId, TaskId2):
 		logging.info('Task1 get called')
-		path = create_path(self.root, 'TaskService/Tasks/{0}/SubTasks/{02}', 'index.json').format(TaskId, TaskId2)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'TaskService/Tasks/{0}/SubTasks/{02}', 'index.json').format(TaskId, TaskId2)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class Task1API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, TaskId, TaskId2):
 		logging.info('Task1 post called')
-		path = create_path(self.root, 'TaskService/Tasks/{0}/SubTasks/{02}').format(TaskId, TaskId2)
-		collection_path = os.path.join(self.root, 'TaskService/Tasks/{0}/SubTasks', 'index.json').format(TaskId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			Task1CollectionAPI.post(self, TaskId)
+		if code == 200:
+			path = create_path(self.root, 'TaskService/Tasks/{0}/SubTasks/{02}').format(TaskId, TaskId2)
+			collection_path = os.path.join(self.root, 'TaskService/Tasks/{0}/SubTasks', 'index.json').format(TaskId)
 
-		if TaskId2 in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				Task1CollectionAPI.post(self, TaskId)
+
+			if TaskId2 in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'TaskId':TaskId, 'TaskId2':TaskId2, 'rb':g.rest_base}
+				config=get_Task1_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('Task1API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'TaskId':TaskId, 'TaskId2':TaskId2, 'rb':g.rest_base}
-			config=get_Task1_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('Task1API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, TaskId, TaskId2):
 		logging.info('Task1 put called')
-		path = create_path(self.root, 'TaskService/Tasks/{0}/SubTasks/{02}', 'index.json').format(TaskId, TaskId2)
-		put_object(path)
-		return self.get(TaskId, TaskId2)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'TaskService/Tasks/{0}/SubTasks/{02}', 'index.json').format(TaskId, TaskId2)
+			put_object(path)
+			return self.get(TaskId, TaskId2)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, TaskId, TaskId2):
 		logging.info('Task1 patch called')
-		path = create_path(self.root, 'TaskService/Tasks/{0}/SubTasks/{02}', 'index.json').format(TaskId, TaskId2)
-		patch_object(path)
-		return self.get(TaskId, TaskId2)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'TaskService/Tasks/{0}/SubTasks/{02}', 'index.json').format(TaskId, TaskId2)
+			patch_object(path)
+			return self.get(TaskId, TaskId2)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, TaskId, TaskId2):
 		logging.info('Task1 delete called')
-		path = create_path(self.root, 'TaskService/Tasks/{0}/SubTasks/{02}').format(TaskId, TaskId2)
-		base_path = create_path(self.root, 'TaskService/Tasks/{0}/SubTasks').format(TaskId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'TaskService/Tasks/{0}/SubTasks/{02}').format(TaskId, TaskId2)
+			base_path = create_path(self.root, 'TaskService/Tasks/{0}/SubTasks').format(TaskId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

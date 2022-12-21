@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.ConsistencyGroup0 import get_ConsistencyGroup0_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # ConsistencyGroup0 Collection API
 class ConsistencyGroup0CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('ConsistencyGroup0 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, StorageId):
 		logging.info('ConsistencyGroup0 Collection get called')
-		path = os.path.join(self.root, 'Storage/{0}/ConsistencyGroups', 'index.json').format(StorageId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Storage/{0}/ConsistencyGroups', 'index.json').format(StorageId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, StorageId):
 		logging.info('ConsistencyGroup0 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if StorageId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'Storage/{0}/ConsistencyGroups').format(StorageId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'ConsistencyGroup', parent_path)
+			if StorageId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'Storage/{0}/ConsistencyGroups').format(StorageId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'ConsistencyGroup', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return ConsistencyGroup0API.post(self, StorageId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return ConsistencyGroup0API.post(self, StorageId, os.path.basename(config['@odata.id']))
+				else:
+					return ConsistencyGroup0API.post(self, StorageId, str(res))
 			else:
 				return ConsistencyGroup0API.post(self, StorageId, str(res))
 		else:
-			return ConsistencyGroup0API.post(self, StorageId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, StorageId):
-		logging.info('ConsistencyGroup0 Collection put called')
-
-		path = os.path.join(self.root, 'Storage/{0}/ConsistencyGroups', 'index.json').format(StorageId)
-		put_object (path)
-		return self.get(StorageId)
+			return msg, code
 
 # ConsistencyGroup0 API
 class ConsistencyGroup0API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('ConsistencyGroup0 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, StorageId, ConsistencyGroupId):
 		logging.info('ConsistencyGroup0 get called')
-		path = create_path(self.root, 'Storage/{0}/ConsistencyGroups/{1}', 'index.json').format(StorageId, ConsistencyGroupId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/ConsistencyGroups/{1}', 'index.json').format(StorageId, ConsistencyGroupId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class ConsistencyGroup0API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, StorageId, ConsistencyGroupId):
 		logging.info('ConsistencyGroup0 post called')
-		path = create_path(self.root, 'Storage/{0}/ConsistencyGroups/{1}').format(StorageId, ConsistencyGroupId)
-		collection_path = os.path.join(self.root, 'Storage/{0}/ConsistencyGroups', 'index.json').format(StorageId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			ConsistencyGroup0CollectionAPI.post(self, StorageId)
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/ConsistencyGroups/{1}').format(StorageId, ConsistencyGroupId)
+			collection_path = os.path.join(self.root, 'Storage/{0}/ConsistencyGroups', 'index.json').format(StorageId)
 
-		if ConsistencyGroupId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				ConsistencyGroup0CollectionAPI.post(self, StorageId)
+
+			if ConsistencyGroupId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'StorageId':StorageId, 'ConsistencyGroupId':ConsistencyGroupId, 'rb':g.rest_base}
+				config=get_ConsistencyGroup0_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('ConsistencyGroup0API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'StorageId':StorageId, 'ConsistencyGroupId':ConsistencyGroupId, 'rb':g.rest_base}
-			config=get_ConsistencyGroup0_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('ConsistencyGroup0API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, StorageId, ConsistencyGroupId):
 		logging.info('ConsistencyGroup0 put called')
-		path = create_path(self.root, 'Storage/{0}/ConsistencyGroups/{1}', 'index.json').format(StorageId, ConsistencyGroupId)
-		put_object(path)
-		return self.get(StorageId, ConsistencyGroupId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/ConsistencyGroups/{1}', 'index.json').format(StorageId, ConsistencyGroupId)
+			put_object(path)
+			return self.get(StorageId, ConsistencyGroupId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, StorageId, ConsistencyGroupId):
 		logging.info('ConsistencyGroup0 patch called')
-		path = create_path(self.root, 'Storage/{0}/ConsistencyGroups/{1}', 'index.json').format(StorageId, ConsistencyGroupId)
-		patch_object(path)
-		return self.get(StorageId, ConsistencyGroupId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/ConsistencyGroups/{1}', 'index.json').format(StorageId, ConsistencyGroupId)
+			patch_object(path)
+			return self.get(StorageId, ConsistencyGroupId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, StorageId, ConsistencyGroupId):
 		logging.info('ConsistencyGroup0 delete called')
-		path = create_path(self.root, 'Storage/{0}/ConsistencyGroups/{1}').format(StorageId, ConsistencyGroupId)
-		base_path = create_path(self.root, 'Storage/{0}/ConsistencyGroups').format(StorageId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/ConsistencyGroups/{1}').format(StorageId, ConsistencyGroupId)
+			base_path = create_path(self.root, 'Storage/{0}/ConsistencyGroups').format(StorageId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

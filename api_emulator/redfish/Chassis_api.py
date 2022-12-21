@@ -30,18 +30,15 @@
 # Resource implementation for - /redfish/v1/Chassis/{ChassisId}
 # Program name - Chassis_api.py
 
-import random
-import string
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
-import jwt
 
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, get_sessionValidation_error, update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.Chassis import get_Chassis_instance
 
 members = []
@@ -59,7 +56,7 @@ class ChassisCollectionAPI(Resource):
 	def get(self):
 		logging.info('Chassis Collection get called')
 		msg, code = check_authentication(self.auth)
-		
+
 		if code == 200:
 			path = os.path.join(self.root, 'Chassis', 'index.json')
 			return get_json_data(path)
@@ -68,8 +65,10 @@ class ChassisCollectionAPI(Resource):
 
 	# HTTP POST Collection
 	def post(self):
-			logging.info('Chassis Collection post called')
+		logging.info('Chassis Collection post called')
+		msg, code = check_authentication(self.auth)
 
+		if code == 200:
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.type" in config:
@@ -91,17 +90,8 @@ class ChassisCollectionAPI(Resource):
 					return ChassisAPI.post(self, str(res))
 			else:
 				return ChassisAPI.post(self, str(res))
-
-	# HTTP PUT Collection
-	def put(self):
-		logging.info('Chassis Collection put called')
-		msg, code = check_authentication(self.auth)
-		if code == 200:
-			path = os.path.join(self.root, 'Chassis', 'index.json')
-			put_object (path)
-			return self.get(self.root)
 		else:
-			return msg, code					
+			return msg, code
 
 # Chassis API
 class ChassisAPI(Resource):
@@ -151,9 +141,8 @@ class ChassisAPI(Resource):
 			except Exception:
 				traceback.print_exc()
 				resp = INTERNAL_ERROR
-				logging.info('ChassisAPI POST exit')
+			logging.info('ChassisAPI POST exit')
 			return resp
-
 		else:
 			return msg, code
 
@@ -179,7 +168,7 @@ class ChassisAPI(Resource):
 			patch_object(path)
 			return self.get(ChassisId)
 		else:
-				return msg, code
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ChassisId):
@@ -192,3 +181,4 @@ class ChassisAPI(Resource):
 			return delete_object(path, base_path)
 		else:
 			return msg, code
+

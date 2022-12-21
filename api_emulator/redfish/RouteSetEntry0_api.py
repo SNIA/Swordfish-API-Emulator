@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.RouteSetEntry0 import get_RouteSetEntry0_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # RouteSetEntry0 Collection API
 class RouteSetEntry0CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('RouteSetEntry0 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, FabricId, SwitchId, PortId, LPRTId):
 		logging.info('RouteSetEntry0 Collection get called')
-		path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/LPRT/{3}/RouteSet', 'index.json').format(FabricId, SwitchId, PortId, LPRTId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/LPRT/{3}/RouteSet', 'index.json').format(FabricId, SwitchId, PortId, LPRTId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, FabricId, SwitchId, PortId, LPRTId):
 		logging.info('RouteSetEntry0 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if LPRTId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/LPRT/{3}/RouteSet').format(FabricId, SwitchId, PortId, LPRTId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'RouteSetEntry', parent_path)
+			if LPRTId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/LPRT/{3}/RouteSet').format(FabricId, SwitchId, PortId, LPRTId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'RouteSetEntry', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return RouteSetEntry0API.post(self, FabricId, SwitchId, PortId, LPRTId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return RouteSetEntry0API.post(self, FabricId, SwitchId, PortId, LPRTId, os.path.basename(config['@odata.id']))
+				else:
+					return RouteSetEntry0API.post(self, FabricId, SwitchId, PortId, LPRTId, str(res))
 			else:
 				return RouteSetEntry0API.post(self, FabricId, SwitchId, PortId, LPRTId, str(res))
 		else:
-			return RouteSetEntry0API.post(self, FabricId, SwitchId, PortId, LPRTId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, FabricId, SwitchId, PortId, LPRTId):
-		logging.info('RouteSetEntry0 Collection put called')
-
-		path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/LPRT/{3}/RouteSet', 'index.json').format(FabricId, SwitchId, PortId, LPRTId)
-		put_object (path)
-		return self.get(FabricId)
+			return msg, code
 
 # RouteSetEntry0 API
 class RouteSetEntry0API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('RouteSetEntry0 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, FabricId, SwitchId, PortId, LPRTId, RouteId):
 		logging.info('RouteSetEntry0 get called')
-		path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/LPRT/{3}/RouteSet/{4}', 'index.json').format(FabricId, SwitchId, PortId, LPRTId, RouteId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/LPRT/{3}/RouteSet/{4}', 'index.json').format(FabricId, SwitchId, PortId, LPRTId, RouteId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class RouteSetEntry0API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, FabricId, SwitchId, PortId, LPRTId, RouteId):
 		logging.info('RouteSetEntry0 post called')
-		path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/LPRT/{3}/RouteSet/{4}').format(FabricId, SwitchId, PortId, LPRTId, RouteId)
-		collection_path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/LPRT/{3}/RouteSet', 'index.json').format(FabricId, SwitchId, PortId, LPRTId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			RouteSetEntry0CollectionAPI.post(self, FabricId, SwitchId, PortId, LPRTId)
+		if code == 200:
+			path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/LPRT/{3}/RouteSet/{4}').format(FabricId, SwitchId, PortId, LPRTId, RouteId)
+			collection_path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/LPRT/{3}/RouteSet', 'index.json').format(FabricId, SwitchId, PortId, LPRTId)
 
-		if RouteId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				RouteSetEntry0CollectionAPI.post(self, FabricId, SwitchId, PortId, LPRTId)
+
+			if RouteId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'FabricId':FabricId, 'SwitchId':SwitchId, 'PortId':PortId, 'LPRTId':LPRTId, 'RouteId':RouteId, 'rb':g.rest_base}
+				config=get_RouteSetEntry0_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('RouteSetEntry0API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'FabricId':FabricId, 'SwitchId':SwitchId, 'PortId':PortId, 'LPRTId':LPRTId, 'RouteId':RouteId, 'rb':g.rest_base}
-			config=get_RouteSetEntry0_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('RouteSetEntry0API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, FabricId, SwitchId, PortId, LPRTId, RouteId):
 		logging.info('RouteSetEntry0 put called')
-		path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/LPRT/{3}/RouteSet/{4}', 'index.json').format(FabricId, SwitchId, PortId, LPRTId, RouteId)
-		put_object(path)
-		return self.get(FabricId, SwitchId, PortId, LPRTId, RouteId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/LPRT/{3}/RouteSet/{4}', 'index.json').format(FabricId, SwitchId, PortId, LPRTId, RouteId)
+			put_object(path)
+			return self.get(FabricId, SwitchId, PortId, LPRTId, RouteId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, FabricId, SwitchId, PortId, LPRTId, RouteId):
 		logging.info('RouteSetEntry0 patch called')
-		path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/LPRT/{3}/RouteSet/{4}', 'index.json').format(FabricId, SwitchId, PortId, LPRTId, RouteId)
-		patch_object(path)
-		return self.get(FabricId, SwitchId, PortId, LPRTId, RouteId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/LPRT/{3}/RouteSet/{4}', 'index.json').format(FabricId, SwitchId, PortId, LPRTId, RouteId)
+			patch_object(path)
+			return self.get(FabricId, SwitchId, PortId, LPRTId, RouteId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, FabricId, SwitchId, PortId, LPRTId, RouteId):
 		logging.info('RouteSetEntry0 delete called')
-		path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/LPRT/{3}/RouteSet/{4}').format(FabricId, SwitchId, PortId, LPRTId, RouteId)
-		base_path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/LPRT/{3}/RouteSet').format(FabricId, SwitchId, PortId, LPRTId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/LPRT/{3}/RouteSet/{4}').format(FabricId, SwitchId, PortId, LPRTId, RouteId)
+			base_path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/LPRT/{3}/RouteSet').format(FabricId, SwitchId, PortId, LPRTId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

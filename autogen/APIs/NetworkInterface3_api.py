@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.NetworkInterface3 import get_NetworkInterface3_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # NetworkInterface3 Collection API
 class NetworkInterface3CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('NetworkInterface3 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ResourceBlockId):
 		logging.info('NetworkInterface3 Collection get called')
-		path = os.path.join(self.root, 'ResourceBlocks/{0}/NetworkInterfaces', 'index.json').format(ResourceBlockId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'ResourceBlocks/{0}/NetworkInterfaces', 'index.json').format(ResourceBlockId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, ResourceBlockId):
 		logging.info('NetworkInterface3 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if ResourceBlockId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'ResourceBlocks/{0}/NetworkInterfaces').format(ResourceBlockId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'NetworkInterface', parent_path)
+			if ResourceBlockId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'ResourceBlocks/{0}/NetworkInterfaces').format(ResourceBlockId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'NetworkInterface', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return NetworkInterface3API.post(self, ResourceBlockId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return NetworkInterface3API.post(self, ResourceBlockId, os.path.basename(config['@odata.id']))
+				else:
+					return NetworkInterface3API.post(self, ResourceBlockId, str(res))
 			else:
 				return NetworkInterface3API.post(self, ResourceBlockId, str(res))
 		else:
-			return NetworkInterface3API.post(self, ResourceBlockId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, ResourceBlockId):
-		logging.info('NetworkInterface3 Collection put called')
-
-		path = os.path.join(self.root, 'ResourceBlocks/{0}/NetworkInterfaces', 'index.json').format(ResourceBlockId)
-		put_object (path)
-		return self.get(ResourceBlockId)
+			return msg, code
 
 # NetworkInterface3 API
 class NetworkInterface3API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('NetworkInterface3 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ResourceBlockId, NetworkInterfaceId):
 		logging.info('NetworkInterface3 get called')
-		path = create_path(self.root, 'ResourceBlocks/{0}/NetworkInterfaces/{1}', 'index.json').format(ResourceBlockId, NetworkInterfaceId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'ResourceBlocks/{0}/NetworkInterfaces/{1}', 'index.json').format(ResourceBlockId, NetworkInterfaceId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class NetworkInterface3API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ResourceBlockId, NetworkInterfaceId):
 		logging.info('NetworkInterface3 post called')
-		path = create_path(self.root, 'ResourceBlocks/{0}/NetworkInterfaces/{1}').format(ResourceBlockId, NetworkInterfaceId)
-		collection_path = os.path.join(self.root, 'ResourceBlocks/{0}/NetworkInterfaces', 'index.json').format(ResourceBlockId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			NetworkInterface3CollectionAPI.post(self, ResourceBlockId)
+		if code == 200:
+			path = create_path(self.root, 'ResourceBlocks/{0}/NetworkInterfaces/{1}').format(ResourceBlockId, NetworkInterfaceId)
+			collection_path = os.path.join(self.root, 'ResourceBlocks/{0}/NetworkInterfaces', 'index.json').format(ResourceBlockId)
 
-		if NetworkInterfaceId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				NetworkInterface3CollectionAPI.post(self, ResourceBlockId)
+
+			if NetworkInterfaceId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'NetworkInterfaceId':NetworkInterfaceId, 'rb':g.rest_base}
+				config=get_NetworkInterface3_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('NetworkInterface3API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'ResourceBlockId':ResourceBlockId, 'NetworkInterfaceId':NetworkInterfaceId, 'rb':g.rest_base}
-			config=get_NetworkInterface3_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('NetworkInterface3API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ResourceBlockId, NetworkInterfaceId):
 		logging.info('NetworkInterface3 put called')
-		path = create_path(self.root, 'ResourceBlocks/{0}/NetworkInterfaces/{1}', 'index.json').format(ResourceBlockId, NetworkInterfaceId)
-		put_object(path)
-		return self.get(ResourceBlockId, NetworkInterfaceId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'ResourceBlocks/{0}/NetworkInterfaces/{1}', 'index.json').format(ResourceBlockId, NetworkInterfaceId)
+			put_object(path)
+			return self.get(ResourceBlockId, NetworkInterfaceId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ResourceBlockId, NetworkInterfaceId):
 		logging.info('NetworkInterface3 patch called')
-		path = create_path(self.root, 'ResourceBlocks/{0}/NetworkInterfaces/{1}', 'index.json').format(ResourceBlockId, NetworkInterfaceId)
-		patch_object(path)
-		return self.get(ResourceBlockId, NetworkInterfaceId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'ResourceBlocks/{0}/NetworkInterfaces/{1}', 'index.json').format(ResourceBlockId, NetworkInterfaceId)
+			patch_object(path)
+			return self.get(ResourceBlockId, NetworkInterfaceId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ResourceBlockId, NetworkInterfaceId):
 		logging.info('NetworkInterface3 delete called')
-		path = create_path(self.root, 'ResourceBlocks/{0}/NetworkInterfaces/{1}').format(ResourceBlockId, NetworkInterfaceId)
-		base_path = create_path(self.root, 'ResourceBlocks/{0}/NetworkInterfaces').format(ResourceBlockId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'ResourceBlocks/{0}/NetworkInterfaces/{1}').format(ResourceBlockId, NetworkInterfaceId)
+			base_path = create_path(self.root, 'ResourceBlocks/{0}/NetworkInterfaces').format(ResourceBlockId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

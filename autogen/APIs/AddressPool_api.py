@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.AddressPool import get_AddressPool_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # AddressPool Collection API
 class AddressPoolCollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('AddressPool Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, FabricId):
 		logging.info('AddressPool Collection get called')
-		path = os.path.join(self.root, 'Fabrics/{0}/AddressPools', 'index.json').format(FabricId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Fabrics/{0}/AddressPools', 'index.json').format(FabricId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, FabricId):
 		logging.info('AddressPool Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if FabricId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'Fabrics/{0}/AddressPools').format(FabricId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'AddressPool', parent_path)
+			if FabricId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'Fabrics/{0}/AddressPools').format(FabricId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'AddressPool', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return AddressPoolAPI.post(self, FabricId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return AddressPoolAPI.post(self, FabricId, os.path.basename(config['@odata.id']))
+				else:
+					return AddressPoolAPI.post(self, FabricId, str(res))
 			else:
 				return AddressPoolAPI.post(self, FabricId, str(res))
 		else:
-			return AddressPoolAPI.post(self, FabricId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, FabricId):
-		logging.info('AddressPool Collection put called')
-
-		path = os.path.join(self.root, 'Fabrics/{0}/AddressPools', 'index.json').format(FabricId)
-		put_object (path)
-		return self.get(FabricId)
+			return msg, code
 
 # AddressPool API
 class AddressPoolAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('AddressPool init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, FabricId, AddressPoolId):
 		logging.info('AddressPool get called')
-		path = create_path(self.root, 'Fabrics/{0}/AddressPools/{1}', 'index.json').format(FabricId, AddressPoolId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Fabrics/{0}/AddressPools/{1}', 'index.json').format(FabricId, AddressPoolId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class AddressPoolAPI(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, FabricId, AddressPoolId):
 		logging.info('AddressPool post called')
-		path = create_path(self.root, 'Fabrics/{0}/AddressPools/{1}').format(FabricId, AddressPoolId)
-		collection_path = os.path.join(self.root, 'Fabrics/{0}/AddressPools', 'index.json').format(FabricId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			AddressPoolCollectionAPI.post(self, FabricId)
+		if code == 200:
+			path = create_path(self.root, 'Fabrics/{0}/AddressPools/{1}').format(FabricId, AddressPoolId)
+			collection_path = os.path.join(self.root, 'Fabrics/{0}/AddressPools', 'index.json').format(FabricId)
 
-		if AddressPoolId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				AddressPoolCollectionAPI.post(self, FabricId)
+
+			if AddressPoolId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'FabricId':FabricId, 'AddressPoolId':AddressPoolId, 'rb':g.rest_base}
+				config=get_AddressPool_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('AddressPoolAPI POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'FabricId':FabricId, 'AddressPoolId':AddressPoolId, 'rb':g.rest_base}
-			config=get_AddressPool_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('AddressPoolAPI POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, FabricId, AddressPoolId):
 		logging.info('AddressPool put called')
-		path = create_path(self.root, 'Fabrics/{0}/AddressPools/{1}', 'index.json').format(FabricId, AddressPoolId)
-		put_object(path)
-		return self.get(FabricId, AddressPoolId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Fabrics/{0}/AddressPools/{1}', 'index.json').format(FabricId, AddressPoolId)
+			put_object(path)
+			return self.get(FabricId, AddressPoolId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, FabricId, AddressPoolId):
 		logging.info('AddressPool patch called')
-		path = create_path(self.root, 'Fabrics/{0}/AddressPools/{1}', 'index.json').format(FabricId, AddressPoolId)
-		patch_object(path)
-		return self.get(FabricId, AddressPoolId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Fabrics/{0}/AddressPools/{1}', 'index.json').format(FabricId, AddressPoolId)
+			patch_object(path)
+			return self.get(FabricId, AddressPoolId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, FabricId, AddressPoolId):
 		logging.info('AddressPool delete called')
-		path = create_path(self.root, 'Fabrics/{0}/AddressPools/{1}').format(FabricId, AddressPoolId)
-		base_path = create_path(self.root, 'Fabrics/{0}/AddressPools').format(FabricId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Fabrics/{0}/AddressPools/{1}').format(FabricId, AddressPoolId)
+			base_path = create_path(self.root, 'Fabrics/{0}/AddressPools').format(FabricId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

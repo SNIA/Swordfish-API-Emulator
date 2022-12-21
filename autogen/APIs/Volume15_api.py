@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.Volume15 import get_Volume15_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # Volume15 Collection API
 class Volume15CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Volume15 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, StorageServiceId, FileSystemId, CapacitySourceId):
 		logging.info('Volume15 Collection get called')
-		path = os.path.join(self.root, 'StorageServices/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingVolumes', 'index.json').format(StorageServiceId, FileSystemId, CapacitySourceId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'StorageServices/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingVolumes', 'index.json').format(StorageServiceId, FileSystemId, CapacitySourceId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, StorageServiceId, FileSystemId, CapacitySourceId):
 		logging.info('Volume15 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if CapacitySourceId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'StorageServices/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingVolumes').format(StorageServiceId, FileSystemId, CapacitySourceId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'Volume', parent_path)
+			if CapacitySourceId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'StorageServices/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingVolumes').format(StorageServiceId, FileSystemId, CapacitySourceId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'Volume', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return Volume15API.post(self, StorageServiceId, FileSystemId, CapacitySourceId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return Volume15API.post(self, StorageServiceId, FileSystemId, CapacitySourceId, os.path.basename(config['@odata.id']))
+				else:
+					return Volume15API.post(self, StorageServiceId, FileSystemId, CapacitySourceId, str(res))
 			else:
 				return Volume15API.post(self, StorageServiceId, FileSystemId, CapacitySourceId, str(res))
 		else:
-			return Volume15API.post(self, StorageServiceId, FileSystemId, CapacitySourceId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, StorageServiceId, FileSystemId, CapacitySourceId):
-		logging.info('Volume15 Collection put called')
-
-		path = os.path.join(self.root, 'StorageServices/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingVolumes', 'index.json').format(StorageServiceId, FileSystemId, CapacitySourceId)
-		put_object (path)
-		return self.get(StorageServiceId)
+			return msg, code
 
 # Volume15 API
 class Volume15API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Volume15 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, StorageServiceId, FileSystemId, CapacitySourceId, VolumeId):
 		logging.info('Volume15 get called')
-		path = create_path(self.root, 'StorageServices/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingVolumes/{3}', 'index.json').format(StorageServiceId, FileSystemId, CapacitySourceId, VolumeId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'StorageServices/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingVolumes/{3}', 'index.json').format(StorageServiceId, FileSystemId, CapacitySourceId, VolumeId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class Volume15API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, StorageServiceId, FileSystemId, CapacitySourceId, VolumeId):
 		logging.info('Volume15 post called')
-		path = create_path(self.root, 'StorageServices/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingVolumes/{3}').format(StorageServiceId, FileSystemId, CapacitySourceId, VolumeId)
-		collection_path = os.path.join(self.root, 'StorageServices/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingVolumes', 'index.json').format(StorageServiceId, FileSystemId, CapacitySourceId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			Volume15CollectionAPI.post(self, StorageServiceId, FileSystemId, CapacitySourceId)
+		if code == 200:
+			path = create_path(self.root, 'StorageServices/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingVolumes/{3}').format(StorageServiceId, FileSystemId, CapacitySourceId, VolumeId)
+			collection_path = os.path.join(self.root, 'StorageServices/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingVolumes', 'index.json').format(StorageServiceId, FileSystemId, CapacitySourceId)
 
-		if VolumeId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				Volume15CollectionAPI.post(self, StorageServiceId, FileSystemId, CapacitySourceId)
+
+			if VolumeId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'StorageServiceId':StorageServiceId, 'FileSystemId':FileSystemId, 'CapacitySourceId':CapacitySourceId, 'VolumeId':VolumeId, 'rb':g.rest_base}
+				config=get_Volume15_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('Volume15API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'StorageServiceId':StorageServiceId, 'FileSystemId':FileSystemId, 'CapacitySourceId':CapacitySourceId, 'VolumeId':VolumeId, 'rb':g.rest_base}
-			config=get_Volume15_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('Volume15API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, StorageServiceId, FileSystemId, CapacitySourceId, VolumeId):
 		logging.info('Volume15 put called')
-		path = os.path.join(self.root, 'StorageServices/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingVolumes/{3}', 'index.json').format(StorageServiceId, FileSystemId, CapacitySourceId, VolumeId)
-		put_object(path)
-		return self.get(StorageServiceId, FileSystemId, CapacitySourceId, VolumeId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'StorageServices/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingVolumes/{3}', 'index.json').format(StorageServiceId, FileSystemId, CapacitySourceId, VolumeId)
+			put_object(path)
+			return self.get(StorageServiceId, FileSystemId, CapacitySourceId, VolumeId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, StorageServiceId, FileSystemId, CapacitySourceId, VolumeId):
 		logging.info('Volume15 patch called')
-		path = os.path.join(self.root, 'StorageServices/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingVolumes/{3}', 'index.json').format(StorageServiceId, FileSystemId, CapacitySourceId, VolumeId)
-		patch_object(path)
-		return self.get(StorageServiceId, FileSystemId, CapacitySourceId, VolumeId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'StorageServices/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingVolumes/{3}', 'index.json').format(StorageServiceId, FileSystemId, CapacitySourceId, VolumeId)
+			patch_object(path)
+			return self.get(StorageServiceId, FileSystemId, CapacitySourceId, VolumeId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, StorageServiceId, FileSystemId, CapacitySourceId, VolumeId):
 		logging.info('Volume15 delete called')
-		path = create_path(self.root, 'StorageServices/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingVolumes/{3}').format(StorageServiceId, FileSystemId, CapacitySourceId, VolumeId)
-		base_path = create_path(self.root, 'StorageServices/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingVolumes').format(StorageServiceId, FileSystemId, CapacitySourceId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'StorageServices/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingVolumes/{3}').format(StorageServiceId, FileSystemId, CapacitySourceId, VolumeId)
+			base_path = create_path(self.root, 'StorageServices/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingVolumes').format(StorageServiceId, FileSystemId, CapacitySourceId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.JsonSchemaFile import get_JsonSchemaFile_instance
 
 members = []
@@ -47,61 +47,69 @@ INTERNAL_ERROR = 500
 
 # JsonSchemaFile Collection API
 class JsonSchemaFileCollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('JsonSchemaFile Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self):
 		logging.info('JsonSchemaFile Collection get called')
-		path = os.path.join(self.root, 'JsonSchemas', 'index.json')
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'JsonSchemas', 'index.json')
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self):
 		logging.info('JsonSchemaFile Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		path = create_path(self.root, 'JsonSchemas')
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'JsonSchemaFile', parent_path)
+			path = create_path(self.root, 'JsonSchemas')
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'JsonSchemaFile', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return JsonSchemaFileAPI.post(self, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return JsonSchemaFileAPI.post(self, os.path.basename(config['@odata.id']))
+				else:
+					return JsonSchemaFileAPI.post(self, str(res))
 			else:
 				return JsonSchemaFileAPI.post(self, str(res))
 		else:
-			return JsonSchemaFileAPI.post(self, str(res))
-
-	# HTTP PUT Collection
-	def put(self):
-		logging.info('JsonSchemaFile Collection put called')
-
-		path = os.path.join(self.root, 'JsonSchemas', 'index.json')
-		put_object (path)
-		return self.get(self.root)
+			return msg, code
 
 # JsonSchemaFile API
 class JsonSchemaFileAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('JsonSchemaFile init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, JsonSchemaFileId):
 		logging.info('JsonSchemaFile get called')
-		path = create_path(self.root, 'JsonSchemas/{0}', 'index.json').format(JsonSchemaFileId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'JsonSchemas/{0}', 'index.json').format(JsonSchemaFileId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -110,47 +118,67 @@ class JsonSchemaFileAPI(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, JsonSchemaFileId):
 		logging.info('JsonSchemaFile post called')
-		path = create_path(self.root, 'JsonSchemas/{0}').format(JsonSchemaFileId)
-		collection_path = os.path.join(self.root, 'JsonSchemas', 'index.json')
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			JsonSchemaFileCollectionAPI.post(self)
+		if code == 200:
+			path = create_path(self.root, 'JsonSchemas/{0}').format(JsonSchemaFileId)
+			collection_path = os.path.join(self.root, 'JsonSchemas', 'index.json')
 
-		if JsonSchemaFileId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				JsonSchemaFileCollectionAPI.post(self)
+
+			if JsonSchemaFileId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'JsonSchemaFileId':JsonSchemaFileId, 'rb':g.rest_base}
+				config=get_JsonSchemaFile_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('JsonSchemaFileAPI POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'JsonSchemaFileId':JsonSchemaFileId, 'rb':g.rest_base}
-			config=get_JsonSchemaFile_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('JsonSchemaFileAPI POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, JsonSchemaFileId):
 		logging.info('JsonSchemaFile put called')
-		path = os.path.join(self.root, 'JsonSchemas/{0}', 'index.json').format(JsonSchemaFileId)
-		put_object(path)
-		return self.get(JsonSchemaFileId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'JsonSchemas/{0}', 'index.json').format(JsonSchemaFileId)
+			put_object(path)
+			return self.get(JsonSchemaFileId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, JsonSchemaFileId):
 		logging.info('JsonSchemaFile patch called')
-		path = os.path.join(self.root, 'JsonSchemas/{0}', 'index.json').format(JsonSchemaFileId)
-		patch_object(path)
-		return self.get(JsonSchemaFileId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'JsonSchemas/{0}', 'index.json').format(JsonSchemaFileId)
+			patch_object(path)
+			return self.get(JsonSchemaFileId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, JsonSchemaFileId):
 		logging.info('JsonSchemaFile delete called')
-		path = create_path(self.root, 'JsonSchemas/{0}').format(JsonSchemaFileId)
-		base_path = create_path(self.root, 'JsonSchemas')
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'JsonSchemas/{0}').format(JsonSchemaFileId)
+			base_path = create_path(self.root, 'JsonSchemas')
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

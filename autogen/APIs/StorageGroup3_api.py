@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.StorageGroup3 import get_StorageGroup3_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # StorageGroup3 Collection API
 class StorageGroup3CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('StorageGroup3 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, StorageId, VolumeId):
 		logging.info('StorageGroup3 Collection get called')
-		path = os.path.join(self.root, 'Storage/{0}/Volumes/{1}/StorageGroups', 'index.json').format(StorageId, VolumeId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Storage/{0}/Volumes/{1}/StorageGroups', 'index.json').format(StorageId, VolumeId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, StorageId, VolumeId):
 		logging.info('StorageGroup3 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if VolumeId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'Storage/{0}/Volumes/{1}/StorageGroups').format(StorageId, VolumeId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'StorageGroup', parent_path)
+			if VolumeId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'Storage/{0}/Volumes/{1}/StorageGroups').format(StorageId, VolumeId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'StorageGroup', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return StorageGroup3API.post(self, StorageId, VolumeId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return StorageGroup3API.post(self, StorageId, VolumeId, os.path.basename(config['@odata.id']))
+				else:
+					return StorageGroup3API.post(self, StorageId, VolumeId, str(res))
 			else:
 				return StorageGroup3API.post(self, StorageId, VolumeId, str(res))
 		else:
-			return StorageGroup3API.post(self, StorageId, VolumeId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, StorageId, VolumeId):
-		logging.info('StorageGroup3 Collection put called')
-
-		path = os.path.join(self.root, 'Storage/{0}/Volumes/{1}/StorageGroups', 'index.json').format(StorageId, VolumeId)
-		put_object (path)
-		return self.get(StorageId)
+			return msg, code
 
 # StorageGroup3 API
 class StorageGroup3API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('StorageGroup3 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, StorageId, VolumeId, StorageGroupId):
 		logging.info('StorageGroup3 get called')
-		path = create_path(self.root, 'Storage/{0}/Volumes/{1}/StorageGroups/{2}', 'index.json').format(StorageId, VolumeId, StorageGroupId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/Volumes/{1}/StorageGroups/{2}', 'index.json').format(StorageId, VolumeId, StorageGroupId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class StorageGroup3API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, StorageId, VolumeId, StorageGroupId):
 		logging.info('StorageGroup3 post called')
-		path = create_path(self.root, 'Storage/{0}/Volumes/{1}/StorageGroups/{2}').format(StorageId, VolumeId, StorageGroupId)
-		collection_path = os.path.join(self.root, 'Storage/{0}/Volumes/{1}/StorageGroups', 'index.json').format(StorageId, VolumeId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			StorageGroup3CollectionAPI.post(self, StorageId, VolumeId)
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/Volumes/{1}/StorageGroups/{2}').format(StorageId, VolumeId, StorageGroupId)
+			collection_path = os.path.join(self.root, 'Storage/{0}/Volumes/{1}/StorageGroups', 'index.json').format(StorageId, VolumeId)
 
-		if StorageGroupId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				StorageGroup3CollectionAPI.post(self, StorageId, VolumeId)
+
+			if StorageGroupId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'StorageId':StorageId, 'VolumeId':VolumeId, 'StorageGroupId':StorageGroupId, 'rb':g.rest_base}
+				config=get_StorageGroup3_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('StorageGroup3API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'StorageId':StorageId, 'VolumeId':VolumeId, 'StorageGroupId':StorageGroupId, 'rb':g.rest_base}
-			config=get_StorageGroup3_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('StorageGroup3API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, StorageId, VolumeId, StorageGroupId):
 		logging.info('StorageGroup3 put called')
-		path = os.path.join(self.root, 'Storage/{0}/Volumes/{1}/StorageGroups/{2}', 'index.json').format(StorageId, VolumeId, StorageGroupId)
-		put_object(path)
-		return self.get(StorageId, VolumeId, StorageGroupId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Storage/{0}/Volumes/{1}/StorageGroups/{2}', 'index.json').format(StorageId, VolumeId, StorageGroupId)
+			put_object(path)
+			return self.get(StorageId, VolumeId, StorageGroupId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, StorageId, VolumeId, StorageGroupId):
 		logging.info('StorageGroup3 patch called')
-		path = os.path.join(self.root, 'Storage/{0}/Volumes/{1}/StorageGroups/{2}', 'index.json').format(StorageId, VolumeId, StorageGroupId)
-		patch_object(path)
-		return self.get(StorageId, VolumeId, StorageGroupId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Storage/{0}/Volumes/{1}/StorageGroups/{2}', 'index.json').format(StorageId, VolumeId, StorageGroupId)
+			patch_object(path)
+			return self.get(StorageId, VolumeId, StorageGroupId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, StorageId, VolumeId, StorageGroupId):
 		logging.info('StorageGroup3 delete called')
-		path = create_path(self.root, 'Storage/{0}/Volumes/{1}/StorageGroups/{2}').format(StorageId, VolumeId, StorageGroupId)
-		base_path = create_path(self.root, 'Storage/{0}/Volumes/{1}/StorageGroups').format(StorageId, VolumeId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/Volumes/{1}/StorageGroups/{2}').format(StorageId, VolumeId, StorageGroupId)
+			base_path = create_path(self.root, 'Storage/{0}/Volumes/{1}/StorageGroups').format(StorageId, VolumeId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

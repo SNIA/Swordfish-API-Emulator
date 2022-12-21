@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.License import get_License_instance
 
 members = []
@@ -47,61 +47,69 @@ INTERNAL_ERROR = 500
 
 # License Collection API
 class LicenseCollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('License Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self):
 		logging.info('License Collection get called')
-		path = os.path.join(self.root, 'LicenseService/Licenses', 'index.json')
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'LicenseService/Licenses', 'index.json')
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self):
 		logging.info('License Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		path = create_path(self.root, 'LicenseService/Licenses')
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'License', parent_path)
+			path = create_path(self.root, 'LicenseService/Licenses')
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'License', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return LicenseAPI.post(self, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return LicenseAPI.post(self, os.path.basename(config['@odata.id']))
+				else:
+					return LicenseAPI.post(self, str(res))
 			else:
 				return LicenseAPI.post(self, str(res))
 		else:
-			return LicenseAPI.post(self, str(res))
-
-	# HTTP PUT Collection
-	def put(self):
-		logging.info('License Collection put called')
-
-		path = os.path.join(self.root, 'LicenseService/Licenses', 'index.json')
-		put_object (path)
-		return self.get(self.root)
+			return msg, code
 
 # License API
 class LicenseAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('License init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, LicenseId):
 		logging.info('License get called')
-		path = create_path(self.root, 'LicenseService/Licenses/{0}', 'index.json').format(LicenseId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'LicenseService/Licenses/{0}', 'index.json').format(LicenseId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -110,47 +118,67 @@ class LicenseAPI(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, LicenseId):
 		logging.info('License post called')
-		path = create_path(self.root, 'LicenseService/Licenses/{0}').format(LicenseId)
-		collection_path = os.path.join(self.root, 'LicenseService/Licenses', 'index.json')
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			LicenseCollectionAPI.post(self)
+		if code == 200:
+			path = create_path(self.root, 'LicenseService/Licenses/{0}').format(LicenseId)
+			collection_path = os.path.join(self.root, 'LicenseService/Licenses', 'index.json')
 
-		if LicenseId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				LicenseCollectionAPI.post(self)
+
+			if LicenseId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'LicenseId':LicenseId, 'rb':g.rest_base}
+				config=get_License_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('LicenseAPI POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'LicenseId':LicenseId, 'rb':g.rest_base}
-			config=get_License_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('LicenseAPI POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, LicenseId):
 		logging.info('License put called')
-		path = os.path.join(self.root, 'LicenseService/Licenses/{0}', 'index.json').format(LicenseId)
-		put_object(path)
-		return self.get(LicenseId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'LicenseService/Licenses/{0}', 'index.json').format(LicenseId)
+			put_object(path)
+			return self.get(LicenseId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, LicenseId):
 		logging.info('License patch called')
-		path = os.path.join(self.root, 'LicenseService/Licenses/{0}', 'index.json').format(LicenseId)
-		patch_object(path)
-		return self.get(LicenseId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'LicenseService/Licenses/{0}', 'index.json').format(LicenseId)
+			patch_object(path)
+			return self.get(LicenseId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, LicenseId):
 		logging.info('License delete called')
-		path = create_path(self.root, 'LicenseService/Licenses/{0}').format(LicenseId)
-		base_path = create_path(self.root, 'LicenseService/Licenses')
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'LicenseService/Licenses/{0}').format(LicenseId)
+			base_path = create_path(self.root, 'LicenseService/Licenses')
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

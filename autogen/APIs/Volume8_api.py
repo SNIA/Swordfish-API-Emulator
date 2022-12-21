@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.Volume8 import get_Volume8_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # Volume8 Collection API
 class Volume8CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Volume8 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, StorageId):
 		logging.info('Volume8 Collection get called')
-		path = os.path.join(self.root, 'Storage/{0}/Volumes', 'index.json').format(StorageId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Storage/{0}/Volumes', 'index.json').format(StorageId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, StorageId):
 		logging.info('Volume8 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if StorageId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'Storage/{0}/Volumes').format(StorageId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'Volume', parent_path)
+			if StorageId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'Storage/{0}/Volumes').format(StorageId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'Volume', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return Volume8API.post(self, StorageId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return Volume8API.post(self, StorageId, os.path.basename(config['@odata.id']))
+				else:
+					return Volume8API.post(self, StorageId, str(res))
 			else:
 				return Volume8API.post(self, StorageId, str(res))
 		else:
-			return Volume8API.post(self, StorageId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, StorageId):
-		logging.info('Volume8 Collection put called')
-
-		path = os.path.join(self.root, 'Storage/{0}/Volumes', 'index.json').format(StorageId)
-		put_object (path)
-		return self.get(StorageId)
+			return msg, code
 
 # Volume8 API
 class Volume8API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Volume8 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, StorageId, VolumeId):
 		logging.info('Volume8 get called')
-		path = create_path(self.root, 'Storage/{0}/Volumes/{1}', 'index.json').format(StorageId, VolumeId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/Volumes/{1}', 'index.json').format(StorageId, VolumeId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class Volume8API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, StorageId, VolumeId):
 		logging.info('Volume8 post called')
-		path = create_path(self.root, 'Storage/{0}/Volumes/{1}').format(StorageId, VolumeId)
-		collection_path = os.path.join(self.root, 'Storage/{0}/Volumes', 'index.json').format(StorageId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			Volume8CollectionAPI.post(self, StorageId)
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/Volumes/{1}').format(StorageId, VolumeId)
+			collection_path = os.path.join(self.root, 'Storage/{0}/Volumes', 'index.json').format(StorageId)
 
-		if VolumeId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				Volume8CollectionAPI.post(self, StorageId)
+
+			if VolumeId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'StorageId':StorageId, 'VolumeId':VolumeId, 'rb':g.rest_base}
+				config=get_Volume8_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('Volume8API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'StorageId':StorageId, 'VolumeId':VolumeId, 'rb':g.rest_base}
-			config=get_Volume8_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('Volume8API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, StorageId, VolumeId):
 		logging.info('Volume8 put called')
-		path = create_path(self.root, 'Storage/{0}/Volumes/{1}', 'index.json').format(StorageId, VolumeId)
-		put_object(path)
-		return self.get(StorageId, VolumeId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/Volumes/{1}', 'index.json').format(StorageId, VolumeId)
+			put_object(path)
+			return self.get(StorageId, VolumeId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, StorageId, VolumeId):
 		logging.info('Volume8 patch called')
-		path = create_path(self.root, 'Storage/{0}/Volumes/{1}', 'index.json').format(StorageId, VolumeId)
-		patch_object(path)
-		return self.get(StorageId, VolumeId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/Volumes/{1}', 'index.json').format(StorageId, VolumeId)
+			patch_object(path)
+			return self.get(StorageId, VolumeId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, StorageId, VolumeId):
 		logging.info('Volume8 delete called')
-		path = create_path(self.root, 'Storage/{0}/Volumes/{1}').format(StorageId, VolumeId)
-		base_path = create_path(self.root, 'Storage/{0}/Volumes').format(StorageId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/Volumes/{1}').format(StorageId, VolumeId)
+			base_path = create_path(self.root, 'Storage/{0}/Volumes').format(StorageId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

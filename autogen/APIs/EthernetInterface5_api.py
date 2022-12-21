@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.EthernetInterface5 import get_EthernetInterface5_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # EthernetInterface5 Collection API
 class EthernetInterface5CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('EthernetInterface5 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ResourceBlockId, ComputerSystemId):
 		logging.info('EthernetInterface5 Collection get called')
-		path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/EthernetInterfaces', 'index.json').format(ResourceBlockId, ComputerSystemId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/EthernetInterfaces', 'index.json').format(ResourceBlockId, ComputerSystemId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, ResourceBlockId, ComputerSystemId):
 		logging.info('EthernetInterface5 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if ComputerSystemId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/EthernetInterfaces').format(ResourceBlockId, ComputerSystemId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'EthernetInterface', parent_path)
+			if ComputerSystemId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/EthernetInterfaces').format(ResourceBlockId, ComputerSystemId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'EthernetInterface', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return EthernetInterface5API.post(self, ResourceBlockId, ComputerSystemId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return EthernetInterface5API.post(self, ResourceBlockId, ComputerSystemId, os.path.basename(config['@odata.id']))
+				else:
+					return EthernetInterface5API.post(self, ResourceBlockId, ComputerSystemId, str(res))
 			else:
 				return EthernetInterface5API.post(self, ResourceBlockId, ComputerSystemId, str(res))
 		else:
-			return EthernetInterface5API.post(self, ResourceBlockId, ComputerSystemId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, ResourceBlockId, ComputerSystemId):
-		logging.info('EthernetInterface5 Collection put called')
-
-		path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/EthernetInterfaces', 'index.json').format(ResourceBlockId, ComputerSystemId)
-		put_object (path)
-		return self.get(ResourceBlockId)
+			return msg, code
 
 # EthernetInterface5 API
 class EthernetInterface5API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('EthernetInterface5 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ResourceBlockId, ComputerSystemId, EthernetInterfaceId):
 		logging.info('EthernetInterface5 get called')
-		path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/EthernetInterfaces/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, EthernetInterfaceId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/EthernetInterfaces/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, EthernetInterfaceId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class EthernetInterface5API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ResourceBlockId, ComputerSystemId, EthernetInterfaceId):
 		logging.info('EthernetInterface5 post called')
-		path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/EthernetInterfaces/{2}').format(ResourceBlockId, ComputerSystemId, EthernetInterfaceId)
-		collection_path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/EthernetInterfaces', 'index.json').format(ResourceBlockId, ComputerSystemId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			EthernetInterface5CollectionAPI.post(self, ResourceBlockId, ComputerSystemId)
+		if code == 200:
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/EthernetInterfaces/{2}').format(ResourceBlockId, ComputerSystemId, EthernetInterfaceId)
+			collection_path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/EthernetInterfaces', 'index.json').format(ResourceBlockId, ComputerSystemId)
 
-		if EthernetInterfaceId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				EthernetInterface5CollectionAPI.post(self, ResourceBlockId, ComputerSystemId)
+
+			if EthernetInterfaceId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'EthernetInterfaceId':EthernetInterfaceId, 'rb':g.rest_base}
+				config=get_EthernetInterface5_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('EthernetInterface5API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'EthernetInterfaceId':EthernetInterfaceId, 'rb':g.rest_base}
-			config=get_EthernetInterface5_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('EthernetInterface5API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ResourceBlockId, ComputerSystemId, EthernetInterfaceId):
 		logging.info('EthernetInterface5 put called')
-		path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/EthernetInterfaces/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, EthernetInterfaceId)
-		put_object(path)
-		return self.get(ResourceBlockId, ComputerSystemId, EthernetInterfaceId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/EthernetInterfaces/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, EthernetInterfaceId)
+			put_object(path)
+			return self.get(ResourceBlockId, ComputerSystemId, EthernetInterfaceId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ResourceBlockId, ComputerSystemId, EthernetInterfaceId):
 		logging.info('EthernetInterface5 patch called')
-		path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/EthernetInterfaces/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, EthernetInterfaceId)
-		patch_object(path)
-		return self.get(ResourceBlockId, ComputerSystemId, EthernetInterfaceId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/EthernetInterfaces/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, EthernetInterfaceId)
+			patch_object(path)
+			return self.get(ResourceBlockId, ComputerSystemId, EthernetInterfaceId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ResourceBlockId, ComputerSystemId, EthernetInterfaceId):
 		logging.info('EthernetInterface5 delete called')
-		path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/EthernetInterfaces/{2}').format(ResourceBlockId, ComputerSystemId, EthernetInterfaceId)
-		base_path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/EthernetInterfaces').format(ResourceBlockId, ComputerSystemId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/EthernetInterfaces/{2}').format(ResourceBlockId, ComputerSystemId, EthernetInterfaceId)
+			base_path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/EthernetInterfaces').format(ResourceBlockId, ComputerSystemId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

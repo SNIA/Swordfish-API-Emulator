@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.Certificate3 import get_Certificate3_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # Certificate3 Collection API
 class Certificate3CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Certificate3 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ExternalAccountProviderId):
 		logging.info('Certificate3 Collection get called')
-		path = os.path.join(self.root, 'AccountService/ExternalAccountProviders/{0}/Certificates', 'index.json').format(ExternalAccountProviderId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'AccountService/ExternalAccountProviders/{0}/Certificates', 'index.json').format(ExternalAccountProviderId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, ExternalAccountProviderId):
 		logging.info('Certificate3 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if ExternalAccountProviderId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'AccountService/ExternalAccountProviders/{0}/Certificates').format(ExternalAccountProviderId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'Certificate', parent_path)
+			if ExternalAccountProviderId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'AccountService/ExternalAccountProviders/{0}/Certificates').format(ExternalAccountProviderId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'Certificate', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return Certificate3API.post(self, ExternalAccountProviderId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return Certificate3API.post(self, ExternalAccountProviderId, os.path.basename(config['@odata.id']))
+				else:
+					return Certificate3API.post(self, ExternalAccountProviderId, str(res))
 			else:
 				return Certificate3API.post(self, ExternalAccountProviderId, str(res))
 		else:
-			return Certificate3API.post(self, ExternalAccountProviderId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, ExternalAccountProviderId):
-		logging.info('Certificate3 Collection put called')
-
-		path = os.path.join(self.root, 'AccountService/ExternalAccountProviders/{0}/Certificates', 'index.json').format(ExternalAccountProviderId)
-		put_object (path)
-		return self.get(ExternalAccountProviderId)
+			return msg, code
 
 # Certificate3 API
 class Certificate3API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Certificate3 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ExternalAccountProviderId, CertificateId):
 		logging.info('Certificate3 get called')
-		path = create_path(self.root, 'AccountService/ExternalAccountProviders/{0}/Certificates/{1}', 'index.json').format(ExternalAccountProviderId, CertificateId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'AccountService/ExternalAccountProviders/{0}/Certificates/{1}', 'index.json').format(ExternalAccountProviderId, CertificateId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class Certificate3API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ExternalAccountProviderId, CertificateId):
 		logging.info('Certificate3 post called')
-		path = create_path(self.root, 'AccountService/ExternalAccountProviders/{0}/Certificates/{1}').format(ExternalAccountProviderId, CertificateId)
-		collection_path = os.path.join(self.root, 'AccountService/ExternalAccountProviders/{0}/Certificates', 'index.json').format(ExternalAccountProviderId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			Certificate3CollectionAPI.post(self, ExternalAccountProviderId)
+		if code == 200:
+			path = create_path(self.root, 'AccountService/ExternalAccountProviders/{0}/Certificates/{1}').format(ExternalAccountProviderId, CertificateId)
+			collection_path = os.path.join(self.root, 'AccountService/ExternalAccountProviders/{0}/Certificates', 'index.json').format(ExternalAccountProviderId)
 
-		if CertificateId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				Certificate3CollectionAPI.post(self, ExternalAccountProviderId)
+
+			if CertificateId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ExternalAccountProviderId':ExternalAccountProviderId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				config=get_Certificate3_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('Certificate3API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'ExternalAccountProviderId':ExternalAccountProviderId, 'CertificateId':CertificateId, 'rb':g.rest_base}
-			config=get_Certificate3_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('Certificate3API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ExternalAccountProviderId, CertificateId):
 		logging.info('Certificate3 put called')
-		path = create_path(self.root, 'AccountService/ExternalAccountProviders/{0}/Certificates/{1}', 'index.json').format(ExternalAccountProviderId, CertificateId)
-		put_object(path)
-		return self.get(ExternalAccountProviderId, CertificateId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'AccountService/ExternalAccountProviders/{0}/Certificates/{1}', 'index.json').format(ExternalAccountProviderId, CertificateId)
+			put_object(path)
+			return self.get(ExternalAccountProviderId, CertificateId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ExternalAccountProviderId, CertificateId):
 		logging.info('Certificate3 patch called')
-		path = create_path(self.root, 'AccountService/ExternalAccountProviders/{0}/Certificates/{1}', 'index.json').format(ExternalAccountProviderId, CertificateId)
-		patch_object(path)
-		return self.get(ExternalAccountProviderId, CertificateId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'AccountService/ExternalAccountProviders/{0}/Certificates/{1}', 'index.json').format(ExternalAccountProviderId, CertificateId)
+			patch_object(path)
+			return self.get(ExternalAccountProviderId, CertificateId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ExternalAccountProviderId, CertificateId):
 		logging.info('Certificate3 delete called')
-		path = create_path(self.root, 'AccountService/ExternalAccountProviders/{0}/Certificates/{1}').format(ExternalAccountProviderId, CertificateId)
-		base_path = create_path(self.root, 'AccountService/ExternalAccountProviders/{0}/Certificates').format(ExternalAccountProviderId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'AccountService/ExternalAccountProviders/{0}/Certificates/{1}').format(ExternalAccountProviderId, CertificateId)
+			base_path = create_path(self.root, 'AccountService/ExternalAccountProviders/{0}/Certificates').format(ExternalAccountProviderId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
@@ -46,15 +46,21 @@ INTERNAL_ERROR = 500
 
 # IOConnectivityLineOfService0 Collection API
 class IOConnectivityLineOfService0CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('IOConnectivityLineOfService0 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, StorageServiceId):
 		logging.info('IOConnectivityLineOfService0 Collection get called')
-		path = os.path.join(self.root, 'StorageServices/{0}/LinesOfService/IOConnectivityLinesOfService', 'index.json').format(StorageServiceId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'StorageServices/{0}/LinesOfService/IOConnectivityLinesOfService', 'index.json').format(StorageServiceId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	def post(self, StorageServiceId):
@@ -79,15 +85,21 @@ class IOConnectivityLineOfService0CollectionAPI(Resource):
 
 # IOConnectivityLineOfService0 API
 class IOConnectivityLineOfService0API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('IOConnectivityLineOfService0 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, StorageServiceId, IOConnectivityLineOfServiceId):
 		logging.info('IOConnectivityLineOfService0 get called')
-		path = create_path(self.root, 'StorageServices/{0}/LinesOfService/IOConnectivityLinesOfService/{1}', 'index.json').format(StorageServiceId, IOConnectivityLineOfServiceId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'StorageServices/{0}/LinesOfService/IOConnectivityLinesOfService/{1}', 'index.json').format(StorageServiceId, IOConnectivityLineOfServiceId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	def post(self, StorageServiceId, IOConnectivityLineOfServiceId):

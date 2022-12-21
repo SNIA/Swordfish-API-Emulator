@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.Signature0 import get_Signature0_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # Signature0 Collection API
 class Signature0CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Signature0 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ComputerSystemId, DatabaseId):
 		logging.info('Signature0 Collection get called')
-		path = os.path.join(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Signatures', 'index.json').format(ComputerSystemId, DatabaseId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Signatures', 'index.json').format(ComputerSystemId, DatabaseId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, ComputerSystemId, DatabaseId):
 		logging.info('Signature0 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if DatabaseId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Signatures').format(ComputerSystemId, DatabaseId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'Signature', parent_path)
+			if DatabaseId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Signatures').format(ComputerSystemId, DatabaseId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'Signature', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return Signature0API.post(self, ComputerSystemId, DatabaseId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return Signature0API.post(self, ComputerSystemId, DatabaseId, os.path.basename(config['@odata.id']))
+				else:
+					return Signature0API.post(self, ComputerSystemId, DatabaseId, str(res))
 			else:
 				return Signature0API.post(self, ComputerSystemId, DatabaseId, str(res))
 		else:
-			return Signature0API.post(self, ComputerSystemId, DatabaseId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, ComputerSystemId, DatabaseId):
-		logging.info('Signature0 Collection put called')
-
-		path = os.path.join(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Signatures', 'index.json').format(ComputerSystemId, DatabaseId)
-		put_object (path)
-		return self.get(ComputerSystemId)
+			return msg, code
 
 # Signature0 API
 class Signature0API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Signature0 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ComputerSystemId, DatabaseId, SignatureId):
 		logging.info('Signature0 get called')
-		path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Signatures/{2}', 'index.json').format(ComputerSystemId, DatabaseId, SignatureId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Signatures/{2}', 'index.json').format(ComputerSystemId, DatabaseId, SignatureId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class Signature0API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ComputerSystemId, DatabaseId, SignatureId):
 		logging.info('Signature0 post called')
-		path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Signatures/{2}').format(ComputerSystemId, DatabaseId, SignatureId)
-		collection_path = os.path.join(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Signatures', 'index.json').format(ComputerSystemId, DatabaseId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			Signature0CollectionAPI.post(self, ComputerSystemId, DatabaseId)
+		if code == 200:
+			path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Signatures/{2}').format(ComputerSystemId, DatabaseId, SignatureId)
+			collection_path = os.path.join(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Signatures', 'index.json').format(ComputerSystemId, DatabaseId)
 
-		if SignatureId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				Signature0CollectionAPI.post(self, ComputerSystemId, DatabaseId)
+
+			if SignatureId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ComputerSystemId':ComputerSystemId, 'DatabaseId':DatabaseId, 'SignatureId':SignatureId, 'rb':g.rest_base}
+				config=get_Signature0_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('Signature0API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'ComputerSystemId':ComputerSystemId, 'DatabaseId':DatabaseId, 'SignatureId':SignatureId, 'rb':g.rest_base}
-			config=get_Signature0_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('Signature0API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ComputerSystemId, DatabaseId, SignatureId):
 		logging.info('Signature0 put called')
-		path = os.path.join(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Signatures/{2}', 'index.json').format(ComputerSystemId, DatabaseId, SignatureId)
-		put_object(path)
-		return self.get(ComputerSystemId, DatabaseId, SignatureId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Signatures/{2}', 'index.json').format(ComputerSystemId, DatabaseId, SignatureId)
+			put_object(path)
+			return self.get(ComputerSystemId, DatabaseId, SignatureId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ComputerSystemId, DatabaseId, SignatureId):
 		logging.info('Signature0 patch called')
-		path = os.path.join(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Signatures/{2}', 'index.json').format(ComputerSystemId, DatabaseId, SignatureId)
-		patch_object(path)
-		return self.get(ComputerSystemId, DatabaseId, SignatureId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Signatures/{2}', 'index.json').format(ComputerSystemId, DatabaseId, SignatureId)
+			patch_object(path)
+			return self.get(ComputerSystemId, DatabaseId, SignatureId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ComputerSystemId, DatabaseId, SignatureId):
 		logging.info('Signature0 delete called')
-		path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Signatures/{2}').format(ComputerSystemId, DatabaseId, SignatureId)
-		base_path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Signatures').format(ComputerSystemId, DatabaseId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Signatures/{2}').format(ComputerSystemId, DatabaseId, SignatureId)
+			base_path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Signatures').format(ComputerSystemId, DatabaseId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

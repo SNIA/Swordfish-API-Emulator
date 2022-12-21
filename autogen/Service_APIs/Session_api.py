@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
@@ -46,15 +46,21 @@ INTERNAL_ERROR = 500
 
 # Session Collection API
 class SessionCollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Session Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self):
 		logging.info('Session Collection get called')
-		path = os.path.join(self.root, 'SessionService/Sessions', 'index.json')
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'SessionService/Sessions', 'index.json')
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	def post(self):
@@ -79,15 +85,21 @@ class SessionCollectionAPI(Resource):
 
 # Session API
 class SessionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Session init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, SessionId):
 		logging.info('Session get called')
-		path = create_path(self.root, 'SessionService/Sessions/{0}', 'index.json').format(SessionId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'SessionService/Sessions/{0}', 'index.json').format(SessionId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	def post(self, SessionId):

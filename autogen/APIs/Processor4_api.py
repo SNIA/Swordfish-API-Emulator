@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.Processor4 import get_Processor4_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # Processor4 Collection API
 class Processor4CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Processor4 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ResourceBlockId, ProcessorId):
 		logging.info('Processor4 Collection get called')
-		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/SubProcessors', 'index.json').format(ResourceBlockId, ProcessorId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/SubProcessors', 'index.json').format(ResourceBlockId, ProcessorId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, ResourceBlockId, ProcessorId):
 		logging.info('Processor4 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if ProcessorId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/SubProcessors').format(ResourceBlockId, ProcessorId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'Processor', parent_path)
+			if ProcessorId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/SubProcessors').format(ResourceBlockId, ProcessorId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'Processor', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return Processor4API.post(self, ResourceBlockId, ProcessorId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return Processor4API.post(self, ResourceBlockId, ProcessorId, os.path.basename(config['@odata.id']))
+				else:
+					return Processor4API.post(self, ResourceBlockId, ProcessorId, str(res))
 			else:
 				return Processor4API.post(self, ResourceBlockId, ProcessorId, str(res))
 		else:
-			return Processor4API.post(self, ResourceBlockId, ProcessorId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, ResourceBlockId, ProcessorId):
-		logging.info('Processor4 Collection put called')
-
-		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/SubProcessors', 'index.json').format(ResourceBlockId, ProcessorId)
-		put_object (path)
-		return self.get(ResourceBlockId)
+			return msg, code
 
 # Processor4 API
 class Processor4API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Processor4 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ResourceBlockId, ProcessorId, ProcessorId2):
 		logging.info('Processor4 get called')
-		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/SubProcessors/{12}', 'index.json').format(ResourceBlockId, ProcessorId, ProcessorId2)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/SubProcessors/{12}', 'index.json').format(ResourceBlockId, ProcessorId, ProcessorId2)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class Processor4API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ResourceBlockId, ProcessorId, ProcessorId2):
 		logging.info('Processor4 post called')
-		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/SubProcessors/{12}').format(ResourceBlockId, ProcessorId, ProcessorId2)
-		collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/SubProcessors', 'index.json').format(ResourceBlockId, ProcessorId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			Processor4CollectionAPI.post(self, ResourceBlockId, ProcessorId)
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/SubProcessors/{12}').format(ResourceBlockId, ProcessorId, ProcessorId2)
+			collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/SubProcessors', 'index.json').format(ResourceBlockId, ProcessorId)
 
-		if ProcessorId2 in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				Processor4CollectionAPI.post(self, ResourceBlockId, ProcessorId)
+
+			if ProcessorId2 in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'ProcessorId':ProcessorId, 'ProcessorId2':ProcessorId2, 'rb':g.rest_base}
+				config=get_Processor4_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('Processor4API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'ResourceBlockId':ResourceBlockId, 'ProcessorId':ProcessorId, 'ProcessorId2':ProcessorId2, 'rb':g.rest_base}
-			config=get_Processor4_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('Processor4API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ResourceBlockId, ProcessorId, ProcessorId2):
 		logging.info('Processor4 put called')
-		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/SubProcessors/{12}', 'index.json').format(ResourceBlockId, ProcessorId, ProcessorId2)
-		put_object(path)
-		return self.get(ResourceBlockId, ProcessorId, ProcessorId2)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/SubProcessors/{12}', 'index.json').format(ResourceBlockId, ProcessorId, ProcessorId2)
+			put_object(path)
+			return self.get(ResourceBlockId, ProcessorId, ProcessorId2)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ResourceBlockId, ProcessorId, ProcessorId2):
 		logging.info('Processor4 patch called')
-		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/SubProcessors/{12}', 'index.json').format(ResourceBlockId, ProcessorId, ProcessorId2)
-		patch_object(path)
-		return self.get(ResourceBlockId, ProcessorId, ProcessorId2)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/SubProcessors/{12}', 'index.json').format(ResourceBlockId, ProcessorId, ProcessorId2)
+			patch_object(path)
+			return self.get(ResourceBlockId, ProcessorId, ProcessorId2)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ResourceBlockId, ProcessorId, ProcessorId2):
 		logging.info('Processor4 delete called')
-		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/SubProcessors/{12}').format(ResourceBlockId, ProcessorId, ProcessorId2)
-		base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/SubProcessors').format(ResourceBlockId, ProcessorId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/SubProcessors/{12}').format(ResourceBlockId, ProcessorId, ProcessorId2)
+			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/SubProcessors').format(ResourceBlockId, ProcessorId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

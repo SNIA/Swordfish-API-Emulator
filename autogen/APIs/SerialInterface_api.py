@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.SerialInterface import get_SerialInterface_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # SerialInterface Collection API
 class SerialInterfaceCollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('SerialInterface Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ManagerId):
 		logging.info('SerialInterface Collection get called')
-		path = os.path.join(self.root, 'Managers/{0}/SerialInterfaces', 'index.json').format(ManagerId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Managers/{0}/SerialInterfaces', 'index.json').format(ManagerId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, ManagerId):
 		logging.info('SerialInterface Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if ManagerId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'Managers/{0}/SerialInterfaces').format(ManagerId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'SerialInterface', parent_path)
+			if ManagerId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'Managers/{0}/SerialInterfaces').format(ManagerId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'SerialInterface', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return SerialInterfaceAPI.post(self, ManagerId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return SerialInterfaceAPI.post(self, ManagerId, os.path.basename(config['@odata.id']))
+				else:
+					return SerialInterfaceAPI.post(self, ManagerId, str(res))
 			else:
 				return SerialInterfaceAPI.post(self, ManagerId, str(res))
 		else:
-			return SerialInterfaceAPI.post(self, ManagerId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, ManagerId):
-		logging.info('SerialInterface Collection put called')
-
-		path = os.path.join(self.root, 'Managers/{0}/SerialInterfaces', 'index.json').format(ManagerId)
-		put_object (path)
-		return self.get(ManagerId)
+			return msg, code
 
 # SerialInterface API
 class SerialInterfaceAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('SerialInterface init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ManagerId, SerialInterfaceId):
 		logging.info('SerialInterface get called')
-		path = create_path(self.root, 'Managers/{0}/SerialInterfaces/{1}', 'index.json').format(ManagerId, SerialInterfaceId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Managers/{0}/SerialInterfaces/{1}', 'index.json').format(ManagerId, SerialInterfaceId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class SerialInterfaceAPI(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ManagerId, SerialInterfaceId):
 		logging.info('SerialInterface post called')
-		path = create_path(self.root, 'Managers/{0}/SerialInterfaces/{1}').format(ManagerId, SerialInterfaceId)
-		collection_path = os.path.join(self.root, 'Managers/{0}/SerialInterfaces', 'index.json').format(ManagerId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			SerialInterfaceCollectionAPI.post(self, ManagerId)
+		if code == 200:
+			path = create_path(self.root, 'Managers/{0}/SerialInterfaces/{1}').format(ManagerId, SerialInterfaceId)
+			collection_path = os.path.join(self.root, 'Managers/{0}/SerialInterfaces', 'index.json').format(ManagerId)
 
-		if SerialInterfaceId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				SerialInterfaceCollectionAPI.post(self, ManagerId)
+
+			if SerialInterfaceId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ManagerId':ManagerId, 'SerialInterfaceId':SerialInterfaceId, 'rb':g.rest_base}
+				config=get_SerialInterface_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('SerialInterfaceAPI POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'ManagerId':ManagerId, 'SerialInterfaceId':SerialInterfaceId, 'rb':g.rest_base}
-			config=get_SerialInterface_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('SerialInterfaceAPI POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ManagerId, SerialInterfaceId):
 		logging.info('SerialInterface put called')
-		path = create_path(self.root, 'Managers/{0}/SerialInterfaces/{1}', 'index.json').format(ManagerId, SerialInterfaceId)
-		put_object(path)
-		return self.get(ManagerId, SerialInterfaceId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Managers/{0}/SerialInterfaces/{1}', 'index.json').format(ManagerId, SerialInterfaceId)
+			put_object(path)
+			return self.get(ManagerId, SerialInterfaceId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ManagerId, SerialInterfaceId):
 		logging.info('SerialInterface patch called')
-		path = create_path(self.root, 'Managers/{0}/SerialInterfaces/{1}', 'index.json').format(ManagerId, SerialInterfaceId)
-		patch_object(path)
-		return self.get(ManagerId, SerialInterfaceId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Managers/{0}/SerialInterfaces/{1}', 'index.json').format(ManagerId, SerialInterfaceId)
+			patch_object(path)
+			return self.get(ManagerId, SerialInterfaceId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ManagerId, SerialInterfaceId):
 		logging.info('SerialInterface delete called')
-		path = create_path(self.root, 'Managers/{0}/SerialInterfaces/{1}').format(ManagerId, SerialInterfaceId)
-		base_path = create_path(self.root, 'Managers/{0}/SerialInterfaces').format(ManagerId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Managers/{0}/SerialInterfaces/{1}').format(ManagerId, SerialInterfaceId)
+			base_path = create_path(self.root, 'Managers/{0}/SerialInterfaces').format(ManagerId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

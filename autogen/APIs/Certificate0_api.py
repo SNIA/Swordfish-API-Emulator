@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.Certificate0 import get_Certificate0_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # Certificate0 Collection API
 class Certificate0CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Certificate0 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ManagerAccountId):
 		logging.info('Certificate0 Collection get called')
-		path = os.path.join(self.root, 'AccountService/Accounts/{0}/Certificates', 'index.json').format(ManagerAccountId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'AccountService/Accounts/{0}/Certificates', 'index.json').format(ManagerAccountId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, ManagerAccountId):
 		logging.info('Certificate0 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if ManagerAccountId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'AccountService/Accounts/{0}/Certificates').format(ManagerAccountId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'Certificate', parent_path)
+			if ManagerAccountId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'AccountService/Accounts/{0}/Certificates').format(ManagerAccountId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'Certificate', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return Certificate0API.post(self, ManagerAccountId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return Certificate0API.post(self, ManagerAccountId, os.path.basename(config['@odata.id']))
+				else:
+					return Certificate0API.post(self, ManagerAccountId, str(res))
 			else:
 				return Certificate0API.post(self, ManagerAccountId, str(res))
 		else:
-			return Certificate0API.post(self, ManagerAccountId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, ManagerAccountId):
-		logging.info('Certificate0 Collection put called')
-
-		path = os.path.join(self.root, 'AccountService/Accounts/{0}/Certificates', 'index.json').format(ManagerAccountId)
-		put_object (path)
-		return self.get(ManagerAccountId)
+			return msg, code
 
 # Certificate0 API
 class Certificate0API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Certificate0 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ManagerAccountId, CertificateId):
 		logging.info('Certificate0 get called')
-		path = create_path(self.root, 'AccountService/Accounts/{0}/Certificates/{1}', 'index.json').format(ManagerAccountId, CertificateId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'AccountService/Accounts/{0}/Certificates/{1}', 'index.json').format(ManagerAccountId, CertificateId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class Certificate0API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ManagerAccountId, CertificateId):
 		logging.info('Certificate0 post called')
-		path = create_path(self.root, 'AccountService/Accounts/{0}/Certificates/{1}').format(ManagerAccountId, CertificateId)
-		collection_path = os.path.join(self.root, 'AccountService/Accounts/{0}/Certificates', 'index.json').format(ManagerAccountId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			Certificate0CollectionAPI.post(self, ManagerAccountId)
+		if code == 200:
+			path = create_path(self.root, 'AccountService/Accounts/{0}/Certificates/{1}').format(ManagerAccountId, CertificateId)
+			collection_path = os.path.join(self.root, 'AccountService/Accounts/{0}/Certificates', 'index.json').format(ManagerAccountId)
 
-		if CertificateId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				Certificate0CollectionAPI.post(self, ManagerAccountId)
+
+			if CertificateId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ManagerAccountId':ManagerAccountId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				config=get_Certificate0_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('Certificate0API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'ManagerAccountId':ManagerAccountId, 'CertificateId':CertificateId, 'rb':g.rest_base}
-			config=get_Certificate0_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('Certificate0API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ManagerAccountId, CertificateId):
 		logging.info('Certificate0 put called')
-		path = create_path(self.root, 'AccountService/Accounts/{0}/Certificates/{1}', 'index.json').format(ManagerAccountId, CertificateId)
-		put_object(path)
-		return self.get(ManagerAccountId, CertificateId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'AccountService/Accounts/{0}/Certificates/{1}', 'index.json').format(ManagerAccountId, CertificateId)
+			put_object(path)
+			return self.get(ManagerAccountId, CertificateId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ManagerAccountId, CertificateId):
 		logging.info('Certificate0 patch called')
-		path = create_path(self.root, 'AccountService/Accounts/{0}/Certificates/{1}', 'index.json').format(ManagerAccountId, CertificateId)
-		patch_object(path)
-		return self.get(ManagerAccountId, CertificateId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'AccountService/Accounts/{0}/Certificates/{1}', 'index.json').format(ManagerAccountId, CertificateId)
+			patch_object(path)
+			return self.get(ManagerAccountId, CertificateId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ManagerAccountId, CertificateId):
 		logging.info('Certificate0 delete called')
-		path = create_path(self.root, 'AccountService/Accounts/{0}/Certificates/{1}').format(ManagerAccountId, CertificateId)
-		base_path = create_path(self.root, 'AccountService/Accounts/{0}/Certificates').format(ManagerAccountId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'AccountService/Accounts/{0}/Certificates/{1}').format(ManagerAccountId, CertificateId)
+			base_path = create_path(self.root, 'AccountService/Accounts/{0}/Certificates').format(ManagerAccountId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

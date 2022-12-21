@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.Port8 import get_Port8_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # Port8 Collection API
 class Port8CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Port8 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ResourceBlockId, StorageId, StorageControllerId):
 		logging.info('Port8 Collection get called')
-		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, ResourceBlockId, StorageId, StorageControllerId):
 		logging.info('Port8 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if StorageControllerId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports').format(ResourceBlockId, StorageId, StorageControllerId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'Port', parent_path)
+			if StorageControllerId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports').format(ResourceBlockId, StorageId, StorageControllerId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'Port', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return Port8API.post(self, ResourceBlockId, StorageId, StorageControllerId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return Port8API.post(self, ResourceBlockId, StorageId, StorageControllerId, os.path.basename(config['@odata.id']))
+				else:
+					return Port8API.post(self, ResourceBlockId, StorageId, StorageControllerId, str(res))
 			else:
 				return Port8API.post(self, ResourceBlockId, StorageId, StorageControllerId, str(res))
 		else:
-			return Port8API.post(self, ResourceBlockId, StorageId, StorageControllerId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, ResourceBlockId, StorageId, StorageControllerId):
-		logging.info('Port8 Collection put called')
-
-		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId)
-		put_object (path)
-		return self.get(ResourceBlockId)
+			return msg, code
 
 # Port8 API
 class Port8API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Port8 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
 		logging.info('Port8 get called')
-		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class Port8API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
 		logging.info('Port8 post called')
-		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
-		collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			Port8CollectionAPI.post(self, ResourceBlockId, StorageId, StorageControllerId)
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
+			collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId)
 
-		if PortId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				Port8CollectionAPI.post(self, ResourceBlockId, StorageId, StorageControllerId)
+
+			if PortId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'StorageId':StorageId, 'StorageControllerId':StorageControllerId, 'PortId':PortId, 'rb':g.rest_base}
+				config=get_Port8_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('Port8API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'ResourceBlockId':ResourceBlockId, 'StorageId':StorageId, 'StorageControllerId':StorageControllerId, 'PortId':PortId, 'rb':g.rest_base}
-			config=get_Port8_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('Port8API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
 		logging.info('Port8 put called')
-		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
-		put_object(path)
-		return self.get(ResourceBlockId, StorageId, StorageControllerId, PortId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
+			put_object(path)
+			return self.get(ResourceBlockId, StorageId, StorageControllerId, PortId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
 		logging.info('Port8 patch called')
-		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
-		patch_object(path)
-		return self.get(ResourceBlockId, StorageId, StorageControllerId, PortId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
+			patch_object(path)
+			return self.get(ResourceBlockId, StorageId, StorageControllerId, PortId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
 		logging.info('Port8 delete called')
-		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
-		base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports').format(ResourceBlockId, StorageId, StorageControllerId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
+			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports').format(ResourceBlockId, StorageId, StorageControllerId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

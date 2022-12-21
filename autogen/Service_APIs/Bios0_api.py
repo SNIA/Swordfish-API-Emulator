@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
@@ -49,15 +49,21 @@ INTERNAL_ERROR = 500
 
 # Bios0 API
 class Bios0API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Bios0 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ComputerSystemId):
 		logging.info('Bios0 get called')
-		path = create_path(self.root, 'Systems/{0}/Bios', 'index.json').format(ComputerSystemId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Systems/{0}/Bios', 'index.json').format(ComputerSystemId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	def post(self, ComputerSystemId):

@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
@@ -49,15 +49,21 @@ INTERNAL_ERROR = 500
 
 # EnvironmentMetrics29 API
 class EnvironmentMetrics29API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('EnvironmentMetrics29 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ChassisId, NetworkAdapterId):
 		logging.info('EnvironmentMetrics29 get called')
-		path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/EnvironmentMetrics', 'index.json').format(ChassisId, NetworkAdapterId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/EnvironmentMetrics', 'index.json').format(ChassisId, NetworkAdapterId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	def post(self, ChassisId, NetworkAdapterId):

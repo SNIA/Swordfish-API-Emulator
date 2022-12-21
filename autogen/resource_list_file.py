@@ -25,8 +25,8 @@ def add_resource_file(resource_num, path):
     for i in range(len(sub_path)-3):
         collection_path =  collection_path + '/' + sub_path[i+2]
     
-    add_resource_collection = 'g.api.add_resource({0}CollectionAPI, \'{1}\')\n'.format(resource_num, collection_path)
-    add_resource_instance = 'g.api.add_resource({0}API, \'{1}\')\n\n'.format(resource_num, object_path)
+    add_resource_collection = "g.api.add_resource({0}CollectionAPI, \'{1}\', resource_class_kwargs={{'auth': auth}})\n".format(resource_num, collection_path)
+    add_resource_instance = "g.api.add_resource({0}API, \'{1}\', resource_class_kwargs={{'auth': auth}})\n\n".format(resource_num, object_path)
 
     try:
         # with open("add_resource", "a") as file:
@@ -54,10 +54,11 @@ def add_service_resource_file(resource_num, path):
         collection_path =  collection_path + '/' + sub_path[i+2]
 
     if 'string' not in sub_path[-1]:
-        add_resource_instance = 'g.api.add_resource({0}API, \'{1}\')\n\n'.format(resource_num, object_path)
+        add_resource_instance = "g.api.add_resource({0}API, \'{1}\', resource_class_kwargs={{'auth': auth}})\n".format(resource_num, object_path)
+        add_resource_collection = ""
     else:
-        add_resource_collection = 'g.api.add_resource({0}CollectionAPI, \'{1}\')\n'.format(resource_num, collection_path)
-        add_resource_instance = 'g.api.add_resource({0}API, \'{1}\')\n\n'.format(resource_num, object_path)
+        add_resource_collection = "g.api.add_resource({0}CollectionAPI, \'{1}\', resource_class_kwargs={{'auth': auth}})\n".format(resource_num, collection_path)
+        add_resource_instance = "g.api.add_resource({0}API, \'{1}\', resource_class_kwargs={{'auth': auth}})\n".format(resource_num, object_path)
 
     try:
         # with open("add_service_resource", "a") as file:
@@ -71,14 +72,20 @@ def add_service_resource_file(resource_num, path):
         with open("add_service_resource", "a+") as file:
             file.seek(0)
             for line in file:
-                if add_resource_instance in line or add_resource_collection in line:
+                # if add_resource_instance in line or add_resource_collection in line:
+                if add_resource_instance != line:
+                    continue
+                else:
                     break
             else:
-                if add_resource_collection:
+                if add_resource_collection != "":
                     file.write(add_resource_collection)
                     file.write(add_resource_instance)
+                    file.write("\n")
                 else:
                     file.write(add_resource_instance)
+                    file.write("\n")
                 return 'Resource added in the "add_resource.txt" file'
     except:
-        return 'Something went wrong'
+        # return 'Something went wrong'
+        raise

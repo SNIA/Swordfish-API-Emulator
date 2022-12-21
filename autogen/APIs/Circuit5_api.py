@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.Circuit5 import get_Circuit5_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # Circuit5 Collection API
 class Circuit5CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Circuit5 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, PowerDistributionId):
 		logging.info('Circuit5 Collection get called')
-		path = os.path.join(self.root, 'PowerEquipment/TransferSwitches/{0}/Mains', 'index.json').format(PowerDistributionId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'PowerEquipment/TransferSwitches/{0}/Mains', 'index.json').format(PowerDistributionId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, PowerDistributionId):
 		logging.info('Circuit5 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if PowerDistributionId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Mains').format(PowerDistributionId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'Circuit', parent_path)
+			if PowerDistributionId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Mains').format(PowerDistributionId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'Circuit', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return Circuit5API.post(self, PowerDistributionId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return Circuit5API.post(self, PowerDistributionId, os.path.basename(config['@odata.id']))
+				else:
+					return Circuit5API.post(self, PowerDistributionId, str(res))
 			else:
 				return Circuit5API.post(self, PowerDistributionId, str(res))
 		else:
-			return Circuit5API.post(self, PowerDistributionId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, PowerDistributionId):
-		logging.info('Circuit5 Collection put called')
-
-		path = os.path.join(self.root, 'PowerEquipment/TransferSwitches/{0}/Mains', 'index.json').format(PowerDistributionId)
-		put_object (path)
-		return self.get(PowerDistributionId)
+			return msg, code
 
 # Circuit5 API
 class Circuit5API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Circuit5 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, PowerDistributionId, CircuitId):
 		logging.info('Circuit5 get called')
-		path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Mains/{1}', 'index.json').format(PowerDistributionId, CircuitId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Mains/{1}', 'index.json').format(PowerDistributionId, CircuitId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class Circuit5API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, PowerDistributionId, CircuitId):
 		logging.info('Circuit5 post called')
-		path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Mains/{1}').format(PowerDistributionId, CircuitId)
-		collection_path = os.path.join(self.root, 'PowerEquipment/TransferSwitches/{0}/Mains', 'index.json').format(PowerDistributionId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			Circuit5CollectionAPI.post(self, PowerDistributionId)
+		if code == 200:
+			path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Mains/{1}').format(PowerDistributionId, CircuitId)
+			collection_path = os.path.join(self.root, 'PowerEquipment/TransferSwitches/{0}/Mains', 'index.json').format(PowerDistributionId)
 
-		if CircuitId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				Circuit5CollectionAPI.post(self, PowerDistributionId)
+
+			if CircuitId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'PowerDistributionId':PowerDistributionId, 'CircuitId':CircuitId, 'rb':g.rest_base}
+				config=get_Circuit5_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('Circuit5API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'PowerDistributionId':PowerDistributionId, 'CircuitId':CircuitId, 'rb':g.rest_base}
-			config=get_Circuit5_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('Circuit5API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, PowerDistributionId, CircuitId):
 		logging.info('Circuit5 put called')
-		path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Mains/{1}', 'index.json').format(PowerDistributionId, CircuitId)
-		put_object(path)
-		return self.get(PowerDistributionId, CircuitId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Mains/{1}', 'index.json').format(PowerDistributionId, CircuitId)
+			put_object(path)
+			return self.get(PowerDistributionId, CircuitId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, PowerDistributionId, CircuitId):
 		logging.info('Circuit5 patch called')
-		path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Mains/{1}', 'index.json').format(PowerDistributionId, CircuitId)
-		patch_object(path)
-		return self.get(PowerDistributionId, CircuitId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Mains/{1}', 'index.json').format(PowerDistributionId, CircuitId)
+			patch_object(path)
+			return self.get(PowerDistributionId, CircuitId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, PowerDistributionId, CircuitId):
 		logging.info('Circuit5 delete called')
-		path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Mains/{1}').format(PowerDistributionId, CircuitId)
-		base_path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Mains').format(PowerDistributionId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Mains/{1}').format(PowerDistributionId, CircuitId)
+			base_path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Mains').format(PowerDistributionId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.Control0 import get_Control0_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # Control0 Collection API
 class Control0CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Control0 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ChassisId):
 		logging.info('Control0 Collection get called')
-		path = os.path.join(self.root, 'Chassis/{0}/Controls', 'index.json').format(ChassisId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Chassis/{0}/Controls', 'index.json').format(ChassisId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, ChassisId):
 		logging.info('Control0 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if ChassisId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'Chassis/{0}/Controls').format(ChassisId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'Control', parent_path)
+			if ChassisId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'Chassis/{0}/Controls').format(ChassisId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'Control', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return Control0API.post(self, ChassisId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return Control0API.post(self, ChassisId, os.path.basename(config['@odata.id']))
+				else:
+					return Control0API.post(self, ChassisId, str(res))
 			else:
 				return Control0API.post(self, ChassisId, str(res))
 		else:
-			return Control0API.post(self, ChassisId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, ChassisId):
-		logging.info('Control0 Collection put called')
-
-		path = os.path.join(self.root, 'Chassis/{0}/Controls', 'index.json').format(ChassisId)
-		put_object (path)
-		return self.get(ChassisId)
+			return msg, code
 
 # Control0 API
 class Control0API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Control0 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ChassisId, ControlId):
 		logging.info('Control0 get called')
-		path = create_path(self.root, 'Chassis/{0}/Controls/{1}', 'index.json').format(ChassisId, ControlId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Chassis/{0}/Controls/{1}', 'index.json').format(ChassisId, ControlId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class Control0API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ChassisId, ControlId):
 		logging.info('Control0 post called')
-		path = create_path(self.root, 'Chassis/{0}/Controls/{1}').format(ChassisId, ControlId)
-		collection_path = os.path.join(self.root, 'Chassis/{0}/Controls', 'index.json').format(ChassisId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			Control0CollectionAPI.post(self, ChassisId)
+		if code == 200:
+			path = create_path(self.root, 'Chassis/{0}/Controls/{1}').format(ChassisId, ControlId)
+			collection_path = os.path.join(self.root, 'Chassis/{0}/Controls', 'index.json').format(ChassisId)
 
-		if ControlId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				Control0CollectionAPI.post(self, ChassisId)
+
+			if ControlId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ChassisId':ChassisId, 'ControlId':ControlId, 'rb':g.rest_base}
+				config=get_Control0_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('Control0API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'ChassisId':ChassisId, 'ControlId':ControlId, 'rb':g.rest_base}
-			config=get_Control0_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('Control0API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ChassisId, ControlId):
 		logging.info('Control0 put called')
-		path = create_path(self.root, 'Chassis/{0}/Controls/{1}', 'index.json').format(ChassisId, ControlId)
-		put_object(path)
-		return self.get(ChassisId, ControlId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Chassis/{0}/Controls/{1}', 'index.json').format(ChassisId, ControlId)
+			put_object(path)
+			return self.get(ChassisId, ControlId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ChassisId, ControlId):
 		logging.info('Control0 patch called')
-		path = create_path(self.root, 'Chassis/{0}/Controls/{1}', 'index.json').format(ChassisId, ControlId)
-		patch_object(path)
-		return self.get(ChassisId, ControlId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Chassis/{0}/Controls/{1}', 'index.json').format(ChassisId, ControlId)
+			patch_object(path)
+			return self.get(ChassisId, ControlId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ChassisId, ControlId):
 		logging.info('Control0 delete called')
-		path = create_path(self.root, 'Chassis/{0}/Controls/{1}').format(ChassisId, ControlId)
-		base_path = create_path(self.root, 'Chassis/{0}/Controls').format(ChassisId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Chassis/{0}/Controls/{1}').format(ChassisId, ControlId)
+			base_path = create_path(self.root, 'Chassis/{0}/Controls').format(ChassisId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

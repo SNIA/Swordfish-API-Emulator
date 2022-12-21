@@ -1,475 +1,487 @@
-g.api.add_resource(AccountService0API, '/redfish/v1/AccountService')
+g.api.add_resource(AccountService0API, '/redfish/v1/AccountService', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(AccountService1API, '/redfish/v1/Managers/<string:ManagerId>/RemoteAccountService')
+g.api.add_resource(AccountService1API, '/redfish/v1/Managers/<string:ManagerId>/RemoteAccountService', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(AggregationServiceAPI, '/redfish/v1/AggregationService')
+g.api.add_resource(AggregationServiceAPI, '/redfish/v1/AggregationService', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly0API, '/redfish/v1/Chassis/<string:ChassisId>/Assembly')
+g.api.add_resource(Assembly0API, '/redfish/v1/Chassis/<string:ChassisId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly1API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Drives/<string:DriveId>/Assembly')
+g.api.add_resource(Assembly1API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Drives/<string:DriveId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly2API, '/redfish/v1/Chassis/<string:ChassisId>/Drives/<string:DriveId>/Assembly')
+g.api.add_resource(Assembly2API, '/redfish/v1/Chassis/<string:ChassisId>/Drives/<string:DriveId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly3API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Drives/<string:DriveId>/Assembly')
+g.api.add_resource(Assembly3API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Drives/<string:DriveId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly4API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Drives/<string:DriveId>/Assembly')
+g.api.add_resource(Assembly4API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Drives/<string:DriveId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly5API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Drives/<string:DriveId>/Assembly')
+g.api.add_resource(Assembly5API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Drives/<string:DriveId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly6API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Drives/<string:DriveId>/Assembly')
+g.api.add_resource(Assembly6API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Drives/<string:DriveId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly7API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Drives/<string:DriveId>/Assembly')
+g.api.add_resource(Assembly7API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Drives/<string:DriveId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly8API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Drives/<string:DriveId>/Assembly')
+g.api.add_resource(Assembly8API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Drives/<string:DriveId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly9API, '/redfish/v1/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/Assembly')
+g.api.add_resource(Assembly9API, '/redfish/v1/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly10API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Memory/<string:MemoryId>/Assembly')
+g.api.add_resource(Assembly10API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Memory/<string:MemoryId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly11API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/Assembly')
+g.api.add_resource(Assembly11API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly12API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Memory/<string:MemoryId>/Assembly')
+g.api.add_resource(Assembly12API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Memory/<string:MemoryId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly13API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/Assembly')
+g.api.add_resource(Assembly13API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly14API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Assembly')
+g.api.add_resource(Assembly14API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly15API, '/redfish/v1/Chassis/<string:ChassisId>/PCIeDevices/<string:PCIeDeviceId>/Assembly')
+g.api.add_resource(Assembly15API, '/redfish/v1/Chassis/<string:ChassisId>/PCIeDevices/<string:PCIeDeviceId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly16API, '/redfish/v1/Systems/<string:ComputerSystemId>/PCIeDevices/<string:PCIeDeviceId>/Assembly')
+g.api.add_resource(Assembly16API, '/redfish/v1/Systems/<string:ComputerSystemId>/PCIeDevices/<string:PCIeDeviceId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly17API, '/redfish/v1/Chassis/<string:ChassisId>/Power/PowerSupplies/<string:PowerSupplyId>/Assembly')
+g.api.add_resource(Assembly17API, '/redfish/v1/Chassis/<string:ChassisId>/Power/PowerSupplies/<string:PowerSupplyId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly18API, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/Assembly')
+g.api.add_resource(Assembly18API, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly19API, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/Assembly')
+g.api.add_resource(Assembly19API, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly20API, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/Assembly')
+g.api.add_resource(Assembly20API, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly21API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/Assembly')
+g.api.add_resource(Assembly21API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly22API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/Assembly')
+g.api.add_resource(Assembly22API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly23API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/Assembly')
+g.api.add_resource(Assembly23API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly24API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/Assembly')
+g.api.add_resource(Assembly24API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly25API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/Assembly')
+g.api.add_resource(Assembly25API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly26API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/Assembly')
+g.api.add_resource(Assembly26API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly27API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/Assembly')
+g.api.add_resource(Assembly27API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly28API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/Assembly')
+g.api.add_resource(Assembly28API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly29API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/Assembly')
+g.api.add_resource(Assembly29API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly30API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/Assembly')
+g.api.add_resource(Assembly30API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly31API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/Assembly')
+g.api.add_resource(Assembly31API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly32API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/Assembly')
+g.api.add_resource(Assembly32API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly33API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Processors/<string:ProcessorId>/Assembly')
+g.api.add_resource(Assembly33API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Processors/<string:ProcessorId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly34API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/Assembly')
+g.api.add_resource(Assembly34API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly35API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/Assembly')
+g.api.add_resource(Assembly35API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly36API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Assembly')
+g.api.add_resource(Assembly36API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly37API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Assembly')
+g.api.add_resource(Assembly37API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly38API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Assembly')
+g.api.add_resource(Assembly38API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly39API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Assembly')
+g.api.add_resource(Assembly39API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly40API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Assembly')
+g.api.add_resource(Assembly40API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly41API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Assembly')
+g.api.add_resource(Assembly41API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly42API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Assembly')
+g.api.add_resource(Assembly42API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly43API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Assembly')
+g.api.add_resource(Assembly43API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly44API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Assembly')
+g.api.add_resource(Assembly44API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly45API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Assembly')
+g.api.add_resource(Assembly45API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly46API, '/redfish/v1/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Assembly')
+g.api.add_resource(Assembly46API, '/redfish/v1/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly47API, '/redfish/v1/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Assembly')
+g.api.add_resource(Assembly47API, '/redfish/v1/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly48API, '/redfish/v1/Chassis/<string:ChassisId>/Thermal/Fans/<string:FanId>/Assembly')
+g.api.add_resource(Assembly48API, '/redfish/v1/Chassis/<string:ChassisId>/Thermal/Fans/<string:FanId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly49API, '/redfish/v1/Chassis/<string:ChassisId>/ThermalSubsystem/Fans/<string:FanId>/Assembly')
+g.api.add_resource(Assembly49API, '/redfish/v1/Chassis/<string:ChassisId>/ThermalSubsystem/Fans/<string:FanId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly50API, '/redfish/v1/Chassis/<string:ChassisId>/PowerSubsystem/PowerSupplies/<string:PowerSupplyId>/Assembly')
+g.api.add_resource(Assembly50API, '/redfish/v1/Chassis/<string:ChassisId>/PowerSubsystem/PowerSupplies/<string:PowerSupplyId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly51API, '/redfish/v1/PowerEquipment/PowerShelves/<string:PowerDistributionId>/PowerSupplies/<string:PowerSupplyId>/Assembly')
+g.api.add_resource(Assembly51API, '/redfish/v1/PowerEquipment/PowerShelves/<string:PowerDistributionId>/PowerSupplies/<string:PowerSupplyId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Assembly52API, '/redfish/v1/Chassis/<string:ChassisId>/PowerSubsystem/Batteries/<string:BatteryId>/Assembly')
+g.api.add_resource(Assembly52API, '/redfish/v1/Chassis/<string:ChassisId>/PowerSubsystem/Batteries/<string:BatteryId>/Assembly', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(BatteryMetricsAPI, '/redfish/v1/Chassis/<string:ChassisId>/PowerSubsystem/Batteries/<string:BatteryId>/Metrics')
+g.api.add_resource(BatteryMetricsAPI, '/redfish/v1/Chassis/<string:ChassisId>/PowerSubsystem/Batteries/<string:BatteryId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Bios0API, '/redfish/v1/Systems/<string:ComputerSystemId>/Bios')
+g.api.add_resource(Bios0API, '/redfish/v1/Systems/<string:ComputerSystemId>/Bios', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Bios1API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Bios')
+g.api.add_resource(Bios1API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Bios', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(Bios2API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Bios')
+g.api.add_resource(Bios2API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Bios', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(CertificateLocationsAPI, '/redfish/v1/CertificateService/CertificateLocations')
+g.api.add_resource(CertificateLocationsAPI, '/redfish/v1/CertificateService/CertificateLocations', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(CertificateServiceAPI, '/redfish/v1/CertificateService')
+g.api.add_resource(CertificateServiceAPI, '/redfish/v1/CertificateService', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(CompositionServiceAPI, '/redfish/v1/CompositionService')
+g.api.add_resource(CompositionServiceAPI, '/redfish/v1/CompositionService', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics0API, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics0API, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics1API, '/redfish/v1/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics1API, '/redfish/v1/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics2API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Drives/<string:DriveId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics2API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Drives/<string:DriveId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics3API, '/redfish/v1/Systems/<string:ComputerSystemId>/PCIeDevices/<string:PCIeDeviceId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics3API, '/redfish/v1/Systems/<string:ComputerSystemId>/PCIeDevices/<string:PCIeDeviceId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics4API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:ControllerId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics4API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:ControllerId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics5API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics5API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics6API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Memory/<string:MemoryId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics6API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Memory/<string:MemoryId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics7API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Drives/<string:DriveId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics7API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Drives/<string:DriveId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics8API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Drives/<string:DriveId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics8API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Drives/<string:DriveId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics9API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics9API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics10API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics10API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics11API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/PCIeDevices/<string:PCIeDeviceId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics11API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/PCIeDevices/<string:PCIeDeviceId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics12API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Drives/<string:DriveId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics12API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Drives/<string:DriveId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics13API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:ControllerId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics13API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:ControllerId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics14API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:ControllerId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics14API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:ControllerId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics15API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics15API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics16API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Memory/<string:MemoryId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics16API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Memory/<string:MemoryId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics17API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Drives/<string:DriveId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics17API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Drives/<string:DriveId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics18API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:ControllerId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics18API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:ControllerId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics19API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Drives/<string:DriveId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics19API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Drives/<string:DriveId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics20API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics20API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics21API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics21API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics22API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/PCIeDevices/<string:PCIeDeviceId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics22API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/PCIeDevices/<string:PCIeDeviceId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics23API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Drives/<string:DriveId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics23API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Drives/<string:DriveId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics24API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:ControllerId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics24API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:ControllerId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics25API, '/redfish/v1/Chassis/<string:ChassisId>/Memory/<string:MemoryId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics25API, '/redfish/v1/Chassis/<string:ChassisId>/Memory/<string:MemoryId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics26API, '/redfish/v1/Chassis/<string:ChassisId>/Drives/<string:DriveId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics26API, '/redfish/v1/Chassis/<string:ChassisId>/Drives/<string:DriveId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics27API, '/redfish/v1/Chassis/<string:ChassisId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics27API, '/redfish/v1/Chassis/<string:ChassisId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics28API, '/redfish/v1/Chassis/<string:ChassisId>/PCIeDevices/<string:PCIeDeviceId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics28API, '/redfish/v1/Chassis/<string:ChassisId>/PCIeDevices/<string:PCIeDeviceId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics29API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics29API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics30API, '/redfish/v1/Chassis/<string:ChassisId>/MediaControllers/<string:MediaControllerId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics30API, '/redfish/v1/Chassis/<string:ChassisId>/MediaControllers/<string:MediaControllerId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics31API, '/redfish/v1/Facilities/<string:FacilityId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics31API, '/redfish/v1/Facilities/<string:FacilityId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics32API, '/redfish/v1/Facilities/<string:FacilityId>/AmbientMetrics')
+g.api.add_resource(EnvironmentMetrics32API, '/redfish/v1/Facilities/<string:FacilityId>/AmbientMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics33API, '/redfish/v1/Fabrics/<string:FabricId>/Switches/<string:SwitchId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics33API, '/redfish/v1/Fabrics/<string:FabricId>/Switches/<string:SwitchId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics34API, '/redfish/v1/Storage/<string:StorageId>/Controllers/<string:ControllerId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics34API, '/redfish/v1/Storage/<string:StorageId>/Controllers/<string:ControllerId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics35API, '/redfish/v1/Fabrics/<string:FabricId>/Switches/<string:SwitchId>/Ports/<string:PortId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics35API, '/redfish/v1/Fabrics/<string:FabricId>/Switches/<string:SwitchId>/Ports/<string:PortId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics36API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics36API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics37API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics37API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics38API, '/redfish/v1/Systems/<string:ComputerSystemId>/FabricAdapters/<string:FabricAdapterId>/Ports/<string:PortId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics38API, '/redfish/v1/Systems/<string:ComputerSystemId>/FabricAdapters/<string:FabricAdapterId>/Ports/<string:PortId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics39API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics39API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics40API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics40API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics41API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics41API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics42API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics42API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics43API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics43API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics44API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics44API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics45API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics45API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics46API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics46API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics47API, '/redfish/v1/Chassis/<string:ChassisId>/MediaControllers/<string:MediaControllerId>/Ports/<string:PortId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics47API, '/redfish/v1/Chassis/<string:ChassisId>/MediaControllers/<string:MediaControllerId>/Ports/<string:PortId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics48API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Ports/<string:PortId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics48API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Ports/<string:PortId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics49API, '/redfish/v1/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics49API, '/redfish/v1/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EnvironmentMetrics50API, '/redfish/v1/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics')
+g.api.add_resource(EnvironmentMetrics50API, '/redfish/v1/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(EventServiceAPI, '/redfish/v1/EventService')
+g.api.add_resource(EventServiceAPI, '/redfish/v1/EventService', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(JobServiceAPI, '/redfish/v1/JobService')
+g.api.add_resource(JobServiceAPI, '/redfish/v1/JobService', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(KeyServiceAPI, '/redfish/v1/KeyService')
+g.api.add_resource(KeyServiceAPI, '/redfish/v1/KeyService', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(LicenseServiceAPI, '/redfish/v1/LicenseService')
+g.api.add_resource(LicenseServiceAPI, '/redfish/v1/LicenseService', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(LogService0CollectionAPI, '/redfish/v1/Managers/<string:ManagerId>/LogServices')
-g.api.add_resource(LogService0API, '/redfish/v1/Managers/<string:ManagerId>/LogServices/<string:LogServiceId>')
+g.api.add_resource(LogService0CollectionAPI, '/redfish/v1/Managers/<string:ManagerId>/LogServices', resource_class_kwargs={'auth': auth})
+g.api.add_resource(LogService0API, '/redfish/v1/Managers/<string:ManagerId>/LogServices/<string:LogServiceId>', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(LogService1CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/LogServices')
-g.api.add_resource(LogService1API, '/redfish/v1/Systems/<string:ComputerSystemId>/LogServices/<string:LogServiceId>')
+g.api.add_resource(LogService1CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/LogServices', resource_class_kwargs={'auth': auth})
+g.api.add_resource(LogService1API, '/redfish/v1/Systems/<string:ComputerSystemId>/LogServices/<string:LogServiceId>', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(LogService2CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/LogServices')
-g.api.add_resource(LogService2API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/LogServices/<string:LogServiceId>')
+g.api.add_resource(LogService2CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/LogServices', resource_class_kwargs={'auth': auth})
+g.api.add_resource(LogService2API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/LogServices/<string:LogServiceId>', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(LogService3CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/LogServices')
-g.api.add_resource(LogService3API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/LogServices/<string:LogServiceId>')
+g.api.add_resource(LogService3CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/LogServices', resource_class_kwargs={'auth': auth})
+g.api.add_resource(LogService3API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/LogServices/<string:LogServiceId>', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(LogService4CollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/LogServices')
-g.api.add_resource(LogService4API, '/redfish/v1/Chassis/<string:ChassisId>/LogServices/<string:LogServiceId>')
+g.api.add_resource(LogService4CollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/LogServices', resource_class_kwargs={'auth': auth})
+g.api.add_resource(LogService4API, '/redfish/v1/Chassis/<string:ChassisId>/LogServices/<string:LogServiceId>', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(LogService5API, '/redfish/v1/JobService/Log')
+g.api.add_resource(LogService5API, '/redfish/v1/JobService/Log', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(LogService6API, '/redfish/v1/TelemetryService/LogService')
+g.api.add_resource(LogService6API, '/redfish/v1/TelemetryService/LogService', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(LogService7API, '/redfish/v1/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/DeviceLog')
+g.api.add_resource(LogService7API, '/redfish/v1/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/DeviceLog', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ManagerDiagnosticDataAPI, '/redfish/v1/Managers/<string:ManagerId>/ManagerDiagnosticData')
+g.api.add_resource(ManagerDiagnosticDataAPI, '/redfish/v1/Managers/<string:ManagerId>/ManagerDiagnosticData', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ManagerNetworkProtocolAPI, '/redfish/v1/Managers/<string:ManagerId>/NetworkProtocol')
+g.api.add_resource(ManagerNetworkProtocolAPI, '/redfish/v1/Managers/<string:ManagerId>/NetworkProtocol', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(MemoryMetrics0API, '/redfish/v1/Systems/<string:ComputerSystemId>/MemorySummary/MemoryMetrics')
+g.api.add_resource(MemoryMetrics0API, '/redfish/v1/Systems/<string:ComputerSystemId>/MemorySummary/MemoryMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(MemoryMetrics1API, '/redfish/v1/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/MemoryMetrics')
+g.api.add_resource(MemoryMetrics1API, '/redfish/v1/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/MemoryMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(MemoryMetrics2API, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/MemorySummary/MemoryMetrics')
+g.api.add_resource(MemoryMetrics2API, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/MemorySummary/MemoryMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(MemoryMetrics3API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Memory/<string:MemoryId>/MemoryMetrics')
+g.api.add_resource(MemoryMetrics3API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Memory/<string:MemoryId>/MemoryMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(MemoryMetrics4API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/MemorySummary/MemoryMetrics')
+g.api.add_resource(MemoryMetrics4API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/MemorySummary/MemoryMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(MemoryMetrics5API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/MemoryMetrics')
+g.api.add_resource(MemoryMetrics5API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/MemoryMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(MemoryMetrics6API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/MemorySummary/MemoryMetrics')
+g.api.add_resource(MemoryMetrics6API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/MemorySummary/MemoryMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(MemoryMetrics7API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/MemorySummary/MemoryMetrics')
+g.api.add_resource(MemoryMetrics7API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/MemorySummary/MemoryMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(MemoryMetrics8API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Memory/<string:MemoryId>/MemoryMetrics')
+g.api.add_resource(MemoryMetrics8API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Memory/<string:MemoryId>/MemoryMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(MemoryMetrics9API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/MemorySummary/MemoryMetrics')
+g.api.add_resource(MemoryMetrics9API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/MemorySummary/MemoryMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(MemoryMetrics10API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/MemoryMetrics')
+g.api.add_resource(MemoryMetrics10API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>/MemoryMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(MemoryMetrics11API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/MemorySummary/MemoryMetrics')
+g.api.add_resource(MemoryMetrics11API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/MemorySummary/MemoryMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(MemoryMetrics12API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/MemorySummary/MemoryMetrics')
+g.api.add_resource(MemoryMetrics12API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/MemorySummary/MemoryMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(MessageRegistryFileCollectionAPI, '/redfish/v1/Registries')
-g.api.add_resource(MessageRegistryFileAPI, '/redfish/v1/Registries/<string:MessageRegistryFileId>')
+g.api.add_resource(MessageRegistryFileCollectionAPI, '/redfish/v1/Registries', resource_class_kwargs={'auth': auth})
+g.api.add_resource(MessageRegistryFileAPI, '/redfish/v1/Registries/<string:MessageRegistryFileId>', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(NetworkAdapterMetricsAPI, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Metrics')
+g.api.add_resource(NetworkAdapterMetricsAPI, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(NetworkDeviceFunctionMetricsAPI, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/NetworkDeviceFunctions/<string:NetworkDeviceFunctionId>/Metrics')
+g.api.add_resource(NetworkDeviceFunctionMetricsAPI, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/NetworkDeviceFunctions/<string:NetworkDeviceFunctionId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PCIeSlotsAPI, '/redfish/v1/Chassis/<string:ChassisId>/PCIeSlots')
+g.api.add_resource(PCIeSlotsAPI, '/redfish/v1/Chassis/<string:ChassisId>/PCIeSlots', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics0API, '/redfish/v1/Fabrics/<string:FabricId>/Switches/<string:SwitchId>/Ports/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics0API, '/redfish/v1/Fabrics/<string:FabricId>/Switches/<string:SwitchId>/Ports/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics1API, '/redfish/v1/Chassis/<string:ChassisId>/FabricAdapters/<string:FabricAdapterId>/Ports/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics1API, '/redfish/v1/Chassis/<string:ChassisId>/FabricAdapters/<string:FabricAdapterId>/Ports/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics2API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics2API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics3API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics3API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics4API, '/redfish/v1/Systems/<string:ComputerSystemId>/FabricAdapters/<string:FabricAdapterId>/Ports/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics4API, '/redfish/v1/Systems/<string:ComputerSystemId>/FabricAdapters/<string:FabricAdapterId>/Ports/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics5API, '/redfish/v1/Systems/<string:ComputerSystemId>/GraphicsControllers/<string:ControllerId>/Ports/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics5API, '/redfish/v1/Systems/<string:ComputerSystemId>/GraphicsControllers/<string:ControllerId>/Ports/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics6API, '/redfish/v1/Systems/<string:ComputerSystemId>/USBControllers/<string:ControllerId>/Ports/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics6API, '/redfish/v1/Systems/<string:ComputerSystemId>/USBControllers/<string:ControllerId>/Ports/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics7API, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/Ports/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics7API, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/Ports/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics8API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics8API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics9API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics9API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics10API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics10API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics11API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics11API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics12API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics12API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics13API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics13API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics14API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics14API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics15API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics15API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics16API, '/redfish/v1/Chassis/<string:ChassisId>/MediaControllers/<string:MediaControllerId>/Ports/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics16API, '/redfish/v1/Chassis/<string:ChassisId>/MediaControllers/<string:MediaControllerId>/Ports/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics17API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Ports/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics17API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Ports/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics18API, '/redfish/v1/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics18API, '/redfish/v1/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics19API, '/redfish/v1/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics19API, '/redfish/v1/Storage/<string:StorageId>/Controllers/<string:StorageControllerId>/Ports/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PortMetrics20API, '/redfish/v1/Managers/<string:ManagerId>/USBPorts/<string:PortId>/Metrics')
+g.api.add_resource(PortMetrics20API, '/redfish/v1/Managers/<string:ManagerId>/USBPorts/<string:PortId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PowerDistributionMetrics0API, '/redfish/v1/PowerEquipment/RackPDUs/<string:PowerDistributionId>/Metrics')
+g.api.add_resource(PowerDistributionMetrics0API, '/redfish/v1/PowerEquipment/RackPDUs/<string:PowerDistributionId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PowerDistributionMetrics1API, '/redfish/v1/PowerEquipment/FloorPDUs/<string:PowerDistributionId>/Metrics')
+g.api.add_resource(PowerDistributionMetrics1API, '/redfish/v1/PowerEquipment/FloorPDUs/<string:PowerDistributionId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PowerDistributionMetrics2API, '/redfish/v1/PowerEquipment/TransferSwitches/<string:PowerDistributionId>/Metrics')
+g.api.add_resource(PowerDistributionMetrics2API, '/redfish/v1/PowerEquipment/TransferSwitches/<string:PowerDistributionId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PowerDistributionMetrics3API, '/redfish/v1/PowerEquipment/PowerShelves/<string:PowerDistributionId>/Metrics')
+g.api.add_resource(PowerDistributionMetrics3API, '/redfish/v1/PowerEquipment/PowerShelves/<string:PowerDistributionId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PowerDistributionMetrics4API, '/redfish/v1/PowerEquipment/Switchgear/<string:PowerDistributionId>/Metrics')
+g.api.add_resource(PowerDistributionMetrics4API, '/redfish/v1/PowerEquipment/Switchgear/<string:PowerDistributionId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PowerDistributionMetrics5API, '/redfish/v1/PowerEquipment/ElectricalBuses/<string:PowerDistributionId>/Metrics')
+g.api.add_resource(PowerDistributionMetrics5API, '/redfish/v1/PowerEquipment/ElectricalBuses/<string:PowerDistributionId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PowerEquipmentAPI, '/redfish/v1/PowerEquipment')
+g.api.add_resource(PowerEquipmentAPI, '/redfish/v1/PowerEquipment', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PowerSubsystemAPI, '/redfish/v1/Chassis/<string:ChassisId>/PowerSubsystem')
+g.api.add_resource(PowerSubsystemAPI, '/redfish/v1/Chassis/<string:ChassisId>/PowerSubsystem', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PowerSupplyMetrics0API, '/redfish/v1/Chassis/<string:ChassisId>/PowerSubsystem/PowerSupplies/<string:PowerSupplyId>/Metrics')
+g.api.add_resource(PowerSupplyMetrics0API, '/redfish/v1/Chassis/<string:ChassisId>/PowerSubsystem/PowerSupplies/<string:PowerSupplyId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PowerSupplyMetrics1API, '/redfish/v1/PowerEquipment/PowerShelves/<string:PowerDistributionId>/PowerSupplies/<string:PowerSupplyId>/Metrics')
+g.api.add_resource(PowerSupplyMetrics1API, '/redfish/v1/PowerEquipment/PowerShelves/<string:PowerDistributionId>/PowerSupplies/<string:PowerSupplyId>/Metrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(PowerAPI, '/redfish/v1/Chassis/<string:ChassisId>/Power')
+g.api.add_resource(PowerAPI, '/redfish/v1/Chassis/<string:ChassisId>/Power', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics0API, '/redfish/v1/Systems/<string:ComputerSystemId>/ProcessorSummary/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics0API, '/redfish/v1/Systems/<string:ComputerSystemId>/ProcessorSummary/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics1API, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics1API, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics2API, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics2API, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics3API, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics3API, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics4API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics4API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics5API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics5API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics6API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics6API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics7API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/ProcessorSummary/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics7API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/ProcessorSummary/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics8API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics8API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics9API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics9API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics10API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics10API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics11API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics11API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics12API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics12API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics13API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics13API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics14API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/ProcessorSummary/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics14API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/ProcessorSummary/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics15API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics15API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics16API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics16API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics17API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics17API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics18API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Processors/<string:ProcessorId>/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics18API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Processors/<string:ProcessorId>/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics19API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics19API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ProcessorMetrics20API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/ProcessorMetrics')
+g.api.add_resource(ProcessorMetrics20API, '/redfish/v1/Chassis/<string:ChassisId>/NetworkAdapters/<string:NetworkAdapterId>/Processors/<string:ProcessorId>/SubProcessors/<string:ProcessorId2>/SubProcessors/<string:ProcessorId3>/ProcessorMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(SecureBoot0API, '/redfish/v1/Systems/<string:ComputerSystemId>/SecureBoot')
+g.api.add_resource(SecureBoot0API, '/redfish/v1/Systems/<string:ComputerSystemId>/SecureBoot', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(SecureBoot1API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/SecureBoot')
+g.api.add_resource(SecureBoot1API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/SecureBoot', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(SecureBoot2API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/SecureBoot')
+g.api.add_resource(SecureBoot2API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/SecureBoot', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ServiceConditionsAPI, '/redfish/v1/ServiceConditions')
+g.api.add_resource(ServiceConditionsAPI, '/redfish/v1/ServiceConditions', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ServiceRoot0API, '/redfish/v1/')
+g.api.add_resource(ServiceRoot0API, '/redfish/v1/', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ServiceRoot1API, '/redfish/v1/')
+g.api.add_resource(ServiceRoot1API, '/redfish/v1/', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(SessionServiceAPI, '/redfish/v1/SessionService')
+g.api.add_resource(SessionServiceAPI, '/redfish/v1/SessionService', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(SessionCollectionAPI, '/redfish/v1/SessionService/Sessions')
-g.api.add_resource(SessionAPI, '/redfish/v1/SessionService/Sessions/<string:SessionId>')
+g.api.add_resource(SessionCollectionAPI, '/redfish/v1/SessionService/Sessions', resource_class_kwargs={'auth': auth})
+g.api.add_resource(SessionAPI, '/redfish/v1/SessionService/Sessions/<string:SessionId>', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(SwitchMetricsAPI, '/redfish/v1/Fabrics/<string:FabricId>/Switches/<string:SwitchId>/SwitchMetrics')
+g.api.add_resource(SwitchMetricsAPI, '/redfish/v1/Fabrics/<string:FabricId>/Switches/<string:SwitchId>/SwitchMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(TaskServiceAPI, '/redfish/v1/TaskService')
+g.api.add_resource(TaskServiceAPI, '/redfish/v1/TaskService', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(TelemetryServiceAPI, '/redfish/v1/TelemetryService')
+g.api.add_resource(TelemetryServiceAPI, '/redfish/v1/TelemetryService', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ThermalMetricsAPI, '/redfish/v1/Chassis/<string:ChassisId>/ThermalSubsystem/ThermalMetrics')
+g.api.add_resource(ThermalMetricsAPI, '/redfish/v1/Chassis/<string:ChassisId>/ThermalSubsystem/ThermalMetrics', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ThermalSubsystemAPI, '/redfish/v1/Chassis/<string:ChassisId>/ThermalSubsystem')
+g.api.add_resource(ThermalSubsystemAPI, '/redfish/v1/Chassis/<string:ChassisId>/ThermalSubsystem', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ThermalAPI, '/redfish/v1/Chassis/<string:ChassisId>/Thermal')
+g.api.add_resource(ThermalAPI, '/redfish/v1/Chassis/<string:ChassisId>/Thermal', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(UpdateServiceAPI, '/redfish/v1/UpdateService')
+g.api.add_resource(UpdateServiceAPI, '/redfish/v1/UpdateService', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ClassOfService0CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService')
-g.api.add_resource(ClassOfService0API, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>')
+g.api.add_resource(ClassOfService0CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService', resource_class_kwargs={'auth': auth})
+g.api.add_resource(ClassOfService0API, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(ClassOfService1CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/StoragePools/<string:StoragePoolId>/ClassesOfService')
-g.api.add_resource(ClassOfService1API, '/redfish/v1/StorageServices/<string:StorageServiceId>/StoragePools/<string:StoragePoolId>/ClassesOfService/<string:ClassOfServiceId>')
+g.api.add_resource(ClassOfService1CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/StoragePools/<string:StoragePoolId>/ClassesOfService', resource_class_kwargs={'auth': auth})
+g.api.add_resource(ClassOfService1API, '/redfish/v1/StorageServices/<string:StorageServiceId>/StoragePools/<string:StoragePoolId>/ClassesOfService/<string:ClassOfServiceId>', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(DataProtectionLineOfService0CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/DataProtectionLinesOfService')
-g.api.add_resource(DataProtectionLineOfService0API, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/DataProtectionLinesOfService/<string:DataProtectionLineOfServiceId>')
+g.api.add_resource(DataProtectionLineOfService0CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/DataProtectionLinesOfService', resource_class_kwargs={'auth': auth})
+g.api.add_resource(DataProtectionLineOfService0API, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/DataProtectionLinesOfService/<string:DataProtectionLineOfServiceId>', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(DataProtectionLineOfService1CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/DataProtectionLinesOfService')
-g.api.add_resource(DataProtectionLineOfService1API, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/DataProtectionLinesOfService/<string:DataProtectionLineOfServiceId>')
+g.api.add_resource(DataProtectionLineOfService1CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/DataProtectionLinesOfService', resource_class_kwargs={'auth': auth})
+g.api.add_resource(DataProtectionLineOfService1API, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/DataProtectionLinesOfService/<string:DataProtectionLineOfServiceId>', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(DataSecurityLineOfService0CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/DataSecurityLinesOfService')
-g.api.add_resource(DataSecurityLineOfService0API, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/DataSecurityLinesOfService/<string:DataSecurityLineOfServiceId>')
+g.api.add_resource(DataProtectionLoSCapabilitiesAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/DataProtectionLoSCapabilities', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(DataSecurityLineOfService1CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/DataSecurityLinesOfService')
-g.api.add_resource(DataSecurityLineOfService1API, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/DataSecurityLinesOfService/<string:DataSecurityLineOfServiceId>')
+g.api.add_resource(DataSecurityLineOfService0CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/DataSecurityLinesOfService', resource_class_kwargs={'auth': auth})
+g.api.add_resource(DataSecurityLineOfService0API, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/DataSecurityLinesOfService/<string:DataSecurityLineOfServiceId>', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(DataStorageLineOfService0CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/DataStorageLinesOfService')
-g.api.add_resource(DataStorageLineOfService0API, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/DataStorageLinesOfService/<string:DataStorageLineOfServiceId>')
+g.api.add_resource(DataSecurityLineOfService1CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/DataSecurityLinesOfService', resource_class_kwargs={'auth': auth})
+g.api.add_resource(DataSecurityLineOfService1API, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/DataSecurityLinesOfService/<string:DataSecurityLineOfServiceId>', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(DataStorageLineOfService1CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/DataStorageLinesOfService')
-g.api.add_resource(DataStorageLineOfService1API, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/DataStorageLinesOfService/<string:DataStorageLineOfServiceId>')
+g.api.add_resource(DataSecurityLoSCapabilitiesAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/DataSecurityLoSCapabilities', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(IOConnectivityLineOfService0CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/IOConnectivityLinesOfService')
-g.api.add_resource(IOConnectivityLineOfService0API, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/IOConnectivityLinesOfService/<string:IOConnectivityLineOfServiceId>')
+g.api.add_resource(DataStorageLineOfService0CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/DataStorageLinesOfService', resource_class_kwargs={'auth': auth})
+g.api.add_resource(DataStorageLineOfService0API, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/DataStorageLinesOfService/<string:DataStorageLineOfServiceId>', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(IOConnectivityLineOfService1CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/IOConnectivityLinesOfService')
-g.api.add_resource(IOConnectivityLineOfService1API, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/IOConnectivityLinesOfService/<string:IOConnectivityLineOfServiceId>')
+g.api.add_resource(DataStorageLineOfService1CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/DataStorageLinesOfService', resource_class_kwargs={'auth': auth})
+g.api.add_resource(DataStorageLineOfService1API, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/DataStorageLinesOfService/<string:DataStorageLineOfServiceId>', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(IOPerformanceLineOfService0CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/IOPerformanceLinesOfService')
-g.api.add_resource(IOPerformanceLineOfService0API, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/IOPerformanceLinesOfService/<string:IOPerformanceLineOfServiceId>')
+g.api.add_resource(DataStorageLoSCapabilitiesAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/DataStorageLoSCapabilities', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(IOPerformanceLineOfService1CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/IOPerformanceLinesOfService')
-g.api.add_resource(IOPerformanceLineOfService1API, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/IOPerformanceLinesOfService/<string:IOPerformanceLineOfServiceId>')
+g.api.add_resource(HostedStorageServicesAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/HostedServices', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(StorageService0CollectionAPI, '/redfish/v1/StorageServices')
-g.api.add_resource(StorageService0API, '/redfish/v1/StorageServices/<string:StorageServiceId>')
+g.api.add_resource(IOConnectivityLineOfService0CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/IOConnectivityLinesOfService', resource_class_kwargs={'auth': auth})
+g.api.add_resource(IOConnectivityLineOfService0API, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/IOConnectivityLinesOfService/<string:IOConnectivityLineOfServiceId>', resource_class_kwargs={'auth': auth})
 
-g.api.add_resource(StorageService1CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/StorageServices')
-g.api.add_resource(StorageService1API, '/redfish/v1/Systems/<string:ComputerSystemId>/StorageServices/<string:StorageServiceId>')
+g.api.add_resource(IOConnectivityLineOfService1CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/IOConnectivityLinesOfService', resource_class_kwargs={'auth': auth})
+g.api.add_resource(IOConnectivityLineOfService1API, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/IOConnectivityLinesOfService/<string:IOConnectivityLineOfServiceId>', resource_class_kwargs={'auth': auth})
+
+g.api.add_resource(IOConnectivityLoSCapabilitiesAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/IOConnectivityLoSCapabilities', resource_class_kwargs={'auth': auth})
+
+g.api.add_resource(IOPerformanceLineOfService0CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/IOPerformanceLinesOfService', resource_class_kwargs={'auth': auth})
+g.api.add_resource(IOPerformanceLineOfService0API, '/redfish/v1/StorageServices/<string:StorageServiceId>/LinesOfService/IOPerformanceLinesOfService/<string:IOPerformanceLineOfServiceId>', resource_class_kwargs={'auth': auth})
+
+g.api.add_resource(IOPerformanceLineOfService1CollectionAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/IOPerformanceLinesOfService', resource_class_kwargs={'auth': auth})
+g.api.add_resource(IOPerformanceLineOfService1API, '/redfish/v1/StorageServices/<string:StorageServiceId>/ClassesOfService/<string:ClassOfServiceId>/IOPerformanceLinesOfService/<string:IOPerformanceLineOfServiceId>', resource_class_kwargs={'auth': auth})
+
+g.api.add_resource(IOPerformanceLoSCapabilitiesAPI, '/redfish/v1/StorageServices/<string:StorageServiceId>/IOPerformanceLoSCapabilities', resource_class_kwargs={'auth': auth})
+
+g.api.add_resource(StorageService0CollectionAPI, '/redfish/v1/StorageServices', resource_class_kwargs={'auth': auth})
+g.api.add_resource(StorageService0API, '/redfish/v1/StorageServices/<string:StorageServiceId>', resource_class_kwargs={'auth': auth})
+
+g.api.add_resource(StorageService1CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/StorageServices', resource_class_kwargs={'auth': auth})
+g.api.add_resource(StorageService1API, '/redfish/v1/Systems/<string:ComputerSystemId>/StorageServices/<string:StorageServiceId>', resource_class_kwargs={'auth': auth})
 

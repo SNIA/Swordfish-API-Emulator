@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.Certificate23 import get_Certificate23_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # Certificate23 Collection API
 class Certificate23CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Certificate23 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ResourceBlockId, ComputerSystemId, MemoryId):
 		logging.info('Certificate23 Collection get called')
-		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}/Certificates', 'index.json').format(ResourceBlockId, ComputerSystemId, MemoryId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}/Certificates', 'index.json').format(ResourceBlockId, ComputerSystemId, MemoryId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, ResourceBlockId, ComputerSystemId, MemoryId):
 		logging.info('Certificate23 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if MemoryId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}/Certificates').format(ResourceBlockId, ComputerSystemId, MemoryId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'Certificate', parent_path)
+			if MemoryId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}/Certificates').format(ResourceBlockId, ComputerSystemId, MemoryId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'Certificate', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return Certificate23API.post(self, ResourceBlockId, ComputerSystemId, MemoryId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return Certificate23API.post(self, ResourceBlockId, ComputerSystemId, MemoryId, os.path.basename(config['@odata.id']))
+				else:
+					return Certificate23API.post(self, ResourceBlockId, ComputerSystemId, MemoryId, str(res))
 			else:
 				return Certificate23API.post(self, ResourceBlockId, ComputerSystemId, MemoryId, str(res))
 		else:
-			return Certificate23API.post(self, ResourceBlockId, ComputerSystemId, MemoryId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, ResourceBlockId, ComputerSystemId, MemoryId):
-		logging.info('Certificate23 Collection put called')
-
-		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}/Certificates', 'index.json').format(ResourceBlockId, ComputerSystemId, MemoryId)
-		put_object (path)
-		return self.get(ResourceBlockId)
+			return msg, code
 
 # Certificate23 API
 class Certificate23API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Certificate23 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ResourceBlockId, ComputerSystemId, MemoryId, CertificateId):
 		logging.info('Certificate23 get called')
-		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, MemoryId, CertificateId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, MemoryId, CertificateId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class Certificate23API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ResourceBlockId, ComputerSystemId, MemoryId, CertificateId):
 		logging.info('Certificate23 post called')
-		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}/Certificates/{3}').format(ResourceBlockId, ComputerSystemId, MemoryId, CertificateId)
-		collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}/Certificates', 'index.json').format(ResourceBlockId, ComputerSystemId, MemoryId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			Certificate23CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, MemoryId)
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}/Certificates/{3}').format(ResourceBlockId, ComputerSystemId, MemoryId, CertificateId)
+			collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}/Certificates', 'index.json').format(ResourceBlockId, ComputerSystemId, MemoryId)
 
-		if CertificateId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				Certificate23CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, MemoryId)
+
+			if CertificateId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'MemoryId':MemoryId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				config=get_Certificate23_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('Certificate23API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'MemoryId':MemoryId, 'CertificateId':CertificateId, 'rb':g.rest_base}
-			config=get_Certificate23_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('Certificate23API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ResourceBlockId, ComputerSystemId, MemoryId, CertificateId):
 		logging.info('Certificate23 put called')
-		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, MemoryId, CertificateId)
-		put_object(path)
-		return self.get(ResourceBlockId, ComputerSystemId, MemoryId, CertificateId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, MemoryId, CertificateId)
+			put_object(path)
+			return self.get(ResourceBlockId, ComputerSystemId, MemoryId, CertificateId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ResourceBlockId, ComputerSystemId, MemoryId, CertificateId):
 		logging.info('Certificate23 patch called')
-		path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, MemoryId, CertificateId)
-		patch_object(path)
-		return self.get(ResourceBlockId, ComputerSystemId, MemoryId, CertificateId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, MemoryId, CertificateId)
+			patch_object(path)
+			return self.get(ResourceBlockId, ComputerSystemId, MemoryId, CertificateId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ResourceBlockId, ComputerSystemId, MemoryId, CertificateId):
 		logging.info('Certificate23 delete called')
-		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}/Certificates/{3}').format(ResourceBlockId, ComputerSystemId, MemoryId, CertificateId)
-		base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}/Certificates').format(ResourceBlockId, ComputerSystemId, MemoryId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}/Certificates/{3}').format(ResourceBlockId, ComputerSystemId, MemoryId, CertificateId)
+			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}/Certificates').format(ResourceBlockId, ComputerSystemId, MemoryId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

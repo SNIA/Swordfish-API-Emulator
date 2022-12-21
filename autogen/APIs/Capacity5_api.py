@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.Capacity5 import get_Capacity5_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # Capacity5 Collection API
 class Capacity5CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Capacity5 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, StorageId, FileSystemId):
 		logging.info('Capacity5 Collection get called')
-		path = os.path.join(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources', 'index.json').format(StorageId, FileSystemId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources', 'index.json').format(StorageId, FileSystemId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, StorageId, FileSystemId):
 		logging.info('Capacity5 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if FileSystemId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources').format(StorageId, FileSystemId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'Capacity', parent_path)
+			if FileSystemId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources').format(StorageId, FileSystemId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'Capacity', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return Capacity5API.post(self, StorageId, FileSystemId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return Capacity5API.post(self, StorageId, FileSystemId, os.path.basename(config['@odata.id']))
+				else:
+					return Capacity5API.post(self, StorageId, FileSystemId, str(res))
 			else:
 				return Capacity5API.post(self, StorageId, FileSystemId, str(res))
 		else:
-			return Capacity5API.post(self, StorageId, FileSystemId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, StorageId, FileSystemId):
-		logging.info('Capacity5 Collection put called')
-
-		path = os.path.join(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources', 'index.json').format(StorageId, FileSystemId)
-		put_object (path)
-		return self.get(StorageId)
+			return msg, code
 
 # Capacity5 API
 class Capacity5API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Capacity5 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, StorageId, FileSystemId, CapacitySourceId):
 		logging.info('Capacity5 get called')
-		path = create_path(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources/{2}', 'index.json').format(StorageId, FileSystemId, CapacitySourceId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources/{2}', 'index.json').format(StorageId, FileSystemId, CapacitySourceId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class Capacity5API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, StorageId, FileSystemId, CapacitySourceId):
 		logging.info('Capacity5 post called')
-		path = create_path(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources/{2}').format(StorageId, FileSystemId, CapacitySourceId)
-		collection_path = os.path.join(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources', 'index.json').format(StorageId, FileSystemId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			Capacity5CollectionAPI.post(self, StorageId, FileSystemId)
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources/{2}').format(StorageId, FileSystemId, CapacitySourceId)
+			collection_path = os.path.join(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources', 'index.json').format(StorageId, FileSystemId)
 
-		if CapacitySourceId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				Capacity5CollectionAPI.post(self, StorageId, FileSystemId)
+
+			if CapacitySourceId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'StorageId':StorageId, 'FileSystemId':FileSystemId, 'CapacitySourceId':CapacitySourceId, 'rb':g.rest_base}
+				config=get_Capacity5_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('Capacity5API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'StorageId':StorageId, 'FileSystemId':FileSystemId, 'CapacitySourceId':CapacitySourceId, 'rb':g.rest_base}
-			config=get_Capacity5_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('Capacity5API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, StorageId, FileSystemId, CapacitySourceId):
 		logging.info('Capacity5 put called')
-		path = os.path.join(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources/{2}', 'index.json').format(StorageId, FileSystemId, CapacitySourceId)
-		put_object(path)
-		return self.get(StorageId, FileSystemId, CapacitySourceId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources/{2}', 'index.json').format(StorageId, FileSystemId, CapacitySourceId)
+			put_object(path)
+			return self.get(StorageId, FileSystemId, CapacitySourceId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, StorageId, FileSystemId, CapacitySourceId):
 		logging.info('Capacity5 patch called')
-		path = os.path.join(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources/{2}', 'index.json').format(StorageId, FileSystemId, CapacitySourceId)
-		patch_object(path)
-		return self.get(StorageId, FileSystemId, CapacitySourceId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources/{2}', 'index.json').format(StorageId, FileSystemId, CapacitySourceId)
+			patch_object(path)
+			return self.get(StorageId, FileSystemId, CapacitySourceId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, StorageId, FileSystemId, CapacitySourceId):
 		logging.info('Capacity5 delete called')
-		path = create_path(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources/{2}').format(StorageId, FileSystemId, CapacitySourceId)
-		base_path = create_path(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources').format(StorageId, FileSystemId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources/{2}').format(StorageId, FileSystemId, CapacitySourceId)
+			base_path = create_path(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources').format(StorageId, FileSystemId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

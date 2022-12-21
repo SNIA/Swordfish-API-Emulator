@@ -45,7 +45,7 @@ def write_service_program_header(resource_path, outfile, resource):
     outfile.write('from flask import Flask, request\n')
     outfile.write('from flask_restful import Resource\n')
     outfile.write('from .constants import *\n')
-    outfile.write('from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection\n')
+    outfile.write('from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection\n')
     # outfile.write('from .templates.{0} import get_{0}_instance\n'.format(resource))
     outfile.write("\n")
     outfile.write("config = {}\n\n")
@@ -62,9 +62,10 @@ def write_service_singleton_api(outfile, resource, collection_path, instance):
     outfile.write("# {0} API\n".format(resource))
     argument_string = "class {0}API(Resource):\n".format(resource)
     outfile.write(argument_string)
-    outfile.write("\tdef __init__(self):\n")
+    outfile.write("\tdef __init__(self, **kwargs):\n")
     outfile.write("\t\tlogging.info('{0} init called')\n".format(resource))
     outfile.write("\t\tself.root = PATHS['Root']\n")
+    outfile.write("\t\tself.auth = kwargs['auth']\n")
     outfile.write("\n")
     
     # Write GET method
@@ -72,11 +73,25 @@ def write_service_singleton_api(outfile, resource, collection_path, instance):
     if instance == '':
         outfile.write("\tdef get(self):\n")
         outfile.write("\t\tlogging.info('{0} get called')\n".format(resource))
-        outfile.write("\t\tpath = os.path.join(self.root, 'index.json')\n")
+        if resource == 'ServiceRoot0' or resource == 'ServiceRoot1':
+            outfile.write("\t\tpath = os.path.join(self.root, 'index.json')\n")
+            outfile.write("\t\treturn get_json_data (path)\n")
+        else:
+            outfile.write("\t\tmsg, code = check_authentication(self.auth)\n\n")
+            outfile.write("\t\tif code == 200:\n")
+            outfile.write("\t\t\tpath = os.path.join(self.root, 'index.json')\n")
+            outfile.write("\t\t\treturn get_json_data (path)\n")
     elif collection_path == '':
         outfile.write("\tdef get(self):\n")
         outfile.write("\t\tlogging.info('{0} get called')\n".format(resource))
-        outfile.write("\t\tpath = os.path.join(self.root, '{0}', 'index.json')\n".format(instance))
+        if resource == 'ServiceRoot0' or resource == 'ServiceRoot1':
+            outfile.write("\t\tpath = os.path.join(self.root, '{0}', 'index.json')\n".format(instance))
+            outfile.write("\t\treturn get_json_data (path)\n")
+        else:
+            outfile.write("\t\tmsg, code = check_authentication(self.auth)\n\n")
+            outfile.write("\t\tif code == 200:\n")
+            outfile.write("\t\t\tpath = os.path.join(self.root, 'index.json')\n")
+            outfile.write("\t\t\treturn get_json_data (path)\n")
     else:
         original_path = collection_path[1:] + '/' + instance
         # print(original_path)
@@ -85,14 +100,33 @@ def write_service_singleton_api(outfile, resource, collection_path, instance):
         if arg_str == '':
             outfile.write("\tdef get(self):\n")
             outfile.write("\t\tlogging.info('{0} get called')\n".format(resource))
-            outfile.write("\t\tpath = os.path.join(self.root, '{0}', 'index.json')\n".format(original_path))
+            if resource == 'ServiceRoot0' or resource == 'ServiceRoot1':
+                outfile.write("\t\tpath = os.path.join(self.root, '{0}', 'index.json')\n".format(original_path))
+                outfile.write("\t\treturn get_json_data (path)\n")
+            else:
+                outfile.write("\t\tmsg, code = check_authentication(self.auth)\n\n")
+                outfile.write("\t\tif code == 200:\n")
+                outfile.write("\t\t\tpath = os.path.join(self.root, '{0}', 'index.json')\n".format(original_path))
+                outfile.write("\t\t\treturn get_json_data (path)\n")
         else:
             outfile.write("\tdef get(self, {0}):\n".format(arg_str))
             outfile.write("\t\tlogging.info('{0} get called')\n".format(resource))
-
-            new_collection_path = get_path_parameters(original_path)
-            outfile.write("\t\tpath = create_path(self.root, '{0}', 'index.json').format({1})\n".format(new_collection_path, arg_str))
-    outfile.write("\t\treturn get_json_data (path)\n\n")
+            if resource == 'ServiceRoot0' or resource == 'ServiceRoot1':
+                new_collection_path = get_path_parameters(original_path)
+                outfile.write("\t\tpath = create_path(self.root, '{0}', 'index.json').format({1})\n".format(new_collection_path, arg_str))
+                outfile.write("\t\treturn get_json_data (path)\n")
+            else:
+                outfile.write("\t\tmsg, code = check_authentication(self.auth)\n\n")
+                outfile.write("\t\tif code == 200:\n")
+                new_collection_path = get_path_parameters(original_path)
+                outfile.write("\t\t\tpath = create_path(self.root, '{0}', 'index.json').format({1})\n".format(new_collection_path, arg_str))
+                outfile.write("\t\t\treturn get_json_data (path)\n")
+    if resource == 'ServiceRoot0' or resource == 'ServiceRoot1':
+        pass
+    else:
+        outfile.write("\t\telse:\n")
+        outfile.write("\t\t\treturn msg, code\n")
+    outfile.write("\n")
 
     # Write POST method
     outfile.write("\t# HTTP POST\n")
@@ -142,10 +176,12 @@ def write_servicetype_collection_api(outfile, resource, collection_path):
     outfile.write(argument_string)
 
     # Write init method
-    outfile.write("\tdef __init__(self):\n")
+    outfile.write("\tdef __init__(self, **kwargs):\n")
     
     outfile.write("\t\tlogging.info('{0} Collection init called')\n".format(resource))
-    outfile.write("\t\tself.root = PATHS['Root']\n\n")
+    outfile.write("\t\tself.root = PATHS['Root']\n")
+    outfile.write("\t\tself.auth = kwargs['auth']\n")
+    outfile.write("\n")
 
     # Write GET method
     outfile.write("\t# HTTP GET\n")
@@ -153,14 +189,21 @@ def write_servicetype_collection_api(outfile, resource, collection_path):
     if arg_str == collection_path[1:] or not arg_str:
         outfile.write("\tdef get(self):\n")
         outfile.write("\t\tlogging.info('{0} Collection get called')\n".format(resource))
-        outfile.write("\t\tpath = os.path.join(self.root, '{0}', 'index.json')\n".format(collection_path[1:]))
+        outfile.write("\t\tmsg, code = check_authentication(self.auth)\n\n")
+        outfile.write("\t\tif code == 200:\n")
+        outfile.write("\t\t\tpath = os.path.join(self.root, '{0}', 'index.json')\n".format(collection_path[1:]))
     else:
         outfile.write("\tdef get(self, {0}):\n".format(arg_str))
         outfile.write("\t\tlogging.info('{0} Collection get called')\n".format(resource))
+        outfile.write("\t\tmsg, code = check_authentication(self.auth)\n\n")
+        outfile.write("\t\tif code == 200:\n")
 
         new_collection_path = get_path_parameters(collection_path[1:])
-        outfile.write("\t\tpath = os.path.join(self.root, '{0}', 'index.json').format({1})\n".format(new_collection_path, arg_str))
-    outfile.write("\t\treturn get_json_data (path)\n\n")
+        outfile.write("\t\t\tpath = os.path.join(self.root, '{0}', 'index.json').format({1})\n".format(new_collection_path, arg_str))
+    outfile.write("\t\t\treturn get_json_data (path)\n")
+    outfile.write("\t\telse:\n")
+    outfile.write("\t\t\treturn msg, code\n")
+    outfile.write("\n")
 
     # Write POST method
     outfile.write("\t# HTTP POST\n")
@@ -208,9 +251,10 @@ def write_servicetype_singleton_api(outfile, resource, collection_path, instance
     outfile.write("# {0} API\n".format(resource))
     argument_string = "class {0}API(Resource):\n".format(resource)
     outfile.write(argument_string)
-    outfile.write("\tdef __init__(self):\n")
+    outfile.write("\tdef __init__(self, **kwargs):\n")
     outfile.write("\t\tlogging.info('{0} init called')\n".format(resource))
     outfile.write("\t\tself.root = PATHS['Root']\n")
+    outfile.write("\t\tself.auth = kwargs['auth']\n")
     outfile.write("\n")
     
     # Write GET method
@@ -222,14 +266,19 @@ def write_servicetype_singleton_api(outfile, resource, collection_path, instance
     else:
         outfile.write("\tdef get(self, {0}):\n".format(arg_str))
     outfile.write("\t\tlogging.info('{0} get called')\n".format(resource))
+    outfile.write("\t\tmsg, code = check_authentication(self.auth)\n\n")
+    outfile.write("\t\tif code == 200:\n")
 
     new_collection_path = get_path_parameters(original_path)
     if new_collection_path == '' or  new_collection_path == '/':
-        outfile.write("\t\tpath = create_path(self.root, 'index.json')\n")
+        outfile.write("\t\t\tpath = create_path(self.root, 'index.json')\n")
     else:
-        outfile.write("\t\tpath = create_path(self.root, '{0}', 'index.json').format({1})\n".format(new_collection_path, arg_str))
+        outfile.write("\t\t\tpath = create_path(self.root, '{0}', 'index.json').format({1})\n".format(new_collection_path, arg_str))
 
-    outfile.write("\t\treturn get_json_data (path)\n\n")
+    outfile.write("\t\t\treturn get_json_data (path)\n")
+    outfile.write("\t\telse:\n")
+    outfile.write("\t\t\treturn msg, code\n")
+    outfile.write("\n")
 
     # Write POST method
     outfile.write("\t# HTTP POST\n")

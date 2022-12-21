@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.LogEntry6 import get_LogEntry6_instance
 
 members = []
@@ -47,61 +47,69 @@ INTERNAL_ERROR = 500
 
 # LogEntry6 Collection API
 class LogEntry6CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('LogEntry6 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self):
 		logging.info('LogEntry6 Collection get called')
-		path = os.path.join(self.root, 'TelemetryService/LogService/Entries', 'index.json')
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'TelemetryService/LogService/Entries', 'index.json')
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self):
 		logging.info('LogEntry6 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		path = create_path(self.root, 'TelemetryService/LogService/Entries')
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'LogEntry', parent_path)
+			path = create_path(self.root, 'TelemetryService/LogService/Entries')
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'LogEntry', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return LogEntry6API.post(self, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return LogEntry6API.post(self, os.path.basename(config['@odata.id']))
+				else:
+					return LogEntry6API.post(self, str(res))
 			else:
 				return LogEntry6API.post(self, str(res))
 		else:
-			return LogEntry6API.post(self, str(res))
-
-	# HTTP PUT Collection
-	def put(self):
-		logging.info('LogEntry6 Collection put called')
-
-		path = os.path.join(self.root, 'TelemetryService/LogService/Entries', 'index.json')
-		put_object (path)
-		return self.get(self.root)
+			return msg, code
 
 # LogEntry6 API
 class LogEntry6API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('LogEntry6 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, LogEntryId):
 		logging.info('LogEntry6 get called')
-		path = create_path(self.root, 'TelemetryService/LogService/Entries/{0}', 'index.json').format(LogEntryId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'TelemetryService/LogService/Entries/{0}', 'index.json').format(LogEntryId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -110,47 +118,67 @@ class LogEntry6API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, LogEntryId):
 		logging.info('LogEntry6 post called')
-		path = create_path(self.root, 'TelemetryService/LogService/Entries/{0}').format(LogEntryId)
-		collection_path = os.path.join(self.root, 'TelemetryService/LogService/Entries', 'index.json')
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			LogEntry6CollectionAPI.post(self)
+		if code == 200:
+			path = create_path(self.root, 'TelemetryService/LogService/Entries/{0}').format(LogEntryId)
+			collection_path = os.path.join(self.root, 'TelemetryService/LogService/Entries', 'index.json')
 
-		if LogEntryId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				LogEntry6CollectionAPI.post(self)
+
+			if LogEntryId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'LogEntryId':LogEntryId, 'rb':g.rest_base}
+				config=get_LogEntry6_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('LogEntry6API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'LogEntryId':LogEntryId, 'rb':g.rest_base}
-			config=get_LogEntry6_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('LogEntry6API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, LogEntryId):
 		logging.info('LogEntry6 put called')
-		path = os.path.join(self.root, 'TelemetryService/LogService/Entries/{0}', 'index.json').format(LogEntryId)
-		put_object(path)
-		return self.get(LogEntryId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'TelemetryService/LogService/Entries/{0}', 'index.json').format(LogEntryId)
+			put_object(path)
+			return self.get(LogEntryId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, LogEntryId):
 		logging.info('LogEntry6 patch called')
-		path = os.path.join(self.root, 'TelemetryService/LogService/Entries/{0}', 'index.json').format(LogEntryId)
-		patch_object(path)
-		return self.get(LogEntryId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'TelemetryService/LogService/Entries/{0}', 'index.json').format(LogEntryId)
+			patch_object(path)
+			return self.get(LogEntryId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, LogEntryId):
 		logging.info('LogEntry6 delete called')
-		path = create_path(self.root, 'TelemetryService/LogService/Entries/{0}').format(LogEntryId)
-		base_path = create_path(self.root, 'TelemetryService/LogService/Entries')
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'TelemetryService/LogService/Entries/{0}').format(LogEntryId)
+			base_path = create_path(self.root, 'TelemetryService/LogService/Entries')
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

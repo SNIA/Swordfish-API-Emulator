@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.RouteSetEntry3 import get_RouteSetEntry3_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # RouteSetEntry3 Collection API
 class RouteSetEntry3CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('RouteSetEntry3 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ChassisId, FabricAdapterId, PortId, LPRTId):
 		logging.info('RouteSetEntry3 Collection get called')
-		path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/LPRT/{3}/RouteSet', 'index.json').format(ChassisId, FabricAdapterId, PortId, LPRTId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/LPRT/{3}/RouteSet', 'index.json').format(ChassisId, FabricAdapterId, PortId, LPRTId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, ChassisId, FabricAdapterId, PortId, LPRTId):
 		logging.info('RouteSetEntry3 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if LPRTId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/LPRT/{3}/RouteSet').format(ChassisId, FabricAdapterId, PortId, LPRTId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'RouteSetEntry', parent_path)
+			if LPRTId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/LPRT/{3}/RouteSet').format(ChassisId, FabricAdapterId, PortId, LPRTId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'RouteSetEntry', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return RouteSetEntry3API.post(self, ChassisId, FabricAdapterId, PortId, LPRTId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return RouteSetEntry3API.post(self, ChassisId, FabricAdapterId, PortId, LPRTId, os.path.basename(config['@odata.id']))
+				else:
+					return RouteSetEntry3API.post(self, ChassisId, FabricAdapterId, PortId, LPRTId, str(res))
 			else:
 				return RouteSetEntry3API.post(self, ChassisId, FabricAdapterId, PortId, LPRTId, str(res))
 		else:
-			return RouteSetEntry3API.post(self, ChassisId, FabricAdapterId, PortId, LPRTId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, ChassisId, FabricAdapterId, PortId, LPRTId):
-		logging.info('RouteSetEntry3 Collection put called')
-
-		path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/LPRT/{3}/RouteSet', 'index.json').format(ChassisId, FabricAdapterId, PortId, LPRTId)
-		put_object (path)
-		return self.get(ChassisId)
+			return msg, code
 
 # RouteSetEntry3 API
 class RouteSetEntry3API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('RouteSetEntry3 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ChassisId, FabricAdapterId, PortId, LPRTId, RouteId):
 		logging.info('RouteSetEntry3 get called')
-		path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/LPRT/{3}/RouteSet/{4}', 'index.json').format(ChassisId, FabricAdapterId, PortId, LPRTId, RouteId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/LPRT/{3}/RouteSet/{4}', 'index.json').format(ChassisId, FabricAdapterId, PortId, LPRTId, RouteId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class RouteSetEntry3API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ChassisId, FabricAdapterId, PortId, LPRTId, RouteId):
 		logging.info('RouteSetEntry3 post called')
-		path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/LPRT/{3}/RouteSet/{4}').format(ChassisId, FabricAdapterId, PortId, LPRTId, RouteId)
-		collection_path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/LPRT/{3}/RouteSet', 'index.json').format(ChassisId, FabricAdapterId, PortId, LPRTId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			RouteSetEntry3CollectionAPI.post(self, ChassisId, FabricAdapterId, PortId, LPRTId)
+		if code == 200:
+			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/LPRT/{3}/RouteSet/{4}').format(ChassisId, FabricAdapterId, PortId, LPRTId, RouteId)
+			collection_path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/LPRT/{3}/RouteSet', 'index.json').format(ChassisId, FabricAdapterId, PortId, LPRTId)
 
-		if RouteId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				RouteSetEntry3CollectionAPI.post(self, ChassisId, FabricAdapterId, PortId, LPRTId)
+
+			if RouteId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ChassisId':ChassisId, 'FabricAdapterId':FabricAdapterId, 'PortId':PortId, 'LPRTId':LPRTId, 'RouteId':RouteId, 'rb':g.rest_base}
+				config=get_RouteSetEntry3_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('RouteSetEntry3API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'ChassisId':ChassisId, 'FabricAdapterId':FabricAdapterId, 'PortId':PortId, 'LPRTId':LPRTId, 'RouteId':RouteId, 'rb':g.rest_base}
-			config=get_RouteSetEntry3_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('RouteSetEntry3API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ChassisId, FabricAdapterId, PortId, LPRTId, RouteId):
 		logging.info('RouteSetEntry3 put called')
-		path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/LPRT/{3}/RouteSet/{4}', 'index.json').format(ChassisId, FabricAdapterId, PortId, LPRTId, RouteId)
-		put_object(path)
-		return self.get(ChassisId, FabricAdapterId, PortId, LPRTId, RouteId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/LPRT/{3}/RouteSet/{4}', 'index.json').format(ChassisId, FabricAdapterId, PortId, LPRTId, RouteId)
+			put_object(path)
+			return self.get(ChassisId, FabricAdapterId, PortId, LPRTId, RouteId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ChassisId, FabricAdapterId, PortId, LPRTId, RouteId):
 		logging.info('RouteSetEntry3 patch called')
-		path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/LPRT/{3}/RouteSet/{4}', 'index.json').format(ChassisId, FabricAdapterId, PortId, LPRTId, RouteId)
-		patch_object(path)
-		return self.get(ChassisId, FabricAdapterId, PortId, LPRTId, RouteId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/LPRT/{3}/RouteSet/{4}', 'index.json').format(ChassisId, FabricAdapterId, PortId, LPRTId, RouteId)
+			patch_object(path)
+			return self.get(ChassisId, FabricAdapterId, PortId, LPRTId, RouteId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ChassisId, FabricAdapterId, PortId, LPRTId, RouteId):
 		logging.info('RouteSetEntry3 delete called')
-		path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/LPRT/{3}/RouteSet/{4}').format(ChassisId, FabricAdapterId, PortId, LPRTId, RouteId)
-		base_path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/LPRT/{3}/RouteSet').format(ChassisId, FabricAdapterId, PortId, LPRTId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/LPRT/{3}/RouteSet/{4}').format(ChassisId, FabricAdapterId, PortId, LPRTId, RouteId)
+			base_path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/LPRT/{3}/RouteSet').format(ChassisId, FabricAdapterId, PortId, LPRTId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.Port17 import get_Port17_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # Port17 Collection API
 class Port17CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Port17 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ChassisId, NetworkAdapterId):
 		logging.info('Port17 Collection get called')
-		path = os.path.join(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports', 'index.json').format(ChassisId, NetworkAdapterId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports', 'index.json').format(ChassisId, NetworkAdapterId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, ChassisId, NetworkAdapterId):
 		logging.info('Port17 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if NetworkAdapterId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports').format(ChassisId, NetworkAdapterId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'Port', parent_path)
+			if NetworkAdapterId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports').format(ChassisId, NetworkAdapterId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'Port', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return Port17API.post(self, ChassisId, NetworkAdapterId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return Port17API.post(self, ChassisId, NetworkAdapterId, os.path.basename(config['@odata.id']))
+				else:
+					return Port17API.post(self, ChassisId, NetworkAdapterId, str(res))
 			else:
 				return Port17API.post(self, ChassisId, NetworkAdapterId, str(res))
 		else:
-			return Port17API.post(self, ChassisId, NetworkAdapterId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, ChassisId, NetworkAdapterId):
-		logging.info('Port17 Collection put called')
-
-		path = os.path.join(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports', 'index.json').format(ChassisId, NetworkAdapterId)
-		put_object (path)
-		return self.get(ChassisId)
+			return msg, code
 
 # Port17 API
 class Port17API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Port17 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ChassisId, NetworkAdapterId, PortId):
 		logging.info('Port17 get called')
-		path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports/{2}', 'index.json').format(ChassisId, NetworkAdapterId, PortId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports/{2}', 'index.json').format(ChassisId, NetworkAdapterId, PortId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class Port17API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ChassisId, NetworkAdapterId, PortId):
 		logging.info('Port17 post called')
-		path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports/{2}').format(ChassisId, NetworkAdapterId, PortId)
-		collection_path = os.path.join(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports', 'index.json').format(ChassisId, NetworkAdapterId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			Port17CollectionAPI.post(self, ChassisId, NetworkAdapterId)
+		if code == 200:
+			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports/{2}').format(ChassisId, NetworkAdapterId, PortId)
+			collection_path = os.path.join(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports', 'index.json').format(ChassisId, NetworkAdapterId)
 
-		if PortId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				Port17CollectionAPI.post(self, ChassisId, NetworkAdapterId)
+
+			if PortId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ChassisId':ChassisId, 'NetworkAdapterId':NetworkAdapterId, 'PortId':PortId, 'rb':g.rest_base}
+				config=get_Port17_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('Port17API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'ChassisId':ChassisId, 'NetworkAdapterId':NetworkAdapterId, 'PortId':PortId, 'rb':g.rest_base}
-			config=get_Port17_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('Port17API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ChassisId, NetworkAdapterId, PortId):
 		logging.info('Port17 put called')
-		path = os.path.join(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports/{2}', 'index.json').format(ChassisId, NetworkAdapterId, PortId)
-		put_object(path)
-		return self.get(ChassisId, NetworkAdapterId, PortId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports/{2}', 'index.json').format(ChassisId, NetworkAdapterId, PortId)
+			put_object(path)
+			return self.get(ChassisId, NetworkAdapterId, PortId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ChassisId, NetworkAdapterId, PortId):
 		logging.info('Port17 patch called')
-		path = os.path.join(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports/{2}', 'index.json').format(ChassisId, NetworkAdapterId, PortId)
-		patch_object(path)
-		return self.get(ChassisId, NetworkAdapterId, PortId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports/{2}', 'index.json').format(ChassisId, NetworkAdapterId, PortId)
+			patch_object(path)
+			return self.get(ChassisId, NetworkAdapterId, PortId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ChassisId, NetworkAdapterId, PortId):
 		logging.info('Port17 delete called')
-		path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports/{2}').format(ChassisId, NetworkAdapterId, PortId)
-		base_path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports').format(ChassisId, NetworkAdapterId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports/{2}').format(ChassisId, NetworkAdapterId, PortId)
+			base_path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports').format(ChassisId, NetworkAdapterId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

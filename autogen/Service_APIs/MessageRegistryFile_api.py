@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
@@ -46,15 +46,21 @@ INTERNAL_ERROR = 500
 
 # MessageRegistryFile Collection API
 class MessageRegistryFileCollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('MessageRegistryFile Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self):
 		logging.info('MessageRegistryFile Collection get called')
-		path = os.path.join(self.root, 'Registries', 'index.json')
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Registries', 'index.json')
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	def post(self):
@@ -79,15 +85,21 @@ class MessageRegistryFileCollectionAPI(Resource):
 
 # MessageRegistryFile API
 class MessageRegistryFileAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('MessageRegistryFile init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, MessageRegistryFileId):
 		logging.info('MessageRegistryFile get called')
-		path = create_path(self.root, 'Registries/{0}', 'index.json').format(MessageRegistryFileId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Registries/{0}', 'index.json').format(MessageRegistryFileId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	def post(self, MessageRegistryFileId):

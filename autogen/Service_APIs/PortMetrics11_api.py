@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
@@ -49,15 +49,21 @@ INTERNAL_ERROR = 500
 
 # PortMetrics11 API
 class PortMetrics11API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('PortMetrics11 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, PortId):
 		logging.info('PortMetrics11 get called')
-		path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}/Ports/{4}/Metrics', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, PortId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}/Ports/{4}/Metrics', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, PortId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	def post(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, PortId):

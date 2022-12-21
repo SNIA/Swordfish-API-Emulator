@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.Capacity1 import get_Capacity1_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # Capacity1 Collection API
 class Capacity1CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Capacity1 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, StorageServiceId, VolumeId):
 		logging.info('Capacity1 Collection get called')
-		path = os.path.join(self.root, 'StorageServices/{0}/Volumes/{1}/CapacitySources', 'index.json').format(StorageServiceId, VolumeId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'StorageServices/{0}/Volumes/{1}/CapacitySources', 'index.json').format(StorageServiceId, VolumeId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, StorageServiceId, VolumeId):
 		logging.info('Capacity1 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if VolumeId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'StorageServices/{0}/Volumes/{1}/CapacitySources').format(StorageServiceId, VolumeId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'Capacity', parent_path)
+			if VolumeId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'StorageServices/{0}/Volumes/{1}/CapacitySources').format(StorageServiceId, VolumeId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'Capacity', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return Capacity1API.post(self, StorageServiceId, VolumeId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return Capacity1API.post(self, StorageServiceId, VolumeId, os.path.basename(config['@odata.id']))
+				else:
+					return Capacity1API.post(self, StorageServiceId, VolumeId, str(res))
 			else:
 				return Capacity1API.post(self, StorageServiceId, VolumeId, str(res))
 		else:
-			return Capacity1API.post(self, StorageServiceId, VolumeId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, StorageServiceId, VolumeId):
-		logging.info('Capacity1 Collection put called')
-
-		path = os.path.join(self.root, 'StorageServices/{0}/Volumes/{1}/CapacitySources', 'index.json').format(StorageServiceId, VolumeId)
-		put_object (path)
-		return self.get(StorageServiceId)
+			return msg, code
 
 # Capacity1 API
 class Capacity1API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('Capacity1 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, StorageServiceId, VolumeId, CapacitySourceId):
 		logging.info('Capacity1 get called')
-		path = create_path(self.root, 'StorageServices/{0}/Volumes/{1}/CapacitySources/{2}', 'index.json').format(StorageServiceId, VolumeId, CapacitySourceId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'StorageServices/{0}/Volumes/{1}/CapacitySources/{2}', 'index.json').format(StorageServiceId, VolumeId, CapacitySourceId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class Capacity1API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, StorageServiceId, VolumeId, CapacitySourceId):
 		logging.info('Capacity1 post called')
-		path = create_path(self.root, 'StorageServices/{0}/Volumes/{1}/CapacitySources/{2}').format(StorageServiceId, VolumeId, CapacitySourceId)
-		collection_path = os.path.join(self.root, 'StorageServices/{0}/Volumes/{1}/CapacitySources', 'index.json').format(StorageServiceId, VolumeId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			Capacity1CollectionAPI.post(self, StorageServiceId, VolumeId)
+		if code == 200:
+			path = create_path(self.root, 'StorageServices/{0}/Volumes/{1}/CapacitySources/{2}').format(StorageServiceId, VolumeId, CapacitySourceId)
+			collection_path = os.path.join(self.root, 'StorageServices/{0}/Volumes/{1}/CapacitySources', 'index.json').format(StorageServiceId, VolumeId)
 
-		if CapacitySourceId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				Capacity1CollectionAPI.post(self, StorageServiceId, VolumeId)
+
+			if CapacitySourceId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'StorageServiceId':StorageServiceId, 'VolumeId':VolumeId, 'CapacitySourceId':CapacitySourceId, 'rb':g.rest_base}
+				config=get_Capacity1_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('Capacity1API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'StorageServiceId':StorageServiceId, 'VolumeId':VolumeId, 'CapacitySourceId':CapacitySourceId, 'rb':g.rest_base}
-			config=get_Capacity1_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('Capacity1API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, StorageServiceId, VolumeId, CapacitySourceId):
 		logging.info('Capacity1 put called')
-		path = os.path.join(self.root, 'StorageServices/{0}/Volumes/{1}/CapacitySources/{2}', 'index.json').format(StorageServiceId, VolumeId, CapacitySourceId)
-		put_object(path)
-		return self.get(StorageServiceId, VolumeId, CapacitySourceId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'StorageServices/{0}/Volumes/{1}/CapacitySources/{2}', 'index.json').format(StorageServiceId, VolumeId, CapacitySourceId)
+			put_object(path)
+			return self.get(StorageServiceId, VolumeId, CapacitySourceId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, StorageServiceId, VolumeId, CapacitySourceId):
 		logging.info('Capacity1 patch called')
-		path = os.path.join(self.root, 'StorageServices/{0}/Volumes/{1}/CapacitySources/{2}', 'index.json').format(StorageServiceId, VolumeId, CapacitySourceId)
-		patch_object(path)
-		return self.get(StorageServiceId, VolumeId, CapacitySourceId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'StorageServices/{0}/Volumes/{1}/CapacitySources/{2}', 'index.json').format(StorageServiceId, VolumeId, CapacitySourceId)
+			patch_object(path)
+			return self.get(StorageServiceId, VolumeId, CapacitySourceId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, StorageServiceId, VolumeId, CapacitySourceId):
 		logging.info('Capacity1 delete called')
-		path = create_path(self.root, 'StorageServices/{0}/Volumes/{1}/CapacitySources/{2}').format(StorageServiceId, VolumeId, CapacitySourceId)
-		base_path = create_path(self.root, 'StorageServices/{0}/Volumes/{1}/CapacitySources').format(StorageServiceId, VolumeId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'StorageServices/{0}/Volumes/{1}/CapacitySources/{2}').format(StorageServiceId, VolumeId, CapacitySourceId)
+			base_path = create_path(self.root, 'StorageServices/{0}/Volumes/{1}/CapacitySources').format(StorageServiceId, VolumeId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

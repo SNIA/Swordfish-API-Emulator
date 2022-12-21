@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.NVMeDomain import get_NVMeDomain_instance
 
 members = []
@@ -47,61 +47,69 @@ INTERNAL_ERROR = 500
 
 # NVMeDomain Collection API
 class NVMeDomainCollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('NVMeDomain Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self):
 		logging.info('NVMeDomain Collection get called')
-		path = os.path.join(self.root, 'NVMeDomains', 'index.json')
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'NVMeDomains', 'index.json')
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self):
 		logging.info('NVMeDomain Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		path = create_path(self.root, 'NVMeDomains')
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'NVMeDomain', parent_path)
+			path = create_path(self.root, 'NVMeDomains')
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'NVMeDomain', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return NVMeDomainAPI.post(self, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return NVMeDomainAPI.post(self, os.path.basename(config['@odata.id']))
+				else:
+					return NVMeDomainAPI.post(self, str(res))
 			else:
 				return NVMeDomainAPI.post(self, str(res))
 		else:
-			return NVMeDomainAPI.post(self, str(res))
-
-	# HTTP PUT Collection
-	def put(self):
-		logging.info('NVMeDomain Collection put called')
-
-		path = os.path.join(self.root, 'NVMeDomains', 'index.json')
-		put_object (path)
-		return self.get(self.root)
+			return msg, code
 
 # NVMeDomain API
 class NVMeDomainAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('NVMeDomain init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, NVMeDomainId):
 		logging.info('NVMeDomain get called')
-		path = create_path(self.root, 'NVMeDomains/{0}', 'index.json').format(NVMeDomainId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'NVMeDomains/{0}', 'index.json').format(NVMeDomainId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -110,47 +118,67 @@ class NVMeDomainAPI(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, NVMeDomainId):
 		logging.info('NVMeDomain post called')
-		path = create_path(self.root, 'NVMeDomains/{0}').format(NVMeDomainId)
-		collection_path = os.path.join(self.root, 'NVMeDomains', 'index.json')
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			NVMeDomainCollectionAPI.post(self)
+		if code == 200:
+			path = create_path(self.root, 'NVMeDomains/{0}').format(NVMeDomainId)
+			collection_path = os.path.join(self.root, 'NVMeDomains', 'index.json')
 
-		if NVMeDomainId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				NVMeDomainCollectionAPI.post(self)
+
+			if NVMeDomainId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'NVMeDomainId':NVMeDomainId, 'rb':g.rest_base}
+				config=get_NVMeDomain_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('NVMeDomainAPI POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'NVMeDomainId':NVMeDomainId, 'rb':g.rest_base}
-			config=get_NVMeDomain_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('NVMeDomainAPI POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, NVMeDomainId):
 		logging.info('NVMeDomain put called')
-		path = os.path.join(self.root, 'NVMeDomains/{0}', 'index.json').format(NVMeDomainId)
-		put_object(path)
-		return self.get(NVMeDomainId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'NVMeDomains/{0}', 'index.json').format(NVMeDomainId)
+			put_object(path)
+			return self.get(NVMeDomainId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, NVMeDomainId):
 		logging.info('NVMeDomain patch called')
-		path = os.path.join(self.root, 'NVMeDomains/{0}', 'index.json').format(NVMeDomainId)
-		patch_object(path)
-		return self.get(NVMeDomainId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'NVMeDomains/{0}', 'index.json').format(NVMeDomainId)
+			patch_object(path)
+			return self.get(NVMeDomainId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, NVMeDomainId):
 		logging.info('NVMeDomain delete called')
-		path = create_path(self.root, 'NVMeDomains/{0}').format(NVMeDomainId)
-		base_path = create_path(self.root, 'NVMeDomains')
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'NVMeDomains/{0}').format(NVMeDomainId)
+			base_path = create_path(self.root, 'NVMeDomains')
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

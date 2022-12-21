@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
@@ -46,15 +46,21 @@ INTERNAL_ERROR = 500
 
 # IOPerformanceLineOfService1 Collection API
 class IOPerformanceLineOfService1CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('IOPerformanceLineOfService1 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, StorageServiceId, ClassOfServiceId):
 		logging.info('IOPerformanceLineOfService1 Collection get called')
-		path = os.path.join(self.root, 'StorageServices/{0}/ClassesOfService/{1}/IOPerformanceLinesOfService', 'index.json').format(StorageServiceId, ClassOfServiceId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'StorageServices/{0}/ClassesOfService/{1}/IOPerformanceLinesOfService', 'index.json').format(StorageServiceId, ClassOfServiceId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	def post(self, StorageServiceId, ClassOfServiceId):
@@ -79,15 +85,21 @@ class IOPerformanceLineOfService1CollectionAPI(Resource):
 
 # IOPerformanceLineOfService1 API
 class IOPerformanceLineOfService1API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('IOPerformanceLineOfService1 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, StorageServiceId, ClassOfServiceId, IOPerformanceLineOfServiceId):
 		logging.info('IOPerformanceLineOfService1 get called')
-		path = create_path(self.root, 'StorageServices/{0}/ClassesOfService/{1}/IOPerformanceLinesOfService/{2}', 'index.json').format(StorageServiceId, ClassOfServiceId, IOPerformanceLineOfServiceId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'StorageServices/{0}/ClassesOfService/{1}/IOPerformanceLinesOfService/{2}', 'index.json').format(StorageServiceId, ClassOfServiceId, IOPerformanceLineOfServiceId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	def post(self, StorageServiceId, ClassOfServiceId, IOPerformanceLineOfServiceId):

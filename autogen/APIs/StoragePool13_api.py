@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.StoragePool13 import get_StoragePool13_instance
 
 members = []
@@ -47,64 +47,72 @@ INTERNAL_ERROR = 500
 
 # StoragePool13 Collection API
 class StoragePool13CollectionAPI(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('StoragePool13 Collection init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ComputerSystemId, StorageId, StoragePoolId):
 		logging.info('StoragePool13 Collection get called')
-		path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/AllocatedPools', 'index.json').format(ComputerSystemId, StorageId, StoragePoolId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/AllocatedPools', 'index.json').format(ComputerSystemId, StorageId, StoragePoolId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
 	# HTTP POST Collection
 	def post(self, ComputerSystemId, StorageId, StoragePoolId):
 		logging.info('StoragePool13 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-		if StoragePoolId in members:
-			resp = 404
-			return resp
-		path = create_path(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/AllocatedPools').format(ComputerSystemId, StorageId, StoragePoolId)
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'StoragePool', parent_path)
+			if StoragePoolId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/AllocatedPools').format(ComputerSystemId, StorageId, StoragePoolId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'StoragePool', parent_path)
 
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				return StoragePool13API.post(self, ComputerSystemId, StorageId, StoragePoolId, os.path.basename(config['@odata.id']))
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return StoragePool13API.post(self, ComputerSystemId, StorageId, StoragePoolId, os.path.basename(config['@odata.id']))
+				else:
+					return StoragePool13API.post(self, ComputerSystemId, StorageId, StoragePoolId, str(res))
 			else:
 				return StoragePool13API.post(self, ComputerSystemId, StorageId, StoragePoolId, str(res))
 		else:
-			return StoragePool13API.post(self, ComputerSystemId, StorageId, StoragePoolId, str(res))
-
-	# HTTP PUT Collection
-	def put(self, ComputerSystemId, StorageId, StoragePoolId):
-		logging.info('StoragePool13 Collection put called')
-
-		path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/AllocatedPools', 'index.json').format(ComputerSystemId, StorageId, StoragePoolId)
-		put_object (path)
-		return self.get(ComputerSystemId)
+			return msg, code
 
 # StoragePool13 API
 class StoragePool13API(Resource):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		logging.info('StoragePool13 init called')
 		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
 	# HTTP GET
 	def get(self, ComputerSystemId, StorageId, StoragePoolId, AllocatedPoolId):
 		logging.info('StoragePool13 get called')
-		path = create_path(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/AllocatedPools/{3}', 'index.json').format(ComputerSystemId, StorageId, StoragePoolId, AllocatedPoolId)
-		return get_json_data (path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/AllocatedPools/{3}', 'index.json').format(ComputerSystemId, StorageId, StoragePoolId, AllocatedPoolId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
 	# HTTP POST
 	# - Create the resource (since URI variables are available)
@@ -113,47 +121,67 @@ class StoragePool13API(Resource):
 	# - Finally, create an instance of the subordiante resources
 	def post(self, ComputerSystemId, StorageId, StoragePoolId, AllocatedPoolId):
 		logging.info('StoragePool13 post called')
-		path = create_path(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/AllocatedPools/{3}').format(ComputerSystemId, StorageId, StoragePoolId, AllocatedPoolId)
-		collection_path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/AllocatedPools', 'index.json').format(ComputerSystemId, StorageId, StoragePoolId)
+		msg, code = check_authentication(self.auth)
 
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			StoragePool13CollectionAPI.post(self, ComputerSystemId, StorageId, StoragePoolId)
+		if code == 200:
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/AllocatedPools/{3}').format(ComputerSystemId, StorageId, StoragePoolId, AllocatedPoolId)
+			collection_path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/AllocatedPools', 'index.json').format(ComputerSystemId, StorageId, StoragePoolId)
 
-		if AllocatedPoolId in members:
-			resp = 404
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				StoragePool13CollectionAPI.post(self, ComputerSystemId, StorageId, StoragePoolId)
+
+			if AllocatedPoolId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ComputerSystemId':ComputerSystemId, 'StorageId':StorageId, 'StoragePoolId':StoragePoolId, 'AllocatedPoolId':AllocatedPoolId, 'rb':g.rest_base}
+				config=get_StoragePool13_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
+
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('StoragePool13API POST exit')
 			return resp
-		try:
-			global config
-			wildcards = {'ComputerSystemId':ComputerSystemId, 'StorageId':StorageId, 'StoragePoolId':StoragePoolId, 'AllocatedPoolId':AllocatedPoolId, 'rb':g.rest_base}
-			config=get_StoragePool13_instance(wildcards)
-			config = create_and_patch_object (config, members, member_ids, path, collection_path)
-			resp = config, 200
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('StoragePool13API POST exit')
-		return resp
+		else:
+			return msg, code
 
 	# HTTP PUT
 	def put(self, ComputerSystemId, StorageId, StoragePoolId, AllocatedPoolId):
 		logging.info('StoragePool13 put called')
-		path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/AllocatedPools/{3}', 'index.json').format(ComputerSystemId, StorageId, StoragePoolId, AllocatedPoolId)
-		put_object(path)
-		return self.get(ComputerSystemId, StorageId, StoragePoolId, AllocatedPoolId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/AllocatedPools/{3}', 'index.json').format(ComputerSystemId, StorageId, StoragePoolId, AllocatedPoolId)
+			put_object(path)
+			return self.get(ComputerSystemId, StorageId, StoragePoolId, AllocatedPoolId)
+		else:
+			return msg, code
 
 	# HTTP PATCH
 	def patch(self, ComputerSystemId, StorageId, StoragePoolId, AllocatedPoolId):
 		logging.info('StoragePool13 patch called')
-		path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/AllocatedPools/{3}', 'index.json').format(ComputerSystemId, StorageId, StoragePoolId, AllocatedPoolId)
-		patch_object(path)
-		return self.get(ComputerSystemId, StorageId, StoragePoolId, AllocatedPoolId)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/AllocatedPools/{3}', 'index.json').format(ComputerSystemId, StorageId, StoragePoolId, AllocatedPoolId)
+			patch_object(path)
+			return self.get(ComputerSystemId, StorageId, StoragePoolId, AllocatedPoolId)
+		else:
+			return msg, code
 
 	# HTTP DELETE
 	def delete(self, ComputerSystemId, StorageId, StoragePoolId, AllocatedPoolId):
 		logging.info('StoragePool13 delete called')
-		path = create_path(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/AllocatedPools/{3}').format(ComputerSystemId, StorageId, StoragePoolId, AllocatedPoolId)
-		base_path = create_path(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/AllocatedPools').format(ComputerSystemId, StorageId, StoragePoolId)
-		return delete_object(path, base_path)
+		msg, code = check_authentication(self.auth)
+
+		if code == 200:
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/AllocatedPools/{3}').format(ComputerSystemId, StorageId, StoragePoolId, AllocatedPoolId)
+			base_path = create_path(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/AllocatedPools').format(ComputerSystemId, StorageId, StoragePoolId)
+			return delete_object(path, base_path)
+		else:
+			return msg, code
 

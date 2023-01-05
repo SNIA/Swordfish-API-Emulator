@@ -117,23 +117,23 @@ git clone --depth 1 https://github.com/DMTF/Redfish-Interface-Emulator \
 echo "Setting up emulator Python virtualenv and requirements..."
 cd $WORK_DIR
 virtualenv --python=python3 venv
-venv/bin/pip install -q -r $BASE_DIR/requirements.txt
-venv/bin/pip install -q -r requirements.txt
+venv/Scripts/pip install -q -r "$BASE_DIR"/requirements.txt
+venv/Scripts/pip install -q -r requirements.txt
 
 # Remove Redfish static / starting mockups
-rm -r $WORK_DIR/api_emulator/redfish/static
+rm -r "$BASE_DIR"/$WORK_DIR/api_emulator/redfish/static
 
 # Remove Redfish templates, and .py files.
-rm -rf $WORK_DIR/api_emulator/templates
-rm -rf $WORK_DIR/api_emulator/redfish/*.py
+rm -rf "$BASE_DIR"/$WORK_DIR/api_emulator/redfish/templates
+rm -rf "$BASE_DIR"/$WORK_DIR/api_emulator/redfish/*.py
 
 # Copy over the Swordfish bits
 echo "Applying Swordfish additions..."
-cp -r -f $BASE_DIR/api_emulator $WORK_DIR/
-cp -r -f $BASE_DIR/Resources $WORK_DIR/
-cp -r -f $BASE_DIR/emulator-config.json $WORK_DIR/
-cp -r -f $BASE_DIR/g.py $WORK_DIR/
-cp -r -f $BASE_DIR/emulator.py $WORK_DIR/
+cp -r -f "$BASE_DIR"/api_emulator "$BASE_DIR"/$WORK_DIR/
+cp -r -f "$BASE_DIR"/Resources "$BASE_DIR"/$WORK_DIR/
+cp -r -f "$BASE_DIR"/emulator-config.json "$BASE_DIR"/$WORK_DIR/
+cp -r -f "$BASE_DIR"/g.py "$BASE_DIR"/$WORK_DIR/
+cp -r -f "$BASE_DIR"/emulator.py "$BASE_DIR"/$WORK_DIR/
 
 if [ "$SETUP_ONLY" == "true" ]; then
     echo ""
@@ -158,10 +158,10 @@ $(tput bold)Press Ctrl-C when done.$(tput sgr0)
 ---------------------------------------------------------------------
 EOF
 
-venv/bin/python emulator.py -port $API_PORT
+venv/Scripts/python emulator.py -port $API_PORT
 
 echo ""
 echo "Emulator can be rerun from '$WORK_DIR' by running the command:"
 echo ""
-echo "./venv/bin/python emulator.py"
+echo "venv/Scripts/python emulator.py"
 echo ""

@@ -6,3 +6,4 @@ psutil
 urllib
 requests
 flask_restful
+pyOpenSSL

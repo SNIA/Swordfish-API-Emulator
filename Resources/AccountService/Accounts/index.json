@@ -1,0 +1,9 @@
+{
+    "@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
+    "@odata.id": "/redfish/v1/AccountService/Accounts",
+    "@odata.type": "#ManagerAccountCollection.ManagerAccountCollection",
+    "Members": [
+    ],
+    "Members@odata.count": 0,
+    "Name": "ManagerAccount Collection"
+}

@@ -118,45 +118,45 @@ git clone --depth 1 https://github.com/DMTF/Redfish-Interface-Emulator \
 
 # Set up our virtual environment
 echo "Setting up emulator Python virtualenv and requirements..."
-cd $WORK_DIR
+# cd $WORK_DIR
 virtualenv --python=python3 venv
 venv/bin/pip install -q -r "$BASE_DIR"/requirements.txt
-venv/bin/pip install -q -r requirements.txt
+venv/bin/pip install -q -r "$WORK_DIR"/requirements.txt
 
 # Remove Redfish static / starting mockups
-rm -r "$BASE_DIR"/$WORK_DIR/api_emulator/redfish/static
+rm -r "$WORK_DIR"/api_emulator/redfish/static
 
 # Remove Redfish templates, and .py files.
-rm -rf "$BASE_DIR"/$WORK_DIR/api_emulator/redfish/templates
-rm -rf "$BASE_DIR"/$WORK_DIR/api_emulator/redfish/*.py
+rm -rf "$WORK_DIR"/api_emulator/redfish/templates
+rm -rf "$WORK_DIR"/api_emulator/redfish/*.py
 
 # Copy over the Swordfish bits
 echo "Applying Swordfish additions..."
-cp -r -f "$BASE_DIR"/api_emulator "$BASE_DIR"/$WORK_DIR/
-cp -r -f "$BASE_DIR"/Resources "$BASE_DIR"/$WORK_DIR/
-cp -r -f "$BASE_DIR"/emulator-config.json "$BASE_DIR"/$WORK_DIR/
-cp -r -f "$BASE_DIR"/g.py "$BASE_DIR"/$WORK_DIR/
-cp -r -f "$BASE_DIR"/emulator.py "$BASE_DIR"/$WORK_DIR/
-cp -r -f "$BASE_DIR"/certificate_config.cnf "$BASE_DIR"/$WORK_DIR/
-cp -r -f "$BASE_DIR"/v3.ext "$BASE_DIR"/$WORK_DIR/
+cp -r -f "$BASE_DIR"/api_emulator "$WORK_DIR"/
+cp -r -f "$BASE_DIR"/Resources "$WORK_DIR"/
+cp -r -f "$BASE_DIR"/emulator-config.json "$WORK_DIR"/
+cp -r -f "$BASE_DIR"/g.py "$WORK_DIR"/
+cp -r -f "$BASE_DIR"/emulator.py "$WORK_DIR"/
+cp -r -f "$BASE_DIR"/certificate_config.cnf "$WORK_DIR"/
+cp -r -f "$BASE_DIR"/v3.ext "$WORK_DIR"/
 
 # generating server key
 echo "Generating private key"
-openssl genrsa -out server.key 2048
+openssl genrsa -out "$WORK_DIR"/server.key 2048
 
 # generating public key
 echo "Generating public key"
-openssl rsa -in server.key -pubout -out server_public.key
+openssl rsa -in "$WORK_DIR"/server.key -pubout -out "$WORK_DIR"/server_public.key
 
 # ## Update Common Name in External File
 # /bin/echo "commonName              = $COMMON_NAME" >> $EXTFILE
 
 # Generating Certificate Signing Request using config file
 echo "Generating Certificate Signing Request"
-openssl req -new -key server.key -out server.csr -config $EXTFILE
+openssl req -new -key "$WORK_DIR"/server.key -out "$WORK_DIR"/server.csr -config "$WORK_DIR"/$EXTFILE
 
 echo "Generating self signed certificate"
-openssl x509 -in server.csr -out server.crt -req -signkey server.key -days 365 -extfile v3.ext
+openssl x509 -in "$WORK_DIR"/server.csr -out "$WORK_DIR"/server.crt -req -signkey "$WORK_DIR"/server.key -days 365 -extfile "$WORK_DIR"/v3.ext
 
 if [ "$SETUP_ONLY" == "true" ]; then
     echo ""

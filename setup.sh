@@ -180,6 +180,7 @@ $(tput bold)Press Ctrl-C when done.$(tput sgr0)
 ---------------------------------------------------------------------
 EOF
 
+cd "$WORK_DIR"
 "$WORK_DIR"/venv/bin/python emulator.py -port $API_PORT
 
 echo ""

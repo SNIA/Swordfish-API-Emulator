@@ -119,9 +119,8 @@ git clone --depth 1 https://github.com/DMTF/Redfish-Interface-Emulator \
 # Set up our virtual environment
 echo "Setting up emulator Python virtualenv and requirements..."
 # cd $WORK_DIR
-virtualenv --python=python3 venv
-venv/bin/pip install -q -r "$BASE_DIR"/requirements.txt
-venv/bin/pip install -q -r "$WORK_DIR"/requirements.txt
+virtualenv --python=python3 "$WORK_DIR"/venv
+"$WORK_DIR"/venv/bin/pip install -q -r "$BASE_DIR"/requirements.txt
 
 # Remove Redfish static / starting mockups
 rm -r "$WORK_DIR"/api_emulator/redfish/static
@@ -181,7 +180,7 @@ $(tput bold)Press Ctrl-C when done.$(tput sgr0)
 ---------------------------------------------------------------------
 EOF
 
-venv/bin/python emulator.py -port $API_PORT
+"$WORK_DIR"/venv/bin/python emulator.py -port $API_PORT
 
 echo ""
 echo "Emulator can be rerun from '$WORK_DIR' by running the command:"

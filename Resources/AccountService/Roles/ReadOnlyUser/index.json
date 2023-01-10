@@ -1,0 +1,14 @@
+{
+    "@odata.type": "#Role.v1_1_0.Role",
+    "Id": "ReadOnly",
+    "Name": "User Role",
+    "Description": "ReadOnlyUser User Role",
+    "IsPredefined": true,
+    "AssignedPrivileges": [
+        "Login",
+        "ConfigureSelf"
+    ],
+    "OemPrivileges": [],
+    "@odata.id": "/redfish/v1/AccountService/Roles/ReadOnlyUser",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

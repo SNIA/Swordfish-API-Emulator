@@ -1,0 +1,28 @@
+{
+    "@odata.type": "#Zone.v1_6_0.Zone",
+    "Id": "2",
+    "Name": "Ethernet Zone 2",
+    "Description": "Ethernet Zone 2",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "ExternalAccessibility": "ZoneOnly",
+    "ZoneType": "ZoneOfEndpoints",
+    "Links": {
+        "Endpoints": [
+            {
+                "@odata.id": "/redfish/v1/Fabrics/Ethernet/Endpoints/D2-NDF11100"
+            },
+            {
+                "@odata.id": "/redfish/v1/Fabrics/Ethernet/Endpoints/D2-NDF11101"
+            },
+            {
+                "@odata.id": "/redfish/v1/Fabrics/Ethernet/Endpoints/Host-CFG200"
+            }
+        ]
+    },
+    "Oem": {},
+    "@odata.id": "/redfish/v1/Fabrics/Ethernet/Zones/2",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

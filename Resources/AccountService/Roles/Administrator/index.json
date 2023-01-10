@@ -1,0 +1,20 @@
+{
+    "@odata.type": "#Role.v1_3_1.Role",
+    "Id": "Administrator",
+    "Name": "User Role",
+    "Description": "Admin User Role",
+    "IsPredefined": true,
+    "AssignedPrivileges": [
+        "Login",
+        "ConfigureManager",
+        "ConfigureUsers",
+        "ConfigureComponents",
+        "ConfigureSelf"
+    ],
+    "OemPrivileges": [
+        "OemClearLog",
+        "OemPowerControl"
+    ],
+    "@odata.id": "/redfish/v1/AccountService/Roles/Administrator",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

@@ -1,0 +1,46 @@
+{
+    "@odata.type": "#Switch.v1_8_0.Switch",
+    "Id": "Switch1",
+    "Name": "EBOF Embedded Ethernet Switch 1",
+    "Description": "EBOF Embedded Ethernet Switch",
+    "DomainID": 1,
+    "SwitchType": "Ethernet",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "Manufacturer": "Contoso",
+    "Model": "SAS1000",
+    "SKU": "67B",
+    "SerialNumber": "2M220100SL",
+    "PartNumber": "76-88883",
+    "IsManaged": true,
+    "FirmwareVersion": "v12451.4",
+    "LocationIndicatorActive": true,
+    "MaxBandwidthGbps": 400,
+    "SupportedProtocols": [
+        "Ethernet"
+    ],
+    "Ports": {
+        "@odata.id": "/redfish/v1/Fabrics/Ethernet/Switches/Switch1/Ports"
+    },
+    "Links": {
+        "Chassis": {
+            "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure"
+        },
+        "Oem": {}
+    },
+    "Actions": {
+        "#Switch.Reset": {
+            "target": "/redfish/v1/Fabrics/Ethernet/Switches/Switch1/Actions/Switch.Reset",
+            "ResetType@Redfish.AllowableValues": [
+                "ForceRestart",
+                "GracefulRestart"
+            ]
+        },
+        "Oem": {}
+    },
+    "Oem": {},
+    "@odata.id": "/redfish/v1/Fabrics/Ethernet/Switches/Switch1",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

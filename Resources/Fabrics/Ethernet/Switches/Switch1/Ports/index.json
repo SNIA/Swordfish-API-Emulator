@@ -1,0 +1,33 @@
+{
+    "@odata.type": "#PortCollection.PortCollection",
+    "Name": "SAS Port Collection",
+    "Members@odata.count": 8,
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Fabrics/Ethernet/Switches/Switch1/Ports/1"
+        },
+        {
+            "@odata.id": "/redfish/v1/Fabrics/Ethernet/Switches/Switch1/Ports/2"
+        },
+        {
+            "@odata.id": "/redfish/v1/Fabrics/Ethernet/Switches/Switch1/Ports/3"
+        },
+        {
+            "@odata.id": "/redfish/v1/Fabrics/Ethernet/Switches/Switch1/Ports/4"
+        },
+        {
+            "@odata.id": "/redfish/v1/Fabrics/Ethernet/Switches/Switch1/Ports/5"
+        },
+        {
+            "@odata.id": "/redfish/v1/Fabrics/Ethernet/Switches/Switch1/Ports/6"
+        },
+        {
+            "@odata.id": "/redfish/v1/Fabrics/Ethernet/Switches/Switch1/Ports/7"
+        },
+        {
+            "@odata.id": "/redfish/v1/Fabrics/Ethernet/Switches/Switch1/Ports/8"
+        }
+    ],
+    "@odata.id": "/redfish/v1/Fabrics/Ethernet/Switches/Switch1/Ports",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

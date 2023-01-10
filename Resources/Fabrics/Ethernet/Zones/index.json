@@ -1,0 +1,15 @@
+{
+    "@odata.type": "#ZoneCollection.ZoneCollection",
+    "Name": "SAS Zone Collection",
+    "Members@odata.count": 3,
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Fabrics/Ethernet/Zones/1"
+        },
+        {
+            "@odata.id": "/redfish/v1/Fabrics/Ethernet/Zones/2"
+        }
+    ],
+    "@odata.id": "/redfish/v1/Fabrics/Ethernet/Zones",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

@@ -18,37 +18,7 @@ from . import utils
 from .resource_dictionary import ResourceDictionary
 from .static_loader import load_static
 # Local imports (special case)
-from .redfish.computer_system import ComputerSystem
-from .redfish.computer_systems import ComputerSystemCollection
 from .exceptions import CreatePooledNodeError, RemovePooledNodeError, EventSubscriptionError
-from .redfish.event_service import EventService, Subscriptions
-from .redfish.event import Event
-# EventService imports
-from .redfish.EventService_api import EventServiceAPI, CreateEventService
-from .redfish.Subscriptions_api import SubscriptionCollectionAPI, SubscriptionAPI, CreateSubscription
-# Chassis imports
-from .redfish.Chassis_api import ChassisCollectionAPI, ChassisAPI, CreateChassis
-from .redfish.power_api import PowerAPI, CreatePower
-from .redfish.thermal_api import ThermalAPI, CreateThermal
-# Manager imports
-from .redfish.Manager_api import ManagerCollectionAPI, ManagerAPI, CreateManager
-# EgResource imports
-from .redfish.eg_resource_api import EgResourceCollectionAPI, EgResourceAPI, CreateEgResource
-from .redfish.eg_subresource_api import EgSubResourceCollectionAPI, EgSubResourceAPI, CreateEgSubResource
-# ComputerSystem imports
-from .redfish.ComputerSystem_api import ComputerSystemCollectionAPI, ComputerSystemAPI, CreateComputerSystem
-from .redfish.processor import Processor, Processors
-from .redfish.memory import Memory, MemoryCollection
-from .redfish.simplestorage import SimpleStorage, SimpleStorageCollection
-from .redfish.ethernetinterface import EthernetInterfaceCollection, EthernetInterface
-from .redfish.ResetActionInfo_api import ResetActionInfo_API
-from .redfish.ResetAction_api import ResetAction_API
-# PCIe Switch imports
-#from .redfish.pcie_switch_api import PCIeSwitchesAPI, PCIeSwitchAPI
-# CompositionService imports
-from .redfish.CompositionService_api import CompositionServiceAPI
-from .redfish.ResourceBlock_api import ResourceBlockCollectionAPI, ResourceBlockAPI, CreateResourceBlock
-from .redfish.ResourceZone_api import ResourceZoneCollectionAPI, ResourceZoneAPI, CreateResourceZone
 
 mockupfolders = []
 

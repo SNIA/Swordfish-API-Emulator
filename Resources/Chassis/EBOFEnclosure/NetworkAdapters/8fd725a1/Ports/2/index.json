@@ -1,0 +1,57 @@
+{
+    "@odata.type": "#Port.v1_6_1.Port",
+    "Id": "2",
+    "Name": "Port View 2",
+    "CurrentSpeedGbps": 12,
+    "Description": "Port in embedded network interface for IP Attached drive.",
+    "Ethernet": {
+        "AssociatedMACAddresses": ["AA:BB:CC:DD:EE:FA"],
+        "EEEEnabled": false,
+        "FlowControlStatus": "None",
+        "FlowControlConfiguration": "None",
+        "WakeOnLANEnabled": false
+    },
+    "InterfaceEnabled": true,
+    "LinkConfiguration": [
+        {
+            "CapableLinkSpeedGbps": [
+                10000
+            ],
+            "AutoSpeedNegotiationCapable": true,
+            "AutoSpeedNegotiationEnabled": false,
+            "ConfiguredNetworkLinks": [
+                {
+                    "ConfiguredLinkSpeedGbps": 12,
+                    "ConfiguredWidth": 4
+                }
+            ]
+        }
+    ],
+    "LinkNetworkTechnology": "Ethernet",
+    "LinkState": "Enabled",
+    "LinkStatus": "LinkUp",
+    "MaxFrameSize": 1518,
+    "MaxSpeedGbps": 100,
+    "PortId": "2",
+    "PortMedium": "Electrical",
+    "PortProtocol": "Ethernet",
+    "SignalDetected": true,
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "SFP": {
+      "Type": "SFP",
+      "Status": {
+          "State": "Enabled",
+          "Health": "OK"
+      }
+    },
+
+    "Width": 4,
+    "Links": {
+      "AssociatedEndpoints": []
+    },
+    "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a1/Ports/2",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

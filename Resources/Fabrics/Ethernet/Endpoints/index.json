@@ -1,0 +1,24 @@
+{
+    "@odata.type": "#EndpointCollection.EndpointCollection",
+    "Name": "Connectivity Endpoint Collection",
+    "Members@odata.count": 5,
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Fabrics/Ethernet/Endpoints/D1-NDF11100"
+        },
+        {
+            "@odata.id": "/redfish/v1/Fabrics/Ethernet/Endpoints/D1-NDF11101"
+        },
+        {
+            "@odata.id": "/redfish/v1/Fabrics/Ethernet/Endpoints/D2-NDF11100"
+        },
+        {
+            "@odata.id": "/redfish/v1/Fabrics/Ethernet/Endpoints/D2-NDF11101"
+        },
+        {
+            "@odata.id": "/redfish/v1/Fabrics/Ethernet/Endpoints/Host-CFG200"
+        }
+    ],
+    "@odata.id": "/redfish/v1/Fabrics/Ethernet/Endpoints",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

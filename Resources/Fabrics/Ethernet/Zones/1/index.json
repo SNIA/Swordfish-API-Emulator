@@ -1,0 +1,25 @@
+{
+    "@odata.type": "#Zone.v1_6_0.Zone",
+    "Id": "1",
+    "Name": "Ethernet Zone 1",
+    "Description": "Ethernet Zone 1",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "ZoneType": "ZoneOfEndpoints",
+    "ExternalAccessibility": "GloballyAccessible",
+    "Links": {
+        "Endpoints": [
+            {
+                "@odata.id": "/redfish/v1/Fabrics/Ethernet/Endpoints/D1-NDF11100"
+            },
+            {
+                "@odata.id": "/redfish/v1/Fabrics/Ethernet/Endpoints/D1-NDF11101"
+            }
+        ]
+    },
+    "Oem": {},
+    "@odata.id": "/redfish/v1/Fabrics/Ethernet/Zones/1",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

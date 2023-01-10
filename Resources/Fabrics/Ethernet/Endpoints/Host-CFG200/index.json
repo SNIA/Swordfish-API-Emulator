@@ -1,0 +1,24 @@
+{
+    "@odata.type": "#Endpoint.v1_7_0.Endpoint",
+    "Id": "Host-CFG200",
+    "Name": "Host CFG200 (Initiator)",
+    "EndpointProtocol": "Ethernet",
+    "Identifiers": [
+        {
+            "DurableName": "00:0D:45:9A:98:A0",
+            "DurableNameFormat": "MACAddress"
+        }
+    ],
+    "ConnectedEntities": [
+        {
+            "EntityType": "NetworkController",
+            "EntityRole": "Initiator"
+        }
+    ],
+    "IPTransportDetails": [{
+      "TransportProtocol": "Ethernet"
+    }],
+    "Links": {},
+    "@odata.id": "/redfish/v1/Fabrics/Ethernet/Endpoints/Host-CFG200",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

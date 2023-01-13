@@ -30,6 +30,7 @@
 # Resource implementation for - /redfish/v1/Chassis/{ChassisId}
 # Program name - Chassis_api.py
 
+import redis
 import g
 import json, os, random, string
 import traceback
@@ -136,13 +137,20 @@ class ChassisAPI(Resource):
 				wildcards = {'ChassisId':ChassisId, 'rb':g.rest_base}
 				config=get_Chassis_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
+				# resp = config, 200
+				msg, code = config, 200
 
 			except Exception:
 				traceback.print_exc()
 				resp = INTERNAL_ERROR
 			logging.info('ChassisAPI POST exit')
-			return resp
+			# return resp
+
+			if code == 200:
+				redis.publish('SF_event', '{0}'.format(msg))
+				print(msg)
+			return msg, code
+			
 		else:
 			return msg, code
 

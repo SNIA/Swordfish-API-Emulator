@@ -42,8 +42,10 @@ import traceback
 import logging
 import copy
 from urllib import response
+import flask
 import flask_login
 import jwt
+import redis
 import requests
 
 logging.basicConfig(level=logging.DEBUG)
@@ -220,6 +222,19 @@ def before_request():
         delete_object(path, split_path[0].replace('/redfish/v1', 'Resources'))
         print("location deleted : "+location)
         location = None
+
+@g.app.route('/http://0.0.0.0:88')
+def stream():
+    while True:
+        return flask.Response(event_stream(),
+                            mimetype="text/event-stream")
+
+def event_stream():
+    pubsub = redis.pubsub()
+    pubsub.subscribe('SF_event')
+    for data in pubsub.listen():
+        print (data)
+        yield 'data: {0}\n\n'.format(data['data'])
 
 # The following code provides a mechanism for the Redfish client to either
 #    - Emulator Service Root

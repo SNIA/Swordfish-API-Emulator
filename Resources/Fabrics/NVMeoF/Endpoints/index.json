@@ -1,0 +1,21 @@
+{
+    "@odata.type": "#EndpointCollection.EndpointCollection",
+    "Name": "NVMeoF Endpoint Collection",
+    "Members@odata.count": 4,
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Endpoints/D1-E1"
+        },
+        {
+            "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Endpoints/D1-E2"
+        },
+        {
+            "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Endpoints/Initiator1"
+        },
+        {
+            "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Endpoints/Initiator2"
+        }
+    ],
+    "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Endpoints",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

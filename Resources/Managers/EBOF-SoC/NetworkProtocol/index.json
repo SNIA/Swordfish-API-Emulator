@@ -1,0 +1,38 @@
+{
+    "@odata.type": "#ManagerNetworkProtocol.v1_8_1.ManagerNetworkProtocol",
+    "Id": "NetworkProtocol",
+    "Name": "Manager Network Protocol",
+    "Description": "Manager Network Service",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "HostName": "ebofmgr1",
+    "FQDN": "ebofmgr1.dmtf.org",
+    "HTTP": {
+        "ProtocolEnabled": true,
+        "Port": 80
+    },
+    "HTTPS": {
+        "ProtocolEnabled": true,
+        "Port": 443
+    },
+    "SSH": {
+        "ProtocolEnabled": true,
+        "Port": 22
+    },
+    "SSDP": {
+        "ProtocolEnabled": true,
+        "Port": 1900,
+        "NotifyMulticastIntervalSeconds": 600,
+        "NotifyTTL": 5,
+        "NotifyIPv6Scope": "Site"
+    },
+    "Telnet": {
+        "ProtocolEnabled": true,
+        "Port": 23
+    },
+    "Oem": {},
+    "@odata.id": "/redfish/v1/Managers/EBOF-SoC/NetworkProtocol",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

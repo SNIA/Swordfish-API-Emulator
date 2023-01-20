@@ -1,0 +1,26 @@
+{
+    "@odata.type": "#LogService.v1_3_1.LogService",
+    "Id": "Log",
+    "Name": "System Log Service",
+    "MaxNumberOfRecords": 1000,
+    "OverWritePolicy": "WrapsWhenFull",
+    "DateTime": "2015-03-13T04:14:33+06:00",
+    "DateTimeLocalOffset": "+06:00",
+    "ServiceEnabled": true,
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "Oem": {},
+    "Actions": {
+        "#LogService.ClearLog": {
+            "target": "/redfish/v1/Managers/EBOF-SoC/LogServices/Log/Actions/LogService.ClearLog"
+        },
+        "Oem": {}
+    },
+    "Entries": {
+        "@odata.id": "/redfish/v1/Managers/EBOF-SoC/LogServices/Log/Entries"
+    },
+    "@odata.id": "/redfish/v1/Managers/EBOF-SoC/LogServices/Log",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

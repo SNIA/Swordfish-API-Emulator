@@ -1,0 +1,29 @@
+{
+    "@odata.type": "#EndpointGroup.v1_3_1.EndpointGroup",
+    "Id": "1",
+    "Name": "Endpoint group for all targets",
+    "GroupType": "Initiator",
+    "Links": {
+        "Endpoints": [
+            {
+                "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Endpoints/D1-E1"
+            },
+            {
+                "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Endpoints/D1-E2"
+            },
+            {
+                "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Endpoints/D2-E1"
+            },
+            {
+                "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Endpoints/D2-E2"
+            }
+        ],
+        "Connections": [
+            {
+                "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Connections/1"
+            }
+        ]
+    },
+    "@odata.id": "/redfish/v1/Fabrics/NVMeoF/EndpointGroups/TargetEPs",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

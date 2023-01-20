@@ -1,0 +1,27 @@
+{
+    "@odata.type": "#Endpoint.v1_7_0.Endpoint",
+    "Id": "D2-NDF11100",
+    "Name": "Drive1 NDF 111000 (Target)",
+    "EndpointProtocol": "Ethernet",
+    "Identifiers": [
+        {
+            "DurableName": "00:0C:29:9A:98:02",
+            "DurableNameFormat": "MACAddress"
+        }
+    ],
+    "ConnectedEntities": [
+        {
+            "EntityType": "NetworkController",
+            "EntityRole": "Target",
+            "EntityLink": {
+                "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/NetworkDeviceFunctions/11100"
+            }
+        }
+    ],
+    "IPTransportDetails": [{
+      "TransportProtocol": "Ethernet"
+    }],
+    "Links": {},
+    "@odata.id": "/redfish/v1/Fabrics/Ethernet/Endpoints/D2-NDF11100",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

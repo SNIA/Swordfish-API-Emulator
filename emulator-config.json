@@ -4,5 +4,7 @@
   "TRAYS": [],
   "STATIC": "Disable",
   "SPEC": "Redfish",
-  "MOCKUPFOLDERS": ["Mockups"]
+  "MOCKUPFOLDERS": ["Mockups"],
+  "AUTHENTICATION": "Enable",
+  "CERTIFICATE": ["server.crt", "server.key"]
 }

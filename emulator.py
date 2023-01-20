@@ -39,9 +39,12 @@ import os
 import json
 import argparse
 import traceback
-import xml.etree.ElementTree as ET
 import logging
 import copy
+from urllib import response
+import flask_login
+import jwt
+import requests
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -57,10 +60,10 @@ from api_emulator.resource_manager import ResourceManager
 from api_emulator.static_resource_manager import StaticResourceManager
 from api_emulator.exceptions import CreatePooledNodeError, ConfigurationError, RemovePooledNodeError
 from api_emulator.resource_dictionary import ResourceDictionary
-from api_emulator.redfish.serviceroot_api import *
+from api_emulator.redfish.ServiceRoot1_api import *
 from api_emulator.utils import *
 
-from infragen.populate import populate
+# from infragen.populate import populate
 
 
 # Trays to load into the resource manager
@@ -70,6 +73,7 @@ MODE = None
 MOCKUPFOLDERS = None
 STATIC = None
 
+location = None
 CONFIG = 'emulator-config.json'
 
 # Base URL of the RESTful interface
@@ -83,6 +87,8 @@ resource_dictionary = None
 # Parse REST request for Action
 parser = reqparse.RequestParser()
 parser.add_argument('Action', type=str, required=True)
+
+config = {}
 
 # Read emulator-config file.
 # If running on Cloud, use dyanaically assigned port
@@ -122,7 +128,7 @@ def init_resource_manager():
         resource_manager = StaticResourceManager(REST_BASE, SPEC,MODE,TRAYS)
     else:
         print (' * Using dynamic emulation')
-        resource_manager = ResourceManager(REST_BASE, SPEC,MODE,TRAYS)
+        resource_manager = ResourceManager(REST_BASE, SPEC,MODE,AUTHENTICATION,TRAYS)
 
 
     # If POPULATE is specified in emulator-config.json, INFRAGEN is called to populate emulator (i.e. with Chassi, CS, Resource Blocks, etc) according to specified file
@@ -168,11 +174,52 @@ def output_json(data, code, headers=None):
     Overriding how JSON is returned by the server so that it looks nice
     """
     data = remove_json_object(data, "@Redfish.Copyright")
-    resp = make_response(json.dumps(data, indent=4), code)
-    resp.headers.extend(headers or {})
+    global location
+
+    if 'UserName' not in data or 'Password' not in data:
+        resp = make_response(json.dumps(data, indent=4), code)
+        resp.headers.extend(headers or {})
+
+        #if session timed out then delete the cookie as well
+        if (session.get('UserName') == None or location == None) and request.cookies:
+            print("deleting cookie")
+            resp.delete_cookie("session")
+            location = None
+
+    else: 
+        location = data['@odata.id']
+        token = jwt.encode({'Username' : data['UserName'], 'Password' : data['Password']}, g.app.config['SECRET_KEY'])
+
+        del data['Password']
+
+        resp = make_response(data, code)
+        resp.headers.extend(headers or {})
+        resp.headers['Location'] = location
+        resp.headers['X-Auth-Token'] = token
+        resp.headers['Set-Cookie'] = {'session': 'Test cookie'}
+    
+    odata_version = request.headers.get('OData-Version')
+    if odata_version == '4.0' or odata_version == '' or odata_version == None:
+        pass
+    else:
+        return make_response('Unsupported OData Version in request header', 412)
+
+    header_handler(data,code,resp)
     return resp
 
+@g.app.before_request
+def before_request():
+    session.modified = True
 
+    global location
+    print('UserName' in session)
+    print(location)
+    if 'UserName' not in session and location != None:
+        split_path = os.path.split(location)
+        path = location.replace('/redfish/v1', 'Resources')
+        delete_object(path, split_path[0].replace('/redfish/v1', 'Resources'))
+        print("location deleted : "+location)
+        location = None
 
 # The following code provides a mechanism for the Redfish client to either
 #    - Emulator Service Root
@@ -251,7 +298,7 @@ class RedfishAPI(Resource):
                 config = self.get_configuration(resource_manager, path)
            else:
                 # path is None, fetch ServiceRoot
-                config = ServiceRootAPI.get (self)
+                config = ServiceRoot1API.get (self)
                # config = resource_manager.configuration
                 return config
         except PathError:
@@ -379,7 +426,7 @@ def index():
 
 @g.app.route('/redfish')
 def serviceInfo():
-    return render_template('service.json')
+    return json.loads(render_template('service.json'))
 
 @g.app.route('/browse.html')
 def browse():
@@ -407,7 +454,7 @@ def get_metadata():
                 md_xml += line
 
         resp = make_response(md_xml, 200)
-        resp.headers['Content-Type'] = 'text/xml'
+        resp.headers['Content-Type'] = 'application/xml'
         return resp
 
     except Exception:
@@ -450,7 +497,7 @@ def get_odata():
 #
 # If any other RESTful request, send to RedfishAPI object for processing. Note: <path:path> specifies any path
 #
-g.api.add_resource(RedfishAPI, '/redfish/v1/', '/redfish/v1/<path:path>')
+# g.api.add_resource(RedfishAPI, '/redfish/v1/', '/redfish/v1/<path:path>')    -- Reeya
 
 #
 #
@@ -483,6 +530,7 @@ def main():
     global TRAYS
     global MOCKUPFOLDERS
     global SPEC
+    global AUTHENTICATION
 
     # Open the emulator configuration file
     with open(CONFIG, 'r') as f:
@@ -490,6 +538,19 @@ def main():
 
     HTTPS = config['HTTPS']
     assert HTTPS.lower() in ['enable', 'disable'], 'Unknown HTTPS setting:' + HTTPS
+
+    # implementation of different authentication methods
+    AUTHENTICATION = config['AUTHENTICATION']
+    assert AUTHENTICATION.lower() in ['disable', 'enable'], 'Unknown authentication mode:' + AUTHENTICATION
+
+    if (AUTHENTICATION == 'Enable') and (HTTPS != 'Enable'):
+        HTTPS = 'Enable'
+    else:
+        pass
+
+    # importing certififiacte and private key file names
+    CERTIFICATE = config['CERTIFICATE']
+    assert len(CERTIFICATE) == 2, 'Incorrect HTTPS certificate details provided'
 
     try:
         TRAYS = config['TRAYS']
@@ -539,7 +600,7 @@ def main():
     else:
         if (HTTPS == 'Enable'):
             print (' * Use HTTPS')
-            context = ('server.crt', 'server.key')
+            context = (CERTIFICATE[0], CERTIFICATE[1])
             kwargs = {'debug': args.debug, 'port': args.port, 'ssl_context' : context}
         else:
             print (' * Use HTTP')

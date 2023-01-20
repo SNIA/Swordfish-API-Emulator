@@ -1,0 +1,15 @@
+{
+    "@odata.type": "#DriveCollection.DriveCollection",
+    "Name": "Drive Collection",
+    "Members@odata.count": 1,
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/Drives/IPAttachedDrive1"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/Drives/IPAttachedDrive2"
+        }
+    ],
+    "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/Drives",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

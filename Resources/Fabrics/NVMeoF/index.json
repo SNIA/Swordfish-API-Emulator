@@ -1,0 +1,23 @@
+{
+    "@odata.type": "#Fabric.v1_2_1.Fabric",
+    "@Redfish.ReleaseStatus": "WorkInProgress",
+    "Id": "NVMeoF",
+    "Name": "NVMe-oF Fabric",
+    "Description": "NVMeoF Fabric for EBOF",
+    "FabricType": "NVMeOverFabrics",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "Endpoints": {
+        "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Endpoints"
+    },
+    "EndpointGroups": {
+        "@odata.id": "/redfish/v1/Fabrics/NVMeoF/EndpointGroups"
+    },
+    "Connections": {
+        "@odata.id": "/redfish/v1/Fabrics/NVMeoF/Connections"
+    },
+    "@odata.id": "/redfish/v1/Fabrics/NVMeoF",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

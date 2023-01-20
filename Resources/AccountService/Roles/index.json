@@ -1,0 +1,18 @@
+{
+    "@odata.type": "#RoleCollection.RoleCollection",
+    "Name": "Roles Collection",
+    "Members@odata.count": 3,
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/AccountService/Roles/Administrator"
+        },
+        {
+            "@odata.id": "/redfish/v1/AccountService/Roles/Operator"
+        },
+        {
+            "@odata.id": "/redfish/v1/AccountService/Roles/ReadOnlyUser"
+        }
+    ],
+    "@odata.id": "/redfish/v1/AccountService/Roles",
+    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+}

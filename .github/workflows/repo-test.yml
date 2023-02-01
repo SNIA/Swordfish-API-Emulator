@@ -1,5 +1,9 @@
 name: Testing OFMF
-on: push
+on:
+  push:
+    branches: master
+  pull_request:
+    types: [opened]
 jobs:
   Test-OFMF:
     runs-on: ubuntu-latest

@@ -1,0 +1,13 @@
+name: Testing OFMF
+on: push
+jobs:
+  Test-OFMF:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - uses: "actions/checkout@v3"
+      - run: pip3 install virtualenv
+      - run: pip3 install requests
+      - run: ./tests/test.sh

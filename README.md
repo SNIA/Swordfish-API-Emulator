@@ -1,4 +1,4 @@
-Copyright 2016-2021 Storage Networking Industry Association (SNIA), USA. All rights reserved. For the full SNIA copyright policy, see [http://www.snia.org/about/corporate_info/copyright](http://www.snia.org/about/corporate_info/copyright)
+Copyright 2016-2023 Storage Networking Industry Association (SNIA), USA. All rights reserved. For the full SNIA copyright policy, see [http://www.snia.org/about/corporate_info/copyright](http://www.snia.org/about/corporate_info/copyright)
 
 Contributors that are not SNIA members must first agree to the terms of the SNIA Contributor Agreement for Non-Members:  [www.snia.org/cla](https://www.snia.org/cla)
 
@@ -21,8 +21,17 @@ The Redfish Interface Emulator and the Swordfish API Emulator both require Pytho
 It is recommended (but not required) to run the emulator using virtualenv, because it helps keep the emulator environment separate from other Python environments running on the same system.
 
 ----
+## Installing the Swordfish API Emulator using the Linux Setup Script
 
-## Installing the Swordfish API Emulator on Windows
+Run the 'setup.sh' script. This will install a complete, running instance of the emulator.
+
+This script has three command line parameters: <br>
+-p | --port PORT     -- Port to run the emulator on. Default is 5000. <br>
+-w | --workspace DIR -- Directory to set up the emulator. Defaults to  `../Swordfish` <br>
+-n | --no-start      -- Prepare the emulator but do not start it.
+
+
+## Installing the Swordfish API Emulator Manually on Windows or Linux
 
 The Redfish Interface Emulator must be installed first, and then the Swordfish API Emulator must be installed on top of the Redfish Interface Emulator installation. This can be done on Windows using the sequence of steps given below. The steps for installing the emulator on Linux are similar.
 
@@ -41,31 +50,64 @@ The Redfish Interface Emulator must be installed first, and then the Swordfish A
 
 This folder is where the Redfish Interface Emulator files will be combined with the Swordfish API Emulator files to install the Swordfish emulator. As an example in these instructions, this folder is named **Swordfish**.
 
-#### (2) Copy the Redfish Interface Emulator files into the emulator folder.
+#### (2) Remove unneeded files from the Redfish Interface Emulator: 
 
-Using the file explorer, go to the **Redfish-Interface-Emulator** folder, select and copy all the files using ```Control-A``` and ```Control-C```, then go to the **Swordfish** folder and paste all the files into it using ```Control-V```.
-
-#### (3) Install the Python packages required by the emulator.
-
-In a command prompt window, install the Python packages required by the emulator by entering the following commands:
-
+Remove Redfish static / starting mockups
 ```
-pip install flask flask_restful flask_httpauth
-pip install requests aniso8601 markupsafe pytz
-pip install itsdangerous StringGenerator urllib3
+rm -r Swordfish/api_emulator/redfish/static
 ```
 
-Note that these commands can be copied from this document and pasted directly into the command window.
+Remove Redfish templates, and .py files.
+```
+rm -r Swordfish/api_emulator/redfish/templates
+rm -r Swordfish/api_emulator/redfish/*.py
+```
 
-The Redfish Interface Emulator and its dependencies should now be installed in its default configuration in the **Swordfish** folder.
+Copy over the Swordfish bits
 
-#### (4) Copy the Swordfish API Emulator files into the emulator folder, and allow some of the Redfish Interface Emulator files to be overwritten.
+echo "Applying Swordfish additions..."
+```
+cp -r api_emulator Swordfish/
+cp -r "$BASE_DIR"/Resources Swordfish/
+cp -r  "$BASE_DIR"/emulator-config.json Swordfish/
+cp -r  "$BASE_DIR"/g.py Swordfish/
+cp -r "$BASE_DIR"/emulator.py Swordfish/
+cp -r "$BASE_DIR"/certificate_config.cnf Swordfish/
+cp -r "$BASE_DIR"/v3.ext Swordfish/
+```
 
-Using the file explorer, go to the **Swordfish-API-Emulator** folder, select and copy all the files using ```Control-A``` and ```Control-C```, then go to the **Swordfish** folder and paste all the files into it using ```Control-V```.
+#### (5) Install the Python packages required by the emulator.
 
-Windows will indicate that some files in the destination have the same names. Select the Windows “Replace the files in the destination” option.
+In a command prompt window, install the Python packages required by the Swordfish emulator, specified in the requirements.txt by entering the following commands:
 
-The Swordfish API Emulator and its dependencies should now be installed in its default configuration in the **Swordfish** folder.
+```
+pip install -r requirements.txt
+```
+
+
+#### (4) To enable secure communications (https) and the use of sessions, create a self-signed key. 
+
+```
+# generating server key
+
+echo "Generating private key"
+openssl genrsa -out Swordfish/server.key 2048
+
+# generating public key
+
+echo "Generating public key"
+openssl rsa -in Swordfish/server.key -pubout -out Swordfish/server_public.key
+
+
+# Generating Certificate Signing Request using config file
+
+echo "Generating Certificate Signing Request"
+openssl req -new -key Swordfish/server.key -out Swordfish/server.csr -config Swordfish/certificate_config.cnf
+
+echo "Generating self signed certificate"
+openssl x509 -in Swordfish/server.csr -out Swordfish/server.crt -req -signkey Swordfish/server.key -days 365 -extfile Swordfish/v3.ext
+```
+
 
 #### (5) If desired, a simple test of the Swordish API Emulator installation can now be done by running the emulator and accessing the Redfish service root using a browser.
 
@@ -102,23 +144,30 @@ The emulator can also be stopped by closing the command window.
 
 - The configuration of the overall emulator is controlled by the *emulator-config.json* file in the directory where the emulator is installed. (This is the **Swordfish** folder in the installation steps above.) Instructions for using this file can be found in the Redfish Interface Emulator *README.md* file.
 
-- The Swordfish API Emulator code files generally do not overlap the Redfish Interface Emulator code files, but there are currently two files that must contain code for both the Redfish Interface Emulator and the Swordfish API Emulator:
-  - *api_emulator\resource_manager.py*
-  - *api_emulator\utils.py*
+- The Swordfish API Emulator leverages the general structure of the Redfish Interface Emulator and some of the utility functions, but replaces most of the code for the Redfish and Swordfish services and objects.  This service functions in a fully dynamic mode, meaning that objects generally support modification according to the Redfish and Swordfish specifications.
 
-- The *api_emulator\resource_manager.py* file establishes which emulator resources are static and which emulator resources are dynamic. Create/Read/Update/Delete (CRUD) operations can be done on dynamic resources via the emulator API using REST operations, but static resources are read-only and cannot be changed via the emulator API.
+- The Swordfish API Emulator supports the following headers:
+  --  RESP_HEADERS_CONTENT_TYPE
+  --  REQ_HEADERS_ODATA_VERSION
+  --  RESP_HEADERS_ALLOW_GET_OR_HEAD
+  --  RESP_HEADERS_CACHE_CONTROL
+  --  RESP_HEADERS_LINK_REL_DESCRIBED_BY
+  --  RESP_HEADERS_ALLOW_METHOD_NOT_ALLOWED
 
-- The Swordfish resources in the emulator are dynamic, and most of the Redfish resources are also dynamic, but four Redfish resources are currently still static in the default configuration of the Redfish Interface Emulator:
-  - TaskService
-  - SessionService
-  - AccountService
-  - Registries
+- The dynamic resources in the emulator can be populated via the emulator API using Create/Read/Update/Delete (CRUD) operations.  The Swordfish emulator supports all instances of Redfish and Swordfish objects, via all URI paths.  If additional objects are desired, the AutoGen tool can be used to create additional objects, and the paths can be added to  `resource_manager.py()` in the api_emulator\redfish directory.
 
-- The static resources in the emulator are populated by placing appropriate JSON mockup folders into the *api_emulator\redfish\static* directory. Instructions for this can be found in the Redfish Interface Emulator *README.md* file. Note that the dynamic resources in the emulator are NOT populated or initialized by the mockups in this directory.
+- The following services are implemented as read-only services: <br>
+-- Task Service<br>
+-- Event Service
 
-- The dynamic resources in the emulator can be populated via the emulator API using Create/Read/Update/Delete (CRUD) operations.
+- The Account Service is implemented to only authenticate: <br>
+Username:  Administrator <br>
+Password: Password 
 
-- The current default configuration of the Redfish Interface Emulator pre-populates several of the Redfish dynamic resources. Instructions for starting the emulator without any pre-populated dynamic resources can be found in the Redfish Interface Emulator *README.md* file.
+- The emulator supports both Basic Authentication as well as Sessions.  
+
+
+### Operational Notes
 
 - Sometimes a ```Control-C``` in the command prompt window does not appear to immediately stop the emulator. When this occurs, the emulator will stop as soon as another emulator API access is attempted. A web browser can be used to access the Redfish service root to force this to happen, if no other REST client is readily available.
 

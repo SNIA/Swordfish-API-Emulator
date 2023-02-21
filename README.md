@@ -156,9 +156,9 @@ The emulator can also be stopped by closing the command window.
 
 - The dynamic resources in the emulator can be populated via the emulator API using Create/Read/Update/Delete (CRUD) operations.  The Swordfish emulator supports all instances of Redfish and Swordfish objects, via all URI paths.  If additional objects are desired, the AutoGen tool can be used to create additional objects, and the paths can be added to  `resource_manager.py()` in the api_emulator\redfish directory.
 
-- The following services are implemented as read-only services: <br>
--- Task Service<br>
--- Event Service
+- The following services are implemented as read-only services:
+- Task Service
+- Event Service
 
 - The Account Service is implemented to only authenticate: <br>
 Username:  Administrator <br>

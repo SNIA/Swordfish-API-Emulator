@@ -147,12 +147,12 @@ The emulator can also be stopped by closing the command window.
 - The Swordfish API Emulator leverages the general structure of the Redfish Interface Emulator and some of the utility functions, but replaces most of the code for the Redfish and Swordfish services and objects.  This service functions in a fully dynamic mode, meaning that objects generally support modification according to the Redfish and Swordfish specifications.
 
 - The Swordfish API Emulator supports the following headers:
-- RESP_HEADERS_CONTENT_TYPE
-- REQ_HEADERS_ODATA_VERSION
-- RESP_HEADERS_ALLOW_GET_OR_HEAD
-- RESP_HEADERS_CACHE_CONTROL
-- RESP_HEADERS_LINK_REL_DESCRIBED_BY
-- RESP_HEADERS_ALLOW_METHOD_NOT_ALLOWED
+-- RESP_HEADERS_CONTENT_TYPE
+-- REQ_HEADERS_ODATA_VERSION
+-- RESP_HEADERS_ALLOW_GET_OR_HEAD
+-- RESP_HEADERS_CACHE_CONTROL
+-- RESP_HEADERS_LINK_REL_DESCRIBED_BY
+-- RESP_HEADERS_ALLOW_METHOD_NOT_ALLOWED
 
 - The dynamic resources in the emulator can be populated via the emulator API using Create/Read/Update/Delete (CRUD) operations.  The Swordfish emulator supports all instances of Redfish and Swordfish objects, via all URI paths.  If additional objects are desired, the AutoGen tool can be used to create additional objects, and the paths can be added to  `resource_manager.py()` in the api_emulator\redfish directory.
 

@@ -160,9 +160,11 @@ The emulator can also be stopped by closing the command window.
   - Task Service
   - Event Service
 
-- The Account Service is implemented to only authenticate: <br>
-Username:  Administrator <br>
-Password: Password 
+- The Account Service is implemented to only authenticate: 
+
+  Username:  Administrator
+
+  Password: Password 
 
 - The emulator supports both Basic Authentication as well as Sessions.  For an overview of how to use sessions, see the "Redfish Schools Sessions" video here: https://www.youtube.com/watch?v=qpVvKX_bkVQ
 

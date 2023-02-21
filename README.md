@@ -164,7 +164,7 @@ The emulator can also be stopped by closing the command window.
 Username:  Administrator <br>
 Password: Password 
 
-- The emulator supports both Basic Authentication as well as Sessions.  
+- The emulator supports both Basic Authentication as well as Sessions.  For an overview of how to use sessions, see the "Redfish Schools Sessions" video here: https://www.youtube.com/watch?v=qpVvKX_bkVQ
 
 
 ### Operational Notes

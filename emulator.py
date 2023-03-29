@@ -65,6 +65,21 @@ from api_emulator.utils import *
 
 # from infragen.populate import populate
 
+# Determines execution configuration by reading the configuration file and interogating the command line options
+#   TRAYS = Specifies the directory from which the resource pools are created.
+#   MODE =  Specifies whether the emulator is running locally as a standalone or remotely on a Cloud Foundry instance.
+#   HTTPS = Specifies whether the emulator supports "http" or "https"
+#   SPEC =  The emulator may support multiple specifications or revisions of a specification.
+#           This flag specifies the specification/version to which to conform
+#   MOCKUPFOLDERS = This parameter will supercede SPEC.  Specifies a list of
+#           folder which contain mockup files in ./static.  For example, if the
+#           list contains ["Redfish", "Swordfish"], the files in
+#           ./Redfish/static and ./Swordfish/static will be used.  This
+#           parameter allows multiple mockup folders to co-exist, and the user
+#           can set this parameter to determine which mockups are actually
+#           loaded into the emulator.
+#
+
 
 # Trays to load into the resource manager
 TRAYS = None

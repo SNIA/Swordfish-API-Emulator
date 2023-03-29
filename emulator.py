@@ -543,8 +543,8 @@ def main():
     AUTHENTICATION = config['AUTHENTICATION']
     assert AUTHENTICATION.lower() in ['disable', 'enable'], 'Unknown authentication mode:' + AUTHENTICATION
 
-    if (AUTHENTICATION == 'Enable') and (HTTPS != 'Enable'):
-        HTTPS = 'Enable'
+    if (AUTHENTICATION == 'enable') and (HTTPS != 'enable'):
+        HTTPS = 'enable'
     else:
         pass
 
@@ -598,7 +598,7 @@ def main():
     except ConfigurationError as e:
         print('Error Loading Trays: {}'.format(e))
     else:
-        if (HTTPS == 'Enable'):
+        if (HTTPS == 'enable'):
             print (' * Use HTTPS')
             context = (CERTIFICATE[0], CERTIFICATE[1])
             kwargs = {'debug': args.debug, 'port': args.port, 'ssl_context' : context}

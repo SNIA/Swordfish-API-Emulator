@@ -1,10 +1,10 @@
 {
   "MODE": "Local",
-  "HTTPS": "Disable",
+  "HTTPS": "disable",
   "TRAYS": [],
-  "STATIC": "Disable",
+  "STATIC": "disable",
   "SPEC": "Redfish",
   "MOCKUPFOLDERS": ["Mockups"],
-  "AUTHENTICATION": "Enable",
+  "AUTHENTICATION": "disable",
   "CERTIFICATE": ["server.crt", "server.key"]
 }

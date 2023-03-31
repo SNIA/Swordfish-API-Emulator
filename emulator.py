@@ -138,7 +138,7 @@ def init_resource_manager():
     global TRAYS
     global SPEC
 
-    if (STATIC=='Enable'):
+    if (STATIC=='enable'):
         print (' * Using static mockup')
         resource_manager = StaticResourceManager(REST_BASE, SPEC,MODE,TRAYS)
     else:
@@ -146,7 +146,7 @@ def init_resource_manager():
         resource_manager = ResourceManager(REST_BASE, SPEC,MODE,AUTHENTICATION,TRAYS)
 
 
-    # If POPULATE is specified in emulator-config.json, INFRAGEN is called to populate emulator (i.e. with Chassi, CS, Resource Blocks, etc) according to specified file
+    # If POPULATE is specified in emulator-config.json, INFRAGEN is called to populate emulator (i.e. with Chassis, CS, Resource Blocks, etc) according to specified file
     try:
         POPULATE
     except:

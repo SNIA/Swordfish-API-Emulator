@@ -65,6 +65,21 @@ from api_emulator.utils import *
 
 # from infragen.populate import populate
 
+# Determines execution configuration by reading the configuration file and interogating the command line options
+#   TRAYS = Specifies the directory from which the resource pools are created.
+#   MODE =  Specifies whether the emulator is running locally as a standalone or remotely on a Cloud Foundry instance.
+#   HTTPS = Specifies whether the emulator supports "http" or "https"
+#   SPEC =  The emulator may support multiple specifications or revisions of a specification.
+#           This flag specifies the specification/version to which to conform
+#   MOCKUPFOLDERS = This parameter will supercede SPEC.  Specifies a list of
+#           folder which contain mockup files in ./static.  For example, if the
+#           list contains ["Redfish", "Swordfish"], the files in
+#           ./Redfish/static and ./Swordfish/static will be used.  This
+#           parameter allows multiple mockup folders to co-exist, and the user
+#           can set this parameter to determine which mockups are actually
+#           loaded into the emulator.
+#
+
 
 # Trays to load into the resource manager
 TRAYS = None
@@ -123,7 +138,7 @@ def init_resource_manager():
     global TRAYS
     global SPEC
 
-    if (STATIC=='Enable'):
+    if (STATIC=='enable'):
         print (' * Using static mockup')
         resource_manager = StaticResourceManager(REST_BASE, SPEC,MODE,TRAYS)
     else:
@@ -131,7 +146,7 @@ def init_resource_manager():
         resource_manager = ResourceManager(REST_BASE, SPEC,MODE,AUTHENTICATION,TRAYS)
 
 
-    # If POPULATE is specified in emulator-config.json, INFRAGEN is called to populate emulator (i.e. with Chassi, CS, Resource Blocks, etc) according to specified file
+    # If POPULATE is specified in emulator-config.json, INFRAGEN is called to populate emulator (i.e. with Chassis, CS, Resource Blocks, etc) according to specified file
     try:
         POPULATE
     except:
@@ -536,15 +551,15 @@ def main():
     with open(CONFIG, 'r') as f:
         config = json.load(f)
 
-    HTTPS = config['HTTPS']
-    assert HTTPS.lower() in ['enable', 'disable'], 'Unknown HTTPS setting:' + HTTPS
+    HTTPS = config['HTTPS'].lower()
+    assert HTTPS in ['enable', 'disable'], 'Unknown HTTPS setting:' + HTTPS
 
     # implementation of different authentication methods
-    AUTHENTICATION = config['AUTHENTICATION']
-    assert AUTHENTICATION.lower() in ['disable', 'enable'], 'Unknown authentication mode:' + AUTHENTICATION
+    AUTHENTICATION = config['AUTHENTICATION'].lower()
+    assert AUTHENTICATION in ['disable', 'enable'], 'Unknown authentication mode:' + AUTHENTICATION
 
-    if (AUTHENTICATION == 'Enable') and (HTTPS != 'Enable'):
-        HTTPS = 'Enable'
+    if (AUTHENTICATION == 'enable') and (HTTPS != 'enable'):
+        HTTPS = 'enable'
     else:
         pass
 
@@ -598,7 +613,7 @@ def main():
     except ConfigurationError as e:
         print('Error Loading Trays: {}'.format(e))
     else:
-        if (HTTPS == 'Enable'):
+        if (HTTPS == 'enable'):
             print (' * Use HTTPS')
             context = (CERTIFICATE[0], CERTIFICATE[1])
             kwargs = {'debug': args.debug, 'port': args.port, 'ssl_context' : context}

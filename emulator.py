@@ -551,12 +551,12 @@ def main():
     with open(CONFIG, 'r') as f:
         config = json.load(f)
 
-    HTTPS = config['HTTPS']
-    assert HTTPS.lower() in ['enable', 'disable'], 'Unknown HTTPS setting:' + HTTPS
+    HTTPS = config['HTTPS'].lower()
+    assert HTTPS in ['enable', 'disable'], 'Unknown HTTPS setting:' + HTTPS
 
     # implementation of different authentication methods
-    AUTHENTICATION = config['AUTHENTICATION']
-    assert AUTHENTICATION.lower() in ['disable', 'enable'], 'Unknown authentication mode:' + AUTHENTICATION
+    AUTHENTICATION = config['AUTHENTICATION'].lower()
+    assert AUTHENTICATION in ['disable', 'enable'], 'Unknown authentication mode:' + AUTHENTICATION
 
     if (AUTHENTICATION == 'enable') and (HTTPS != 'enable'):
         HTTPS = 'enable'

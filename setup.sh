@@ -181,7 +181,7 @@ $(tput bold)Press Ctrl-C when done.$(tput sgr0)
 EOF
 
 cd "$WORK_DIR"
-"$WORK_DIR"/venv/bin/python emulator.py -port $API_PORT
+./venv/bin/python emulator.py -port $API_PORT
 
 echo ""
 echo "Emulator can be rerun from '$WORK_DIR' by running the command:"

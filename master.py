@@ -80,7 +80,6 @@ from api_emulator.utils import *
 #           loaded into the emulator.
 #
 
-
 # Trays to load into the resource manager
 TRAYS = None
 SPEC = None
@@ -103,29 +102,16 @@ resource_dictionary = None
 parser = reqparse.RequestParser()
 parser.add_argument('Action', type=str, required=True)
 
-def error_response(msg, status, jsonify=False):
-    data = {
-        'Status': status,
-        'Message': '{}'.format(msg)
-    }
-    if jsonify:
-        data = json.dumps(data, indent=4)
-    return data, status
-
-
-INTERNAL_ERROR = error_response('Internal Server Error', 500)
-
-
-class PathError(Exception):
-    pass
-
-@g.api.representation('application/xml')
+################# Output XML definition ######################
 def output_xml(data, code, headers=None):
     resp = make_response(data, code)
     resp.headers.extend(headers or {})
     resp.headers['Content-Type'] = 'text/xml; charset=ISO-8859-1'
     return resp
 
+############### End of Output XML definition #################
+
+################ JSON output formatting ######################
 @g.api.representation('application/json')
 def output_json(data, code, headers=None):
     """
@@ -165,6 +151,9 @@ def output_json(data, code, headers=None):
     header_handler(data,code,resp)
     return resp
 
+############# End of JSON output formatting #########################
+
+############## Before Request definition ###########################
 @g.app.before_request
 def before_request():
     session.modified = True
@@ -179,11 +168,31 @@ def before_request():
         print("location deleted : "+location)
         location = None
 
+############ End of Before Request definition ######################
+
+#######################  Error definitions ##########################
+
+def error_response(msg, status, jsonify=False):
+    data = {
+        'Status': status,
+        'Message': '{}'.format(msg)
+    }
+    if jsonify:
+        data = json.dumps(data, indent=4)
+    return data, status
+
+
+INTERNAL_ERROR = error_response('Internal Server Error', 500)
+
+
+class PathError(Exception):
+    pass
+
+################### End Error definitions #####################
+
 ##########################################################################################
 # OFMF RESTful commands                                                                  #
 ##########################################################################################
-
-
 # The following code provides a mechanism for the Redfish client to either
 #    - Emulator Service Root
 #    - Control the emulator
@@ -199,6 +208,8 @@ def before_request():
 #    - Issuing a GET
 #    - Issuing a DELETE /redfish/v1/xxx/{id} to remove a pooled node (need to add checks)
 #
+#######################################################################################
+
 class RedfishAPI(Resource):
     def __init__(self):
         # Dictionary of actions and their method

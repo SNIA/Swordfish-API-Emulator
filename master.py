@@ -103,63 +103,6 @@ resource_dictionary = None
 parser = reqparse.RequestParser()
 parser.add_argument('Action', type=str, required=True)
 
-config = {}
-
-# Read emulator-config file.
-# If running on Cloud, use dyanaically assigned port
-with open(CONFIG, 'r') as f:
-    config = json.load(f)
-    try:
-        MODE = config['MODE']
-    except:
-        pass
-
-    try:
-        POPULATE = config['POPULATE']
-    except:
-        pass
-
-    try:
-        STATIC = config['STATIC']
-    except:
-        pass
-
-if(MODE=='Cloud'):
-    port = int(os.getenv("PORT"))
-
-# Execution starts a main(), at end of file
-
-def init_resource_manager():
-    """
-    Initializes the resource manager
-    """
-    global resource_manager
-    global REST_BASE
-    global TRAYS
-    global SPEC
-
-    if (STATIC=='enable'):
-        print (' * Using static mockup')
-        resource_manager = StaticResourceManager(REST_BASE, SPEC,MODE,TRAYS)
-    else:
-        print (' * Using dynamic emulation')
-        resource_manager = ResourceManager(REST_BASE, SPEC,MODE,AUTHENTICATION,TRAYS)
-
-
-    # If POPULATE is specified in emulator-config.json, INFRAGEN is called to populate emulator (i.e. with Chassis, CS, Resource Blocks, etc) according to specified file
-    try:
-        POPULATE
-    except:
-        pass
-    else:
-        if os.path.exists(POPULATE):
-            with open(POPULATE, 'r') as f:
-                infragen_config = json.load(f)
-            populate(infragen_config.get('POPULATE',10))
-
-    resource_dictionary = ResourceDictionary()
-
-
 def error_response(msg, status, jsonify=False):
     data = {
         'Status': status,
@@ -516,6 +459,38 @@ def get_odata():
 
 #
 #
+
+def init_resource_manager():
+    """
+    Initializes the resource manager
+    """
+    global resource_manager
+    global REST_BASE
+    global TRAYS
+    global SPEC
+
+    if (STATIC=='enable'):
+        print (' * Using static mockup')
+        resource_manager = StaticResourceManager(REST_BASE, SPEC,MODE,TRAYS)
+    else:
+        print (' * Using dynamic emulation')
+        resource_manager = ResourceManager(REST_BASE, SPEC,MODE,AUTHENTICATION,TRAYS)
+
+
+    # If POPULATE is specified in emulator-config.json, INFRAGEN is called to populate emulator (i.e. with Chassis, CS, Resource Blocks, etc) according to specified file
+    try:
+        POPULATE
+    except:
+        pass
+    else:
+        if os.path.exists(POPULATE):
+            with open(POPULATE, 'r') as f:
+                infragen_config = json.load(f)
+            populate(infragen_config.get('POPULATE',10))
+
+    resource_dictionary = ResourceDictionary()
+
+
 def startup():
 
     init_resource_manager()
@@ -539,6 +514,33 @@ def startup():
 #
 # Passes control to startup()
 #
+
+config = {}
+
+# Read emulator-config file.
+# If running on Cloud, use dyanaically assigned port
+with open(CONFIG, 'r') as f:
+    config = json.load(f)
+    try:
+        MODE = config['MODE']
+    except:
+        pass
+
+    try:
+        POPULATE = config['POPULATE']
+    except:
+        pass
+
+    try:
+        STATIC = config['STATIC']
+    except:
+        pass
+
+if(MODE=='Cloud'):
+    port = int(os.getenv("PORT"))
+
+
+
 def main():
     global app
     global MODE

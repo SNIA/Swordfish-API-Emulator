@@ -302,7 +302,7 @@ class RedfishAPI(Resource):
 
 ############### End of DELETE definition ####################################
 
-###############
+############### Create System definition ####################################
     @staticmethod
     def create_system(action, idx=1):
         global resource_manager
@@ -323,6 +323,10 @@ class RedfishAPI(Resource):
             resp = INTERNAL_ERROR
         return resp
 
+################ End of Create System definition #########################
+
+################ Update System definition ################################
+
     @staticmethod
     def update_system(action, idx=1):
         global resource_manager
@@ -340,6 +344,10 @@ class RedfishAPI(Resource):
             resp = INTERNAL_ERROR
         return resp
 
+############ End of Update System definition ############################
+
+############## Subscribe Events definition ##############################
+
     @staticmethod
     def subscribe_events(action, idx=1):
         global resource_manager
@@ -356,6 +364,10 @@ class RedfishAPI(Resource):
             traceback.print_exc()
             resp = INTERNAL_ERROR
         return resp
+
+##################  End of Subscribe Events definition ####################
+
+################## Get Configurations definition ##########################
 
     @staticmethod
     def get_configuration(obj, path):
@@ -376,7 +388,7 @@ class RedfishAPI(Resource):
         # print (config)      # Print out static objects
         return config
 
-##################### END of DELETE definition ################################################
+##################### END of GET Configurations definition #################
 
 #
 # If DELETE /redfish/v1/reset, then reset the resource manager

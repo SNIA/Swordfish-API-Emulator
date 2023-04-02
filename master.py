@@ -33,7 +33,7 @@
 #  THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Redfish Interface Emulator - main
-#   python emulator.py
+#   python master.py
 
 import os
 import json
@@ -179,6 +179,11 @@ def before_request():
         print("location deleted : "+location)
         location = None
 
+##########################################################################################
+# OFMF RESTful commands                                                                  #
+##########################################################################################
+
+
 # The following code provides a mechanism for the Redfish client to either
 #    - Emulator Service Root
 #    - Control the emulator
@@ -212,6 +217,7 @@ class RedfishAPI(Resource):
 
         super(RedfishAPI, self).__init__()
 
+#################### Define POST ##################################################
 
     def post(self, path):
         if path.find(self.system_path) != -1 or path.find(self.chassis_path) != -1:
@@ -248,6 +254,10 @@ class RedfishAPI(Resource):
         """
         Either return ServiceRoot or let resource manager handel
         """
+################# End of POST definition #############################
+
+################# GET definition ######################################
+
     def get(self, path=None):
 
         try:
@@ -266,6 +276,9 @@ class RedfishAPI(Resource):
             resp = INTERNAL_ERROR
         return resp
 
+############################ End of GET definition ######################
+
+############################# Definition of DELETE ######################
 
     def delete(self, path):
         """
@@ -287,6 +300,9 @@ class RedfishAPI(Resource):
             resp = INTERNAL_ERROR
         return resp
 
+############### End of DELETE definition ####################################
+
+###############
     @staticmethod
     def create_system(action, idx=1):
         global resource_manager
@@ -359,6 +375,8 @@ class RedfishAPI(Resource):
             raise PathError("Resource not found: {}".format(e))
         # print (config)      # Print out static objects
         return config
+
+##################### END of DELETE definition ################################################
 
 #
 # If DELETE /redfish/v1/reset, then reset the resource manager

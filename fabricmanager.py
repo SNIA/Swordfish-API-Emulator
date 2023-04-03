@@ -105,6 +105,60 @@ parser.add_argument('Action', type=str, required=True)
 
 @g.api.representation('application/xml')
 
+###################### Base HTML definition for RESTful interactions ############
+#
+# If GET /, then return index.html (an intro page)
+#
+@g.app.route('/')
+def index():
+    return render_template('index.html')
+
+######################### End of BASE HTML page for RESTful interactions #######
+
+
+
+@g.app.route('/redfish')
+def serviceInfo():
+    return json.loads(render_template('service.json'))
+
+@g.app.route('/browse.html')
+def browse():
+    return render_template('browse.html')
+
+##################### Metadata definitions ####################################
+
+@g.app.route('/redfish/v1/$metadata')
+def get_metadata():
+    logging.info ('In get_metadata')
+    try:
+
+        md_xml = ""
+
+        if os.path.exists('Resources/$metadata/index.xml'):
+            # Use dynamic data source
+            filename = 'Resources/$metadata/index.xml'
+        else:
+            # Use static mockup
+            mockup_path = MOCKUPFOLDERS[0]
+            filename = os.path.join("api_emulator", mockup_path, 'static', '$metadata', 'index.xml')
+
+        with open(filename, 'r') as var:
+            for line in var:
+                line = line.rstrip()
+                md_xml += line
+
+        resp = make_response(md_xml, 200)
+        resp.headers['Content-Type'] = 'application/xml'
+        return resp
+
+    except Exception:
+        traceback.print_exc()
+        resp = error_response('Internal Server Error', 500, True)
+    return resp
+
+##################### End of Metadate definitions ############################
+
+
 ####################################################################
 # Define Error Response                                            #
 ####################################################################
@@ -194,6 +248,40 @@ def output_json(data, code, headers=None):
 
 ######################### End of JSON definitions ###############################
 
+########################## We are working with odata for transactions ###########
+# Return odata
+@g.app.route('/redfish/v1/odata')
+def get_odata():
+    logging.info ('In get_odata')
+    try:
+
+        odata_json = ""
+
+        if os.path.exists('Resources//odata//index.json'):
+            # Use dynamic data source
+            filename = 'Resources/odata/index.json'
+            logging.info ('Resources path exists:', filename)
+        else:
+            # Use static mockup
+            mockup_path = MOCKUPFOLDERS[0]
+            filename = os.path.join("api_emulator", mockup_path, 'static', 'odata', 'index.json')
+
+        with open(filename, 'r') as var:
+            for line in var:
+                line = line.rstrip()
+                odata_json += line
+
+        resp = make_response(odata_json, 200)
+        resp.headers['Content-Type'] = 'application/json'
+        return resp
+
+
+    except Exception:
+        traceback.print_exc()
+        resp = error_response('Internal Server Error', 500, True)
+    return resp
+
+######################### End of odata setups #########################################
 
 #######################################################################################
 # Redfish RESTful interface definitions                                               #
@@ -425,84 +513,25 @@ def reset():
 
 ###################### End of Resource Manager reset ###################################
 
+################################ End of Resource Definition initialization #############
 
+###################################### Note to follow up on #############################
+#
+# If any other RESTful request, send to RedfishAPI object for processing. Note: <path:path> specifies any path
+#
+# g.api.add_resource(RedfishAPI, '/redfish/v1/', '/redfish/v1/<path:path>')    -- Reeya
 
 #
-# If GET /, then return index.html (an intro page)
 #
-@g.app.route('/')
-def index():
-    return render_template('index.html')
+################################ End of Note to follow up on ###########################
 
-@g.app.route('/redfish')
-def serviceInfo():
-    return json.loads(render_template('service.json'))
+########################################################################################################
+#                              End of OFMF RESTful Actions                                             #
+########################################################################################################
 
-@g.app.route('/browse.html')
-def browse():
-    return render_template('browse.html')
 
-# Return metadata as type text/xml
-@g.app.route('/redfish/v1/$metadata')
-def get_metadata():
-    logging.info ('In get_metadata')
-    try:
 
-        md_xml = ""
-
-        if os.path.exists('Resources/$metadata/index.xml'):
-            # Use dynamic data source
-            filename = 'Resources/$metadata/index.xml'
-        else:
-            # Use static mockup
-            mockup_path = MOCKUPFOLDERS[0]
-            filename = os.path.join("api_emulator", mockup_path, 'static', '$metadata', 'index.xml')
-
-        with open(filename, 'r') as var:
-            for line in var:
-                line = line.rstrip()
-                md_xml += line
-
-        resp = make_response(md_xml, 200)
-        resp.headers['Content-Type'] = 'application/xml'
-        return resp
-
-    except Exception:
-        traceback.print_exc()
-        resp = error_response('Internal Server Error', 500, True)
-    return resp
-
-# Return odata
-@g.app.route('/redfish/v1/odata')
-def get_odata():
-    logging.info ('In get_odata')
-    try:
-
-        odata_json = ""
-
-        if os.path.exists('Resources//odata//index.json'):
-            # Use dynamic data source
-            filename = 'Resources/odata/index.json'
-            logging.info ('Resources path exists:', filename)
-        else:
-            # Use static mockup
-            mockup_path = MOCKUPFOLDERS[0]
-            filename = os.path.join("api_emulator", mockup_path, 'static', 'odata', 'index.json')
-
-        with open(filename, 'r') as var:
-            for line in var:
-                line = line.rstrip()
-                odata_json += line
-
-        resp = make_response(odata_json, 200)
-        resp.headers['Content-Type'] = 'application/json'
-        return resp
-
-    except Exception:
-        traceback.print_exc()
-        resp = error_response('Internal Server Error', 500, True)
-    return resp
-
+#########################  Resource Manager Initialization definition ##################
 
 def init_resource_manager():
     """
@@ -521,7 +550,8 @@ def init_resource_manager():
         resource_manager = ResourceManager(REST_BASE, SPEC,MODE,AUTHENTICATION,TRAYS)
 
 
-    # If POPULATE is specified in emulator-config.json, INFRAGEN is called to populate emulator (i.e. with Chassis, CS, Resource Blocks, etc) according to specified file
+    # If POPULATE is specified in emulator-config.json, INFRAGEN is called to populate 
+    # emulator (i.e. with Chassis, CS, Resource Blocks, etc) according to specified file
     try:
         POPULATE
     except:
@@ -534,17 +564,19 @@ def init_resource_manager():
 
     resource_dictionary = ResourceDictionary()
 
+################################ End of Resource Definition initialization #############
 
-#
-# If any other RESTful request, send to RedfishAPI object for processing. Note: <path:path> specifies any path
-#
-# g.api.add_resource(RedfishAPI, '/redfish/v1/', '/redfish/v1/<path:path>')    -- Reeya
 
-#
-#
+#################### Define Start Up using the Resource Manager Initialization #########
+
 def startup():
 
     init_resource_manager()
+
+############################## End of Start Up #########################################
+
+
+
 
 ####################################################################################
 # Start execution of Fabric Manager                                                #

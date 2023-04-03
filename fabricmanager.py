@@ -212,7 +212,7 @@ def output_json(data, code, headers=None):
 #       - Action may be ApplySettings, Reset, Subscribe
 #    - Issuing a GET
 #    - Issuing a DELETE /redfish/v1/xxx/{id} to remove a pooled node (need to add checks)
-#
+##############################################################################################################
 class RedfishAPI(Resource):
     def __init__(self):
         # Dictionary of actions and their method
@@ -231,6 +231,7 @@ class RedfishAPI(Resource):
 
         super(RedfishAPI, self).__init__()
 
+######################### Define POST action #################################################
 
     def post(self, path):
         if path.find(self.system_path) != -1 or path.find(self.chassis_path) != -1:
@@ -267,6 +268,11 @@ class RedfishAPI(Resource):
         """
         Either return ServiceRoot or let resource manager handel
         """
+
+############################## End of POST definition ################################
+
+############################## Define GET action #####################################
+
     def get(self, path=None):
 
         try:
@@ -284,7 +290,10 @@ class RedfishAPI(Resource):
             traceback.print_exc()
             resp = INTERNAL_ERROR
         return resp
+    
+############################# End of GET action ######################################
 
+############################# Define DELETE action ###################################
 
     def delete(self, path):
         """
@@ -306,6 +315,10 @@ class RedfishAPI(Resource):
             resp = INTERNAL_ERROR
         return resp
 
+########################## End of DELETE action definition ###########################
+
+########################## Define Create System ######################################
+
     @staticmethod
     def create_system(action, idx=1):
         global resource_manager
@@ -326,6 +339,11 @@ class RedfishAPI(Resource):
             resp = INTERNAL_ERROR
         return resp
 
+######################### End of Create System definition #############################
+
+######################## Define Update System #########################################
+
+
     @staticmethod
     def update_system(action, idx=1):
         global resource_manager
@@ -343,6 +361,10 @@ class RedfishAPI(Resource):
             resp = INTERNAL_ERROR
         return resp
 
+####################### End of Update System definition ###############################
+
+######################## Define Subscribe Events ######################################
+
     @staticmethod
     def subscribe_events(action, idx=1):
         global resource_manager
@@ -359,6 +381,10 @@ class RedfishAPI(Resource):
             traceback.print_exc()
             resp = INTERNAL_ERROR
         return resp
+
+###################### End of Subscribe Events definistion ############################
+
+###################### Define Get Configuration #######################################
 
     @staticmethod
     def get_configuration(obj, path):
@@ -379,6 +405,10 @@ class RedfishAPI(Resource):
         # print (config)      # Print out static objects
         return config
 
+###################### End of Get Configuration definition #############################
+
+###################### Define Resource Manager Reset ###################################
+
 #
 # If DELETE /redfish/v1/reset, then reset the resource manager
 #
@@ -392,6 +422,9 @@ def reset():
         traceback.print_exc()
         resp = error_response('Internal Server Error', 500, True)
     return resp
+
+###################### End of Resource Manager reset ###################################
+
 
 
 #

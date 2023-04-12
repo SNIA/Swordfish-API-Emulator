@@ -136,7 +136,7 @@ cp -r -f "$BASE_DIR"/Resources "$WORK_DIR"/
 cp -r -f "$BASE_DIR"/emulator-config.json "$WORK_DIR"/
 cp -r -f "$BASE_DIR"/g.py "$WORK_DIR"/
 cp -r -f "$BASE_DIR"/emulator.py "$WORK_DIR"/
-cp -r -f "$BASE_DIR"/fabricmanager.py "$WORK_DIR"/
+cp -r -f "$BASE_DIR"/ofmf-main.py "$WORK_DIR"/
 cp -r -f "$BASE_DIR"/certificate_config.cnf "$WORK_DIR"/
 cp -r -f "$BASE_DIR"/v3.ext "$WORK_DIR"/
 
@@ -164,7 +164,7 @@ if [ "$SETUP_ONLY" == "true" ]; then
          "emulator:"
     echo ""
     echo "   cd $WORK_DIR"
-    echo "   ./venv/bin/python fabricmanager.py"
+    echo "   ./venv/bin/python ofmf-main.py"
     echo ""
     exit 0
 fi
@@ -183,7 +183,7 @@ EOF
 
 cd "$WORK_DIR"
 #"$WORK_DIR"/venv/bin/python emulator.py -port $API_PORT
-"$WORK_DIR"/venv/bin/python fabricmanager.py -port $API_PORT
+"$WORK_DIR"/venv/bin/python ofmf-main.py -port $API_PORT
 
 echo ""
 echo "Emulator can be rerun from '$WORK_DIR' by running the command:"

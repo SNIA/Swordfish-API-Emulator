@@ -4,7 +4,7 @@ from template_writer_utils import get_path_variables
 def write_program_header(outfile, base_template_name):
     """ Writes a template program header """
     outfile.write('#\n')
-    outfile.write('# Copyright (c) 2017-2021, The Storage Networking Industry Association.\n')
+    outfile.write('# Copyright (c) 2017-2023, The Storage Networking Industry Association.\n')
     outfile.write('#\n')
     outfile.write('# Redistribution and use in source and binary forms, with or without\n')
     outfile.write('# modification, are permitted provided that the following conditions are met:\n')
@@ -45,7 +45,7 @@ def write_template(outfile, resource_path, json_schema):
     outfile.write("_TEMPLATE = \\")
     outfile.write("\n")
     outfile.write("{\n")
-    outfile.write('\t"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",\n')
+    outfile.write('\t"@Redfish.Copyright": "Copyright 2014-2023 SNIA. All rights reserved.",\n')
 
     # All the template will have required properties -
     #  "@odata.id", "@odata.type", "Id", "Name", etc
@@ -91,14 +91,15 @@ def write_program_end(outfile, base_template_name, resource_path):
     outfile.write('\t\t"""\n')
     outfile.write('\t\tInstantiates and formats the template\n')
     outfile.write('\t\tArguments:\n')
-    outfile.write('\t\t\twildcard - A dictionary of wildcards strings and their repalcement values\n')
+    outfile.write('\t\t\twildcard - A dictionary of wildcards strings and their replacement values\n')
     outfile.write('\t\t"""\n')
     outfile.write('\t\tc = copy.deepcopy(_TEMPLATE)\n')
     outfile.write('\t\td = json.dumps(c)\n')
     
     arg_list = get_path_variables(resource_path)
     num = 0
-    outfile.write("\t\tg = d.replace('{0}', '{1}')\n".format(arg_list[0], num))
+    substituteString = '-' + str(num) + '-'
+    outfile.write("\t\tg = d.replace('{0}', '{1}')\n".format(arg_list[0], substituteString ))
     num = num + 1
     for i in range(len(arg_list)-1):
         outfile.write("\t\tg = g.replace('{0}', '{1}')\n".format(arg_list[i+1], num))

@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Fabrics/{FabricId}/Switches/{SwitchId}/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Certificates/{CertificateId}
 # Program name - Certificate43_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate43CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, FabricId, SwitchId):
+	def get(self, ResourceBlockId, StorageId, StorageControllerId):
 		logging.info('Certificate43 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Certificates', 'index.json').format(FabricId, SwitchId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Certificates', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, FabricId, SwitchId):
+	def post(self, ResourceBlockId, StorageId, StorageControllerId):
 		logging.info('Certificate43 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Certificate43CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if SwitchId in members:
+			if StorageControllerId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Certificates').format(FabricId, SwitchId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Certificates').format(ResourceBlockId, StorageId, StorageControllerId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Certificate43CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate43API.post(self, FabricId, SwitchId, os.path.basename(config['@odata.id']))
+					return Certificate43API.post(self, ResourceBlockId, StorageId, StorageControllerId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate43API.post(self, FabricId, SwitchId, str(res))
+					return Certificate43API.post(self, ResourceBlockId, StorageId, StorageControllerId, str(res))
 			else:
-				return Certificate43API.post(self, FabricId, SwitchId, str(res))
+				return Certificate43API.post(self, ResourceBlockId, StorageId, StorageControllerId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Certificate43API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, FabricId, SwitchId, CertificateId):
+	def get(self, ResourceBlockId, StorageId, StorageControllerId, CertificateId):
 		logging.info('Certificate43 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Certificates/{2}', 'index.json').format(FabricId, SwitchId, CertificateId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +119,24 @@ class Certificate43API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, FabricId, SwitchId, CertificateId):
+	def post(self, ResourceBlockId, StorageId, StorageControllerId, CertificateId):
 		logging.info('Certificate43 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Certificates/{2}').format(FabricId, SwitchId, CertificateId)
-			collection_path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Certificates', 'index.json').format(FabricId, SwitchId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Certificates/{3}').format(ResourceBlockId, StorageId, StorageControllerId, CertificateId)
+			collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Certificates', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate43CollectionAPI.post(self, FabricId, SwitchId)
+				Certificate43CollectionAPI.post(self, ResourceBlockId, StorageId, StorageControllerId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'FabricId':FabricId, 'SwitchId':SwitchId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'StorageId':StorageId, 'StorageControllerId':StorageControllerId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate43_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +150,37 @@ class Certificate43API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, FabricId, SwitchId, CertificateId):
+	def put(self, ResourceBlockId, StorageId, StorageControllerId, CertificateId):
 		logging.info('Certificate43 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Certificates/{2}', 'index.json').format(FabricId, SwitchId, CertificateId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, CertificateId)
 			put_object(path)
-			return self.get(FabricId, SwitchId, CertificateId)
+			return self.get(ResourceBlockId, StorageId, StorageControllerId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, FabricId, SwitchId, CertificateId):
+	def patch(self, ResourceBlockId, StorageId, StorageControllerId, CertificateId):
 		logging.info('Certificate43 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Certificates/{2}', 'index.json').format(FabricId, SwitchId, CertificateId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, CertificateId)
 			patch_object(path)
-			return self.get(FabricId, SwitchId, CertificateId)
+			return self.get(ResourceBlockId, StorageId, StorageControllerId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, FabricId, SwitchId, CertificateId):
+	def delete(self, ResourceBlockId, StorageId, StorageControllerId, CertificateId):
 		logging.info('Certificate43 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Certificates/{2}').format(FabricId, SwitchId, CertificateId)
-			base_path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Certificates').format(FabricId, SwitchId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Certificates/{3}').format(ResourceBlockId, StorageId, StorageControllerId, CertificateId)
+			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Certificates').format(ResourceBlockId, StorageId, StorageControllerId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

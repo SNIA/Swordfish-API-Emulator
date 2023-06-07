@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Managers/{ManagerId}/RemoteAccountService/ActiveDirectory/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/AccountService/MultiFactorAuth/SecurID/Certificates/{CertificateId}
 # Program name - Certificate5_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate5CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ManagerId):
+	def get(self):
 		logging.info('Certificate5 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Managers/{0}/RemoteAccountService/ActiveDirectory/Certificates', 'index.json').format(ManagerId)
+			path = os.path.join(self.root, 'AccountService/MultiFactorAuth/SecurID/Certificates', 'index.json')
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ManagerId):
+	def post(self):
 		logging.info('Certificate5 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,7 @@ class Certificate5CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if ManagerId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ActiveDirectory/Certificates').format(ManagerId)
+			path = create_path(self.root, 'AccountService/MultiFactorAuth/SecurID/Certificates')
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +85,11 @@ class Certificate5CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate5API.post(self, ManagerId, os.path.basename(config['@odata.id']))
+					return Certificate5API.post(self, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate5API.post(self, ManagerId, str(res))
+					return Certificate5API.post(self, str(res))
 			else:
-				return Certificate5API.post(self, ManagerId, str(res))
+				return Certificate5API.post(self, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +101,12 @@ class Certificate5API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ManagerId, CertificateId):
+	def get(self, CertificateId):
 		logging.info('Certificate5 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ActiveDirectory/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			path = create_path(self.root, 'AccountService/MultiFactorAuth/SecurID/Certificates/{0}', 'index.json').format(CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +116,24 @@ class Certificate5API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ManagerId, CertificateId):
+	def post(self, CertificateId):
 		logging.info('Certificate5 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ActiveDirectory/Certificates/{1}').format(ManagerId, CertificateId)
-			collection_path = os.path.join(self.root, 'Managers/{0}/RemoteAccountService/ActiveDirectory/Certificates', 'index.json').format(ManagerId)
+			path = create_path(self.root, 'AccountService/MultiFactorAuth/SecurID/Certificates/{0}').format(CertificateId)
+			collection_path = os.path.join(self.root, 'AccountService/MultiFactorAuth/SecurID/Certificates', 'index.json')
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate5CollectionAPI.post(self, ManagerId)
+				Certificate5CollectionAPI.post(self)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ManagerId':ManagerId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate5_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +147,37 @@ class Certificate5API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ManagerId, CertificateId):
+	def put(self, CertificateId):
 		logging.info('Certificate5 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ActiveDirectory/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			path = os.path.join(self.root, 'AccountService/MultiFactorAuth/SecurID/Certificates/{0}', 'index.json').format(CertificateId)
 			put_object(path)
-			return self.get(ManagerId, CertificateId)
+			return self.get(CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ManagerId, CertificateId):
+	def patch(self, CertificateId):
 		logging.info('Certificate5 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ActiveDirectory/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			path = os.path.join(self.root, 'AccountService/MultiFactorAuth/SecurID/Certificates/{0}', 'index.json').format(CertificateId)
 			patch_object(path)
-			return self.get(ManagerId, CertificateId)
+			return self.get(CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ManagerId, CertificateId):
+	def delete(self, CertificateId):
 		logging.info('Certificate5 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ActiveDirectory/Certificates/{1}').format(ManagerId, CertificateId)
-			base_path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ActiveDirectory/Certificates').format(ManagerId)
+			path = create_path(self.root, 'AccountService/MultiFactorAuth/SecurID/Certificates/{0}').format(CertificateId)
+			base_path = create_path(self.root, 'AccountService/MultiFactorAuth/SecurID/Certificates')
 			return delete_object(path, base_path)
 		else:
 			return msg, code

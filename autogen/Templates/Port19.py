@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2023, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,9 +35,9 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-	"@odata.id": "{rb}Storage/{StorageId}/Controllers/{StorageControllerId}/Ports/{PortId}",
-	"@odata.type": "#Port.v1_6_1.Port",
+	"@Redfish.Copyright": "Copyright 2014-2023 SNIA. All rights reserved.",
+	"@odata.id": "{rb}ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Ports/{PortId}",
+	"@odata.type": "#Port.v1_9_0.Port",
 	"Id": "{PortId}",
 	"Name": "Port",
 }
@@ -46,21 +46,23 @@ def get_Port19_instance(wildcards):
 		"""
 		Instantiates and formats the template
 		Arguments:
-			wildcard - A dictionary of wildcards strings and their repalcement values
+			wildcard - A dictionary of wildcards strings and their replacement values
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{StorageId}', '0')
-		g = g.replace('{StorageControllerId}', '1')
-		g = g.replace('{PortId}', '2')
+		g = d.replace('{ResourceBlockId}', '-0-')
+		g = g.replace('{StorageId}', '-1-')
+		g = g.replace('{StorageControllerId}', '-2-')
+		g = g.replace('{PortId}', '-3-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')
 		g = g.replace('{', '~!')
 		g = g.replace('}', '!~')
-		g = g.replace('0', '{StorageId}')
-		g = g.replace('1', '{StorageControllerId}')
-		g = g.replace('2', '{PortId}')
+		g = g.replace('0', '{ResourceBlockId}')
+		g = g.replace('1', '{StorageId}')
+		g = g.replace('2', '{StorageControllerId}')
+		g = g.replace('3', '{PortId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)
 		g = g.replace('~~!', '{{')

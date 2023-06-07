@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Storage/{StorageId}/Controllers/{StorageControllerId}/Ports/{PortId}/EnvironmentMetrics
+# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/FabricAdapters/{FabricAdapterId}/Ports/{PortId}/EnvironmentMetrics
 # Program name - EnvironmentMetrics50_api.py
 
 import g
@@ -55,33 +55,33 @@ class EnvironmentMetrics50API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, StorageId, StorageControllerId, PortId):
+	def get(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId):
 		logging.info('EnvironmentMetrics50 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Storage/{0}/Controllers/{1}/Ports/{2}/EnvironmentMetrics', 'index.json').format(StorageId, StorageControllerId, PortId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/EnvironmentMetrics', 'index.json').format(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, StorageId, StorageControllerId, PortId):
+	def post(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId):
 		logging.info('EnvironmentMetrics50 post called')
 		return 'POST is not a supported command for EnvironmentMetrics50API', 405
 
 	# HTTP PUT
-	def put(self, StorageId, StorageControllerId, PortId):
+	def put(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId):
 		logging.info('EnvironmentMetrics50 put called')
 		return 'PUT is not a supported command for EnvironmentMetrics50API', 405
 
 	# HTTP PATCH
-	def patch(self, StorageId, StorageControllerId, PortId):
+	def patch(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId):
 		logging.info('EnvironmentMetrics50 patch called')
 		return 'PATCH is not a supported command for EnvironmentMetrics50API', 405
 
 	# HTTP DELETE
-	def delete(self, StorageId, StorageControllerId, PortId):
+	def delete(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId):
 		logging.info('EnvironmentMetrics50 delete called')
 		return 'DELETE is not a supported command for EnvironmentMetrics50API', 405
 

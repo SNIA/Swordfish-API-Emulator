@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2023, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,9 +35,9 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-	"@odata.id": "{rb}Systems/{SystemId}/FabricAdapters/{FabricAdapterId}",
-	"@odata.type": "#FabricAdapter.v1_3_0.FabricAdapter",
+	"@Redfish.Copyright": "Copyright 2014-2023 SNIA. All rights reserved.",
+	"@odata.id": "{rb}Systems/{ComputerSystemId}/FabricAdapters/{FabricAdapterId}",
+	"@odata.type": "#FabricAdapter.v1_5_1.FabricAdapter",
 	"Id": "{FabricAdapterId}",
 	"Name": "FabricAdapter",
 }
@@ -46,18 +46,18 @@ def get_FabricAdapter0_instance(wildcards):
 		"""
 		Instantiates and formats the template
 		Arguments:
-			wildcard - A dictionary of wildcards strings and their repalcement values
+			wildcard - A dictionary of wildcards strings and their replacement values
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{SystemId}', '0')
-		g = g.replace('{FabricAdapterId}', '1')
+		g = d.replace('{ComputerSystemId}', '-0-')
+		g = g.replace('{FabricAdapterId}', '-1-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')
 		g = g.replace('{', '~!')
 		g = g.replace('}', '!~')
-		g = g.replace('0', '{SystemId}')
+		g = g.replace('0', '{ComputerSystemId}')
 		g = g.replace('1', '{FabricAdapterId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)

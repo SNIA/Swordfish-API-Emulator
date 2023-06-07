@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Certificates/{CertificateId}
 # Program name - Certificate42_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate42CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId):
+	def get(self, ComputerSystemId, StorageId, StorageControllerId):
 		logging.info('Certificate42 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}/Certificates', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
+			path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}/Certificates', 'index.json').format(ComputerSystemId, StorageId, StorageControllerId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId):
+	def post(self, ComputerSystemId, StorageId, StorageControllerId):
 		logging.info('Certificate42 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -78,7 +78,7 @@ class Certificate42CollectionAPI(Resource):
 			if StorageControllerId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}/Certificates').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}/Certificates').format(ComputerSystemId, StorageId, StorageControllerId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Certificate42CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate42API.post(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, os.path.basename(config['@odata.id']))
+					return Certificate42API.post(self, ComputerSystemId, StorageId, StorageControllerId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate42API.post(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, str(res))
+					return Certificate42API.post(self, ComputerSystemId, StorageId, StorageControllerId, str(res))
 			else:
-				return Certificate42API.post(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, str(res))
+				return Certificate42API.post(self, ComputerSystemId, StorageId, StorageControllerId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Certificate42API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, CertificateId):
+	def get(self, ComputerSystemId, StorageId, StorageControllerId, CertificateId):
 		logging.info('Certificate42 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}/Certificates/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, CertificateId)
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}/Certificates/{3}', 'index.json').format(ComputerSystemId, StorageId, StorageControllerId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +119,24 @@ class Certificate42API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, CertificateId):
+	def post(self, ComputerSystemId, StorageId, StorageControllerId, CertificateId):
 		logging.info('Certificate42 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}/Certificates/{4}').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, CertificateId)
-			collection_path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}/Certificates', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}/Certificates/{3}').format(ComputerSystemId, StorageId, StorageControllerId, CertificateId)
+			collection_path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}/Certificates', 'index.json').format(ComputerSystemId, StorageId, StorageControllerId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate42CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
+				Certificate42CollectionAPI.post(self, ComputerSystemId, StorageId, StorageControllerId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'StorageId':StorageId, 'StorageControllerId':StorageControllerId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'ComputerSystemId':ComputerSystemId, 'StorageId':StorageId, 'StorageControllerId':StorageControllerId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate42_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +150,37 @@ class Certificate42API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, CertificateId):
+	def put(self, ComputerSystemId, StorageId, StorageControllerId, CertificateId):
 		logging.info('Certificate42 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}/Certificates/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, CertificateId)
+			path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}/Certificates/{3}', 'index.json').format(ComputerSystemId, StorageId, StorageControllerId, CertificateId)
 			put_object(path)
-			return self.get(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, CertificateId)
+			return self.get(ComputerSystemId, StorageId, StorageControllerId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, CertificateId):
+	def patch(self, ComputerSystemId, StorageId, StorageControllerId, CertificateId):
 		logging.info('Certificate42 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}/Certificates/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, CertificateId)
+			path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}/Certificates/{3}', 'index.json').format(ComputerSystemId, StorageId, StorageControllerId, CertificateId)
 			patch_object(path)
-			return self.get(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, CertificateId)
+			return self.get(ComputerSystemId, StorageId, StorageControllerId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, CertificateId):
+	def delete(self, ComputerSystemId, StorageId, StorageControllerId, CertificateId):
 		logging.info('Certificate42 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}/Certificates/{4}').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, CertificateId)
-			base_path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}/Certificates').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}/Certificates/{3}').format(ComputerSystemId, StorageId, StorageControllerId, CertificateId)
+			base_path = create_path(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}/Certificates').format(ComputerSystemId, StorageId, StorageControllerId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2023, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,8 +35,8 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-	"BootOptionReference": "Boot option",
+	"@Redfish.Copyright": "Copyright 2014-2023 SNIA. All rights reserved.",
+	"BootOptionReference": "Boot0000",
 	"@odata.id": "{rb}Systems/{ComputerSystemId}/BootOptions/{BootOptionId}",
 	"@odata.type": "#BootOption.v1_0_4.BootOption",
 	"Id": "{BootOptionId}",
@@ -47,12 +47,12 @@ def get_BootOption0_instance(wildcards):
 		"""
 		Instantiates and formats the template
 		Arguments:
-			wildcard - A dictionary of wildcards strings and their repalcement values
+			wildcard - A dictionary of wildcards strings and their replacement values
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{ComputerSystemId}', '0')
-		g = g.replace('{BootOptionId}', '1')
+		g = d.replace('{ComputerSystemId}', '-0-')
+		g = g.replace('{BootOptionId}', '-1-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

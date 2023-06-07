@@ -102,7 +102,8 @@ def write_program_end(outfile, base_template_name, resource_path):
     outfile.write("\t\tg = d.replace('{0}', '{1}')\n".format(arg_list[0], substituteString ))
     num = num + 1
     for i in range(len(arg_list)-1):
-        outfile.write("\t\tg = g.replace('{0}', '{1}')\n".format(arg_list[i+1], num))
+        substituteString = '-' + str(num) + '-'
+        outfile.write("\t\tg = g.replace('{0}', '{1}')\n".format(arg_list[i+1], substituteString))
         num = num + 1
     
     outfile.write("\t\tg = g.replace('{rb}', 'NUb')\n")

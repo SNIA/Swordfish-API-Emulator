@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Storage/{StorageId}/Controllers/{StorageControllerId}/Ports/{PortId}/Metrics
+# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Ports/{PortId}/Metrics
 # Program name - PortMetrics19_api.py
 
 import g
@@ -55,33 +55,33 @@ class PortMetrics19API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, StorageId, StorageControllerId, PortId):
+	def get(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
 		logging.info('PortMetrics19 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Storage/{0}/Controllers/{1}/Ports/{2}/Metrics', 'index.json').format(StorageId, StorageControllerId, PortId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/StorageControllers/{2}/Ports/{3}/Metrics', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, StorageId, StorageControllerId, PortId):
+	def post(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
 		logging.info('PortMetrics19 post called')
 		return 'POST is not a supported command for PortMetrics19API', 405
 
 	# HTTP PUT
-	def put(self, StorageId, StorageControllerId, PortId):
+	def put(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
 		logging.info('PortMetrics19 put called')
 		return 'PUT is not a supported command for PortMetrics19API', 405
 
 	# HTTP PATCH
-	def patch(self, StorageId, StorageControllerId, PortId):
+	def patch(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
 		logging.info('PortMetrics19 patch called')
 		return 'PATCH is not a supported command for PortMetrics19API', 405
 
 	# HTTP DELETE
-	def delete(self, StorageId, StorageControllerId, PortId):
+	def delete(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
 		logging.info('PortMetrics19 delete called')
 		return 'DELETE is not a supported command for PortMetrics19API', 405
 

@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Ports/{PortId}
+# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Ports/{PortId}
 # Program name - Port11_api.py
 
 import g
@@ -58,7 +58,7 @@ class Port11CollectionAPI(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Storage/{1}/StorageControllers/{2}/Ports', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId)
 			return get_json_data(path)
 		else:
 			return msg, code
@@ -78,7 +78,7 @@ class Port11CollectionAPI(Resource):
 			if StorageControllerId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/StorageControllers/{2}/Ports').format(ResourceBlockId, StorageId, StorageControllerId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports').format(ResourceBlockId, StorageId, StorageControllerId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -109,7 +109,7 @@ class Port11API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/StorageControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -124,8 +124,8 @@ class Port11API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/StorageControllers/{2}/Ports/{3}').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
-			collection_path = os.path.join(self.root, 'ResourceBlocks/{0}/Storage/{1}/StorageControllers/{2}/Ports', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
+			collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
@@ -155,7 +155,7 @@ class Port11API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Storage/{1}/StorageControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
 			put_object(path)
 			return self.get(ResourceBlockId, StorageId, StorageControllerId, PortId)
 		else:
@@ -167,7 +167,7 @@ class Port11API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Storage/{1}/StorageControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
 			patch_object(path)
 			return self.get(ResourceBlockId, StorageId, StorageControllerId, PortId)
 		else:
@@ -179,8 +179,8 @@ class Port11API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/StorageControllers/{2}/Ports/{3}').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
-			base_path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/StorageControllers/{2}/Ports').format(ResourceBlockId, StorageId, StorageControllerId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
+			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports').format(ResourceBlockId, StorageId, StorageControllerId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

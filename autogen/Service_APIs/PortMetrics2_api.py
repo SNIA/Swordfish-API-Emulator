@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Ports/{PortId}/Metrics
+# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Ports/{PortId}/Metrics
 # Program name - PortMetrics2_api.py
 
 import g
@@ -60,7 +60,7 @@ class PortMetrics2API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/Storage/{1}/StorageControllers/{2}/Ports/{3}/Metrics', 'index.json').format(ComputerSystemId, StorageId, StorageControllerId, PortId)
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}/Ports/{3}/Metrics', 'index.json').format(ComputerSystemId, StorageId, StorageControllerId, PortId)
 			return get_json_data (path)
 		else:
 			return msg, code

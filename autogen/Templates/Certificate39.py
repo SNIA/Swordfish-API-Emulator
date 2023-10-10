@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2023, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,9 +35,9 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-	"@odata.id": "{rb}CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Certificates/{CertificateId}",
-	"@odata.type": "#Certificate.v1_6_0.Certificate",
+	"@Redfish.Copyright": "Copyright 2014-2023 SNIA. All rights reserved.",
+	"@odata.id": "{rb}ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Certificates/{CertificateId}",
+	"@odata.type": "#Certificate.v1_7_0.Certificate",
 	"Id": "{CertificateId}",
 	"Name": "Certificate",
 }
@@ -46,14 +46,14 @@ def get_Certificate39_instance(wildcards):
 		"""
 		Instantiates and formats the template
 		Arguments:
-			wildcard - A dictionary of wildcards strings and their repalcement values
+			wildcard - A dictionary of wildcards strings and their replacement values
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{ResourceBlockId}', '0')
-		g = g.replace('{StorageId}', '1')
-		g = g.replace('{StorageControllerId}', '2')
-		g = g.replace('{CertificateId}', '3')
+		g = d.replace('{ResourceBlockId}', '-0-')
+		g = g.replace('{StorageId}', '-1-')
+		g = g.replace('{StorageControllerId}', '-2-')
+		g = g.replace('{CertificateId}', '-3-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

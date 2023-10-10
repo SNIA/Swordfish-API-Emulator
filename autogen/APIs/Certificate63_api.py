@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates/{CertificateId}
+# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/VirtualMedia/{VirtualMediaId}/ClientCertificates/{CertificateId}
 # Program name - Certificate63_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate63CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId):
+	def get(self, ResourceBlockId, ComputerSystemId, VirtualMediaId):
 		logging.info('Certificate63 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/KeyManagement/KMIPCertificates', 'index.json').format(ComputerSystemId)
+			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates', 'index.json').format(ResourceBlockId, ComputerSystemId, VirtualMediaId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ComputerSystemId):
+	def post(self, ResourceBlockId, ComputerSystemId, VirtualMediaId):
 		logging.info('Certificate63 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Certificate63CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if ComputerSystemId in members:
+			if VirtualMediaId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Systems/{0}/KeyManagement/KMIPCertificates').format(ComputerSystemId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates').format(ResourceBlockId, ComputerSystemId, VirtualMediaId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Certificate63CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate63API.post(self, ComputerSystemId, os.path.basename(config['@odata.id']))
+					return Certificate63API.post(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate63API.post(self, ComputerSystemId, str(res))
+					return Certificate63API.post(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, str(res))
 			else:
-				return Certificate63API.post(self, ComputerSystemId, str(res))
+				return Certificate63API.post(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Certificate63API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, CertificateId):
+	def get(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId):
 		logging.info('Certificate63 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/KeyManagement/KMIPCertificates/{1}', 'index.json').format(ComputerSystemId, CertificateId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +119,24 @@ class Certificate63API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ComputerSystemId, CertificateId):
+	def post(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId):
 		logging.info('Certificate63 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/KeyManagement/KMIPCertificates/{1}').format(ComputerSystemId, CertificateId)
-			collection_path = os.path.join(self.root, 'Systems/{0}/KeyManagement/KMIPCertificates', 'index.json').format(ComputerSystemId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates/{3}').format(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
+			collection_path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates', 'index.json').format(ResourceBlockId, ComputerSystemId, VirtualMediaId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate63CollectionAPI.post(self, ComputerSystemId)
+				Certificate63CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, VirtualMediaId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ComputerSystemId':ComputerSystemId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'VirtualMediaId':VirtualMediaId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate63_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +150,37 @@ class Certificate63API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ComputerSystemId, CertificateId):
+	def put(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId):
 		logging.info('Certificate63 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/KeyManagement/KMIPCertificates/{1}', 'index.json').format(ComputerSystemId, CertificateId)
+			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
 			put_object(path)
-			return self.get(ComputerSystemId, CertificateId)
+			return self.get(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ComputerSystemId, CertificateId):
+	def patch(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId):
 		logging.info('Certificate63 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/KeyManagement/KMIPCertificates/{1}', 'index.json').format(ComputerSystemId, CertificateId)
+			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
 			patch_object(path)
-			return self.get(ComputerSystemId, CertificateId)
+			return self.get(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ComputerSystemId, CertificateId):
+	def delete(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId):
 		logging.info('Certificate63 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/KeyManagement/KMIPCertificates/{1}').format(ComputerSystemId, CertificateId)
-			base_path = create_path(self.root, 'Systems/{0}/KeyManagement/KMIPCertificates').format(ComputerSystemId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates/{3}').format(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
+			base_path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates').format(ResourceBlockId, ComputerSystemId, VirtualMediaId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

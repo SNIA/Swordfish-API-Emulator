@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Ports/{PortId}
+# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Ports/{PortId}
 # Program name - Port9_api.py
 
 import g
@@ -53,18 +53,18 @@ class Port9CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId):
+	def get(self, ChassisId, NetworkAdapterId):
 		logging.info('Port9 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/StorageControllers/{3}/Ports', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
+			path = os.path.join(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports', 'index.json').format(ChassisId, NetworkAdapterId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId):
+	def post(self, ChassisId, NetworkAdapterId):
 		logging.info('Port9 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Port9CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if StorageControllerId in members:
+			if NetworkAdapterId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/StorageControllers/{3}/Ports').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
+			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports').format(ChassisId, NetworkAdapterId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Port9CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Port9API.post(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, os.path.basename(config['@odata.id']))
+					return Port9API.post(self, ChassisId, NetworkAdapterId, os.path.basename(config['@odata.id']))
 				else:
-					return Port9API.post(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, str(res))
+					return Port9API.post(self, ChassisId, NetworkAdapterId, str(res))
 			else:
-				return Port9API.post(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, str(res))
+				return Port9API.post(self, ChassisId, NetworkAdapterId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Port9API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, PortId):
+	def get(self, ChassisId, NetworkAdapterId, PortId):
 		logging.info('Port9 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/StorageControllers/{3}/Ports/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, PortId)
+			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports/{2}', 'index.json').format(ChassisId, NetworkAdapterId, PortId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +119,24 @@ class Port9API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, PortId):
+	def post(self, ChassisId, NetworkAdapterId, PortId):
 		logging.info('Port9 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/StorageControllers/{3}/Ports/{4}').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, PortId)
-			collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/StorageControllers/{3}/Ports', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
+			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports/{2}').format(ChassisId, NetworkAdapterId, PortId)
+			collection_path = os.path.join(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports', 'index.json').format(ChassisId, NetworkAdapterId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Port9CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
+				Port9CollectionAPI.post(self, ChassisId, NetworkAdapterId)
 
 			if PortId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'StorageId':StorageId, 'StorageControllerId':StorageControllerId, 'PortId':PortId, 'rb':g.rest_base}
+				wildcards = {'ChassisId':ChassisId, 'NetworkAdapterId':NetworkAdapterId, 'PortId':PortId, 'rb':g.rest_base}
 				config=get_Port9_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +150,37 @@ class Port9API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, PortId):
+	def put(self, ChassisId, NetworkAdapterId, PortId):
 		logging.info('Port9 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/StorageControllers/{3}/Ports/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, PortId)
+			path = os.path.join(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports/{2}', 'index.json').format(ChassisId, NetworkAdapterId, PortId)
 			put_object(path)
-			return self.get(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, PortId)
+			return self.get(ChassisId, NetworkAdapterId, PortId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, PortId):
+	def patch(self, ChassisId, NetworkAdapterId, PortId):
 		logging.info('Port9 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/StorageControllers/{3}/Ports/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, PortId)
+			path = os.path.join(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports/{2}', 'index.json').format(ChassisId, NetworkAdapterId, PortId)
 			patch_object(path)
-			return self.get(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, PortId)
+			return self.get(ChassisId, NetworkAdapterId, PortId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, PortId):
+	def delete(self, ChassisId, NetworkAdapterId, PortId):
 		logging.info('Port9 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/StorageControllers/{3}/Ports/{4}').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, PortId)
-			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/StorageControllers/{3}/Ports').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
+			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports/{2}').format(ChassisId, NetworkAdapterId, PortId)
+			base_path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports').format(ChassisId, NetworkAdapterId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

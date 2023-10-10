@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Managers/{ManagerId}/USBPorts/{PortId}/Metrics
+# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Ports/{PortId}/Metrics
 # Program name - PortMetrics20_api.py
 
 import g
@@ -55,33 +55,33 @@ class PortMetrics20API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ManagerId, PortId):
+	def get(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
 		logging.info('PortMetrics20 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/USBPorts/{1}/Metrics', 'index.json').format(ManagerId, PortId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}/Metrics', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ManagerId, PortId):
+	def post(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
 		logging.info('PortMetrics20 post called')
 		return 'POST is not a supported command for PortMetrics20API', 405
 
 	# HTTP PUT
-	def put(self, ManagerId, PortId):
+	def put(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
 		logging.info('PortMetrics20 put called')
 		return 'PUT is not a supported command for PortMetrics20API', 405
 
 	# HTTP PATCH
-	def patch(self, ManagerId, PortId):
+	def patch(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
 		logging.info('PortMetrics20 patch called')
 		return 'PATCH is not a supported command for PortMetrics20API', 405
 
 	# HTTP DELETE
-	def delete(self, ManagerId, PortId):
+	def delete(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
 		logging.info('PortMetrics20 delete called')
 		return 'DELETE is not a supported command for PortMetrics20API', 405
 

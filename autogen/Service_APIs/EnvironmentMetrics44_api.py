@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Ports/{PortId}/EnvironmentMetrics
+# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Ports/{PortId}/EnvironmentMetrics
 # Program name - EnvironmentMetrics44_api.py
 
 import g
@@ -55,33 +55,33 @@ class EnvironmentMetrics44API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
+	def get(self, ChassisId, NetworkAdapterId, PortId):
 		logging.info('EnvironmentMetrics44 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}/EnvironmentMetrics', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
+			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports/{2}/EnvironmentMetrics', 'index.json').format(ChassisId, NetworkAdapterId, PortId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
+	def post(self, ChassisId, NetworkAdapterId, PortId):
 		logging.info('EnvironmentMetrics44 post called')
 		return 'POST is not a supported command for EnvironmentMetrics44API', 405
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
+	def put(self, ChassisId, NetworkAdapterId, PortId):
 		logging.info('EnvironmentMetrics44 put called')
 		return 'PUT is not a supported command for EnvironmentMetrics44API', 405
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
+	def patch(self, ChassisId, NetworkAdapterId, PortId):
 		logging.info('EnvironmentMetrics44 patch called')
 		return 'PATCH is not a supported command for EnvironmentMetrics44API', 405
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
+	def delete(self, ChassisId, NetworkAdapterId, PortId):
 		logging.info('EnvironmentMetrics44 delete called')
 		return 'DELETE is not a supported command for EnvironmentMetrics44API', 405
 

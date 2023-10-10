@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2023, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,8 +35,8 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-	"@odata.id": "{rb}CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/NetworkInterfaces/{NetworkInterfaceId}/NetworkDeviceFunctions{NetworkDeviceFunctionId}/AllowDeny/{AllowDenyId}",
+	"@Redfish.Copyright": "Copyright 2014-2023 SNIA. All rights reserved.",
+	"@odata.id": "{rb}CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/NetworkInterfaces/{NetworkInterfaceId}/NetworkDeviceFunctions/{NetworkDeviceFunctionId}/AllowDeny/{AllowDenyId}",
 	"@odata.type": "#AllowDeny.v1_0_0.AllowDeny",
 	"Id": "{AllowDenyId}",
 	"Name": "AllowDeny",
@@ -46,15 +46,15 @@ def get_AllowDeny3_instance(wildcards):
 		"""
 		Instantiates and formats the template
 		Arguments:
-			wildcard - A dictionary of wildcards strings and their repalcement values
+			wildcard - A dictionary of wildcards strings and their replacement values
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{ResourceBlockId}', '0')
-		g = g.replace('{ComputerSystemId}', '1')
-		g = g.replace('{NetworkInterfaceId}', '2')
-		g = g.replace('NetworkDeviceFunctions{NetworkDeviceFunctionId}', '3')
-		g = g.replace('{AllowDenyId}', '4')
+		g = d.replace('{ResourceBlockId}', '-0-')
+		g = g.replace('{ComputerSystemId}', '-1-')
+		g = g.replace('{NetworkInterfaceId}', '-2-')
+		g = g.replace('{NetworkDeviceFunctionId}', '-3-')
+		g = g.replace('{AllowDenyId}', '-4-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')
@@ -63,7 +63,7 @@ def get_AllowDeny3_instance(wildcards):
 		g = g.replace('0', '{ResourceBlockId}')
 		g = g.replace('1', '{ComputerSystemId}')
 		g = g.replace('2', '{NetworkInterfaceId}')
-		g = g.replace('3', 'NetworkDeviceFunctions{NetworkDeviceFunctionId}')
+		g = g.replace('3', '{NetworkDeviceFunctionId}')
 		g = g.replace('4', '{AllowDenyId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)

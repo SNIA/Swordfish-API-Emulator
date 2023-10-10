@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Ports/{PortId}
+# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Processors/{ProcessorId}/Ports/{PortId}
 # Program name - Port18_api.py
 
 import g
@@ -53,18 +53,18 @@ class Port18CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, StorageId, StorageControllerId):
+	def get(self, ResourceBlockId, ComputerSystemId, ProcessorId):
 		logging.info('Port18 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Storage/{0}/StorageControllers/{1}/Ports', 'index.json').format(StorageId, StorageControllerId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Processors/{2}/Ports', 'index.json').format(ResourceBlockId, ComputerSystemId, ProcessorId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, StorageId, StorageControllerId):
+	def post(self, ResourceBlockId, ComputerSystemId, ProcessorId):
 		logging.info('Port18 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Port18CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if StorageControllerId in members:
+			if ProcessorId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Storage/{0}/StorageControllers/{1}/Ports').format(StorageId, StorageControllerId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Processors/{2}/Ports').format(ResourceBlockId, ComputerSystemId, ProcessorId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Port18CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Port18API.post(self, StorageId, StorageControllerId, os.path.basename(config['@odata.id']))
+					return Port18API.post(self, ResourceBlockId, ComputerSystemId, ProcessorId, os.path.basename(config['@odata.id']))
 				else:
-					return Port18API.post(self, StorageId, StorageControllerId, str(res))
+					return Port18API.post(self, ResourceBlockId, ComputerSystemId, ProcessorId, str(res))
 			else:
-				return Port18API.post(self, StorageId, StorageControllerId, str(res))
+				return Port18API.post(self, ResourceBlockId, ComputerSystemId, ProcessorId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Port18API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, StorageId, StorageControllerId, PortId):
+	def get(self, ResourceBlockId, ComputerSystemId, ProcessorId, PortId):
 		logging.info('Port18 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Storage/{0}/StorageControllers/{1}/Ports/{2}', 'index.json').format(StorageId, StorageControllerId, PortId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Processors/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ProcessorId, PortId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +119,24 @@ class Port18API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, StorageId, StorageControllerId, PortId):
+	def post(self, ResourceBlockId, ComputerSystemId, ProcessorId, PortId):
 		logging.info('Port18 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Storage/{0}/StorageControllers/{1}/Ports/{2}').format(StorageId, StorageControllerId, PortId)
-			collection_path = os.path.join(self.root, 'Storage/{0}/StorageControllers/{1}/Ports', 'index.json').format(StorageId, StorageControllerId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Processors/{2}/Ports/{3}').format(ResourceBlockId, ComputerSystemId, ProcessorId, PortId)
+			collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Processors/{2}/Ports', 'index.json').format(ResourceBlockId, ComputerSystemId, ProcessorId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Port18CollectionAPI.post(self, StorageId, StorageControllerId)
+				Port18CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, ProcessorId)
 
 			if PortId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'StorageId':StorageId, 'StorageControllerId':StorageControllerId, 'PortId':PortId, 'rb':g.rest_base}
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'ProcessorId':ProcessorId, 'PortId':PortId, 'rb':g.rest_base}
 				config=get_Port18_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +150,37 @@ class Port18API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, StorageId, StorageControllerId, PortId):
+	def put(self, ResourceBlockId, ComputerSystemId, ProcessorId, PortId):
 		logging.info('Port18 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Storage/{0}/StorageControllers/{1}/Ports/{2}', 'index.json').format(StorageId, StorageControllerId, PortId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Processors/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ProcessorId, PortId)
 			put_object(path)
-			return self.get(StorageId, StorageControllerId, PortId)
+			return self.get(ResourceBlockId, ComputerSystemId, ProcessorId, PortId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, StorageId, StorageControllerId, PortId):
+	def patch(self, ResourceBlockId, ComputerSystemId, ProcessorId, PortId):
 		logging.info('Port18 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Storage/{0}/StorageControllers/{1}/Ports/{2}', 'index.json').format(StorageId, StorageControllerId, PortId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Processors/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ProcessorId, PortId)
 			patch_object(path)
-			return self.get(StorageId, StorageControllerId, PortId)
+			return self.get(ResourceBlockId, ComputerSystemId, ProcessorId, PortId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, StorageId, StorageControllerId, PortId):
+	def delete(self, ResourceBlockId, ComputerSystemId, ProcessorId, PortId):
 		logging.info('Port18 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Storage/{0}/StorageControllers/{1}/Ports/{2}').format(StorageId, StorageControllerId, PortId)
-			base_path = create_path(self.root, 'Storage/{0}/StorageControllers/{1}/Ports').format(StorageId, StorageControllerId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Processors/{2}/Ports/{3}').format(ResourceBlockId, ComputerSystemId, ProcessorId, PortId)
+			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Processors/{2}/Ports').format(ResourceBlockId, ComputerSystemId, ProcessorId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

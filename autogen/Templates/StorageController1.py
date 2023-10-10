@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2023, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,9 +35,9 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
+	"@Redfish.Copyright": "Copyright 2014-2023 SNIA. All rights reserved.",
 	"@odata.id": "{rb}Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{ControllerId}",
-	"@odata.type": "#StorageController.v1_6_0.StorageController",
+	"@odata.type": "#StorageController.v1_7_0.StorageController",
 	"Id": "{ControllerId}",
 	"Name": "StorageController",
 }
@@ -46,13 +46,13 @@ def get_StorageController1_instance(wildcards):
 		"""
 		Instantiates and formats the template
 		Arguments:
-			wildcard - A dictionary of wildcards strings and their repalcement values
+			wildcard - A dictionary of wildcards strings and their replacement values
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{ComputerSystemId}', '0')
-		g = g.replace('{StorageId}', '1')
-		g = g.replace('{ControllerId}', '2')
+		g = d.replace('{ComputerSystemId}', '-0-')
+		g = g.replace('{StorageId}', '-1-')
+		g = g.replace('{ControllerId}', '-2-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

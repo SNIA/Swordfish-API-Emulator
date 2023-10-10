@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/Managers/{ManagerId}/NetworkProtocol/HTTPS/Certificates/{CertificateId}
 # Program name - Certificate12_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate12CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, DatabaseId):
+	def get(self, ManagerId):
 		logging.info('Certificate12 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates', 'index.json').format(ComputerSystemId, DatabaseId)
+			path = os.path.join(self.root, 'Managers/{0}/NetworkProtocol/HTTPS/Certificates', 'index.json').format(ManagerId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ComputerSystemId, DatabaseId):
+	def post(self, ManagerId):
 		logging.info('Certificate12 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Certificate12CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if DatabaseId in members:
+			if ManagerId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates').format(ComputerSystemId, DatabaseId)
+			path = create_path(self.root, 'Managers/{0}/NetworkProtocol/HTTPS/Certificates').format(ManagerId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Certificate12CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate12API.post(self, ComputerSystemId, DatabaseId, os.path.basename(config['@odata.id']))
+					return Certificate12API.post(self, ManagerId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate12API.post(self, ComputerSystemId, DatabaseId, str(res))
+					return Certificate12API.post(self, ManagerId, str(res))
 			else:
-				return Certificate12API.post(self, ComputerSystemId, DatabaseId, str(res))
+				return Certificate12API.post(self, ManagerId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Certificate12API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, DatabaseId, CertificateId):
+	def get(self, ManagerId, CertificateId):
 		logging.info('Certificate12 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, DatabaseId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/NetworkProtocol/HTTPS/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +119,24 @@ class Certificate12API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ComputerSystemId, DatabaseId, CertificateId):
+	def post(self, ManagerId, CertificateId):
 		logging.info('Certificate12 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates/{2}').format(ComputerSystemId, DatabaseId, CertificateId)
-			collection_path = os.path.join(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates', 'index.json').format(ComputerSystemId, DatabaseId)
+			path = create_path(self.root, 'Managers/{0}/NetworkProtocol/HTTPS/Certificates/{1}').format(ManagerId, CertificateId)
+			collection_path = os.path.join(self.root, 'Managers/{0}/NetworkProtocol/HTTPS/Certificates', 'index.json').format(ManagerId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate12CollectionAPI.post(self, ComputerSystemId, DatabaseId)
+				Certificate12CollectionAPI.post(self, ManagerId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ComputerSystemId':ComputerSystemId, 'DatabaseId':DatabaseId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'ManagerId':ManagerId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate12_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +150,37 @@ class Certificate12API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ComputerSystemId, DatabaseId, CertificateId):
+	def put(self, ManagerId, CertificateId):
 		logging.info('Certificate12 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, DatabaseId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/NetworkProtocol/HTTPS/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			put_object(path)
-			return self.get(ComputerSystemId, DatabaseId, CertificateId)
+			return self.get(ManagerId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ComputerSystemId, DatabaseId, CertificateId):
+	def patch(self, ManagerId, CertificateId):
 		logging.info('Certificate12 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, DatabaseId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/NetworkProtocol/HTTPS/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			patch_object(path)
-			return self.get(ComputerSystemId, DatabaseId, CertificateId)
+			return self.get(ManagerId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ComputerSystemId, DatabaseId, CertificateId):
+	def delete(self, ManagerId, CertificateId):
 		logging.info('Certificate12 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates/{2}').format(ComputerSystemId, DatabaseId, CertificateId)
-			base_path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates').format(ComputerSystemId, DatabaseId)
+			path = create_path(self.root, 'Managers/{0}/NetworkProtocol/HTTPS/Certificates/{1}').format(ManagerId, CertificateId)
+			base_path = create_path(self.root, 'Managers/{0}/NetworkProtocol/HTTPS/Certificates').format(ManagerId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

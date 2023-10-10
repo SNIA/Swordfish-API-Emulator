@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Ports/{PortId}/Metrics
+# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/USBControllers/{ControllerId}/Ports/{PortId}/Metrics
 # Program name - PortMetrics17_api.py
 
 import g
@@ -55,33 +55,33 @@ class PortMetrics17API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, NetworkAdapterId, PortId):
+	def get(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
 		logging.info('PortMetrics17 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports/{2}/Metrics', 'index.json').format(ChassisId, NetworkAdapterId, PortId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}/Metrics', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ChassisId, NetworkAdapterId, PortId):
+	def post(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
 		logging.info('PortMetrics17 post called')
 		return 'POST is not a supported command for PortMetrics17API', 405
 
 	# HTTP PUT
-	def put(self, ChassisId, NetworkAdapterId, PortId):
+	def put(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
 		logging.info('PortMetrics17 put called')
 		return 'PUT is not a supported command for PortMetrics17API', 405
 
 	# HTTP PATCH
-	def patch(self, ChassisId, NetworkAdapterId, PortId):
+	def patch(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
 		logging.info('PortMetrics17 patch called')
 		return 'PATCH is not a supported command for PortMetrics17API', 405
 
 	# HTTP DELETE
-	def delete(self, ChassisId, NetworkAdapterId, PortId):
+	def delete(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
 		logging.info('PortMetrics17 delete called')
 		return 'DELETE is not a supported command for PortMetrics17API', 405
 

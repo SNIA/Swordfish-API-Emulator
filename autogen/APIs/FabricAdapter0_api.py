@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Systems/{SystemId}/FabricAdapters/{FabricAdapterId}
+# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/FabricAdapters/{FabricAdapterId}
 # Program name - FabricAdapter0_api.py
 
 import g
@@ -53,18 +53,18 @@ class FabricAdapter0CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, SystemId):
+	def get(self, ComputerSystemId):
 		logging.info('FabricAdapter0 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/FabricAdapters', 'index.json').format(SystemId)
+			path = os.path.join(self.root, 'Systems/{0}/FabricAdapters', 'index.json').format(ComputerSystemId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, SystemId):
+	def post(self, ComputerSystemId):
 		logging.info('FabricAdapter0 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class FabricAdapter0CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if SystemId in members:
+			if ComputerSystemId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Systems/{0}/FabricAdapters').format(SystemId)
+			path = create_path(self.root, 'Systems/{0}/FabricAdapters').format(ComputerSystemId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class FabricAdapter0CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return FabricAdapter0API.post(self, SystemId, os.path.basename(config['@odata.id']))
+					return FabricAdapter0API.post(self, ComputerSystemId, os.path.basename(config['@odata.id']))
 				else:
-					return FabricAdapter0API.post(self, SystemId, str(res))
+					return FabricAdapter0API.post(self, ComputerSystemId, str(res))
 			else:
-				return FabricAdapter0API.post(self, SystemId, str(res))
+				return FabricAdapter0API.post(self, ComputerSystemId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class FabricAdapter0API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, SystemId, FabricAdapterId):
+	def get(self, ComputerSystemId, FabricAdapterId):
 		logging.info('FabricAdapter0 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/FabricAdapters/{1}', 'index.json').format(SystemId, FabricAdapterId)
+			path = create_path(self.root, 'Systems/{0}/FabricAdapters/{1}', 'index.json').format(ComputerSystemId, FabricAdapterId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +119,24 @@ class FabricAdapter0API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, SystemId, FabricAdapterId):
+	def post(self, ComputerSystemId, FabricAdapterId):
 		logging.info('FabricAdapter0 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/FabricAdapters/{1}').format(SystemId, FabricAdapterId)
-			collection_path = os.path.join(self.root, 'Systems/{0}/FabricAdapters', 'index.json').format(SystemId)
+			path = create_path(self.root, 'Systems/{0}/FabricAdapters/{1}').format(ComputerSystemId, FabricAdapterId)
+			collection_path = os.path.join(self.root, 'Systems/{0}/FabricAdapters', 'index.json').format(ComputerSystemId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				FabricAdapter0CollectionAPI.post(self, SystemId)
+				FabricAdapter0CollectionAPI.post(self, ComputerSystemId)
 
 			if FabricAdapterId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'SystemId':SystemId, 'FabricAdapterId':FabricAdapterId, 'rb':g.rest_base}
+				wildcards = {'ComputerSystemId':ComputerSystemId, 'FabricAdapterId':FabricAdapterId, 'rb':g.rest_base}
 				config=get_FabricAdapter0_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +150,37 @@ class FabricAdapter0API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, SystemId, FabricAdapterId):
+	def put(self, ComputerSystemId, FabricAdapterId):
 		logging.info('FabricAdapter0 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/FabricAdapters/{1}', 'index.json').format(SystemId, FabricAdapterId)
+			path = create_path(self.root, 'Systems/{0}/FabricAdapters/{1}', 'index.json').format(ComputerSystemId, FabricAdapterId)
 			put_object(path)
-			return self.get(SystemId, FabricAdapterId)
+			return self.get(ComputerSystemId, FabricAdapterId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, SystemId, FabricAdapterId):
+	def patch(self, ComputerSystemId, FabricAdapterId):
 		logging.info('FabricAdapter0 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/FabricAdapters/{1}', 'index.json').format(SystemId, FabricAdapterId)
+			path = create_path(self.root, 'Systems/{0}/FabricAdapters/{1}', 'index.json').format(ComputerSystemId, FabricAdapterId)
 			patch_object(path)
-			return self.get(SystemId, FabricAdapterId)
+			return self.get(ComputerSystemId, FabricAdapterId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, SystemId, FabricAdapterId):
+	def delete(self, ComputerSystemId, FabricAdapterId):
 		logging.info('FabricAdapter0 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/FabricAdapters/{1}').format(SystemId, FabricAdapterId)
-			base_path = create_path(self.root, 'Systems/{0}/FabricAdapters').format(SystemId)
+			path = create_path(self.root, 'Systems/{0}/FabricAdapters/{1}').format(ComputerSystemId, FabricAdapterId)
+			base_path = create_path(self.root, 'Systems/{0}/FabricAdapters').format(ComputerSystemId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

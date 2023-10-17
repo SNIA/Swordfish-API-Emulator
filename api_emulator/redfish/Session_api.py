@@ -169,7 +169,10 @@ class SessionAPI(Resource):
         		# Update the keys of payload in json file.
 				for key, value in request_data.items():
 					config[key] = value
-			
+
+			if not config['@odata.type']:
+				config['@odata.type'] = 'Session.1_4_0.Session'
+
 			members.append(config)
 			member_ids.append({'@odata.id': config['@odata.id']})
 

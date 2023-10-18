@@ -140,6 +140,11 @@ class SessionAPI(Resource):
 	# HTTP POST
 	def post(self, SessionId):
 		logging.info('Session post called')
+		
+		# Check if SessionId == "Members", and reset SessionId for remainder of the post request:
+		if (SessionId == 'Members') or (SessionId == 'members'):
+			SessionId = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			
 		sessionService_path = os.path.join(self.root, 'SessionService', 'index.json')
 		json_data = open(sessionService_path)
 		data = json.load(json_data)
@@ -169,7 +174,10 @@ class SessionAPI(Resource):
         		# Update the keys of payload in json file.
 				for key, value in request_data.items():
 					config[key] = value
-			
+
+			if not config['@odata.type']:
+				config['@odata.type'] = 'Session.1_4_0.Session'
+
 			members.append(config)
 			member_ids.append({'@odata.id': config['@odata.id']})
 

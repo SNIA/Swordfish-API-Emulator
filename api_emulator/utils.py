@@ -203,8 +203,10 @@ def create_and_patch_object (config, members, member_ids, path, collection_path)
 
 def delete_object (path, base_path):
 
+    
     delPath = path.replace('Resources','/redfish/v1').replace("\\","/")
     path2 = create_path(base_path, 'index.json').replace("\\","/")
+
     try:
         with open(path2,"r") as pdata:
             pdata = json.load(pdata)
@@ -212,10 +214,11 @@ def delete_object (path, base_path):
         data = {
         "@odata.id":delPath
         }
-        resp = 200
+        
         jdata = data["@odata.id"].split('/')
 
         path1 = os.path.join(base_path, jdata[len(jdata)-1])
+        resp = get_json_data (path1 + os.sep + 'index.json')
         shutil.rmtree(path1)
         pdata['Members'].remove(data)
         pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
@@ -224,9 +227,9 @@ def delete_object (path, base_path):
             json.dump(pdata,jdata, indent=4, sort_keys=True)
 
     except Exception as e:
-        return {"error": "Unable to read file because of the following error::{}".format(e)}, 404
+        return {"error": "delete_object: Unable to read file because of the following error::{}".format(e)}, 404
 
-    return jsonify(resp)
+    return resp
 
 def delete_collection (path, base_path):
 

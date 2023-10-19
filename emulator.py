@@ -211,22 +211,29 @@ def output_json(data, code, headers=None):
 
 @g.app.before_request
 def before_request():
-    global location
-    
-    #if Location does not require authentication, bypass:
+    #if URI does not require authentication, bypass.  URIs that do not require authentication:
+    #  /redfish, /redfish/v1, /redfish/v1/, /redfish/odata, and /redfish/v1/$metadata
+    skipauth = 0
+    #if Location does not require authentication, bypass.
     # locations that do not require authentication:
     #  /redfish, /redfish/v1, /redfish/v1/, /redfish/odata, and /redfish/v1/$metadata
     workingurl = urlparse(request.url).path
-    if (workingurl == '/redfish'):
-        skipauth = 1
-    elif (workingurl == '/redfish/v1'):
-        skipauth = 1
-    elif (workingurl == '/redfish/v1/'):
-        skipauth = 1
-    elif (workingurl == '/redfish/v1/odata'):
-        skipauth = 1
-    elif (workingurl == '/redfish/v1/$metadata'):
-        skipauth = 1
+    if request.method == 'GET': 
+        if (workingurl == '/redfish'):
+            skipauth = 1
+        elif (workingurl == '/redfish/v1'):
+            skipauth = 1
+        elif (workingurl == '/redfish/v1/'):
+            skipauth = 1
+        elif (workingurl == '/redfish/v1/odata'):
+            skipauth = 1
+        elif (workingurl == '/redfish/v1/$metadata'):
+            skipauth = 1
+    elif request.method == 'POST':
+        if workingurl == '/redfish/v1/SessionService/Sessions':
+           skipauth = 1
+        elif workingurl == '/redfish/v1/SessionService/Sessions/Members':
+           skipauth = 1         
     else:
         skipauth = 0
 
@@ -239,8 +246,6 @@ def before_request():
     
     # Update timer for appropriate session.
     session.modified = True
-
-    print(location)
     # Future... If the session is deemed to be invalid, delete the session. 
 
 

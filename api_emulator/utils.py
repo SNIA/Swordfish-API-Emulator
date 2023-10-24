@@ -203,8 +203,10 @@ def create_and_patch_object (config, members, member_ids, path, collection_path)
 
 def delete_object (path, base_path):
 
+    
     delPath = path.replace('Resources','/redfish/v1').replace("\\","/")
     path2 = create_path(base_path, 'index.json').replace("\\","/")
+
     try:
         with open(path2,"r") as pdata:
             pdata = json.load(pdata)
@@ -212,10 +214,11 @@ def delete_object (path, base_path):
         data = {
         "@odata.id":delPath
         }
-        resp = 200
+        
         jdata = data["@odata.id"].split('/')
 
         path1 = os.path.join(base_path, jdata[len(jdata)-1])
+        resp = get_json_data (path1 + os.sep + 'index.json')
         shutil.rmtree(path1)
         pdata['Members'].remove(data)
         pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
@@ -224,9 +227,9 @@ def delete_object (path, base_path):
             json.dump(pdata,jdata, indent=4, sort_keys=True)
 
     except Exception as e:
-        return {"error": "Unable to read file because of the following error::{}".format(e)}, 404
+        return {"error": "delete_object: Unable to read file because of the following error::{}".format(e)}, 404
 
-    return jsonify(resp)
+    return resp
 
 def delete_collection (path, base_path):
 
@@ -371,22 +374,21 @@ def check_authentication(mode):
     elif mode == 'Enable':
         auth = request.authorization
         if auth:
-            print("Autherization data available")
+            print("Authorization data available")
             msg, code = check_basic_authentication(auth)
             if code == 200:
                 pass
             else:
                 print(msg)
-                return msg, code
-        if session.get('UserName'):
+                return msg, code        
+        else:
             msg, code = check_session_authentication()
             if code == 200:
                 pass
             else:
                 print(msg)
                 return msg, code
-        if not auth and session.get('UserName') == None:
-            return get_sessionValidation_error(), 403
+            
     return "Success..", 200
 
 def get_sessionValidation_error():
@@ -422,18 +424,70 @@ def header_handler(data,code,resp):
 
     if code == 405:
         resp.headers['Allow'] = 'GET, HEAD'
-    else:
-        if '@odata.type' in data:
-            resource_type = data['@odata.type'].lower()
-            if 'collection' in resource_type:
-                if 'session' in resource_type:
-                    resp.headers['Allow'] = 'GET, POST'
-                else:
-                    resp.headers['Allow'] = 'GET, POST, PUT'
-            else:
-                if 'session' in resource_type:
-                    resp.headers['Allow'] = 'GET, POST, DELETE'
-                elif ('serviceroot' or 'registry' or 'protocol' or 'service' or 'Thermal') in resource_type:
-                    resp.headers['Allow'] = 'GET'
-                else:
-                    resp.headers['Allow'] = 'GET, POST, PUT, PATCH, DELETE'
+        return
+
+    if '@odata.type' in data:
+        resource_type = data['@odata.type'].lower()
+        # Session collection and session restrictions:
+        if 'sessioncollection' in resource_type:
+            resp.headers['Allow'] = 'GET, POST'
+        elif  'volumecollection'  in resource_type:
+            resp.headers['Allow'] = 'GET, POST'
+        elif  'sessionservice'  in resource_type:
+            resp.headers['Allow'] = 'GET'            
+        elif  'session'  in resource_type:
+            resp.headers['Allow'] = 'GET, DELETE'
+        # Collections:
+        elif 'collection' in resource_type:
+            resp.headers['Allow'] = 'GET'                 
+        # Any other type of service, registry, etc...
+        elif 'serviceroot' in resource_type:
+                resp.headers['Allow'] = 'GET'
+        elif 'registry' in resource_type:
+                resp.headers['Allow'] = 'GET'
+        elif 'protocol'in resource_type:
+                resp.headers['Allow'] = 'GET'
+        elif 'service'in resource_type:
+                resp.headers['Allow'] = 'GET'
+        elif 'thermal'in resource_type:
+                resp.headers['Allow'] = 'GET'               
+        elif 'drive' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'
+        elif 'storage' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'
+        elif 'storagecontroller' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'
+        elif 'fabric' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'
+        elif 'networkdevicefunction' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'
+        elif 'port' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'
+        elif 'switch' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'             
+        elif 'networkadapter' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'
+        elif 'networkadapter' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'
+        elif 'networkadapter' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'
+        elif 'manager' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'              
+        elif 'volume'  in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH, DELETE'
+        elif 'connection' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH, DELETE'
+        elif 'endpoint'  in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH, DELETE'
+        elif 'endpointgroup' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH, DELETE'
+        elif 'ethernetinterface'  in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH, DELETE'
+        elif 'zone' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH, DELETE'                
+        elif 'chassis' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH, DELETE'
+        elif 'role' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH, DELETE'             
+        else:
+            resp.headers['Allow'] = 'GET, POST, PUT, PATCH, DELETE'

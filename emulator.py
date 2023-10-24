@@ -38,10 +38,12 @@
 import os
 import json
 import argparse
+from tabnanny import check
 import traceback
 import logging
 import copy
 from urllib import response
+from urllib.parse import urlparse
 import flask_login
 import jwt
 import requests
@@ -209,17 +211,43 @@ def output_json(data, code, headers=None):
 
 @g.app.before_request
 def before_request():
-    session.modified = True
+    #if URI does not require authentication, bypass.  URIs that do not require authentication:
+    #  /redfish, /redfish/v1, /redfish/v1/, /redfish/odata, and /redfish/v1/$metadata
+    skipauth = 0
+    #if Location does not require authentication, bypass.
+    # locations that do not require authentication:
+    #  /redfish, /redfish/v1, /redfish/v1/, /redfish/odata, and /redfish/v1/$metadata
+    workingurl = urlparse(request.url).path
+    if request.method == 'GET': 
+        if (workingurl == '/redfish'):
+            skipauth = 1
+        elif (workingurl == '/redfish/v1'):
+            skipauth = 1
+        elif (workingurl == '/redfish/v1/'):
+            skipauth = 1
+        elif (workingurl == '/redfish/v1/odata'):
+            skipauth = 1
+        elif (workingurl == '/redfish/v1/$metadata'):
+            skipauth = 1
+    elif request.method == 'POST':
+        if workingurl == '/redfish/v1/SessionService/Sessions':
+           skipauth = 1
+        elif workingurl == '/redfish/v1/SessionService/Sessions/Members':
+           skipauth = 1         
+    else:
+        skipauth = 0
 
-    global location
-    print('UserName' in session)
-    print(location)
-    if 'UserName' not in session and location != None:
-        split_path = os.path.split(location)
-        path = location.replace('/redfish/v1', 'Resources')
-        delete_object(path, split_path[0].replace('/redfish/v1', 'Resources'))
-        print("location deleted : "+location)
-        location = None
+    #Check authentication.
+    if not skipauth:
+        msg, code = check_authentication (AUTHENTICATION)
+        if code != 200:
+            # Does session need to be invalidated?
+            return make_response (msg, code)
+    
+    # Update timer for appropriate session.
+    session.modified = True
+    # TODO... If the session is deemed to be invalid, delete the session. 
+
 
 # The following code provides a mechanism for the Redfish client to either
 #    - Emulator Service Root

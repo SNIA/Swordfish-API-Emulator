@@ -140,6 +140,11 @@ class SessionAPI(Resource):
 	# HTTP POST
 	def post(self, SessionId):
 		logging.info('Session post called')
+		
+		# Check if SessionId == "Members", and reset SessionId for remainder of the post request:
+		if (SessionId == 'Members') or (SessionId == 'members'):
+			SessionId = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			
 		sessionService_path = os.path.join(self.root, 'SessionService', 'index.json')
 		json_data = open(sessionService_path)
 		data = json.load(json_data)

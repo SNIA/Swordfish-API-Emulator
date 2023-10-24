@@ -246,7 +246,7 @@ def before_request():
     
     # Update timer for appropriate session.
     session.modified = True
-    # Future... If the session is deemed to be invalid, delete the session. 
+    # TODO... If the session is deemed to be invalid, delete the session. 
 
 
 # The following code provides a mechanism for the Redfish client to either

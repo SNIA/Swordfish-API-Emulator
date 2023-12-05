@@ -18,10 +18,16 @@
             }
         }
     ],
-    "IPTransportDetails": [{
-      "TransportProtocol": "Ethernet"
-    }],
+    "IPTransportDetails": [
+        {
+            "TransportProtocol": "Ethernet",
+            "IPv4Address": {
+                "Address": "10.1.1.2"
+            },
+            "Port": 4420
+        }
+    ],
     "Links": {},
-    "@odata.id": "/redfish/v1/Fabrics/Ethernet/Endpoints/D1-NDF11100",
-    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+    "@odata.id": "/redfish/v1/Fabrics/Ethernet/Endpoints/D1-NDF11101",
+    "@Redfish.Copyright": "Copyright 2015-2023 SNIA. All rights reserved."
 }

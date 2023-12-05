@@ -1,40 +1,40 @@
 {
-  "@odata.type": "#NetworkDeviceFunction.v1_8_0.NetworkDeviceFunction",
-  "Id": "11100",
-  "Name": "Network Device Function View",
-  "Description": "Network Device Function attached to EBOF enclosure network interface.",
-  "NetDevFuncType": "Ethernet",
-  "DeviceEnabled": true,
-  "NetDevFuncCapabilities": [
-    "Ethernet",
-    "FibreChannel"
-  ],
-  "Ethernet": {
-    "PermanentMACAddress": "00:0C:29:9A:98:01",
-    "MACAddress": "00:0C:29:9A:98:01",
-    "MTUSize": 1500,
-    "MTUSizeMaximum": 1500,
-    "EthernetInterfaces": {
-      "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/NetworkDeviceFunctions/11100/EthernetInterfaces"
-    }
-  },
-  "AssignablePhysicalNetworkPorts": [{
-      "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/Ports/1"
+    "@odata.type": "#NetworkDeviceFunction.v1_8_0.NetworkDeviceFunction",
+    "Id": "11100",
+    "Name": "Network Device Function View",
+    "Description": "Network Device Function attached to EBOF enclosure network interface.",
+    "NetDevFuncType": "Ethernet",
+    "DeviceEnabled": true,
+    "NetDevFuncCapabilities": [
+        "Ethernet",
+        "FibreChannel"
+    ],
+    "Ethernet": {
+        "PermanentMACAddress": "00:0C:29:9A:98:01",
+        "MACAddress": "00:0C:29:9A:98:01",
+        "MTUSize": 1500,
+        "MTUSizeMaximum": 1500,
+        "EthernetInterfaces": {
+            "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/NetworkDeviceFunctions/11100/EthernetInterfaces"
+        }
     },
-    {
-      "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/Ports/2"
-    }
-  ],
-
-  "Links": {
-    "PhysicalNetworkPortAssignment": {
-      "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/Ports/1"
-    },    
-    "Endpoints": []
-  },
-  "BootMode": "Disabled",
-  "VirtualFunctionsEnabled": true,
-  "MaxVirtualFunctions": 16,
-  "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/NetworkDeviceFunctions/11100",
-  "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+    "AssignablePhysicalNetworkPorts": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/Ports/1"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/Ports/2"
+        }
+    ],
+    "Links": {
+        "PhysicalNetworkPortAssignment": {
+            "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/Ports/1"
+        },
+        "Endpoints": []
+    },
+    "BootMode": "Disabled",
+    "VirtualFunctionsEnabled": true,
+    "MaxVirtualFunctions": 16,
+    "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/NetworkDeviceFunctions/11100",
+    "@Redfish.Copyright": "Copyright 2015-2023 SNIA. All rights reserved."
 }

@@ -1,46 +1,50 @@
 {
-  "@odata.type": "#NetworkAdapter.v1_9_0.NetworkAdapter",
-  "Id": "9fa725a1",
-  "Name": "Network Adapter View",
-  "Description": "Embedded Switch network interface in EBOF enclosure.",
-  "Controllers": [{
-    "ControllerCapabilities": {
-      "NetworkPortCount": 2,
-      "NetworkDeviceFunctionCount": 8,
-      "DataCenterBridging": {
-        "Capable": true
-      }
+    "@odata.type": "#NetworkAdapter.v1_9_0.NetworkAdapter",
+    "Id": "9fa725a1",
+    "Name": "Network Adapter View",
+    "Description": "Embedded Switch network interface in EBOF enclosure.",
+    "Controllers": [
+        {
+            "ControllerCapabilities": {
+                "NetworkPortCount": 2,
+                "NetworkDeviceFunctionCount": 8,
+                "DataCenterBridging": {
+                    "Capable": true
+                }
+            },
+            "FirmwarePackageVersion": "7.4.10",
+            "Links": {
+                "Ports": [
+                    {
+                        "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/Ports/1"
+                    },
+                    {
+                        "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/Ports/2"
+                    }
+                ],
+                "NetworkDeviceFunctions": [
+                    {
+                        "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/NetworkDeviceFunctions/11100"
+                    },
+                    {
+                        "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/NetworkDeviceFunctions/11101"
+                    }
+                ]
+            }
+        }
+    ],
+    "Manufacturer": "Globex",
+    "Model": "599TPS-T",
+    "NetworkDeviceFunctions": {
+        "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/NetworkDeviceFunctions"
     },
-    "FirmwarePackageVersion": "7.4.10",
-    "Links": {
-      "Ports": [{
-          "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/Ports/1"
-        },
-        {
-          "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/Ports/2"
-        }
-      ],
-      "NetworkDeviceFunctions": [{
-          "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/NetworkDeviceFunctions/11100"
-        },
-        {
-          "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/NetworkDeviceFunctions/11101"
-        }
-      ]
-    }
-  }],
-  "Manufacturer": "Globex",
-  "Model": "599TPS-T",
-  "NetworkDeviceFunctions": {
-    "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/NetworkDeviceFunctions"
-  },
-  "PartNumber": "975421-B20",
-  "Ports": {
-    "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/Ports"
-  },
-  "SKU": "Globex TPS-Net 2-Port Base-T",
-  "SerialNumber": "003BFLRT00023234",
-  "Oem": {},
-  "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2",
-  "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+    "PartNumber": "975421-B20",
+    "Ports": {
+        "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/Ports"
+    },
+    "SKU": "Globex TPS-Net 2-Port Base-T",
+    "SerialNumber": "003BFLRT00023234",
+    "Oem": {},
+    "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2",
+    "@Redfish.Copyright": "Copyright 2015-2023 SNIA. All rights reserved."
 }

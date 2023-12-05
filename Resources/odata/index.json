@@ -1,0 +1,51 @@
+{
+    "@Redfish.Copyright": "Copyright 2014-2023 SNIA. All rights reserved.",
+    "@odata.context": "/redfish/v1/$metadata",
+    "value": [
+        {
+            "kind": "Singleton",
+            "name": "Service",
+            "url": "/redfish/v1/"
+        },
+        {
+            "kind": "Singleton",
+            "name": "Chassis",
+            "url": "/redfish/v1/Chassis"
+        },
+        {
+            "kind": "Singleton",
+            "name": "Managers",
+            "url": "/redfish/v1/Managers"
+        },
+        {
+            "kind": "Singleton",
+            "name": "TaskService",
+            "url": "/redfish/v1/TaskService"
+        },
+        {
+            "kind": "Singleton",
+            "name": "AccountService",
+            "url": "/redfish/v1/AccountService"
+        },
+        {
+            "kind": "Singleton",
+            "name": "SessionService",
+            "url": "/redfish/v1/SessionService"
+        },
+        {
+            "kind": "Singleton",
+            "name": "EventService",
+            "url": "/redfish/v1/EventService"
+        },
+        {
+            "kind": "Singleton",
+            "name": "Storage",
+            "url": "/redfish/v1/Storage"
+        },
+        {
+            "kind": "Singleton",
+            "name": "Sessions",
+            "url": "/redfish/v1/SessionService/Sessions"
+        }
+    ]
+}

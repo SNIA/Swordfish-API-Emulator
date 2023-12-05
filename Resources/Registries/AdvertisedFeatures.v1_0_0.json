@@ -1,15 +1,17 @@
 {
-  "@odata.type": "#FeaturesRegistry.v1_1_1.FeaturesRegistry",
-  "Id": "AdvertisedFeatures.v1_0_0",
-  "Name": "Global Swordfish Features Registry",
-  "Language": "en",
-  "RegistryPrefix": "SwordfishFeaturesRegistry",
-  "RegistryVersion": "1.3.0",
-  "OwningEntity": "SNIA",
-  "Features": [{
-    "FeatureName": "SNIA.Swordfish.NVMeEBOF",
-    "Description": "Supports the NVMe EBOF Feature set.",
-    "Version": "1.0.0",
-    "CorrespondingProfileDefinition": "SwordfishNVMeEBOF.json"
-  }]
+    "@odata.type": "#FeaturesRegistry.v1_1_1.FeaturesRegistry",
+    "Id": "AdvertisedFeatures.v1_0_0",
+    "Name": "Global Swordfish Features Registry",
+    "Language": "en",
+    "RegistryPrefix": "SwordfishFeaturesRegistry",
+    "RegistryVersion": "1.6.0",
+    "OwningEntity": "SNIA",
+    "Features": [
+        {
+            "FeatureName": "SNIA.Swordfish.NVMeEBOF",
+            "Description": "Supports the NVMe EBOF Feature set.",
+            "Version": "1.2.1",
+            "CorrespondingProfileDefinition": "SwordfishNVMeEBOF.v1_2_1.json"
+        }
+    ]
 }

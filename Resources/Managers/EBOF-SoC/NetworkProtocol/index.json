@@ -17,6 +17,24 @@
         "ProtocolEnabled": true,
         "Port": 443
     },
+    "NTP": {
+        "ProtocolEnabled": true,
+        "Port": 123,
+        "NTPServers": [
+            "0.pool.ntp.org",
+            "1.pool.ntp.org",
+            "time-a.nist.gov"
+        ]
+    },
+    "Proxy": {
+        "Enabled": true,
+        "ProxyServerURI": "https://proxy.intranet.contoso.com:9900",
+        "Username": "proxy",
+        "Password": null,
+        "PasswordSet": true,
+        "ExcludeAddresses": [],
+        "ProxyAutoConfigURI": "proxy.intranet.contoso.com/proxy.pac"
+    },
     "SSH": {
         "ProtocolEnabled": true,
         "Port": 22
@@ -34,5 +52,5 @@
     },
     "Oem": {},
     "@odata.id": "/redfish/v1/Managers/EBOF-SoC/NetworkProtocol",
-    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+    "@Redfish.Copyright": "Copyright 2015-2023 SNIA. All rights reserved."
 }

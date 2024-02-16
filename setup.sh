@@ -174,7 +174,7 @@ cat <<EOF
 ---------------------------------------------------------------------
 Starting Swordfish emulator. Access the local instance using the URL:
 
-   http://localhost:$API_PORT
+   https://localhost:$API_PORT
 
 $(tput bold)Press Ctrl-C when done.$(tput sgr0)
 ---------------------------------------------------------------------

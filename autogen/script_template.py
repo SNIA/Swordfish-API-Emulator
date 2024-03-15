@@ -85,8 +85,8 @@ if __name__=='__main__':
         print("check command line arguments")
         exit()
     else:
-        xml_directory_path = sys.argv[1]
-        json_directory_path = sys.argv[2]
+        xml_directory_path = os.path.abspath(sys.argv[1])
+        json_directory_path = os.path.abspath(sys.argv[2])
     
     if not os.path.exists(xml_directory_path):
         print("XML directory does not exists")
@@ -121,7 +121,9 @@ if __name__=='__main__':
                 head = head.replace('/redfish/v1', '')
                 resource_num = resource
 
-                if '{' not in tail or 'SessionId' in tail or 'Registry' in tail or 'Service' in tail:
+                if '{' not in tail or 'SessionId' in tail or 'Registry' in tail or 'AccountService' in tail or 'AggregationService' in tail \
+                or 'CertificateService' in tail or 'CompositionService' in tail or 'EventService' in tail or 'JobService' in tail or 'KeyService' in tail or 'LicenseService' in tail \
+                or 'LogService' in tail or 'SessionService' in tail or 'TaskService' in tail or 'TelemetryService' in tail or 'UpdateService' in tail :
                     print("Template not created for resource - "+resource)
                     continue
                 else:
@@ -130,6 +132,16 @@ if __name__=='__main__':
                     with open(program_name, 'w') as outfile:
                         write_program(outfile, resource_num, resource_paths, json_content)
                         print ('Created program {0}'.format(program_name))
+                        
+                    program_name = '{0}.py'.format(resource_num)
+                        # Open the program file and write the program.
+                    with open(program_name, 'w') as outfile:
+                        write_program(outfile, resource_num, resource_paths, json_content)
+                        print ('Created program {0}'.format(program_name))
+                    
+
+ 
+                
 
             elif(type(resource_paths) is list):
                 for path in resource_paths:

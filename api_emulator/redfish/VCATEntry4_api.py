@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/FabricAdapters/{FabricAdapterId}/Ports/{PortId}/VCAT/{VCATEntryId}
+# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{SystemId}/FabricAdapters/{FabricAdapterId}/Ports/{PortId}/VCAT/{VCATEntryId}
 # Program name - VCATEntry4_api.py
 
 import g
@@ -53,18 +53,18 @@ class VCATEntry4CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, FabricAdapterId, PortId):
+	def get(self, ResourceBlockId, SystemId, FabricAdapterId, PortId):
 		logging.info('VCATEntry4 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/VCAT', 'index.json').format(ChassisId, FabricAdapterId, PortId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/VCAT', 'index.json').format(ResourceBlockId, SystemId, FabricAdapterId, PortId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ChassisId, FabricAdapterId, PortId):
+	def post(self, ResourceBlockId, SystemId, FabricAdapterId, PortId):
 		logging.info('VCATEntry4 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -78,7 +78,7 @@ class VCATEntry4CollectionAPI(Resource):
 			if PortId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/VCAT').format(ChassisId, FabricAdapterId, PortId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/VCAT').format(ResourceBlockId, SystemId, FabricAdapterId, PortId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class VCATEntry4CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return VCATEntry4API.post(self, ChassisId, FabricAdapterId, PortId, os.path.basename(config['@odata.id']))
+					return VCATEntry4API.post(self, ResourceBlockId, SystemId, FabricAdapterId, PortId, os.path.basename(config['@odata.id']))
 				else:
-					return VCATEntry4API.post(self, ChassisId, FabricAdapterId, PortId, str(res))
+					return VCATEntry4API.post(self, ResourceBlockId, SystemId, FabricAdapterId, PortId, str(res))
 			else:
-				return VCATEntry4API.post(self, ChassisId, FabricAdapterId, PortId, str(res))
+				return VCATEntry4API.post(self, ResourceBlockId, SystemId, FabricAdapterId, PortId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class VCATEntry4API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, FabricAdapterId, PortId, VCATEntryId):
+	def get(self, ResourceBlockId, SystemId, FabricAdapterId, PortId, VCATEntryId):
 		logging.info('VCATEntry4 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/VCAT/{3}', 'index.json').format(ChassisId, FabricAdapterId, PortId, VCATEntryId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/VCAT/{4}', 'index.json').format(ResourceBlockId, SystemId, FabricAdapterId, PortId, VCATEntryId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +119,24 @@ class VCATEntry4API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ChassisId, FabricAdapterId, PortId, VCATEntryId):
+	def post(self, ResourceBlockId, SystemId, FabricAdapterId, PortId, VCATEntryId):
 		logging.info('VCATEntry4 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/VCAT/{3}').format(ChassisId, FabricAdapterId, PortId, VCATEntryId)
-			collection_path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/VCAT', 'index.json').format(ChassisId, FabricAdapterId, PortId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/VCAT/{4}').format(ResourceBlockId, SystemId, FabricAdapterId, PortId, VCATEntryId)
+			collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/VCAT', 'index.json').format(ResourceBlockId, SystemId, FabricAdapterId, PortId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				VCATEntry4CollectionAPI.post(self, ChassisId, FabricAdapterId, PortId)
+				VCATEntry4CollectionAPI.post(self, ResourceBlockId, SystemId, FabricAdapterId, PortId)
 
 			if VCATEntryId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ChassisId':ChassisId, 'FabricAdapterId':FabricAdapterId, 'PortId':PortId, 'VCATEntryId':VCATEntryId, 'rb':g.rest_base}
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'SystemId':SystemId, 'FabricAdapterId':FabricAdapterId, 'PortId':PortId, 'VCATEntryId':VCATEntryId, 'rb':g.rest_base}
 				config=get_VCATEntry4_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +150,37 @@ class VCATEntry4API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ChassisId, FabricAdapterId, PortId, VCATEntryId):
+	def put(self, ResourceBlockId, SystemId, FabricAdapterId, PortId, VCATEntryId):
 		logging.info('VCATEntry4 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/VCAT/{3}', 'index.json').format(ChassisId, FabricAdapterId, PortId, VCATEntryId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/VCAT/{4}', 'index.json').format(ResourceBlockId, SystemId, FabricAdapterId, PortId, VCATEntryId)
 			put_object(path)
-			return self.get(ChassisId, FabricAdapterId, PortId, VCATEntryId)
+			return self.get(ResourceBlockId, SystemId, FabricAdapterId, PortId, VCATEntryId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ChassisId, FabricAdapterId, PortId, VCATEntryId):
+	def patch(self, ResourceBlockId, SystemId, FabricAdapterId, PortId, VCATEntryId):
 		logging.info('VCATEntry4 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/VCAT/{3}', 'index.json').format(ChassisId, FabricAdapterId, PortId, VCATEntryId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/VCAT/{4}', 'index.json').format(ResourceBlockId, SystemId, FabricAdapterId, PortId, VCATEntryId)
 			patch_object(path)
-			return self.get(ChassisId, FabricAdapterId, PortId, VCATEntryId)
+			return self.get(ResourceBlockId, SystemId, FabricAdapterId, PortId, VCATEntryId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ChassisId, FabricAdapterId, PortId, VCATEntryId):
+	def delete(self, ResourceBlockId, SystemId, FabricAdapterId, PortId, VCATEntryId):
 		logging.info('VCATEntry4 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/VCAT/{3}').format(ChassisId, FabricAdapterId, PortId, VCATEntryId)
-			base_path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/VCAT').format(ChassisId, FabricAdapterId, PortId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/VCAT/{4}').format(ResourceBlockId, SystemId, FabricAdapterId, PortId, VCATEntryId)
+			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/VCAT').format(ResourceBlockId, SystemId, FabricAdapterId, PortId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

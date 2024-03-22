@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes/{VolumeId}/CapacitySources/{CapacitySourceId}
+# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/StoragePools/{StoragePoolId}/CapacitySources/{CapacitySourceId}
 # Program name - Capacity7_api.py
 
 import g
@@ -53,18 +53,18 @@ class Capacity7CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, StorageId, VolumeId):
+	def get(self, ComputerSystemId, StorageId, StoragePoolId):
 		logging.info('Capacity7 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/Volumes/{2}/CapacitySources', 'index.json').format(ComputerSystemId, StorageId, VolumeId)
+			path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/CapacitySources', 'index.json').format(ComputerSystemId, StorageId, StoragePoolId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ComputerSystemId, StorageId, VolumeId):
+	def post(self, ComputerSystemId, StorageId, StoragePoolId):
 		logging.info('Capacity7 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Capacity7CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if VolumeId in members:
+			if StoragePoolId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Systems/{0}/Storage/{1}/Volumes/{2}/CapacitySources').format(ComputerSystemId, StorageId, VolumeId)
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/CapacitySources').format(ComputerSystemId, StorageId, StoragePoolId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Capacity7CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Capacity7API.post(self, ComputerSystemId, StorageId, VolumeId, os.path.basename(config['@odata.id']))
+					return Capacity7API.post(self, ComputerSystemId, StorageId, StoragePoolId, os.path.basename(config['@odata.id']))
 				else:
-					return Capacity7API.post(self, ComputerSystemId, StorageId, VolumeId, str(res))
+					return Capacity7API.post(self, ComputerSystemId, StorageId, StoragePoolId, str(res))
 			else:
-				return Capacity7API.post(self, ComputerSystemId, StorageId, VolumeId, str(res))
+				return Capacity7API.post(self, ComputerSystemId, StorageId, StoragePoolId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Capacity7API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, StorageId, VolumeId, CapacitySourceId):
+	def get(self, ComputerSystemId, StorageId, StoragePoolId, CapacitySourceId):
 		logging.info('Capacity7 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/Storage/{1}/Volumes/{2}/CapacitySources/{3}', 'index.json').format(ComputerSystemId, StorageId, VolumeId, CapacitySourceId)
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/CapacitySources/{3}', 'index.json').format(ComputerSystemId, StorageId, StoragePoolId, CapacitySourceId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +119,24 @@ class Capacity7API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ComputerSystemId, StorageId, VolumeId, CapacitySourceId):
+	def post(self, ComputerSystemId, StorageId, StoragePoolId, CapacitySourceId):
 		logging.info('Capacity7 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/Storage/{1}/Volumes/{2}/CapacitySources/{3}').format(ComputerSystemId, StorageId, VolumeId, CapacitySourceId)
-			collection_path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/Volumes/{2}/CapacitySources', 'index.json').format(ComputerSystemId, StorageId, VolumeId)
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/CapacitySources/{3}').format(ComputerSystemId, StorageId, StoragePoolId, CapacitySourceId)
+			collection_path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/CapacitySources', 'index.json').format(ComputerSystemId, StorageId, StoragePoolId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Capacity7CollectionAPI.post(self, ComputerSystemId, StorageId, VolumeId)
+				Capacity7CollectionAPI.post(self, ComputerSystemId, StorageId, StoragePoolId)
 
 			if CapacitySourceId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ComputerSystemId':ComputerSystemId, 'StorageId':StorageId, 'VolumeId':VolumeId, 'CapacitySourceId':CapacitySourceId, 'rb':g.rest_base}
+				wildcards = {'ComputerSystemId':ComputerSystemId, 'StorageId':StorageId, 'StoragePoolId':StoragePoolId, 'CapacitySourceId':CapacitySourceId, 'rb':g.rest_base}
 				config=get_Capacity7_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +150,37 @@ class Capacity7API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ComputerSystemId, StorageId, VolumeId, CapacitySourceId):
+	def put(self, ComputerSystemId, StorageId, StoragePoolId, CapacitySourceId):
 		logging.info('Capacity7 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/Volumes/{2}/CapacitySources/{3}', 'index.json').format(ComputerSystemId, StorageId, VolumeId, CapacitySourceId)
+			path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/CapacitySources/{3}', 'index.json').format(ComputerSystemId, StorageId, StoragePoolId, CapacitySourceId)
 			put_object(path)
-			return self.get(ComputerSystemId, StorageId, VolumeId, CapacitySourceId)
+			return self.get(ComputerSystemId, StorageId, StoragePoolId, CapacitySourceId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ComputerSystemId, StorageId, VolumeId, CapacitySourceId):
+	def patch(self, ComputerSystemId, StorageId, StoragePoolId, CapacitySourceId):
 		logging.info('Capacity7 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/Volumes/{2}/CapacitySources/{3}', 'index.json').format(ComputerSystemId, StorageId, VolumeId, CapacitySourceId)
+			path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/CapacitySources/{3}', 'index.json').format(ComputerSystemId, StorageId, StoragePoolId, CapacitySourceId)
 			patch_object(path)
-			return self.get(ComputerSystemId, StorageId, VolumeId, CapacitySourceId)
+			return self.get(ComputerSystemId, StorageId, StoragePoolId, CapacitySourceId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ComputerSystemId, StorageId, VolumeId, CapacitySourceId):
+	def delete(self, ComputerSystemId, StorageId, StoragePoolId, CapacitySourceId):
 		logging.info('Capacity7 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/Storage/{1}/Volumes/{2}/CapacitySources/{3}').format(ComputerSystemId, StorageId, VolumeId, CapacitySourceId)
-			base_path = create_path(self.root, 'Systems/{0}/Storage/{1}/Volumes/{2}/CapacitySources').format(ComputerSystemId, StorageId, VolumeId)
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/CapacitySources/{3}').format(ComputerSystemId, StorageId, StoragePoolId, CapacitySourceId)
+			base_path = create_path(self.root, 'Systems/{0}/Storage/{1}/StoragePools/{2}/CapacitySources').format(ComputerSystemId, StorageId, StoragePoolId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

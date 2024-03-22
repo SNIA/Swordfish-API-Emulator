@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates/{CertificateId}
+# Resource implementation for - /redfish/v1/UpdateService/RemoteServerCertificates/{CertificateId}
 # Program name - Certificate64_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate64CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId):
+	def get(self):
 		logging.info('Certificate64 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/KeyManagement/KMIPCertificates', 'index.json').format(ResourceBlockId, ComputerSystemId)
+			path = os.path.join(self.root, 'UpdateService/RemoteServerCertificates', 'index.json')
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ResourceBlockId, ComputerSystemId):
+	def post(self):
 		logging.info('Certificate64 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,7 @@ class Certificate64CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if ComputerSystemId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/KeyManagement/KMIPCertificates').format(ResourceBlockId, ComputerSystemId)
+			path = create_path(self.root, 'UpdateService/RemoteServerCertificates')
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +85,11 @@ class Certificate64CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate64API.post(self, ResourceBlockId, ComputerSystemId, os.path.basename(config['@odata.id']))
+					return Certificate64API.post(self, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate64API.post(self, ResourceBlockId, ComputerSystemId, str(res))
+					return Certificate64API.post(self, str(res))
 			else:
-				return Certificate64API.post(self, ResourceBlockId, ComputerSystemId, str(res))
+				return Certificate64API.post(self, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +101,12 @@ class Certificate64API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, CertificateId):
+	def get(self, CertificateId):
 		logging.info('Certificate64 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/KeyManagement/KMIPCertificates/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, CertificateId)
+			path = create_path(self.root, 'UpdateService/RemoteServerCertificates/{0}', 'index.json').format(CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +116,24 @@ class Certificate64API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ResourceBlockId, ComputerSystemId, CertificateId):
+	def post(self, CertificateId):
 		logging.info('Certificate64 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/KeyManagement/KMIPCertificates/{2}').format(ResourceBlockId, ComputerSystemId, CertificateId)
-			collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/KeyManagement/KMIPCertificates', 'index.json').format(ResourceBlockId, ComputerSystemId)
+			path = create_path(self.root, 'UpdateService/RemoteServerCertificates/{0}').format(CertificateId)
+			collection_path = os.path.join(self.root, 'UpdateService/RemoteServerCertificates', 'index.json')
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate64CollectionAPI.post(self, ResourceBlockId, ComputerSystemId)
+				Certificate64CollectionAPI.post(self)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate64_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +147,37 @@ class Certificate64API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, ComputerSystemId, CertificateId):
+	def put(self, CertificateId):
 		logging.info('Certificate64 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/KeyManagement/KMIPCertificates/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, CertificateId)
+			path = os.path.join(self.root, 'UpdateService/RemoteServerCertificates/{0}', 'index.json').format(CertificateId)
 			put_object(path)
-			return self.get(ResourceBlockId, ComputerSystemId, CertificateId)
+			return self.get(CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, ComputerSystemId, CertificateId):
+	def patch(self, CertificateId):
 		logging.info('Certificate64 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/KeyManagement/KMIPCertificates/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, CertificateId)
+			path = os.path.join(self.root, 'UpdateService/RemoteServerCertificates/{0}', 'index.json').format(CertificateId)
 			patch_object(path)
-			return self.get(ResourceBlockId, ComputerSystemId, CertificateId)
+			return self.get(CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, ComputerSystemId, CertificateId):
+	def delete(self, CertificateId):
 		logging.info('Certificate64 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/KeyManagement/KMIPCertificates/{2}').format(ResourceBlockId, ComputerSystemId, CertificateId)
-			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/KeyManagement/KMIPCertificates').format(ResourceBlockId, ComputerSystemId)
+			path = create_path(self.root, 'UpdateService/RemoteServerCertificates/{0}').format(CertificateId)
+			base_path = create_path(self.root, 'UpdateService/RemoteServerCertificates')
 			return delete_object(path, base_path)
 		else:
 			return msg, code

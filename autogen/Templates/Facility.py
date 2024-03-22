@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2023, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,10 +35,10 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2023 SNIA. All rights reserved.",
-	"FacilityType": "Floot",
+	"@Redfish.Copyright": "Copyright 2014-2024 SNIA. All rights reserved.",
+	"FacilityType": "Site",
 	"@odata.id": "{rb}Facilities/{FacilityId}",
-	"@odata.type": "#Facility.v1_4_0.Facility",
+	"@odata.type": "#Facility.v1_4_1.Facility",
 	"Id": "{FacilityId}",
 	"Name": "Facility",
 }

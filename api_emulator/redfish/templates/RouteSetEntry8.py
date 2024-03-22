@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,7 +35,7 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
+	"@Redfish.Copyright": "Copyright 2014-2024 SNIA. All rights reserved.",
 	"@odata.id": "{rb}Systems/{ComputerSystemId}/FabricAdapters/{FabricAdapterId}/Ports/{PortId}/LPRT/{LPRTId}/RouteSet/{RouteId}",
 	"@odata.type": "#RouteSetEntry.v1_0_1.RouteSetEntry",
 	"Id": "{RouteId}",
@@ -46,15 +46,15 @@ def get_RouteSetEntry8_instance(wildcards):
 		"""
 		Instantiates and formats the template
 		Arguments:
-			wildcard - A dictionary of wildcards strings and their repalcement values
+			wildcard - A dictionary of wildcards strings and their replacement values
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{ComputerSystemId}', '0')
-		g = g.replace('{FabricAdapterId}', '1')
-		g = g.replace('{PortId}', '2')
-		g = g.replace('{LPRTId}', '3')
-		g = g.replace('{RouteId}', '4')
+		g = d.replace('{ComputerSystemId}', '-0-')
+		g = g.replace('{FabricAdapterId}', '-1-')
+		g = g.replace('{PortId}', '-2-')
+		g = g.replace('{LPRTId}', '-3-')
+		g = g.replace('{RouteId}', '-4-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

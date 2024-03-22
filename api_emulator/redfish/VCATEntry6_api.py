@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/FabricAdapters/{FabricAdapterId}/RSP-VCAT/{VCATEntryId}
+# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{SystemId}/FabricAdapters/{FabricAdapterId}/RSP-VCAT/{VCATEntryId}
 # Program name - VCATEntry6_api.py
 
 import g
@@ -53,18 +53,18 @@ class VCATEntry6CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, FabricAdapterId):
+	def get(self, ResourceBlockId, SystemId, FabricAdapterId):
 		logging.info('VCATEntry6 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/RSP-VCAT', 'index.json').format(ChassisId, FabricAdapterId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/RSP-VCAT', 'index.json').format(ResourceBlockId, SystemId, FabricAdapterId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ChassisId, FabricAdapterId):
+	def post(self, ResourceBlockId, SystemId, FabricAdapterId):
 		logging.info('VCATEntry6 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -78,7 +78,7 @@ class VCATEntry6CollectionAPI(Resource):
 			if FabricAdapterId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/RSP-VCAT').format(ChassisId, FabricAdapterId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/RSP-VCAT').format(ResourceBlockId, SystemId, FabricAdapterId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class VCATEntry6CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return VCATEntry6API.post(self, ChassisId, FabricAdapterId, os.path.basename(config['@odata.id']))
+					return VCATEntry6API.post(self, ResourceBlockId, SystemId, FabricAdapterId, os.path.basename(config['@odata.id']))
 				else:
-					return VCATEntry6API.post(self, ChassisId, FabricAdapterId, str(res))
+					return VCATEntry6API.post(self, ResourceBlockId, SystemId, FabricAdapterId, str(res))
 			else:
-				return VCATEntry6API.post(self, ChassisId, FabricAdapterId, str(res))
+				return VCATEntry6API.post(self, ResourceBlockId, SystemId, FabricAdapterId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class VCATEntry6API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, FabricAdapterId, VCATEntryId):
+	def get(self, ResourceBlockId, SystemId, FabricAdapterId, VCATEntryId):
 		logging.info('VCATEntry6 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/RSP-VCAT/{2}', 'index.json').format(ChassisId, FabricAdapterId, VCATEntryId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/RSP-VCAT/{3}', 'index.json').format(ResourceBlockId, SystemId, FabricAdapterId, VCATEntryId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +119,24 @@ class VCATEntry6API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ChassisId, FabricAdapterId, VCATEntryId):
+	def post(self, ResourceBlockId, SystemId, FabricAdapterId, VCATEntryId):
 		logging.info('VCATEntry6 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/RSP-VCAT/{2}').format(ChassisId, FabricAdapterId, VCATEntryId)
-			collection_path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/RSP-VCAT', 'index.json').format(ChassisId, FabricAdapterId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/RSP-VCAT/{3}').format(ResourceBlockId, SystemId, FabricAdapterId, VCATEntryId)
+			collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/RSP-VCAT', 'index.json').format(ResourceBlockId, SystemId, FabricAdapterId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				VCATEntry6CollectionAPI.post(self, ChassisId, FabricAdapterId)
+				VCATEntry6CollectionAPI.post(self, ResourceBlockId, SystemId, FabricAdapterId)
 
 			if VCATEntryId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ChassisId':ChassisId, 'FabricAdapterId':FabricAdapterId, 'VCATEntryId':VCATEntryId, 'rb':g.rest_base}
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'SystemId':SystemId, 'FabricAdapterId':FabricAdapterId, 'VCATEntryId':VCATEntryId, 'rb':g.rest_base}
 				config=get_VCATEntry6_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +150,37 @@ class VCATEntry6API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ChassisId, FabricAdapterId, VCATEntryId):
+	def put(self, ResourceBlockId, SystemId, FabricAdapterId, VCATEntryId):
 		logging.info('VCATEntry6 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/RSP-VCAT/{2}', 'index.json').format(ChassisId, FabricAdapterId, VCATEntryId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/RSP-VCAT/{3}', 'index.json').format(ResourceBlockId, SystemId, FabricAdapterId, VCATEntryId)
 			put_object(path)
-			return self.get(ChassisId, FabricAdapterId, VCATEntryId)
+			return self.get(ResourceBlockId, SystemId, FabricAdapterId, VCATEntryId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ChassisId, FabricAdapterId, VCATEntryId):
+	def patch(self, ResourceBlockId, SystemId, FabricAdapterId, VCATEntryId):
 		logging.info('VCATEntry6 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/RSP-VCAT/{2}', 'index.json').format(ChassisId, FabricAdapterId, VCATEntryId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/RSP-VCAT/{3}', 'index.json').format(ResourceBlockId, SystemId, FabricAdapterId, VCATEntryId)
 			patch_object(path)
-			return self.get(ChassisId, FabricAdapterId, VCATEntryId)
+			return self.get(ResourceBlockId, SystemId, FabricAdapterId, VCATEntryId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ChassisId, FabricAdapterId, VCATEntryId):
+	def delete(self, ResourceBlockId, SystemId, FabricAdapterId, VCATEntryId):
 		logging.info('VCATEntry6 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/RSP-VCAT/{2}').format(ChassisId, FabricAdapterId, VCATEntryId)
-			base_path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/RSP-VCAT').format(ChassisId, FabricAdapterId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/RSP-VCAT/{3}').format(ResourceBlockId, SystemId, FabricAdapterId, VCATEntryId)
+			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/RSP-VCAT').format(ResourceBlockId, SystemId, FabricAdapterId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

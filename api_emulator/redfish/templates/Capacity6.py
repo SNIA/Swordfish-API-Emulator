@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,9 +35,9 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-	"@odata.id": "{rb}Systems/{ComputerSystemId}/Storage/{StorageId}/StoragePools/{StoragePoolId}/CapacitySources/{CapacitySourceId}",
-	"@odata.type": "#Capacity.v1_2_0.CapacitySource",
+	"@Redfish.Copyright": "Copyright 2014-2024 SNIA. All rights reserved.",
+	"@odata.id": "{rb}Storage/{StorageId}/FileSystems/{FileSystemId}/CapacitySources/{CapacitySourceId}",
+	"@odata.type": "#Capacity.v1_2_1.CapacitySource",
 	"Id": "{CapacitySourceId}",
 	"Name": "CapacitySource",
 }
@@ -46,23 +46,21 @@ def get_Capacity6_instance(wildcards):
 		"""
 		Instantiates and formats the template
 		Arguments:
-			wildcard - A dictionary of wildcards strings and their repalcement values
+			wildcard - A dictionary of wildcards strings and their replacement values
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{ComputerSystemId}', '0')
-		g = g.replace('{StorageId}', '1')
-		g = g.replace('{StoragePoolId}', '2')
-		g = g.replace('{CapacitySourceId}', '3')
+		g = d.replace('{StorageId}', '-0-')
+		g = g.replace('{FileSystemId}', '-1-')
+		g = g.replace('{CapacitySourceId}', '-2-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')
 		g = g.replace('{', '~!')
 		g = g.replace('}', '!~')
-		g = g.replace('0', '{ComputerSystemId}')
-		g = g.replace('1', '{StorageId}')
-		g = g.replace('2', '{StoragePoolId}')
-		g = g.replace('3', '{CapacitySourceId}')
+		g = g.replace('0', '{StorageId}')
+		g = g.replace('1', '{FileSystemId}')
+		g = g.replace('2', '{CapacitySourceId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)
 		g = g.replace('~~!', '{{')

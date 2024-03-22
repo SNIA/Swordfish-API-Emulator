@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/PowerEquipment/Sensors/{SensorId}
+# Resource implementation for - /redfish/v1/PowerEquipment/RackPDUs/{PowerDistributionId}/Sensors/{SensorId}
 # Program name - Sensor1_api.py
 
 import g
@@ -53,18 +53,18 @@ class Sensor1CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self):
+	def get(self, PowerDistributionId):
 		logging.info('Sensor1 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'PowerEquipment/Sensors', 'index.json')
+			path = os.path.join(self.root, 'PowerEquipment/RackPDUs/{0}/Sensors', 'index.json').format(PowerDistributionId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self):
+	def post(self, PowerDistributionId):
 		logging.info('Sensor1 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,7 +75,10 @@ class Sensor1CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			path = create_path(self.root, 'PowerEquipment/Sensors')
+			if PowerDistributionId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'PowerEquipment/RackPDUs/{0}/Sensors').format(PowerDistributionId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -85,11 +88,11 @@ class Sensor1CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Sensor1API.post(self, os.path.basename(config['@odata.id']))
+					return Sensor1API.post(self, PowerDistributionId, os.path.basename(config['@odata.id']))
 				else:
-					return Sensor1API.post(self, str(res))
+					return Sensor1API.post(self, PowerDistributionId, str(res))
 			else:
-				return Sensor1API.post(self, str(res))
+				return Sensor1API.post(self, PowerDistributionId, str(res))
 		else:
 			return msg, code
 
@@ -101,12 +104,12 @@ class Sensor1API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, SensorId):
+	def get(self, PowerDistributionId, SensorId):
 		logging.info('Sensor1 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'PowerEquipment/Sensors/{0}', 'index.json').format(SensorId)
+			path = create_path(self.root, 'PowerEquipment/RackPDUs/{0}/Sensors/{1}', 'index.json').format(PowerDistributionId, SensorId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -116,24 +119,24 @@ class Sensor1API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, SensorId):
+	def post(self, PowerDistributionId, SensorId):
 		logging.info('Sensor1 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'PowerEquipment/Sensors/{0}').format(SensorId)
-			collection_path = os.path.join(self.root, 'PowerEquipment/Sensors', 'index.json')
+			path = create_path(self.root, 'PowerEquipment/RackPDUs/{0}/Sensors/{1}').format(PowerDistributionId, SensorId)
+			collection_path = os.path.join(self.root, 'PowerEquipment/RackPDUs/{0}/Sensors', 'index.json').format(PowerDistributionId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Sensor1CollectionAPI.post(self)
+				Sensor1CollectionAPI.post(self, PowerDistributionId)
 
 			if SensorId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'SensorId':SensorId, 'rb':g.rest_base}
+				wildcards = {'PowerDistributionId':PowerDistributionId, 'SensorId':SensorId, 'rb':g.rest_base}
 				config=get_Sensor1_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -147,37 +150,37 @@ class Sensor1API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, SensorId):
+	def put(self, PowerDistributionId, SensorId):
 		logging.info('Sensor1 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'PowerEquipment/Sensors/{0}', 'index.json').format(SensorId)
+			path = create_path(self.root, 'PowerEquipment/RackPDUs/{0}/Sensors/{1}', 'index.json').format(PowerDistributionId, SensorId)
 			put_object(path)
-			return self.get(SensorId)
+			return self.get(PowerDistributionId, SensorId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, SensorId):
+	def patch(self, PowerDistributionId, SensorId):
 		logging.info('Sensor1 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'PowerEquipment/Sensors/{0}', 'index.json').format(SensorId)
+			path = create_path(self.root, 'PowerEquipment/RackPDUs/{0}/Sensors/{1}', 'index.json').format(PowerDistributionId, SensorId)
 			patch_object(path)
-			return self.get(SensorId)
+			return self.get(PowerDistributionId, SensorId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, SensorId):
+	def delete(self, PowerDistributionId, SensorId):
 		logging.info('Sensor1 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'PowerEquipment/Sensors/{0}').format(SensorId)
-			base_path = create_path(self.root, 'PowerEquipment/Sensors')
+			path = create_path(self.root, 'PowerEquipment/RackPDUs/{0}/Sensors/{1}').format(PowerDistributionId, SensorId)
+			base_path = create_path(self.root, 'PowerEquipment/RackPDUs/{0}/Sensors').format(PowerDistributionId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

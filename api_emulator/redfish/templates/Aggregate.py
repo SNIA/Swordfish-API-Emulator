@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,10 +35,10 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-	"Elements": "Aggregate Element",
+	"@Redfish.Copyright": "Copyright 2014-2024 SNIA. All rights reserved.",
+	"Elements": "[]",
 	"@odata.id": "{rb}AggregationService/Aggregates/{AggregateId}",
-	"@odata.type": "#Aggregate.v1_0_1.Aggregate",
+	"@odata.type": "#Aggregate.v1_0_2.Aggregate",
 	"Id": "{AggregateId}",
 	"Name": "Aggregate",
 }
@@ -47,11 +47,11 @@ def get_Aggregate_instance(wildcards):
 		"""
 		Instantiates and formats the template
 		Arguments:
-			wildcard - A dictionary of wildcards strings and their repalcement values
+			wildcard - A dictionary of wildcards strings and their replacement values
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{AggregateId}', '0')
+		g = d.replace('{AggregateId}', '-0-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,21 +27,23 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Ports/{PortId}/Metrics
+# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Ports/{PortId}/Metrics
 # Program name - PortMetrics14_api.py
 
 import g
 import json, os
 import traceback
-import logging
+import logging, random, requests, string, jwt
 
-from flask import Flask, request
+from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
 from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
+members = []
+member_ids = []
 INTERNAL_ERROR = 500
 
 # PortMetrics14 does not have a Collection API
@@ -60,7 +62,7 @@ class PortMetrics14API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/StorageControllers/{3}/Ports/{4}/Metrics', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, PortId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}/Ports/{4}/Metrics', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId, PortId)
 			return get_json_data (path)
 		else:
 			return msg, code

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2023, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,9 +35,9 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2023 SNIA. All rights reserved.",
-	"@odata.id": "{rb}Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/NetworkDeviceFunctions/{NetworkDeviceFunctionId}/EthernetInterfaces/{EthernetInterfaceId}",
-	"@odata.type": "#EthernetInterface.v1_10_0.EthernetInterface",
+	"@Redfish.Copyright": "Copyright 2014-2024 SNIA. All rights reserved.",
+	"@odata.id": "{rb}Systems/{ComputerSystemId}/OperatingSystem/Containers/EthernetInterfaces/{EthernetInterfaceId}",
+	"@odata.type": "#EthernetInterface.v1_12_0.EthernetInterface",
 	"Id": "{EthernetInterfaceId}",
 	"Name": "EthernetInterface",
 }
@@ -50,19 +50,15 @@ def get_EthernetInterface6_instance(wildcards):
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{ChassisId}', '-0-')
-		g = g.replace('{NetworkAdapterId}', '-1-')
-		g = g.replace('{NetworkDeviceFunctionId}', '-2-')
-		g = g.replace('{EthernetInterfaceId}', '-3-')
+		g = d.replace('{ComputerSystemId}', '-0-')
+		g = g.replace('{EthernetInterfaceId}', '-1-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')
 		g = g.replace('{', '~!')
 		g = g.replace('}', '!~')
-		g = g.replace('0', '{ChassisId}')
-		g = g.replace('1', '{NetworkAdapterId}')
-		g = g.replace('2', '{NetworkDeviceFunctionId}')
-		g = g.replace('3', '{EthernetInterfaceId}')
+		g = g.replace('0', '{ComputerSystemId}')
+		g = g.replace('1', '{EthernetInterfaceId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)
 		g = g.replace('~~!', '{{')

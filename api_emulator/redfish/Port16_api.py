@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/FabricAdapters/{FabricAdapterId}/Ports/{PortId}
+# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/GraphicsControllers/{ControllerId}/Ports/{PortId}
 # Program name - Port16_api.py
 
 import g
@@ -53,18 +53,18 @@ class Port16CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, FabricAdapterId):
+	def get(self, ResourceBlockId, ComputerSystemId, ControllerId):
 		logging.info('Port16 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports', 'index.json').format(ChassisId, FabricAdapterId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/GraphicsControllers/{2}/Ports', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ChassisId, FabricAdapterId):
+	def post(self, ResourceBlockId, ComputerSystemId, ControllerId):
 		logging.info('Port16 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Port16CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if FabricAdapterId in members:
+			if ControllerId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports').format(ChassisId, FabricAdapterId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/GraphicsControllers/{2}/Ports').format(ResourceBlockId, ComputerSystemId, ControllerId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Port16CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Port16API.post(self, ChassisId, FabricAdapterId, os.path.basename(config['@odata.id']))
+					return Port16API.post(self, ResourceBlockId, ComputerSystemId, ControllerId, os.path.basename(config['@odata.id']))
 				else:
-					return Port16API.post(self, ChassisId, FabricAdapterId, str(res))
+					return Port16API.post(self, ResourceBlockId, ComputerSystemId, ControllerId, str(res))
 			else:
-				return Port16API.post(self, ChassisId, FabricAdapterId, str(res))
+				return Port16API.post(self, ResourceBlockId, ComputerSystemId, ControllerId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Port16API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, FabricAdapterId, PortId):
+	def get(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
 		logging.info('Port16 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}', 'index.json').format(ChassisId, FabricAdapterId, PortId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/GraphicsControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +119,24 @@ class Port16API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ChassisId, FabricAdapterId, PortId):
+	def post(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
 		logging.info('Port16 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}').format(ChassisId, FabricAdapterId, PortId)
-			collection_path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports', 'index.json').format(ChassisId, FabricAdapterId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/GraphicsControllers/{2}/Ports/{3}').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
+			collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/GraphicsControllers/{2}/Ports', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Port16CollectionAPI.post(self, ChassisId, FabricAdapterId)
+				Port16CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, ControllerId)
 
 			if PortId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ChassisId':ChassisId, 'FabricAdapterId':FabricAdapterId, 'PortId':PortId, 'rb':g.rest_base}
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'ControllerId':ControllerId, 'PortId':PortId, 'rb':g.rest_base}
 				config=get_Port16_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +150,37 @@ class Port16API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ChassisId, FabricAdapterId, PortId):
+	def put(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
 		logging.info('Port16 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}', 'index.json').format(ChassisId, FabricAdapterId, PortId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/GraphicsControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
 			put_object(path)
-			return self.get(ChassisId, FabricAdapterId, PortId)
+			return self.get(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ChassisId, FabricAdapterId, PortId):
+	def patch(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
 		logging.info('Port16 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}', 'index.json').format(ChassisId, FabricAdapterId, PortId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/GraphicsControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
 			patch_object(path)
-			return self.get(ChassisId, FabricAdapterId, PortId)
+			return self.get(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ChassisId, FabricAdapterId, PortId):
+	def delete(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
 		logging.info('Port16 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}').format(ChassisId, FabricAdapterId, PortId)
-			base_path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports').format(ChassisId, FabricAdapterId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/GraphicsControllers/{2}/Ports/{3}').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
+			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/GraphicsControllers/{2}/Ports').format(ResourceBlockId, ComputerSystemId, ControllerId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

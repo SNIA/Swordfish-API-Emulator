@@ -152,7 +152,9 @@ if __name__=='__main__':
                     # base program name is different for different paths
                     resource_num = resource + str(num)
                  
-                    if '{' not in tail or 'SessionId' in tail or 'Registry' in tail or 'Service' in tail:
+                    if '{' not in tail or 'SessionId' in tail or 'Registry' in tail or 'AccountService' in tail or 'AggregationService' in tail \
+                    or 'CertificateService' in tail or 'CompositionService' in tail or 'EventService' in tail or 'JobService' in tail or 'KeyService' in tail or 'LicenseService' in tail \
+                    or 'LogService' in tail or 'SessionService' in tail or 'TaskService' in tail or 'TelemetryService' in tail or 'UpdateService' in tail:
                         print("Template not created for resource - "+resource)
                         break
                     else:

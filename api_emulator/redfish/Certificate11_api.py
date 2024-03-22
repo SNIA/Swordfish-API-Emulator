@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Boot/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/Managers/{ManagerId}/RemoteAccountService/MultiFactorAuth/SecurID/Certificates/{CertificateId}
 # Program name - Certificate11_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate11CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId):
+	def get(self, ManagerId):
 		logging.info('Certificate11 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/Boot/Certificates', 'index.json').format(ResourceBlockId, ComputerSystemId)
+			path = os.path.join(self.root, 'Managers/{0}/RemoteAccountService/MultiFactorAuth/SecurID/Certificates', 'index.json').format(ManagerId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ResourceBlockId, ComputerSystemId):
+	def post(self, ManagerId):
 		logging.info('Certificate11 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Certificate11CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if ComputerSystemId in members:
+			if ManagerId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Boot/Certificates').format(ResourceBlockId, ComputerSystemId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/MultiFactorAuth/SecurID/Certificates').format(ManagerId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Certificate11CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate11API.post(self, ResourceBlockId, ComputerSystemId, os.path.basename(config['@odata.id']))
+					return Certificate11API.post(self, ManagerId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate11API.post(self, ResourceBlockId, ComputerSystemId, str(res))
+					return Certificate11API.post(self, ManagerId, str(res))
 			else:
-				return Certificate11API.post(self, ResourceBlockId, ComputerSystemId, str(res))
+				return Certificate11API.post(self, ManagerId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Certificate11API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, CertificateId):
+	def get(self, ManagerId, CertificateId):
 		logging.info('Certificate11 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Boot/Certificates/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/MultiFactorAuth/SecurID/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +119,24 @@ class Certificate11API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ResourceBlockId, ComputerSystemId, CertificateId):
+	def post(self, ManagerId, CertificateId):
 		logging.info('Certificate11 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Boot/Certificates/{2}').format(ResourceBlockId, ComputerSystemId, CertificateId)
-			collection_path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/Boot/Certificates', 'index.json').format(ResourceBlockId, ComputerSystemId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/MultiFactorAuth/SecurID/Certificates/{1}').format(ManagerId, CertificateId)
+			collection_path = os.path.join(self.root, 'Managers/{0}/RemoteAccountService/MultiFactorAuth/SecurID/Certificates', 'index.json').format(ManagerId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate11CollectionAPI.post(self, ResourceBlockId, ComputerSystemId)
+				Certificate11CollectionAPI.post(self, ManagerId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'ManagerId':ManagerId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate11_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +150,37 @@ class Certificate11API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, ComputerSystemId, CertificateId):
+	def put(self, ManagerId, CertificateId):
 		logging.info('Certificate11 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/Boot/Certificates/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/MultiFactorAuth/SecurID/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			put_object(path)
-			return self.get(ResourceBlockId, ComputerSystemId, CertificateId)
+			return self.get(ManagerId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, ComputerSystemId, CertificateId):
+	def patch(self, ManagerId, CertificateId):
 		logging.info('Certificate11 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/Boot/Certificates/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/MultiFactorAuth/SecurID/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			patch_object(path)
-			return self.get(ResourceBlockId, ComputerSystemId, CertificateId)
+			return self.get(ManagerId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, ComputerSystemId, CertificateId):
+	def delete(self, ManagerId, CertificateId):
 		logging.info('Certificate11 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Boot/Certificates/{2}').format(ResourceBlockId, ComputerSystemId, CertificateId)
-			base_path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Boot/Certificates').format(ResourceBlockId, ComputerSystemId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/MultiFactorAuth/SecurID/Certificates/{1}').format(ManagerId, CertificateId)
+			base_path = create_path(self.root, 'Managers/{0}/RemoteAccountService/MultiFactorAuth/SecurID/Certificates').format(ManagerId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

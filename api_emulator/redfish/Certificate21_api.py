@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/Memory/{MemoryId}/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Certificates/{CertificateId}
 # Program name - Certificate21_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate21CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, MemoryId):
+	def get(self, ComputerSystemId):
 		logging.info('Certificate21 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Chassis/{0}/Memory/{1}/Certificates', 'index.json').format(ChassisId, MemoryId)
+			path = os.path.join(self.root, 'Systems/{0}/Certificates', 'index.json').format(ComputerSystemId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ChassisId, MemoryId):
+	def post(self, ComputerSystemId):
 		logging.info('Certificate21 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Certificate21CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if MemoryId in members:
+			if ComputerSystemId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Chassis/{0}/Memory/{1}/Certificates').format(ChassisId, MemoryId)
+			path = create_path(self.root, 'Systems/{0}/Certificates').format(ComputerSystemId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Certificate21CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate21API.post(self, ChassisId, MemoryId, os.path.basename(config['@odata.id']))
+					return Certificate21API.post(self, ComputerSystemId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate21API.post(self, ChassisId, MemoryId, str(res))
+					return Certificate21API.post(self, ComputerSystemId, str(res))
 			else:
-				return Certificate21API.post(self, ChassisId, MemoryId, str(res))
+				return Certificate21API.post(self, ComputerSystemId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Certificate21API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, MemoryId, CertificateId):
+	def get(self, ComputerSystemId, CertificateId):
 		logging.info('Certificate21 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/Memory/{1}/Certificates/{2}', 'index.json').format(ChassisId, MemoryId, CertificateId)
+			path = create_path(self.root, 'Systems/{0}/Certificates/{1}', 'index.json').format(ComputerSystemId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +119,24 @@ class Certificate21API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ChassisId, MemoryId, CertificateId):
+	def post(self, ComputerSystemId, CertificateId):
 		logging.info('Certificate21 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/Memory/{1}/Certificates/{2}').format(ChassisId, MemoryId, CertificateId)
-			collection_path = os.path.join(self.root, 'Chassis/{0}/Memory/{1}/Certificates', 'index.json').format(ChassisId, MemoryId)
+			path = create_path(self.root, 'Systems/{0}/Certificates/{1}').format(ComputerSystemId, CertificateId)
+			collection_path = os.path.join(self.root, 'Systems/{0}/Certificates', 'index.json').format(ComputerSystemId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate21CollectionAPI.post(self, ChassisId, MemoryId)
+				Certificate21CollectionAPI.post(self, ComputerSystemId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ChassisId':ChassisId, 'MemoryId':MemoryId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'ComputerSystemId':ComputerSystemId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate21_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +150,37 @@ class Certificate21API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ChassisId, MemoryId, CertificateId):
+	def put(self, ComputerSystemId, CertificateId):
 		logging.info('Certificate21 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Chassis/{0}/Memory/{1}/Certificates/{2}', 'index.json').format(ChassisId, MemoryId, CertificateId)
+			path = create_path(self.root, 'Systems/{0}/Certificates/{1}', 'index.json').format(ComputerSystemId, CertificateId)
 			put_object(path)
-			return self.get(ChassisId, MemoryId, CertificateId)
+			return self.get(ComputerSystemId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ChassisId, MemoryId, CertificateId):
+	def patch(self, ComputerSystemId, CertificateId):
 		logging.info('Certificate21 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Chassis/{0}/Memory/{1}/Certificates/{2}', 'index.json').format(ChassisId, MemoryId, CertificateId)
+			path = create_path(self.root, 'Systems/{0}/Certificates/{1}', 'index.json').format(ComputerSystemId, CertificateId)
 			patch_object(path)
-			return self.get(ChassisId, MemoryId, CertificateId)
+			return self.get(ComputerSystemId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ChassisId, MemoryId, CertificateId):
+	def delete(self, ComputerSystemId, CertificateId):
 		logging.info('Certificate21 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/Memory/{1}/Certificates/{2}').format(ChassisId, MemoryId, CertificateId)
-			base_path = create_path(self.root, 'Chassis/{0}/Memory/{1}/Certificates').format(ChassisId, MemoryId)
+			path = create_path(self.root, 'Systems/{0}/Certificates/{1}').format(ComputerSystemId, CertificateId)
+			base_path = create_path(self.root, 'Systems/{0}/Certificates').format(ComputerSystemId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

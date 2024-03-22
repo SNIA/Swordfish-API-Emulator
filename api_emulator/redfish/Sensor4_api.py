@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/PowerEquipment/Switchgear/{PowerDistributionId}/Sensors/{SensorId}
+# Resource implementation for - /redfish/v1/PowerEquipment/TransferSwitches/{PowerDistributionId}/Sensors/{SensorId}
 # Program name - Sensor4_api.py
 
 import g
@@ -58,7 +58,7 @@ class Sensor4CollectionAPI(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'PowerEquipment/Switchgear/{0}/Sensors', 'index.json').format(PowerDistributionId)
+			path = os.path.join(self.root, 'PowerEquipment/TransferSwitches/{0}/Sensors', 'index.json').format(PowerDistributionId)
 			return get_json_data(path)
 		else:
 			return msg, code
@@ -78,7 +78,7 @@ class Sensor4CollectionAPI(Resource):
 			if PowerDistributionId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'PowerEquipment/Switchgear/{0}/Sensors').format(PowerDistributionId)
+			path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Sensors').format(PowerDistributionId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -109,7 +109,7 @@ class Sensor4API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'PowerEquipment/Switchgear/{0}/Sensors/{1}', 'index.json').format(PowerDistributionId, SensorId)
+			path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Sensors/{1}', 'index.json').format(PowerDistributionId, SensorId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -124,8 +124,8 @@ class Sensor4API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'PowerEquipment/Switchgear/{0}/Sensors/{1}').format(PowerDistributionId, SensorId)
-			collection_path = os.path.join(self.root, 'PowerEquipment/Switchgear/{0}/Sensors', 'index.json').format(PowerDistributionId)
+			path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Sensors/{1}').format(PowerDistributionId, SensorId)
+			collection_path = os.path.join(self.root, 'PowerEquipment/TransferSwitches/{0}/Sensors', 'index.json').format(PowerDistributionId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
@@ -155,7 +155,7 @@ class Sensor4API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'PowerEquipment/Switchgear/{0}/Sensors/{1}', 'index.json').format(PowerDistributionId, SensorId)
+			path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Sensors/{1}', 'index.json').format(PowerDistributionId, SensorId)
 			put_object(path)
 			return self.get(PowerDistributionId, SensorId)
 		else:
@@ -167,7 +167,7 @@ class Sensor4API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'PowerEquipment/Switchgear/{0}/Sensors/{1}', 'index.json').format(PowerDistributionId, SensorId)
+			path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Sensors/{1}', 'index.json').format(PowerDistributionId, SensorId)
 			patch_object(path)
 			return self.get(PowerDistributionId, SensorId)
 		else:
@@ -179,8 +179,8 @@ class Sensor4API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'PowerEquipment/Switchgear/{0}/Sensors/{1}').format(PowerDistributionId, SensorId)
-			base_path = create_path(self.root, 'PowerEquipment/Switchgear/{0}/Sensors').format(PowerDistributionId)
+			path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Sensors/{1}').format(PowerDistributionId, SensorId)
+			base_path = create_path(self.root, 'PowerEquipment/TransferSwitches/{0}/Sensors').format(PowerDistributionId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,9 +35,9 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-	"@odata.id": "{rb}Chassis/{ChassisId}/FabricAdapters/{FabricAdapterId}/Ports/{PortId}/VCAT/{VCATEntryId}",
-	"@odata.type": "#VCATEntry.v1_0_1.VCATEntry",
+	"@Redfish.Copyright": "Copyright 2014-2024 SNIA. All rights reserved.",
+	"@odata.id": "{rb}CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{SystemId}/FabricAdapters/{FabricAdapterId}/Ports/{PortId}/VCAT/{VCATEntryId}",
+	"@odata.type": "#VCATEntry.v1_0_2.VCATEntry",
 	"Id": "{VCATEntryId}",
 	"Name": "VCATEntry",
 }
@@ -46,23 +46,25 @@ def get_VCATEntry4_instance(wildcards):
 		"""
 		Instantiates and formats the template
 		Arguments:
-			wildcard - A dictionary of wildcards strings and their repalcement values
+			wildcard - A dictionary of wildcards strings and their replacement values
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{ChassisId}', '0')
-		g = g.replace('{FabricAdapterId}', '1')
-		g = g.replace('{PortId}', '2')
-		g = g.replace('{VCATEntryId}', '3')
+		g = d.replace('{ResourceBlockId}', '-0-')
+		g = g.replace('{SystemId}', '-1-')
+		g = g.replace('{FabricAdapterId}', '-2-')
+		g = g.replace('{PortId}', '-3-')
+		g = g.replace('{VCATEntryId}', '-4-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')
 		g = g.replace('{', '~!')
 		g = g.replace('}', '!~')
-		g = g.replace('0', '{ChassisId}')
-		g = g.replace('1', '{FabricAdapterId}')
-		g = g.replace('2', '{PortId}')
-		g = g.replace('3', '{VCATEntryId}')
+		g = g.replace('0', '{ResourceBlockId}')
+		g = g.replace('1', '{SystemId}')
+		g = g.replace('2', '{FabricAdapterId}')
+		g = g.replace('3', '{PortId}')
+		g = g.replace('4', '{VCATEntryId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)
 		g = g.replace('~~!', '{{')

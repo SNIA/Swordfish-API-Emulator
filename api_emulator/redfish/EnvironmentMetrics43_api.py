@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,21 +27,23 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Ports/{PortId}/EnvironmentMetrics
+# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/FabricAdapters/{FabricAdapterId}/Ports/{PortId}/EnvironmentMetrics
 # Program name - EnvironmentMetrics43_api.py
 
 import g
 import json, os
 import traceback
-import logging
+import logging, random, requests, string, jwt
 
-from flask import Flask, request
+from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
 from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
+members = []
+member_ids = []
 INTERNAL_ERROR = 500
 
 # EnvironmentMetrics43 does not have a Collection API
@@ -55,33 +57,33 @@ class EnvironmentMetrics43API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
+	def get(self, ChassisId, FabricAdapterId, PortId):
 		logging.info('EnvironmentMetrics43 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/StorageControllers/{2}/Ports/{3}/EnvironmentMetrics', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
+			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/Ports/{2}/EnvironmentMetrics', 'index.json').format(ChassisId, FabricAdapterId, PortId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
+	def post(self, ChassisId, FabricAdapterId, PortId):
 		logging.info('EnvironmentMetrics43 post called')
 		return 'POST is not a supported command for EnvironmentMetrics43API', 405
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
+	def put(self, ChassisId, FabricAdapterId, PortId):
 		logging.info('EnvironmentMetrics43 put called')
 		return 'PUT is not a supported command for EnvironmentMetrics43API', 405
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
+	def patch(self, ChassisId, FabricAdapterId, PortId):
 		logging.info('EnvironmentMetrics43 patch called')
 		return 'PATCH is not a supported command for EnvironmentMetrics43API', 405
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
+	def delete(self, ChassisId, FabricAdapterId, PortId):
 		logging.info('EnvironmentMetrics43 delete called')
 		return 'DELETE is not a supported command for EnvironmentMetrics43API', 405
 

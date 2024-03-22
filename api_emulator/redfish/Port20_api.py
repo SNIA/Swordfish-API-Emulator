@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Managers/{ManagerId}/USBPorts/{PortId}
+# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Ports/{PortId}
 # Program name - Port20_api.py
 
 import g
@@ -53,18 +53,18 @@ class Port20CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ManagerId):
+	def get(self, ResourceBlockId, StorageId, StorageControllerId):
 		logging.info('Port20 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Managers/{0}/USBPorts', 'index.json').format(ManagerId)
+			path = os.path.join(self.root, 'ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ManagerId):
+	def post(self, ResourceBlockId, StorageId, StorageControllerId):
 		logging.info('Port20 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Port20CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if ManagerId in members:
+			if StorageControllerId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Managers/{0}/USBPorts').format(ManagerId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports').format(ResourceBlockId, StorageId, StorageControllerId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Port20CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Port20API.post(self, ManagerId, os.path.basename(config['@odata.id']))
+					return Port20API.post(self, ResourceBlockId, StorageId, StorageControllerId, os.path.basename(config['@odata.id']))
 				else:
-					return Port20API.post(self, ManagerId, str(res))
+					return Port20API.post(self, ResourceBlockId, StorageId, StorageControllerId, str(res))
 			else:
-				return Port20API.post(self, ManagerId, str(res))
+				return Port20API.post(self, ResourceBlockId, StorageId, StorageControllerId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Port20API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ManagerId, PortId):
+	def get(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
 		logging.info('Port20 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/USBPorts/{1}', 'index.json').format(ManagerId, PortId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +119,24 @@ class Port20API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ManagerId, PortId):
+	def post(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
 		logging.info('Port20 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/USBPorts/{1}').format(ManagerId, PortId)
-			collection_path = os.path.join(self.root, 'Managers/{0}/USBPorts', 'index.json').format(ManagerId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
+			collection_path = os.path.join(self.root, 'ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Port20CollectionAPI.post(self, ManagerId)
+				Port20CollectionAPI.post(self, ResourceBlockId, StorageId, StorageControllerId)
 
 			if PortId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ManagerId':ManagerId, 'PortId':PortId, 'rb':g.rest_base}
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'StorageId':StorageId, 'StorageControllerId':StorageControllerId, 'PortId':PortId, 'rb':g.rest_base}
 				config=get_Port20_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +150,37 @@ class Port20API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ManagerId, PortId):
+	def put(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
 		logging.info('Port20 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/USBPorts/{1}', 'index.json').format(ManagerId, PortId)
+			path = os.path.join(self.root, 'ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
 			put_object(path)
-			return self.get(ManagerId, PortId)
+			return self.get(ResourceBlockId, StorageId, StorageControllerId, PortId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ManagerId, PortId):
+	def patch(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
 		logging.info('Port20 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/USBPorts/{1}', 'index.json').format(ManagerId, PortId)
+			path = os.path.join(self.root, 'ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
 			patch_object(path)
-			return self.get(ManagerId, PortId)
+			return self.get(ResourceBlockId, StorageId, StorageControllerId, PortId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ManagerId, PortId):
+	def delete(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
 		logging.info('Port20 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/USBPorts/{1}').format(ManagerId, PortId)
-			base_path = create_path(self.root, 'Managers/{0}/USBPorts').format(ManagerId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
+			base_path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports').format(ResourceBlockId, StorageId, StorageControllerId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

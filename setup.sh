@@ -89,6 +89,14 @@ if ! [ -x "$(command -v python3)" ]; then
     exit 1
 fi
 
+if ! [ -x "$(command -v virtualenv)" ]; then
+    echo "Error: virtualenv is required."
+    echo ""
+    echo "See https://virtualenv.pypa.io/en/stable/installation/ for" \
+         "installation instructions."
+    echo ""
+    exit 1
+fi
 
 if ! [ -x "$(command -v git)" ]; then
     echo "Error: git is required."

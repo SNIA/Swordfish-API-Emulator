@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2023, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,9 +35,9 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2023 SNIA. All rights reserved.",
-	"@odata.id": "{rb}AccountService/Accounts/{ManagerAccountId}/Keys/{KeyId}",
-	"@odata.type": "#Key.v1_2_0.Key",
+	"@Redfish.Copyright": "Copyright 2014-2024 SNIA. All rights reserved.",
+	"@odata.id": "{rb}UpdateService/RemoteServerSSHKeys/{KeyId}",
+	"@odata.type": "#Key.v1_4_0.Key",
 	"Id": "{KeyId}",
 	"Name": "Key",
 }
@@ -50,15 +50,13 @@ def get_Key1_instance(wildcards):
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{ManagerAccountId}', '-0-')
-		g = g.replace('{KeyId}', '-1-')
+		g = d.replace('{KeyId}', '-0-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')
 		g = g.replace('{', '~!')
 		g = g.replace('}', '!~')
-		g = g.replace('0', '{ManagerAccountId}')
-		g = g.replace('1', '{KeyId}')
+		g = g.replace('0', '{KeyId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)
 		g = g.replace('~~!', '{{')

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,9 +35,9 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-	"@odata.id": "{rb}Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Certificates/{CertificateId}",
-	"@odata.type": "#Certificate.v1_6_0.Certificate",
+	"@Redfish.Copyright": "Copyright 2014-2024 SNIA. All rights reserved.",
+	"@odata.id": "{rb}CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Certificates/{CertificateId}",
+	"@odata.type": "#Certificate.v1_8_1.Certificate",
 	"Id": "{CertificateId}",
 	"Name": "Certificate",
 }
@@ -46,23 +46,25 @@ def get_Certificate38_instance(wildcards):
 		"""
 		Instantiates and formats the template
 		Arguments:
-			wildcard - A dictionary of wildcards strings and their repalcement values
+			wildcard - A dictionary of wildcards strings and their replacement values
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{ComputerSystemId}', '0')
-		g = g.replace('{StorageId}', '1')
-		g = g.replace('{StorageControllerId}', '2')
-		g = g.replace('{CertificateId}', '3')
+		g = d.replace('{ResourceBlockId}', '-0-')
+		g = g.replace('{ComputerSystemId}', '-1-')
+		g = g.replace('{StorageId}', '-2-')
+		g = g.replace('{StorageControllerId}', '-3-')
+		g = g.replace('{CertificateId}', '-4-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')
 		g = g.replace('{', '~!')
 		g = g.replace('}', '!~')
-		g = g.replace('0', '{ComputerSystemId}')
-		g = g.replace('1', '{StorageId}')
-		g = g.replace('2', '{StorageControllerId}')
-		g = g.replace('3', '{CertificateId}')
+		g = g.replace('0', '{ResourceBlockId}')
+		g = g.replace('1', '{ComputerSystemId}')
+		g = g.replace('2', '{StorageId}')
+		g = g.replace('3', '{StorageControllerId}')
+		g = g.replace('4', '{CertificateId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)
 		g = g.replace('~~!', '{{')

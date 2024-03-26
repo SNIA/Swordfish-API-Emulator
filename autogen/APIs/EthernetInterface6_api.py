@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/NetworkDeviceFunctions/{NetworkDeviceFunctionId}/EthernetInterfaces/{EthernetInterfaceId}
+# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/OperatingSystem/Containers/EthernetInterfaces/{EthernetInterfaceId}
 # Program name - EthernetInterface6_api.py
 
 import g
@@ -53,18 +53,18 @@ class EthernetInterface6CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, NetworkAdapterId, NetworkDeviceFunctionId):
+	def get(self, ComputerSystemId):
 		logging.info('EthernetInterface6 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Chassis/{0}/NetworkAdapters/{1}/NetworkDeviceFunctions/{2}/EthernetInterfaces', 'index.json').format(ChassisId, NetworkAdapterId, NetworkDeviceFunctionId)
+			path = os.path.join(self.root, 'Systems/{0}/OperatingSystem/Containers/EthernetInterfaces', 'index.json').format(ComputerSystemId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ChassisId, NetworkAdapterId, NetworkDeviceFunctionId):
+	def post(self, ComputerSystemId):
 		logging.info('EthernetInterface6 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class EthernetInterface6CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if NetworkDeviceFunctionId in members:
+			if ComputerSystemId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/NetworkDeviceFunctions/{2}/EthernetInterfaces').format(ChassisId, NetworkAdapterId, NetworkDeviceFunctionId)
+			path = create_path(self.root, 'Systems/{0}/OperatingSystem/Containers/EthernetInterfaces').format(ComputerSystemId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class EthernetInterface6CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return EthernetInterface6API.post(self, ChassisId, NetworkAdapterId, NetworkDeviceFunctionId, os.path.basename(config['@odata.id']))
+					return EthernetInterface6API.post(self, ComputerSystemId, os.path.basename(config['@odata.id']))
 				else:
-					return EthernetInterface6API.post(self, ChassisId, NetworkAdapterId, NetworkDeviceFunctionId, str(res))
+					return EthernetInterface6API.post(self, ComputerSystemId, str(res))
 			else:
-				return EthernetInterface6API.post(self, ChassisId, NetworkAdapterId, NetworkDeviceFunctionId, str(res))
+				return EthernetInterface6API.post(self, ComputerSystemId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class EthernetInterface6API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, NetworkAdapterId, NetworkDeviceFunctionId, EthernetInterfaceId):
+	def get(self, ComputerSystemId, EthernetInterfaceId):
 		logging.info('EthernetInterface6 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/NetworkDeviceFunctions/{2}/EthernetInterfaces/{3}', 'index.json').format(ChassisId, NetworkAdapterId, NetworkDeviceFunctionId, EthernetInterfaceId)
+			path = create_path(self.root, 'Systems/{0}/OperatingSystem/Containers/EthernetInterfaces/{1}', 'index.json').format(ComputerSystemId, EthernetInterfaceId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +119,24 @@ class EthernetInterface6API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ChassisId, NetworkAdapterId, NetworkDeviceFunctionId, EthernetInterfaceId):
+	def post(self, ComputerSystemId, EthernetInterfaceId):
 		logging.info('EthernetInterface6 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/NetworkDeviceFunctions/{2}/EthernetInterfaces/{3}').format(ChassisId, NetworkAdapterId, NetworkDeviceFunctionId, EthernetInterfaceId)
-			collection_path = os.path.join(self.root, 'Chassis/{0}/NetworkAdapters/{1}/NetworkDeviceFunctions/{2}/EthernetInterfaces', 'index.json').format(ChassisId, NetworkAdapterId, NetworkDeviceFunctionId)
+			path = create_path(self.root, 'Systems/{0}/OperatingSystem/Containers/EthernetInterfaces/{1}').format(ComputerSystemId, EthernetInterfaceId)
+			collection_path = os.path.join(self.root, 'Systems/{0}/OperatingSystem/Containers/EthernetInterfaces', 'index.json').format(ComputerSystemId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				EthernetInterface6CollectionAPI.post(self, ChassisId, NetworkAdapterId, NetworkDeviceFunctionId)
+				EthernetInterface6CollectionAPI.post(self, ComputerSystemId)
 
 			if EthernetInterfaceId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ChassisId':ChassisId, 'NetworkAdapterId':NetworkAdapterId, 'NetworkDeviceFunctionId':NetworkDeviceFunctionId, 'EthernetInterfaceId':EthernetInterfaceId, 'rb':g.rest_base}
+				wildcards = {'ComputerSystemId':ComputerSystemId, 'EthernetInterfaceId':EthernetInterfaceId, 'rb':g.rest_base}
 				config=get_EthernetInterface6_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +150,37 @@ class EthernetInterface6API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ChassisId, NetworkAdapterId, NetworkDeviceFunctionId, EthernetInterfaceId):
+	def put(self, ComputerSystemId, EthernetInterfaceId):
 		logging.info('EthernetInterface6 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Chassis/{0}/NetworkAdapters/{1}/NetworkDeviceFunctions/{2}/EthernetInterfaces/{3}', 'index.json').format(ChassisId, NetworkAdapterId, NetworkDeviceFunctionId, EthernetInterfaceId)
+			path = create_path(self.root, 'Systems/{0}/OperatingSystem/Containers/EthernetInterfaces/{1}', 'index.json').format(ComputerSystemId, EthernetInterfaceId)
 			put_object(path)
-			return self.get(ChassisId, NetworkAdapterId, NetworkDeviceFunctionId, EthernetInterfaceId)
+			return self.get(ComputerSystemId, EthernetInterfaceId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ChassisId, NetworkAdapterId, NetworkDeviceFunctionId, EthernetInterfaceId):
+	def patch(self, ComputerSystemId, EthernetInterfaceId):
 		logging.info('EthernetInterface6 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Chassis/{0}/NetworkAdapters/{1}/NetworkDeviceFunctions/{2}/EthernetInterfaces/{3}', 'index.json').format(ChassisId, NetworkAdapterId, NetworkDeviceFunctionId, EthernetInterfaceId)
+			path = create_path(self.root, 'Systems/{0}/OperatingSystem/Containers/EthernetInterfaces/{1}', 'index.json').format(ComputerSystemId, EthernetInterfaceId)
 			patch_object(path)
-			return self.get(ChassisId, NetworkAdapterId, NetworkDeviceFunctionId, EthernetInterfaceId)
+			return self.get(ComputerSystemId, EthernetInterfaceId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ChassisId, NetworkAdapterId, NetworkDeviceFunctionId, EthernetInterfaceId):
+	def delete(self, ComputerSystemId, EthernetInterfaceId):
 		logging.info('EthernetInterface6 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/NetworkDeviceFunctions/{2}/EthernetInterfaces/{3}').format(ChassisId, NetworkAdapterId, NetworkDeviceFunctionId, EthernetInterfaceId)
-			base_path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/NetworkDeviceFunctions/{2}/EthernetInterfaces').format(ChassisId, NetworkAdapterId, NetworkDeviceFunctionId)
+			path = create_path(self.root, 'Systems/{0}/OperatingSystem/Containers/EthernetInterfaces/{1}').format(ComputerSystemId, EthernetInterfaceId)
+			base_path = create_path(self.root, 'Systems/{0}/OperatingSystem/Containers/EthernetInterfaces').format(ComputerSystemId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

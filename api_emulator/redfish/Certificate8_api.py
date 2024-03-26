@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Managers/{ManagerId}/NetworkProtocol/HTTPS/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/Managers/{ManagerId}/RemoteAccountService/LDAP/Certificates/{CertificateId}
 # Program name - Certificate8_api.py
 
 import g
@@ -58,7 +58,7 @@ class Certificate8CollectionAPI(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Managers/{0}/NetworkProtocol/HTTPS/Certificates', 'index.json').format(ManagerId)
+			path = os.path.join(self.root, 'Managers/{0}/RemoteAccountService/LDAP/Certificates', 'index.json').format(ManagerId)
 			return get_json_data(path)
 		else:
 			return msg, code
@@ -78,7 +78,7 @@ class Certificate8CollectionAPI(Resource):
 			if ManagerId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Managers/{0}/NetworkProtocol/HTTPS/Certificates').format(ManagerId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/LDAP/Certificates').format(ManagerId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -109,7 +109,7 @@ class Certificate8API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/NetworkProtocol/HTTPS/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/LDAP/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -124,8 +124,8 @@ class Certificate8API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/NetworkProtocol/HTTPS/Certificates/{1}').format(ManagerId, CertificateId)
-			collection_path = os.path.join(self.root, 'Managers/{0}/NetworkProtocol/HTTPS/Certificates', 'index.json').format(ManagerId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/LDAP/Certificates/{1}').format(ManagerId, CertificateId)
+			collection_path = os.path.join(self.root, 'Managers/{0}/RemoteAccountService/LDAP/Certificates', 'index.json').format(ManagerId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
@@ -155,7 +155,7 @@ class Certificate8API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/NetworkProtocol/HTTPS/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/LDAP/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			put_object(path)
 			return self.get(ManagerId, CertificateId)
 		else:
@@ -167,7 +167,7 @@ class Certificate8API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/NetworkProtocol/HTTPS/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/LDAP/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			patch_object(path)
 			return self.get(ManagerId, CertificateId)
 		else:
@@ -179,8 +179,8 @@ class Certificate8API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/NetworkProtocol/HTTPS/Certificates/{1}').format(ManagerId, CertificateId)
-			base_path = create_path(self.root, 'Managers/{0}/NetworkProtocol/HTTPS/Certificates').format(ManagerId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/LDAP/Certificates/{1}').format(ManagerId, CertificateId)
+			base_path = create_path(self.root, 'Managers/{0}/RemoteAccountService/LDAP/Certificates').format(ManagerId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Memory/{MemoryId}/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/EventService/Subscriptions/{EventDestinationId}/ClientCertificates/{CertificateId}
 # Program name - Certificate20_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate20CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, MemoryId):
+	def get(self, EventDestinationId):
 		logging.info('Certificate20 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/Memory/{1}/Certificates', 'index.json').format(ComputerSystemId, MemoryId)
+			path = os.path.join(self.root, 'EventService/Subscriptions/{0}/ClientCertificates', 'index.json').format(EventDestinationId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ComputerSystemId, MemoryId):
+	def post(self, EventDestinationId):
 		logging.info('Certificate20 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Certificate20CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if MemoryId in members:
+			if EventDestinationId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Systems/{0}/Memory/{1}/Certificates').format(ComputerSystemId, MemoryId)
+			path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates').format(EventDestinationId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Certificate20CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate20API.post(self, ComputerSystemId, MemoryId, os.path.basename(config['@odata.id']))
+					return Certificate20API.post(self, EventDestinationId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate20API.post(self, ComputerSystemId, MemoryId, str(res))
+					return Certificate20API.post(self, EventDestinationId, str(res))
 			else:
-				return Certificate20API.post(self, ComputerSystemId, MemoryId, str(res))
+				return Certificate20API.post(self, EventDestinationId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Certificate20API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, MemoryId, CertificateId):
+	def get(self, EventDestinationId, CertificateId):
 		logging.info('Certificate20 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/Memory/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, MemoryId, CertificateId)
+			path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates/{1}', 'index.json').format(EventDestinationId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +119,24 @@ class Certificate20API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ComputerSystemId, MemoryId, CertificateId):
+	def post(self, EventDestinationId, CertificateId):
 		logging.info('Certificate20 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/Memory/{1}/Certificates/{2}').format(ComputerSystemId, MemoryId, CertificateId)
-			collection_path = os.path.join(self.root, 'Systems/{0}/Memory/{1}/Certificates', 'index.json').format(ComputerSystemId, MemoryId)
+			path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates/{1}').format(EventDestinationId, CertificateId)
+			collection_path = os.path.join(self.root, 'EventService/Subscriptions/{0}/ClientCertificates', 'index.json').format(EventDestinationId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate20CollectionAPI.post(self, ComputerSystemId, MemoryId)
+				Certificate20CollectionAPI.post(self, EventDestinationId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ComputerSystemId':ComputerSystemId, 'MemoryId':MemoryId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'EventDestinationId':EventDestinationId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate20_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +150,37 @@ class Certificate20API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ComputerSystemId, MemoryId, CertificateId):
+	def put(self, EventDestinationId, CertificateId):
 		logging.info('Certificate20 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/Memory/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, MemoryId, CertificateId)
+			path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates/{1}', 'index.json').format(EventDestinationId, CertificateId)
 			put_object(path)
-			return self.get(ComputerSystemId, MemoryId, CertificateId)
+			return self.get(EventDestinationId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ComputerSystemId, MemoryId, CertificateId):
+	def patch(self, EventDestinationId, CertificateId):
 		logging.info('Certificate20 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/Memory/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, MemoryId, CertificateId)
+			path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates/{1}', 'index.json').format(EventDestinationId, CertificateId)
 			patch_object(path)
-			return self.get(ComputerSystemId, MemoryId, CertificateId)
+			return self.get(EventDestinationId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ComputerSystemId, MemoryId, CertificateId):
+	def delete(self, EventDestinationId, CertificateId):
 		logging.info('Certificate20 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/Memory/{1}/Certificates/{2}').format(ComputerSystemId, MemoryId, CertificateId)
-			base_path = create_path(self.root, 'Systems/{0}/Memory/{1}/Certificates').format(ComputerSystemId, MemoryId)
+			path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates/{1}').format(EventDestinationId, CertificateId)
+			base_path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates').format(EventDestinationId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

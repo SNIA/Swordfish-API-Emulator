@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -30,18 +30,15 @@
 # Resource implementation for - /redfish/v1/AccountService/Accounts/{ManagerAccountId}
 # Program name - ManagerAccount0_api.py
 
-import copy
-import random
-import string
 import g
-import json, os
+import json, os, random, string
 import traceback
 import logging
 
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, remove_json_object, update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.ManagerAccount0 import get_ManagerAccount0_instance
 
 members = []
@@ -62,7 +59,7 @@ class ManagerAccount0CollectionAPI(Resource):
 
 		if code == 200:
 			path = os.path.join(self.root, 'AccountService/Accounts', 'index.json')
-			return get_json_data (path)
+			return get_json_data(path)
 		else:
 			return msg, code
 
@@ -137,34 +134,9 @@ class ManagerAccount0API(Resource):
 			try:
 				global config
 				wildcards = {'ManagerAccountId':ManagerAccountId, 'rb':g.rest_base}
-				config = get_ManagerAccount0_instance(wildcards)
-				
-				if request.data:
-					request_data = json.loads(request.data)
-					# Update the keys of payload in json file.
-					for key, value in request_data.items():
-						config[key] = value
-				
-				members.append(config)
-				member_ids.append({'@odata.id': config['@odata.id']})
-
-				if not config['UserName'] or not config['Password'] or not config['RoleId']:
-					return "The authentication credentials are missing", 401
-				else:
-					if not os.path.exists(path):
-						os.mkdir(path)
-					else:
-						# This will execute when POST is called for more than one time for a resource
-						return "A creation request could not be completed because of conflict, 409", 409
-					with open(os.path.join(path, "index.json"), "w") as fd:
-						data = copy.deepcopy(config)
-						fd.write(json.dumps(data, indent=4, sort_keys=True))
-					
-					# update the collection json file with new added resource
-					update_collections_json(path=collection_path, link=config['@odata.id'])
-
-					config = remove_json_object(config, 'Password')
-					resp = config, 200
+				config=get_ManagerAccount0_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
 
 			except Exception:
 				traceback.print_exc()

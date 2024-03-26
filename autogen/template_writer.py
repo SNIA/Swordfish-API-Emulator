@@ -4,7 +4,7 @@ from template_writer_utils import get_path_variables
 def write_program_header(outfile, base_template_name):
     """ Writes a template program header """
     outfile.write('#\n')
-    outfile.write('# Copyright (c) 2017-2023, The Storage Networking Industry Association.\n')
+    outfile.write('# Copyright (c) 2017-2024, The Storage Networking Industry Association.\n')
     outfile.write('#\n')
     outfile.write('# Redistribution and use in source and binary forms, with or without\n')
     outfile.write('# modification, are permitted provided that the following conditions are met:\n')
@@ -45,7 +45,7 @@ def write_template(outfile, resource_path, json_schema):
     outfile.write("_TEMPLATE = \\")
     outfile.write("\n")
     outfile.write("{\n")
-    outfile.write('\t"@Redfish.Copyright": "Copyright 2014-2023 SNIA. All rights reserved.",\n')
+    outfile.write('\t"@Redfish.Copyright": "Copyright 2014-2024 SNIA. All rights reserved.",\n')
 
     # All the template will have required properties -
     #  "@odata.id", "@odata.type", "Id", "Name", etc

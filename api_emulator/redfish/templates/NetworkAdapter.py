@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,9 +35,9 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
+	"@Redfish.Copyright": "Copyright 2014-2024 SNIA. All rights reserved.",
 	"@odata.id": "{rb}Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}",
-	"@odata.type": "#NetworkAdapter.v1_9_0.NetworkAdapter",
+	"@odata.type": "#NetworkAdapter.v1_10_0.NetworkAdapter",
 	"Id": "{NetworkAdapterId}",
 	"Name": "NetworkAdapter",
 }
@@ -46,12 +46,12 @@ def get_NetworkAdapter_instance(wildcards):
 		"""
 		Instantiates and formats the template
 		Arguments:
-			wildcard - A dictionary of wildcards strings and their repalcement values
+			wildcard - A dictionary of wildcards strings and their replacement values
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{ChassisId}', '0')
-		g = g.replace('{NetworkAdapterId}', '1')
+		g = d.replace('{ChassisId}', '-0-')
+		g = g.replace('{NetworkAdapterId}', '-1-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

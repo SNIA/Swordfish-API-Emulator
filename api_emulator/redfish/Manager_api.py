@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.Manager import get_Manager_instance
 
 members = []
@@ -59,7 +59,7 @@ class ManagerCollectionAPI(Resource):
 
 		if code == 200:
 			path = os.path.join(self.root, 'Managers', 'index.json')
-			return get_json_data (path)
+			return get_json_data(path)
 		else:
 			return msg, code
 

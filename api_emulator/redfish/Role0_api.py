@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
 from .templates.Role0 import get_Role0_instance
 
 members = []
@@ -59,7 +59,7 @@ class Role0CollectionAPI(Resource):
 
 		if code == 200:
 			path = os.path.join(self.root, 'AccountService/Roles', 'index.json')
-			return get_json_data (path)
+			return get_json_data(path)
 		else:
 			return msg, code
 
@@ -165,10 +165,8 @@ class Role0API(Resource):
 
 		if code == 200:
 			path = os.path.join(self.root, 'AccountService/Roles/{0}', 'index.json').format(RoleId)
-			if patch_object(path) == 200:
-				return self.get(RoleId)
-			else:
-				return {"error": "Non updatable property: AssignedPrivileges"}, 400
+			patch_object(path)
+			return self.get(RoleId)
 		else:
 			return msg, code
 

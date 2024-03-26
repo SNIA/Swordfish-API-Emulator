@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -33,15 +33,17 @@
 import g
 import json, os
 import traceback
-import logging
+import logging, random, requests, string, jwt
 
-from flask import Flask, request
+from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
+members = []
+member_ids = []
 INTERNAL_ERROR = 500
 
 # MessageRegistryFile Collection API
@@ -58,7 +60,7 @@ class MessageRegistryFileCollectionAPI(Resource):
 
 		if code == 200:
 			path = os.path.join(self.root, 'Registries', 'index.json')
-			return get_json_data (path)
+			return get_json_data(path)
 		else:
 			return msg, code
 
@@ -96,10 +98,7 @@ class MessageRegistryFileAPI(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			if '.json' not in MessageRegistryFileId:
-				path = create_path(self.root, 'Registries/{0}', 'index.json').format(MessageRegistryFileId)
-			else:
-				path = create_path(self.root, 'Registries/{0}').format(MessageRegistryFileId)
+			path = create_path(self.root, 'Registries/{0}', 'index.json').format(MessageRegistryFileId)
 			return get_json_data (path)
 		else:
 			return msg, code

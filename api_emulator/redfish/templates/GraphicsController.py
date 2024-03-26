@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,9 +35,9 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
+	"@Redfish.Copyright": "Copyright 2014-2024 SNIA. All rights reserved.",
 	"@odata.id": "{rb}Systems/{ComputerSystemId}/GraphicsControllers/{ControllerId}",
-	"@odata.type": "#GraphicsController.v1_0_0.GraphicsController",
+	"@odata.type": "#GraphicsController.v1_0_1.GraphicsController",
 	"Id": "{ControllerId}",
 	"Name": "GraphicsController",
 }
@@ -46,12 +46,12 @@ def get_GraphicsController_instance(wildcards):
 		"""
 		Instantiates and formats the template
 		Arguments:
-			wildcard - A dictionary of wildcards strings and their repalcement values
+			wildcard - A dictionary of wildcards strings and their replacement values
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{ComputerSystemId}', '0')
-		g = g.replace('{ControllerId}', '1')
+		g = d.replace('{ComputerSystemId}', '-0-')
+		g = g.replace('{ControllerId}', '-1-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

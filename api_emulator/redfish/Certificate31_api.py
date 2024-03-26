@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Processors/{ProcessorId}/Certificates/{CertificateId}
 # Program name - Certificate31_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate31CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, StorageId, StorageControllerId):
+	def get(self, ResourceBlockId, ProcessorId):
 		logging.info('Certificate31 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Storage/{0}/StorageControllers/{1}/Certificates', 'index.json').format(StorageId, StorageControllerId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/Certificates', 'index.json').format(ResourceBlockId, ProcessorId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, StorageId, StorageControllerId):
+	def post(self, ResourceBlockId, ProcessorId):
 		logging.info('Certificate31 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Certificate31CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if StorageControllerId in members:
+			if ProcessorId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Storage/{0}/StorageControllers/{1}/Certificates').format(StorageId, StorageControllerId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/Certificates').format(ResourceBlockId, ProcessorId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Certificate31CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate31API.post(self, StorageId, StorageControllerId, os.path.basename(config['@odata.id']))
+					return Certificate31API.post(self, ResourceBlockId, ProcessorId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate31API.post(self, StorageId, StorageControllerId, str(res))
+					return Certificate31API.post(self, ResourceBlockId, ProcessorId, str(res))
 			else:
-				return Certificate31API.post(self, StorageId, StorageControllerId, str(res))
+				return Certificate31API.post(self, ResourceBlockId, ProcessorId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Certificate31API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, StorageId, StorageControllerId, CertificateId):
+	def get(self, ResourceBlockId, ProcessorId, CertificateId):
 		logging.info('Certificate31 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Storage/{0}/StorageControllers/{1}/Certificates/{2}', 'index.json').format(StorageId, StorageControllerId, CertificateId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/Certificates/{2}', 'index.json').format(ResourceBlockId, ProcessorId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +119,24 @@ class Certificate31API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, StorageId, StorageControllerId, CertificateId):
+	def post(self, ResourceBlockId, ProcessorId, CertificateId):
 		logging.info('Certificate31 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Storage/{0}/StorageControllers/{1}/Certificates/{2}').format(StorageId, StorageControllerId, CertificateId)
-			collection_path = os.path.join(self.root, 'Storage/{0}/StorageControllers/{1}/Certificates', 'index.json').format(StorageId, StorageControllerId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/Certificates/{2}').format(ResourceBlockId, ProcessorId, CertificateId)
+			collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/Certificates', 'index.json').format(ResourceBlockId, ProcessorId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate31CollectionAPI.post(self, StorageId, StorageControllerId)
+				Certificate31CollectionAPI.post(self, ResourceBlockId, ProcessorId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'StorageId':StorageId, 'StorageControllerId':StorageControllerId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'ProcessorId':ProcessorId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate31_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +150,37 @@ class Certificate31API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, StorageId, StorageControllerId, CertificateId):
+	def put(self, ResourceBlockId, ProcessorId, CertificateId):
 		logging.info('Certificate31 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Storage/{0}/StorageControllers/{1}/Certificates/{2}', 'index.json').format(StorageId, StorageControllerId, CertificateId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/Certificates/{2}', 'index.json').format(ResourceBlockId, ProcessorId, CertificateId)
 			put_object(path)
-			return self.get(StorageId, StorageControllerId, CertificateId)
+			return self.get(ResourceBlockId, ProcessorId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, StorageId, StorageControllerId, CertificateId):
+	def patch(self, ResourceBlockId, ProcessorId, CertificateId):
 		logging.info('Certificate31 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Storage/{0}/StorageControllers/{1}/Certificates/{2}', 'index.json').format(StorageId, StorageControllerId, CertificateId)
+			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/Certificates/{2}', 'index.json').format(ResourceBlockId, ProcessorId, CertificateId)
 			patch_object(path)
-			return self.get(StorageId, StorageControllerId, CertificateId)
+			return self.get(ResourceBlockId, ProcessorId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, StorageId, StorageControllerId, CertificateId):
+	def delete(self, ResourceBlockId, ProcessorId, CertificateId):
 		logging.info('Certificate31 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Storage/{0}/StorageControllers/{1}/Certificates/{2}').format(StorageId, StorageControllerId, CertificateId)
-			base_path = create_path(self.root, 'Storage/{0}/StorageControllers/{1}/Certificates').format(StorageId, StorageControllerId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/Certificates/{2}').format(ResourceBlockId, ProcessorId, CertificateId)
+			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/Certificates').format(ResourceBlockId, ProcessorId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

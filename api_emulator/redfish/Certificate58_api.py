@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/VirtualMedia/{VirtualMediaId}/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/VirtualMedia/{VirtualMediaId}/Certificates/{CertificateId}
 # Program name - Certificate58_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate58CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, VirtualMediaId):
+	def get(self, ComputerSystemId, VirtualMediaId):
 		logging.info('Certificate58 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/Certificates', 'index.json').format(ResourceBlockId, ComputerSystemId, VirtualMediaId)
+			path = os.path.join(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates', 'index.json').format(ComputerSystemId, VirtualMediaId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ResourceBlockId, ComputerSystemId, VirtualMediaId):
+	def post(self, ComputerSystemId, VirtualMediaId):
 		logging.info('Certificate58 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -78,7 +78,7 @@ class Certificate58CollectionAPI(Resource):
 			if VirtualMediaId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/Certificates').format(ResourceBlockId, ComputerSystemId, VirtualMediaId)
+			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates').format(ComputerSystemId, VirtualMediaId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Certificate58CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate58API.post(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, os.path.basename(config['@odata.id']))
+					return Certificate58API.post(self, ComputerSystemId, VirtualMediaId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate58API.post(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, str(res))
+					return Certificate58API.post(self, ComputerSystemId, VirtualMediaId, str(res))
 			else:
-				return Certificate58API.post(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, str(res))
+				return Certificate58API.post(self, ComputerSystemId, VirtualMediaId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Certificate58API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId):
+	def get(self, ComputerSystemId, VirtualMediaId, CertificateId):
 		logging.info('Certificate58 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
+			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, VirtualMediaId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +119,24 @@ class Certificate58API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId):
+	def post(self, ComputerSystemId, VirtualMediaId, CertificateId):
 		logging.info('Certificate58 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/Certificates/{3}').format(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
-			collection_path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/Certificates', 'index.json').format(ResourceBlockId, ComputerSystemId, VirtualMediaId)
+			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}').format(ComputerSystemId, VirtualMediaId, CertificateId)
+			collection_path = os.path.join(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates', 'index.json').format(ComputerSystemId, VirtualMediaId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate58CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, VirtualMediaId)
+				Certificate58CollectionAPI.post(self, ComputerSystemId, VirtualMediaId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'VirtualMediaId':VirtualMediaId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'ComputerSystemId':ComputerSystemId, 'VirtualMediaId':VirtualMediaId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate58_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +150,37 @@ class Certificate58API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId):
+	def put(self, ComputerSystemId, VirtualMediaId, CertificateId):
 		logging.info('Certificate58 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
+			path = os.path.join(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, VirtualMediaId, CertificateId)
 			put_object(path)
-			return self.get(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
+			return self.get(ComputerSystemId, VirtualMediaId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId):
+	def patch(self, ComputerSystemId, VirtualMediaId, CertificateId):
 		logging.info('Certificate58 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
+			path = os.path.join(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, VirtualMediaId, CertificateId)
 			patch_object(path)
-			return self.get(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
+			return self.get(ComputerSystemId, VirtualMediaId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId):
+	def delete(self, ComputerSystemId, VirtualMediaId, CertificateId):
 		logging.info('Certificate58 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/Certificates/{3}').format(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
-			base_path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/Certificates').format(ResourceBlockId, ComputerSystemId, VirtualMediaId)
+			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}').format(ComputerSystemId, VirtualMediaId, CertificateId)
+			base_path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates').format(ComputerSystemId, VirtualMediaId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

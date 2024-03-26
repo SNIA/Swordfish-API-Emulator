@@ -38,5 +38,5 @@ To generate template file for each individual resource, run following program -
 
 This tool also generates add_resource/add_service_resource and add_import files.
 - add_resource/add_service_resource: contains "g.api.add_resource" statements for all implemented resource.
-- add_import: contains import statements for generted classes
+- add_import: contains import statements for generated classes
 You can copy the contains from these files to the emulator's resource_manager.py program.

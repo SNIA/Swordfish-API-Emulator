@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,9 +35,9 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
+	"@Redfish.Copyright": "Copyright 2014-2024 SNIA. All rights reserved.",
 	"@odata.id": "{rb}StorageServices/{StorageServiceId}/Volumes/{VolumeId}/ConsistencyGroups/{ConsistencyGroupId}",
-	"@odata.type": "#ConsistencyGroup.v1_1_0.ConsistencyGroup",
+	"@odata.type": "#ConsistencyGroup.v1_1_1.ConsistencyGroup",
 	"Id": "{ConsistencyGroupId}",
 	"Name": "ConsistencyGroup",
 }
@@ -46,13 +46,13 @@ def get_ConsistencyGroup3_instance(wildcards):
 		"""
 		Instantiates and formats the template
 		Arguments:
-			wildcard - A dictionary of wildcards strings and their repalcement values
+			wildcard - A dictionary of wildcards strings and their replacement values
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{StorageServiceId}', '0')
-		g = g.replace('{VolumeId}', '1')
-		g = g.replace('{ConsistencyGroupId}', '2')
+		g = d.replace('{StorageServiceId}', '-0-')
+		g = g.replace('{VolumeId}', '-1-')
+		g = g.replace('{ConsistencyGroupId}', '-2-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,21 +27,23 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Ports/{PortId}/Metrics
+# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/USBControllers/{ControllerId}/Ports/{PortId}/Metrics
 # Program name - PortMetrics17_api.py
 
 import g
 import json, os
 import traceback
-import logging
+import logging, random, requests, string, jwt
 
-from flask import Flask, request
+from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
 from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
+members = []
+member_ids = []
 INTERNAL_ERROR = 500
 
 # PortMetrics17 does not have a Collection API
@@ -55,33 +57,33 @@ class PortMetrics17API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, NetworkAdapterId, PortId):
+	def get(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
 		logging.info('PortMetrics17 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Ports/{2}/Metrics', 'index.json').format(ChassisId, NetworkAdapterId, PortId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}/Metrics', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ChassisId, NetworkAdapterId, PortId):
+	def post(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
 		logging.info('PortMetrics17 post called')
 		return 'POST is not a supported command for PortMetrics17API', 405
 
 	# HTTP PUT
-	def put(self, ChassisId, NetworkAdapterId, PortId):
+	def put(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
 		logging.info('PortMetrics17 put called')
 		return 'PUT is not a supported command for PortMetrics17API', 405
 
 	# HTTP PATCH
-	def patch(self, ChassisId, NetworkAdapterId, PortId):
+	def patch(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
 		logging.info('PortMetrics17 patch called')
 		return 'PATCH is not a supported command for PortMetrics17API', 405
 
 	# HTTP DELETE
-	def delete(self, ChassisId, NetworkAdapterId, PortId):
+	def delete(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
 		logging.info('PortMetrics17 delete called')
 		return 'DELETE is not a supported command for PortMetrics17API', 405
 

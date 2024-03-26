@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/AccountService/Accounts/{ManagerAccountId}/Keys/{KeyId}
+# Resource implementation for - /redfish/v1/UpdateService/RemoteServerSSHKeys/{KeyId}
 # Program name - Key1_api.py
 
 import g
@@ -53,18 +53,18 @@ class Key1CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ManagerAccountId):
+	def get(self):
 		logging.info('Key1 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'AccountService/Accounts/{0}/Keys', 'index.json').format(ManagerAccountId)
+			path = os.path.join(self.root, 'UpdateService/RemoteServerSSHKeys', 'index.json')
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ManagerAccountId):
+	def post(self):
 		logging.info('Key1 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,7 @@ class Key1CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if ManagerAccountId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'AccountService/Accounts/{0}/Keys').format(ManagerAccountId)
+			path = create_path(self.root, 'UpdateService/RemoteServerSSHKeys')
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +85,11 @@ class Key1CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Key1API.post(self, ManagerAccountId, os.path.basename(config['@odata.id']))
+					return Key1API.post(self, os.path.basename(config['@odata.id']))
 				else:
-					return Key1API.post(self, ManagerAccountId, str(res))
+					return Key1API.post(self, str(res))
 			else:
-				return Key1API.post(self, ManagerAccountId, str(res))
+				return Key1API.post(self, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +101,12 @@ class Key1API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ManagerAccountId, KeyId):
+	def get(self, KeyId):
 		logging.info('Key1 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'AccountService/Accounts/{0}/Keys/{1}', 'index.json').format(ManagerAccountId, KeyId)
+			path = create_path(self.root, 'UpdateService/RemoteServerSSHKeys/{0}', 'index.json').format(KeyId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +116,24 @@ class Key1API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ManagerAccountId, KeyId):
+	def post(self, KeyId):
 		logging.info('Key1 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'AccountService/Accounts/{0}/Keys/{1}').format(ManagerAccountId, KeyId)
-			collection_path = os.path.join(self.root, 'AccountService/Accounts/{0}/Keys', 'index.json').format(ManagerAccountId)
+			path = create_path(self.root, 'UpdateService/RemoteServerSSHKeys/{0}').format(KeyId)
+			collection_path = os.path.join(self.root, 'UpdateService/RemoteServerSSHKeys', 'index.json')
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Key1CollectionAPI.post(self, ManagerAccountId)
+				Key1CollectionAPI.post(self)
 
 			if KeyId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ManagerAccountId':ManagerAccountId, 'KeyId':KeyId, 'rb':g.rest_base}
+				wildcards = {'KeyId':KeyId, 'rb':g.rest_base}
 				config=get_Key1_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +147,37 @@ class Key1API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ManagerAccountId, KeyId):
+	def put(self, KeyId):
 		logging.info('Key1 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'AccountService/Accounts/{0}/Keys/{1}', 'index.json').format(ManagerAccountId, KeyId)
+			path = os.path.join(self.root, 'UpdateService/RemoteServerSSHKeys/{0}', 'index.json').format(KeyId)
 			put_object(path)
-			return self.get(ManagerAccountId, KeyId)
+			return self.get(KeyId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ManagerAccountId, KeyId):
+	def patch(self, KeyId):
 		logging.info('Key1 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'AccountService/Accounts/{0}/Keys/{1}', 'index.json').format(ManagerAccountId, KeyId)
+			path = os.path.join(self.root, 'UpdateService/RemoteServerSSHKeys/{0}', 'index.json').format(KeyId)
 			patch_object(path)
-			return self.get(ManagerAccountId, KeyId)
+			return self.get(KeyId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ManagerAccountId, KeyId):
+	def delete(self, KeyId):
 		logging.info('Key1 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'AccountService/Accounts/{0}/Keys/{1}').format(ManagerAccountId, KeyId)
-			base_path = create_path(self.root, 'AccountService/Accounts/{0}/Keys').format(ManagerAccountId)
+			path = create_path(self.root, 'UpdateService/RemoteServerSSHKeys/{0}').format(KeyId)
+			base_path = create_path(self.root, 'UpdateService/RemoteServerSSHKeys')
 			return delete_object(path, base_path)
 		else:
 			return msg, code

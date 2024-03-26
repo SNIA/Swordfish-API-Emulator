@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Template for - ManagerAccount
+# Template for - ManagerAccount0
 # Program name - ManagerAccount0.py
 
 import copy
@@ -35,23 +35,23 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-	"@odata.id": "{rb}/AccountService/Accounts/{ManagerAccountId}",
-	"@odata.type": "#ManagerAccount.v1_9_0.ManagerAccount",
+	"@Redfish.Copyright": "Copyright 2014-2024 SNIA. All rights reserved.",
+	"@odata.id": "{rb}AccountService/Accounts/{ManagerAccountId}",
+	"@odata.type": "#ManagerAccount.v1_12_0.ManagerAccount",
 	"Id": "{ManagerAccountId}",
-	"Name": "User Account",
-	"AccountTypes": "Redfish"
+	"Name": "ManagerAccount",
+	"AccountTypes": "Redfish",
 }
 
 def get_ManagerAccount0_instance(wildcards):
 		"""
 		Instantiates and formats the template
 		Arguments:
-			wildcard - A dictionary of wildcards strings and their repalcement values
+			wildcard - A dictionary of wildcards strings and their replacement values
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{ManagerAccountId}', '0')
+		g = d.replace('{ManagerAccountId}', '-0-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

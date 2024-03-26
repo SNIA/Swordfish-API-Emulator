@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Managers/{ManagerId}/RemoteAccountService/ExternalAccountProviders/{ExternalAccountProviderId}/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/Managers/{ManagerId}/RemoteAccountService/ActiveDirectory/Certificates/{CertificateId}
 # Program name - Certificate7_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate7CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ManagerId, ExternalAccountProviderId):
+	def get(self, ManagerId):
 		logging.info('Certificate7 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates', 'index.json').format(ManagerId, ExternalAccountProviderId)
+			path = os.path.join(self.root, 'Managers/{0}/RemoteAccountService/ActiveDirectory/Certificates', 'index.json').format(ManagerId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ManagerId, ExternalAccountProviderId):
+	def post(self, ManagerId):
 		logging.info('Certificate7 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Certificate7CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if ExternalAccountProviderId in members:
+			if ManagerId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates').format(ManagerId, ExternalAccountProviderId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ActiveDirectory/Certificates').format(ManagerId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Certificate7CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate7API.post(self, ManagerId, ExternalAccountProviderId, os.path.basename(config['@odata.id']))
+					return Certificate7API.post(self, ManagerId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate7API.post(self, ManagerId, ExternalAccountProviderId, str(res))
+					return Certificate7API.post(self, ManagerId, str(res))
 			else:
-				return Certificate7API.post(self, ManagerId, ExternalAccountProviderId, str(res))
+				return Certificate7API.post(self, ManagerId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Certificate7API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ManagerId, ExternalAccountProviderId, CertificateId):
+	def get(self, ManagerId, CertificateId):
 		logging.info('Certificate7 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates/{2}', 'index.json').format(ManagerId, ExternalAccountProviderId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ActiveDirectory/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,24 +119,24 @@ class Certificate7API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ManagerId, ExternalAccountProviderId, CertificateId):
+	def post(self, ManagerId, CertificateId):
 		logging.info('Certificate7 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates/{2}').format(ManagerId, ExternalAccountProviderId, CertificateId)
-			collection_path = os.path.join(self.root, 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates', 'index.json').format(ManagerId, ExternalAccountProviderId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ActiveDirectory/Certificates/{1}').format(ManagerId, CertificateId)
+			collection_path = os.path.join(self.root, 'Managers/{0}/RemoteAccountService/ActiveDirectory/Certificates', 'index.json').format(ManagerId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate7CollectionAPI.post(self, ManagerId, ExternalAccountProviderId)
+				Certificate7CollectionAPI.post(self, ManagerId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ManagerId':ManagerId, 'ExternalAccountProviderId':ExternalAccountProviderId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'ManagerId':ManagerId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate7_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,37 +150,37 @@ class Certificate7API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ManagerId, ExternalAccountProviderId, CertificateId):
+	def put(self, ManagerId, CertificateId):
 		logging.info('Certificate7 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates/{2}', 'index.json').format(ManagerId, ExternalAccountProviderId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ActiveDirectory/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			put_object(path)
-			return self.get(ManagerId, ExternalAccountProviderId, CertificateId)
+			return self.get(ManagerId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ManagerId, ExternalAccountProviderId, CertificateId):
+	def patch(self, ManagerId, CertificateId):
 		logging.info('Certificate7 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates/{2}', 'index.json').format(ManagerId, ExternalAccountProviderId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ActiveDirectory/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			patch_object(path)
-			return self.get(ManagerId, ExternalAccountProviderId, CertificateId)
+			return self.get(ManagerId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ManagerId, ExternalAccountProviderId, CertificateId):
+	def delete(self, ManagerId, CertificateId):
 		logging.info('Certificate7 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates/{2}').format(ManagerId, ExternalAccountProviderId, CertificateId)
-			base_path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates').format(ManagerId, ExternalAccountProviderId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ActiveDirectory/Certificates/{1}').format(ManagerId, CertificateId)
+			base_path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ActiveDirectory/Certificates').format(ManagerId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

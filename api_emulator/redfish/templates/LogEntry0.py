@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,10 +35,10 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-	"EntryType": "Log Entity",
+	"@Redfish.Copyright": "Copyright 2014-2024 SNIA. All rights reserved.",
+	"EntryType": "Event",
 	"@odata.id": "{rb}Managers/{ManagerId}/LogServices/{LogServiceId}/Entries/{LogEntryId}",
-	"@odata.type": "#LogEntry.v1_12_0.LogEntry",
+	"@odata.type": "#LogEntry.v1_16_0.LogEntry",
 	"Id": "{LogEntryId}",
 	"Name": "LogEntry",
 }
@@ -47,13 +47,13 @@ def get_LogEntry0_instance(wildcards):
 		"""
 		Instantiates and formats the template
 		Arguments:
-			wildcard - A dictionary of wildcards strings and their repalcement values
+			wildcard - A dictionary of wildcards strings and their replacement values
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{ManagerId}', '0')
-		g = g.replace('{LogServiceId}', '1')
-		g = g.replace('{LogEntryId}', '2')
+		g = d.replace('{ManagerId}', '-0-')
+		g = g.replace('{LogServiceId}', '-1-')
+		g = g.replace('{LogEntryId}', '-2-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

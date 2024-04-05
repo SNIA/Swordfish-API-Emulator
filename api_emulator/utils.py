@@ -341,8 +341,9 @@ def remove_json_object (config, property_id):
     # Iterate through the objects in the JSON and pop (remove)
     # the obj once we find it.
 
-    if property_id in config:
-        config.pop (property_id, None)
+    if isinstance(config, dict):
+        if property_id in config:
+            config.pop(property_id, None)
     return config
 
 def check_session_authentication():

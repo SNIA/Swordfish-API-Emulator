@@ -179,7 +179,11 @@ def output_json(data, code, headers=None):
     global location
 
     if 'UserName' not in data or 'Password' not in data:
-        resp = make_response(json.dumps(data, indent=4), code)
+        if code == 405:
+            # No data should be returned in the body - only return the code.
+            resp = make_response('', code)
+        if code != 405:
+            resp = make_response(json.dumps(data, indent=4), code)
         resp.headers.extend(headers or {})
 
         #if session timed out then delete the cookie as well

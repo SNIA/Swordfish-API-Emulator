@@ -128,6 +128,7 @@ rm -r "$WORK_DIR"/api_emulator/redfish/static
 # Remove Redfish templates, and .py files.
 rm -rf "$WORK_DIR"/api_emulator/redfish/templates
 rm -rf "$WORK_DIR"/api_emulator/redfish/*.py
+rm -rf "$WORK_DIR"/Resources
 
 # Copy over the Swordfish bits
 echo "Applying Swordfish additions..."

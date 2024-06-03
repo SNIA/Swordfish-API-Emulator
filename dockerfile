@@ -8,6 +8,7 @@ RUN git clone https://github.com/DMTF/Redfish-Interface-Emulator && git clone ht
 RUN /bin/bash -c 'rm -rf Redfish-Interface-Emulator/api_emulator/redfish/static'
 RUN /bin/bash -c 'rm -rf Redfish-Interface-Emulator/api_emulator/redfish/templates'
 RUN /bin/bash -c 'rm -rf Redfish-Interface-Emulator/api_emulator/redfish/*.py'
+RUN /bin/bash -c 'rm -rf Redfish-Interface-Emulator/Resources'
 
 RUN /bin/bash -c 'cp -r -f Swordfish-API-Emulator/api_emulator Redfish-Interface-Emulator/'
 RUN /bin/bash -c 'cp -r -f Swordfish-API-Emulator/Resources Redfish-Interface-Emulator/'

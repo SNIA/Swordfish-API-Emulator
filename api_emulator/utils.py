@@ -492,3 +492,14 @@ def header_handler(data,code,resp):
             resp.headers['Allow'] = 'GET, PUT, PATCH, DELETE'             
         else:
             resp.headers['Allow'] = 'GET, POST, PUT, PATCH, DELETE'
+
+def send_event(event_type, message_id, message, severity, origin, extra=None):
+    """
+    Utility to create and store an event in the EventService Events collection.
+    """
+    try:
+        from api_emulator.redfish.EventServiceEvents_api import create_event
+        return create_event(event_type, message_id, message, severity, origin, extra)
+    except Exception as e:
+        logging.error(f"Failed to send event: {e}")
+        return None

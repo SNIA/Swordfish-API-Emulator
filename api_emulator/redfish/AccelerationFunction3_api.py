@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event, send_event
 from .templates.AccelerationFunction3 import get_AccelerationFunction3_instance
 
 members = []
@@ -137,10 +137,18 @@ class AccelerationFunction3API(Resource):
 			try:
 				global config
 				wildcards = {'ResourceBlockId':ResourceBlockId, 'ProcessorId':ProcessorId, 'AccelerationFunctionId':AccelerationFunctionId, 'rb':g.rest_base}
-				config=get_AccelerationFunction3_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				config = get_AccelerationFunction3_instance(wildcards)
+				config = create_and_patch_object(config, members, member_ids, path, collection_path)
 				resp = config, 200
-
+				# Send ResourceCreated event
+				resource_odata_id = config.get('@odata.id', f"/redfish/v1/ResourceBlocks/{ResourceBlockId}/Processors/{ProcessorId}/AccelerationFunctions/{AccelerationFunctionId}")
+				send_event(
+					"ResourceCreated",
+					"ResourceEvent.1.0.ResourceCreated",
+					"The resource was created successfully.",
+					"OK",
+					resource_odata_id
+				)
 			except Exception:
 				traceback.print_exc()
 				resp = INTERNAL_ERROR
@@ -149,31 +157,122 @@ class AccelerationFunction3API(Resource):
 		else:
 			return msg, code
 
-	# HTTP PUT
 	def put(self, ResourceBlockId, ProcessorId, AccelerationFunctionId):
 		logging.info('AccelerationFunction3 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
 			path = os.path.join(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}', 'index.json').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
+			# Load old data for status comparison
+			try:
+				with open(path, 'r') as f:
+					old_data = json.load(f)
+			except Exception:
+				old_data = {}
 			put_object(path)
+			new_data = get_json_data(path)
+			# Send ResourceChanged event
+			resource_odata_id = new_data.get('@odata.id', f"/redfish/v1/ResourceBlocks/{ResourceBlockId}/Processors/{ProcessorId}/AccelerationFunctions/{AccelerationFunctionId}")
+			send_event(
+				"ResourceChanged",
+				"ResourceEvent.1.0.ResourceChanged",
+				"One or more resource properties have changed.",
+				"OK",
+				resource_odata_id
+			)
+			# Check for Status.Health change
+			old_health = old_data.get('Status', {}).get('Health') if old_data else None
+			new_health = new_data.get('Status', {}).get('Health') if new_data else None
+			if new_health and new_health != old_health:
+				if new_health == "OK":
+					send_event(
+						"ResourceStatusChangedOK",
+						"ResourceEvent.1.0.ResourceStatusChangedOK",
+						f"The health of resource '{resource_odata_id}' has changed to {new_health}.",
+						"OK",
+						resource_odata_id,
+						extra={"ResourceName": resource_odata_id, "NewHealth": new_health}
+					)
+				elif new_health == "Warning":
+					send_event(
+						"ResourceStatusChangedWarning",
+						"ResourceEvent.1.0.ResourceStatusChangedWarning",
+						f"The health of resource '{resource_odata_id}' has changed to {new_health}.",
+						"Warning",
+						resource_odata_id,
+						extra={"ResourceName": resource_odata_id, "NewHealth": new_health}
+					)
+				elif new_health == "Critical":
+					send_event(
+						"ResourceStatusChangedCritical",
+						"ResourceEvent.1.0.ResourceStatusChangedCritical",
+						f"The health of resource '{resource_odata_id}' has changed to {new_health}.",
+						"Critical",
+						resource_odata_id,
+						extra={"ResourceName": resource_odata_id, "NewHealth": new_health}
+					)
 			return self.get(ResourceBlockId, ProcessorId, AccelerationFunctionId)
 		else:
 			return msg, code
 
-	# HTTP PATCH
 	def patch(self, ResourceBlockId, ProcessorId, AccelerationFunctionId):
 		logging.info('AccelerationFunction3 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
 			path = os.path.join(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}', 'index.json').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
+			# Load old data for status comparison
+			try:
+				with open(path, 'r') as f:
+					old_data = json.load(f)
+			except Exception:
+				old_data = {}
 			patch_object(path)
+			new_data = get_json_data(path)
+			# Send ResourceChanged event
+			resource_odata_id = new_data.get('@odata.id', f"/redfish/v1/ResourceBlocks/{ResourceBlockId}/Processors/{ProcessorId}/AccelerationFunctions/{AccelerationFunctionId}")
+			send_event(
+				"ResourceChanged",
+				"ResourceEvent.1.0.ResourceChanged",
+				"One or more resource properties have changed.",
+				"OK",
+				resource_odata_id
+			)
+			# Check for Status.Health change
+			old_health = old_data.get('Status', {}).get('Health') if old_data else None
+			new_health = new_data.get('Status', {}).get('Health') if new_data else None
+			if new_health and new_health != old_health:
+				if new_health == "OK":
+					send_event(
+						"ResourceStatusChangedOK",
+						"ResourceEvent.1.0.ResourceStatusChangedOK",
+						f"The health of resource '{resource_odata_id}' has changed to {new_health}.",
+						"OK",
+						resource_odata_id,
+						extra={"ResourceName": resource_odata_id, "NewHealth": new_health}
+					)
+				elif new_health == "Warning":
+					send_event(
+						"ResourceStatusChangedWarning",
+						"ResourceEvent.1.0.ResourceStatusChangedWarning",
+						f"The health of resource '{resource_odata_id}' has changed to {new_health}.",
+						"Warning",
+						resource_odata_id,
+						extra={"ResourceName": resource_odata_id, "NewHealth": new_health}
+					)
+				elif new_health == "Critical":
+					send_event(
+						"ResourceStatusChangedCritical",
+						"ResourceEvent.1.0.ResourceStatusChangedCritical",
+						f"The health of resource '{resource_odata_id}' has changed to {new_health}.",
+						"Critical",
+						resource_odata_id,
+						extra={"ResourceName": resource_odata_id, "NewHealth": new_health}
+					)
 			return self.get(ResourceBlockId, ProcessorId, AccelerationFunctionId)
 		else:
 			return msg, code
 
-	# HTTP DELETE
 	def delete(self, ResourceBlockId, ProcessorId, AccelerationFunctionId):
 		logging.info('AccelerationFunction3 delete called')
 		msg, code = check_authentication(self.auth)
@@ -181,7 +280,17 @@ class AccelerationFunction3API(Resource):
 		if code == 200:
 			path = create_path(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
 			base_path = create_path(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions').format(ResourceBlockId, ProcessorId)
-			return delete_object(path, base_path)
+			resp = delete_object(path, base_path)
+			# Send ResourceRemoved event
+			resource_odata_id = f"/redfish/v1/ResourceBlocks/{ResourceBlockId}/Processors/{ProcessorId}/AccelerationFunctions/{AccelerationFunctionId}"
+			send_event(
+				"ResourceRemoved",
+				"ResourceEvent.1.0.ResourceRemoved",
+				"The resource was removed successfully.",
+				"OK",
+				resource_odata_id
+			)
+			return resp
 		else:
 			return msg, code
 

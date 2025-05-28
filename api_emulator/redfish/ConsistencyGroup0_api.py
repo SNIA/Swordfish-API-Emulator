@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event, send_event
 from .templates.ConsistencyGroup0 import get_ConsistencyGroup0_instance
 
 members = []
@@ -115,10 +115,6 @@ class ConsistencyGroup0API(Resource):
 			return msg, code
 
 	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
 	def post(self, StorageId, ConsistencyGroupId):
 		logging.info('ConsistencyGroup0 post called')
 		msg, code = check_authentication(self.auth)
@@ -126,11 +122,8 @@ class ConsistencyGroup0API(Resource):
 		if code == 200:
 			path = create_path(self.root, 'Storage/{0}/ConsistencyGroups/{1}').format(StorageId, ConsistencyGroupId)
 			collection_path = os.path.join(self.root, 'Storage/{0}/ConsistencyGroups', 'index.json').format(StorageId)
-
-			# Check if collection exists:
 			if not os.path.exists(collection_path):
 				ConsistencyGroup0CollectionAPI.post(self, StorageId)
-
 			if ConsistencyGroupId in members:
 				resp = 404
 				return resp
@@ -140,7 +133,7 @@ class ConsistencyGroup0API(Resource):
 				config=get_ConsistencyGroup0_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
-
+				send_event('ResourceCreated', path)
 			except Exception:
 				traceback.print_exc()
 				resp = INTERNAL_ERROR
@@ -155,8 +148,13 @@ class ConsistencyGroup0API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Storage/{0}/ConsistencyGroups/{1}', 'index.json').format(StorageId, ConsistencyGroupId)
+			path = os.path.join(self.root, 'Storage/{0}/ConsistencyGroups/{1}', 'index.json').format(StorageId, ConsistencyGroupId)
+			old_data = get_json_data(path)
 			put_object(path)
+			new_data = get_json_data(path)
+			send_event('ResourceChanged', path)
+			if old_data.get('Status') != new_data.get('Status'):
+				send_event('ResourceStatusChanged', path)
 			return self.get(StorageId, ConsistencyGroupId)
 		else:
 			return msg, code
@@ -167,8 +165,13 @@ class ConsistencyGroup0API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Storage/{0}/ConsistencyGroups/{1}', 'index.json').format(StorageId, ConsistencyGroupId)
+			path = os.path.join(self.root, 'Storage/{0}/ConsistencyGroups/{1}', 'index.json').format(StorageId, ConsistencyGroupId)
+			old_data = get_json_data(path)
 			patch_object(path)
+			new_data = get_json_data(path)
+			send_event('ResourceChanged', path)
+			if old_data.get('Status') != new_data.get('Status'):
+				send_event('ResourceStatusChanged', path)
 			return self.get(StorageId, ConsistencyGroupId)
 		else:
 			return msg, code
@@ -181,7 +184,9 @@ class ConsistencyGroup0API(Resource):
 		if code == 200:
 			path = create_path(self.root, 'Storage/{0}/ConsistencyGroups/{1}').format(StorageId, ConsistencyGroupId)
 			base_path = create_path(self.root, 'Storage/{0}/ConsistencyGroups').format(StorageId)
-			return delete_object(path, base_path)
+			delete_object(path, base_path)
+			send_event('ResourceRemoved', path)
+			return '', 204
 		else:
 			return msg, code
 

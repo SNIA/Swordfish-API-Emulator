@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event, send_event
 from .templates.Endpoint1 import get_Endpoint1_instance
 
 members = []
@@ -140,7 +140,8 @@ class Endpoint1API(Resource):
 				config=get_Endpoint1_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
-
+				# Send ResourceCreated event with payload
+				send_event('ResourceCreated', config, path)
 			except Exception:
 				traceback.print_exc()
 				resp = INTERNAL_ERROR
@@ -156,7 +157,13 @@ class Endpoint1API(Resource):
 
 		if code == 200:
 			path = create_path(self.root, 'StorageServices/{0}/Endpoints/{1}', 'index.json').format(StorageServiceId, EndpointId)
+			old_data = get_json_data(path)
 			put_object(path)
+			new_data = get_json_data(path)
+			if old_data.get('Status') != new_data.get('Status'):
+				send_event('ResourceStatusChanged', new_data, path)
+			else:
+				send_event('ResourceChanged', new_data, path)
 			return self.get(StorageServiceId, EndpointId)
 		else:
 			return msg, code
@@ -168,7 +175,13 @@ class Endpoint1API(Resource):
 
 		if code == 200:
 			path = create_path(self.root, 'StorageServices/{0}/Endpoints/{1}', 'index.json').format(StorageServiceId, EndpointId)
+			old_data = get_json_data(path)
 			patch_object(path)
+			new_data = get_json_data(path)
+			if old_data.get('Status') != new_data.get('Status'):
+				send_event('ResourceStatusChanged', new_data, path)
+			else:
+				send_event('ResourceChanged', new_data, path)
 			return self.get(StorageServiceId, EndpointId)
 		else:
 			return msg, code
@@ -181,7 +194,10 @@ class Endpoint1API(Resource):
 		if code == 200:
 			path = create_path(self.root, 'StorageServices/{0}/Endpoints/{1}').format(StorageServiceId, EndpointId)
 			base_path = create_path(self.root, 'StorageServices/{0}/Endpoints').format(StorageServiceId)
-			return delete_object(path, base_path)
+			obj = get_json_data(path)
+			delete_object(path, base_path)
+			send_event('ResourceRemoved', obj, path)
+			return '', 204
 		else:
 			return msg, code
 

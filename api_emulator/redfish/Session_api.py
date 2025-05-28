@@ -49,7 +49,7 @@ from flask import Flask, request, jsonify, session, Response
 import jwt
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, get_sessionValidation_error, update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, get_sessionValidation_error, update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event, send_event
 
 members = []
 member_ids = []

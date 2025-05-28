@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event, send_event
 from .templates.AccelerationFunction0 import get_AccelerationFunction0_instance
 
 members = []
@@ -115,10 +115,6 @@ class AccelerationFunction0API(Resource):
 			return msg, code
 
 	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
 	def post(self, ComputerSystemId, ProcessorId, AccelerationFunctionId):
 		logging.info('AccelerationFunction0 post called')
 		msg, code = check_authentication(self.auth)
@@ -126,11 +122,8 @@ class AccelerationFunction0API(Resource):
 		if code == 200:
 			path = create_path(self.root, 'Systems/{0}/Processors/{1}/AccelerationFunctions/{2}').format(ComputerSystemId, ProcessorId, AccelerationFunctionId)
 			collection_path = os.path.join(self.root, 'Systems/{0}/Processors/{1}/AccelerationFunctions', 'index.json').format(ComputerSystemId, ProcessorId)
-
-			# Check if collection exists:
 			if not os.path.exists(collection_path):
 				AccelerationFunction0CollectionAPI.post(self, ComputerSystemId, ProcessorId)
-
 			if AccelerationFunctionId in members:
 				resp = 404
 				return resp
@@ -140,7 +133,7 @@ class AccelerationFunction0API(Resource):
 				config=get_AccelerationFunction0_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
-
+				send_event('ResourceCreated', path)
 			except Exception:
 				traceback.print_exc()
 				resp = INTERNAL_ERROR
@@ -156,7 +149,12 @@ class AccelerationFunction0API(Resource):
 
 		if code == 200:
 			path = os.path.join(self.root, 'Systems/{0}/Processors/{1}/AccelerationFunctions/{2}', 'index.json').format(ComputerSystemId, ProcessorId, AccelerationFunctionId)
+			old_data = get_json_data(path)
 			put_object(path)
+			new_data = get_json_data(path)
+			send_event('ResourceChanged', path)
+			if old_data.get('Status') != new_data.get('Status'):
+				send_event('ResourceStatusChanged', path)
 			return self.get(ComputerSystemId, ProcessorId, AccelerationFunctionId)
 		else:
 			return msg, code
@@ -168,7 +166,12 @@ class AccelerationFunction0API(Resource):
 
 		if code == 200:
 			path = os.path.join(self.root, 'Systems/{0}/Processors/{1}/AccelerationFunctions/{2}', 'index.json').format(ComputerSystemId, ProcessorId, AccelerationFunctionId)
+			old_data = get_json_data(path)
 			patch_object(path)
+			new_data = get_json_data(path)
+			send_event('ResourceChanged', path)
+			if old_data.get('Status') != new_data.get('Status'):
+				send_event('ResourceStatusChanged', path)
 			return self.get(ComputerSystemId, ProcessorId, AccelerationFunctionId)
 		else:
 			return msg, code
@@ -181,7 +184,9 @@ class AccelerationFunction0API(Resource):
 		if code == 200:
 			path = create_path(self.root, 'Systems/{0}/Processors/{1}/AccelerationFunctions/{2}').format(ComputerSystemId, ProcessorId, AccelerationFunctionId)
 			base_path = create_path(self.root, 'Systems/{0}/Processors/{1}/AccelerationFunctions').format(ComputerSystemId, ProcessorId)
-			return delete_object(path, base_path)
+			delete_object(path, base_path)
+			send_event('ResourceRemoved', path)
+			return '', 204
 		else:
 			return msg, code
 

@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event, send_event
 from .templates.StorageController2 import get_StorageController2_instance
 
 members = []
@@ -140,6 +140,7 @@ class StorageController2API(Resource):
 				config=get_StorageController2_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
+				send_event('ResourceCreated', path)
 
 			except Exception:
 				traceback.print_exc()
@@ -156,7 +157,12 @@ class StorageController2API(Resource):
 
 		if code == 200:
 			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}', 'index.json').format(ResourceBlockId, StorageId, ControllerId)
+			old_data = get_json_data(path)
 			put_object(path)
+			new_data = get_json_data(path)
+			send_event('ResourceChanged', path)
+			if old_data.get('Status') != new_data.get('Status'):
+				send_event('ResourceStatusChanged', path)
 			return self.get(ResourceBlockId, StorageId, ControllerId)
 		else:
 			return msg, code
@@ -168,7 +174,12 @@ class StorageController2API(Resource):
 
 		if code == 200:
 			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}', 'index.json').format(ResourceBlockId, StorageId, ControllerId)
+			old_data = get_json_data(path)
 			patch_object(path)
+			new_data = get_json_data(path)
+			send_event('ResourceChanged', path)
+			if old_data.get('Status') != new_data.get('Status'):
+				send_event('ResourceStatusChanged', path)
 			return self.get(ResourceBlockId, StorageId, ControllerId)
 		else:
 			return msg, code
@@ -181,7 +192,9 @@ class StorageController2API(Resource):
 		if code == 200:
 			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}').format(ResourceBlockId, StorageId, ControllerId)
 			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers').format(ResourceBlockId, StorageId)
-			return delete_object(path, base_path)
+			resp = delete_object(path, base_path)
+			send_event('ResourceRemoved', path)
+			return resp
 		else:
 			return msg, code
 

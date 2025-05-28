@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event, send_event
 from .templates.Storage1 import get_Storage1_instance
 
 members = []
@@ -157,6 +157,7 @@ class Storage1API(Resource):
 		if code == 200:
 			path = create_path(self.root, 'Systems/{0}/Storage/{1}', 'index.json').format(ComputerSystemId, StorageId)
 			put_object(path)
+			send_event('Storage', 'UPDATE', ComputerSystemId, StorageId)
 			return self.get(ComputerSystemId, StorageId)
 		else:
 			return msg, code
@@ -169,6 +170,7 @@ class Storage1API(Resource):
 		if code == 200:
 			path = create_path(self.root, 'Systems/{0}/Storage/{1}', 'index.json').format(ComputerSystemId, StorageId)
 			patch_object(path)
+			send_event('Storage', 'UPDATE', ComputerSystemId, StorageId)
 			return self.get(ComputerSystemId, StorageId)
 		else:
 			return msg, code
@@ -181,6 +183,7 @@ class Storage1API(Resource):
 		if code == 200:
 			path = create_path(self.root, 'Systems/{0}/Storage/{1}').format(ComputerSystemId, StorageId)
 			base_path = create_path(self.root, 'Systems/{0}/Storage').format(ComputerSystemId)
+			send_event('Storage', 'DELETE', ComputerSystemId, StorageId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

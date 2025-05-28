@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event, send_event
 from .templates.Storage0 import get_Storage0_instance
 
 members = []
@@ -142,6 +142,7 @@ class Storage0API(Resource):
 				traceback.print_exc()
 				resp = INTERNAL_ERROR
 			logging.info('Storage0API POST exit')
+			send_event('Storage', 'ADD', StorageId)
 			return resp
 		else:
 			return msg, code
@@ -154,6 +155,7 @@ class Storage0API(Resource):
 		if code == 200:
 			path = os.path.join(self.root, 'Storage/{0}', 'index.json').format(StorageId)
 			put_object(path)
+			send_event('Storage', 'UPDATE', StorageId)
 			return self.get(StorageId)
 		else:
 			return msg, code
@@ -166,6 +168,7 @@ class Storage0API(Resource):
 		if code == 200:
 			path = os.path.join(self.root, 'Storage/{0}', 'index.json').format(StorageId)
 			patch_object(path)
+			send_event('Storage', 'UPDATE', StorageId)
 			return self.get(StorageId)
 		else:
 			return msg, code
@@ -178,6 +181,7 @@ class Storage0API(Resource):
 		if code == 200:
 			path = create_path(self.root, 'Storage/{0}').format(StorageId)
 			base_path = create_path(self.root, 'Storage')
+			send_event('Storage', 'DELETE', StorageId)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

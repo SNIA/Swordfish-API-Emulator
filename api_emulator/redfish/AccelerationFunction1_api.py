@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event, send_event
 from .templates.AccelerationFunction1 import get_AccelerationFunction1_instance
 
 members = []
@@ -126,11 +126,8 @@ class AccelerationFunction1API(Resource):
 		if code == 200:
 			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
 			collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions', 'index.json').format(ResourceBlockId, ProcessorId)
-
-			# Check if collection exists:
 			if not os.path.exists(collection_path):
 				AccelerationFunction1CollectionAPI.post(self, ResourceBlockId, ProcessorId)
-
 			if AccelerationFunctionId in members:
 				resp = 404
 				return resp
@@ -140,7 +137,7 @@ class AccelerationFunction1API(Resource):
 				config=get_AccelerationFunction1_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
-
+				send_event('ResourceCreated', path)
 			except Exception:
 				traceback.print_exc()
 				resp = INTERNAL_ERROR
@@ -156,7 +153,12 @@ class AccelerationFunction1API(Resource):
 
 		if code == 200:
 			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}', 'index.json').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
+			old_data = get_json_data(path)
 			put_object(path)
+			new_data = get_json_data(path)
+			send_event('ResourceChanged', path)
+			if old_data.get('Status') != new_data.get('Status'):
+				send_event('ResourceStatusChanged', path)
 			return self.get(ResourceBlockId, ProcessorId, AccelerationFunctionId)
 		else:
 			return msg, code
@@ -168,7 +170,12 @@ class AccelerationFunction1API(Resource):
 
 		if code == 200:
 			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}', 'index.json').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
+			old_data = get_json_data(path)
 			patch_object(path)
+			new_data = get_json_data(path)
+			send_event('ResourceChanged', path)
+			if old_data.get('Status') != new_data.get('Status'):
+				send_event('ResourceStatusChanged', path)
 			return self.get(ResourceBlockId, ProcessorId, AccelerationFunctionId)
 		else:
 			return msg, code
@@ -181,7 +188,9 @@ class AccelerationFunction1API(Resource):
 		if code == 200:
 			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
 			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions').format(ResourceBlockId, ProcessorId)
-			return delete_object(path, base_path)
+			delete_object(path, base_path)
+			send_event('ResourceRemoved', path)
+			return '', 204
 		else:
 			return msg, code
 

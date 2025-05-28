@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event, send_event
 from .templates.Chassis import get_Chassis_instance
 
 members = []
@@ -142,6 +142,7 @@ class ChassisAPI(Resource):
 				traceback.print_exc()
 				resp = INTERNAL_ERROR
 			logging.info('ChassisAPI POST exit')
+			send_event('Chassis', 'POST', path)
 			return resp
 		else:
 			return msg, code
@@ -154,6 +155,7 @@ class ChassisAPI(Resource):
 		if code == 200:
 			path = os.path.join(self.root, 'Chassis/{0}', 'index.json').format(ChassisId)
 			put_object(path)
+			send_event('Chassis', 'PUT', path)
 			return self.get(ChassisId)
 		else:
 			return msg, code
@@ -166,6 +168,7 @@ class ChassisAPI(Resource):
 		if code == 200:
 			path = os.path.join(self.root, 'Chassis/{0}', 'index.json').format(ChassisId)
 			patch_object(path)
+			send_event('Chassis', 'PATCH', path)
 			return self.get(ChassisId)
 		else:
 			return msg, code
@@ -178,6 +181,7 @@ class ChassisAPI(Resource):
 		if code == 200:
 			path = create_path(self.root, 'Chassis/{0}').format(ChassisId)
 			base_path = create_path(self.root, 'Chassis')
+			send_event('Chassis', 'DELETE', path)
 			return delete_object(path, base_path)
 		else:
 			return msg, code

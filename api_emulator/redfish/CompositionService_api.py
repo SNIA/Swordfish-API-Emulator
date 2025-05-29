@@ -38,7 +38,7 @@ import logging, random, requests, string, jwt
 from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
 
 config = {}
 
@@ -51,40 +51,40 @@ INTERNAL_ERROR = 500
 
 # CompositionService API
 class CompositionServiceAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('CompositionService init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('CompositionService init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self):
-		logging.info('CompositionService get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self):
+        logging.info('CompositionService get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'index.json')
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'index.json')
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self):
-		logging.info('CompositionService post called')
-		return 'POST is not a supported command for CompositionServiceAPI', 405
+    # HTTP POST
+    def post(self):
+        logging.info('CompositionService post called')
+        return 'POST is not a supported command for CompositionServiceAPI', 405
 
-	# HTTP PUT
-	def put(self):
-		logging.info('CompositionService put called')
-		return 'PUT is not a supported command for CompositionServiceAPI', 405
+    # HTTP PUT
+    def put(self):
+        logging.info('CompositionService put called')
+        return 'PUT is not a supported command for CompositionServiceAPI', 405
 
-	# HTTP PATCH
-	def patch(self):
-		logging.info('CompositionService patch called')
-		return 'PATCH is not a supported command for CompositionServiceAPI', 405
+    # HTTP PATCH
+    def patch(self):
+        logging.info('CompositionService patch called')
+        return 'PATCH is not a supported command for CompositionServiceAPI', 405
 
-	# HTTP DELETE
-	def delete(self):
-		logging.info('CompositionService delete called')
-		return 'DELETE is not a supported command for CompositionServiceAPI', 405
+    # HTTP DELETE
+    def delete(self):
+        logging.info('CompositionService delete called')
+        return 'DELETE is not a supported command for CompositionServiceAPI', 405
 
 

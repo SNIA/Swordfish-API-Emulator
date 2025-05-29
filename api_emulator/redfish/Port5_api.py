@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.Port5 import get_Port5_instance
 
 members = []
@@ -47,141 +47,149 @@ INTERNAL_ERROR = 500
 
 # Port5 Collection API
 class Port5CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Port5 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Port5 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ComputerSystemId, ControllerId):
-		logging.info('Port5 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ComputerSystemId, ControllerId):
+        logging.info('Port5 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/USBControllers/{1}/Ports', 'index.json').format(ComputerSystemId, ControllerId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Systems/{0}/USBControllers/{1}/Ports', 'index.json').format(ComputerSystemId, ControllerId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self, ComputerSystemId, ControllerId):
-		logging.info('Port5 Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self, ComputerSystemId, ControllerId):
+        logging.info('Port5 Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			if ControllerId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'Systems/{0}/USBControllers/{1}/Ports').format(ComputerSystemId, ControllerId)
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'Port', parent_path)
+            if ControllerId in members:
+                resp = 404
+                return resp
+            path = create_path(self.root, 'Systems/{0}/USBControllers/{1}/Ports').format(ComputerSystemId, ControllerId)
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'Port', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return Port5API.post(self, ComputerSystemId, ControllerId, os.path.basename(config['@odata.id']))
-				else:
-					return Port5API.post(self, ComputerSystemId, ControllerId, str(res))
-			else:
-				return Port5API.post(self, ComputerSystemId, ControllerId, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return Port5API.post(self, ComputerSystemId, ControllerId, os.path.basename(config['@odata.id']))
+                else:
+                    return Port5API.post(self, ComputerSystemId, ControllerId, str(res))
+            else:
+                return Port5API.post(self, ComputerSystemId, ControllerId, str(res))
+        else:
+            return msg, code
 
 # Port5 API
 class Port5API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Port5 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Port5 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ComputerSystemId, ControllerId, PortId):
-		logging.info('Port5 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ComputerSystemId, ControllerId, PortId):
+        logging.info('Port5 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/USBControllers/{1}/Ports/{2}', 'index.json').format(ComputerSystemId, ControllerId, PortId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Systems/{0}/USBControllers/{1}/Ports/{2}', 'index.json').format(ComputerSystemId, ControllerId, PortId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, ComputerSystemId, ControllerId, PortId):
-		logging.info('Port5 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, ComputerSystemId, ControllerId, PortId):
+        logging.info('Port5 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/USBControllers/{1}/Ports/{2}').format(ComputerSystemId, ControllerId, PortId)
-			collection_path = os.path.join(self.root, 'Systems/{0}/USBControllers/{1}/Ports', 'index.json').format(ComputerSystemId, ControllerId)
+        if code == 200:
+            path = create_path(self.root, 'Systems/{0}/USBControllers/{1}/Ports/{2}').format(ComputerSystemId, ControllerId, PortId)
+            collection_path = os.path.join(self.root, 'Systems/{0}/USBControllers/{1}/Ports', 'index.json').format(ComputerSystemId, ControllerId)
 
-			# Check if collection exists:
-			if not os.path.exists(collection_path):
-				Port5CollectionAPI.post(self, ComputerSystemId, ControllerId)
+            # Check if collection exists:
+            if not os.path.exists(collection_path):
+                Port5CollectionAPI.post(self, ComputerSystemId, ControllerId)
 
-			if PortId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'ComputerSystemId':ComputerSystemId, 'ControllerId':ControllerId, 'PortId':PortId, 'rb':g.rest_base}
-				config=get_Port5_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
+            if PortId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'ComputerSystemId':ComputerSystemId, 'ControllerId':ControllerId, 'PortId':PortId, 'rb':g.rest_base}
+                config=get_Port5_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    None
+                )
 
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('Port5API POST exit')
-			return resp
-		else:
-			return msg, code
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('Port5API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, ComputerSystemId, ControllerId, PortId):
-		logging.info('Port5 put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, ComputerSystemId, ControllerId, PortId):
+        logging.info('Port5 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/USBControllers/{1}/Ports/{2}', 'index.json').format(ComputerSystemId, ControllerId, PortId)
-			put_object(path)
-			return self.get(ComputerSystemId, ControllerId, PortId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Systems/{0}/USBControllers/{1}/Ports/{2}', 'index.json').format(ComputerSystemId, ControllerId, PortId)
+            put_object(path)
+            return self.get(ComputerSystemId, ControllerId, PortId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, ComputerSystemId, ControllerId, PortId):
-		logging.info('Port5 patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, ComputerSystemId, ControllerId, PortId):
+        logging.info('Port5 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/USBControllers/{1}/Ports/{2}', 'index.json').format(ComputerSystemId, ControllerId, PortId)
-			patch_object(path)
-			return self.get(ComputerSystemId, ControllerId, PortId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Systems/{0}/USBControllers/{1}/Ports/{2}', 'index.json').format(ComputerSystemId, ControllerId, PortId)
+            patch_object(path)
+            return self.get(ComputerSystemId, ControllerId, PortId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, ComputerSystemId, ControllerId, PortId):
-		logging.info('Port5 delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, ComputerSystemId, ControllerId, PortId):
+        logging.info('Port5 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/USBControllers/{1}/Ports/{2}').format(ComputerSystemId, ControllerId, PortId)
-			base_path = create_path(self.root, 'Systems/{0}/USBControllers/{1}/Ports').format(ComputerSystemId, ControllerId)
-			return delete_object(path, base_path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Systems/{0}/USBControllers/{1}/Ports/{2}').format(ComputerSystemId, ControllerId, PortId)
+            base_path = create_path(self.root, 'Systems/{0}/USBControllers/{1}/Ports').format(ComputerSystemId, ControllerId)
+            return delete_object(path, base_path)
+        else:
+            return msg, code
 

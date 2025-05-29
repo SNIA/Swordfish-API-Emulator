@@ -38,7 +38,7 @@ import logging, random, requests, string, jwt
 from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
 
 config = {}
 
@@ -51,40 +51,40 @@ INTERNAL_ERROR = 500
 
 # VolumeMetrics8 API
 class VolumeMetrics8API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('VolumeMetrics8 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('VolumeMetrics8 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, StorageId, VolumeId):
-		logging.info('VolumeMetrics8 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, StorageId, VolumeId):
+        logging.info('VolumeMetrics8 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Storage/{0}/Volumes/{1}/Metrics', 'index.json').format(StorageId, VolumeId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Storage/{0}/Volumes/{1}/Metrics', 'index.json').format(StorageId, VolumeId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, StorageId, VolumeId):
-		logging.info('VolumeMetrics8 post called')
-		return 'POST is not a supported command for VolumeMetrics8API', 405
+    # HTTP POST
+    def post(self, StorageId, VolumeId):
+        logging.info('VolumeMetrics8 post called')
+        return 'POST is not a supported command for VolumeMetrics8API', 405
 
-	# HTTP PUT
-	def put(self, StorageId, VolumeId):
-		logging.info('VolumeMetrics8 put called')
-		return 'PUT is not a supported command for VolumeMetrics8API', 405
+    # HTTP PUT
+    def put(self, StorageId, VolumeId):
+        logging.info('VolumeMetrics8 put called')
+        return 'PUT is not a supported command for VolumeMetrics8API', 405
 
-	# HTTP PATCH
-	def patch(self, StorageId, VolumeId):
-		logging.info('VolumeMetrics8 patch called')
-		return 'PATCH is not a supported command for VolumeMetrics8API', 405
+    # HTTP PATCH
+    def patch(self, StorageId, VolumeId):
+        logging.info('VolumeMetrics8 patch called')
+        return 'PATCH is not a supported command for VolumeMetrics8API', 405
 
-	# HTTP DELETE
-	def delete(self, StorageId, VolumeId):
-		logging.info('VolumeMetrics8 delete called')
-		return 'DELETE is not a supported command for VolumeMetrics8API', 405
+    # HTTP DELETE
+    def delete(self, StorageId, VolumeId):
+        logging.info('VolumeMetrics8 delete called')
+        return 'DELETE is not a supported command for VolumeMetrics8API', 405
 
 

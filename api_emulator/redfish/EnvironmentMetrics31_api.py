@@ -38,7 +38,7 @@ import logging, random, requests, string, jwt
 from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
 
 config = {}
 
@@ -51,40 +51,40 @@ INTERNAL_ERROR = 500
 
 # EnvironmentMetrics31 API
 class EnvironmentMetrics31API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('EnvironmentMetrics31 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('EnvironmentMetrics31 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, FacilityId):
-		logging.info('EnvironmentMetrics31 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, FacilityId):
+        logging.info('EnvironmentMetrics31 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Facilities/{0}/EnvironmentMetrics', 'index.json').format(FacilityId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Facilities/{0}/EnvironmentMetrics', 'index.json').format(FacilityId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, FacilityId):
-		logging.info('EnvironmentMetrics31 post called')
-		return 'POST is not a supported command for EnvironmentMetrics31API', 405
+    # HTTP POST
+    def post(self, FacilityId):
+        logging.info('EnvironmentMetrics31 post called')
+        return 'POST is not a supported command for EnvironmentMetrics31API', 405
 
-	# HTTP PUT
-	def put(self, FacilityId):
-		logging.info('EnvironmentMetrics31 put called')
-		return 'PUT is not a supported command for EnvironmentMetrics31API', 405
+    # HTTP PUT
+    def put(self, FacilityId):
+        logging.info('EnvironmentMetrics31 put called')
+        return 'PUT is not a supported command for EnvironmentMetrics31API', 405
 
-	# HTTP PATCH
-	def patch(self, FacilityId):
-		logging.info('EnvironmentMetrics31 patch called')
-		return 'PATCH is not a supported command for EnvironmentMetrics31API', 405
+    # HTTP PATCH
+    def patch(self, FacilityId):
+        logging.info('EnvironmentMetrics31 patch called')
+        return 'PATCH is not a supported command for EnvironmentMetrics31API', 405
 
-	# HTTP DELETE
-	def delete(self, FacilityId):
-		logging.info('EnvironmentMetrics31 delete called')
-		return 'DELETE is not a supported command for EnvironmentMetrics31API', 405
+    # HTTP DELETE
+    def delete(self, FacilityId):
+        logging.info('EnvironmentMetrics31 delete called')
+        return 'DELETE is not a supported command for EnvironmentMetrics31API', 405
 
 

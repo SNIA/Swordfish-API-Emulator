@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.Pump1 import get_Pump1_instance
 
 members = []
@@ -47,141 +47,149 @@ INTERNAL_ERROR = 500
 
 # Pump1 Collection API
 class Pump1CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Pump1 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Pump1 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, CoolingUnitId):
-		logging.info('Pump1 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, CoolingUnitId):
+        logging.info('Pump1 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps', 'index.json').format(CoolingUnitId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps', 'index.json').format(CoolingUnitId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self, CoolingUnitId):
-		logging.info('Pump1 Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self, CoolingUnitId):
+        logging.info('Pump1 Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			if CoolingUnitId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps').format(CoolingUnitId)
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'Pump', parent_path)
+            if CoolingUnitId in members:
+                resp = 404
+                return resp
+            path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps').format(CoolingUnitId)
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'Pump', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return Pump1API.post(self, CoolingUnitId, os.path.basename(config['@odata.id']))
-				else:
-					return Pump1API.post(self, CoolingUnitId, str(res))
-			else:
-				return Pump1API.post(self, CoolingUnitId, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return Pump1API.post(self, CoolingUnitId, os.path.basename(config['@odata.id']))
+                else:
+                    return Pump1API.post(self, CoolingUnitId, str(res))
+            else:
+                return Pump1API.post(self, CoolingUnitId, str(res))
+        else:
+            return msg, code
 
 # Pump1 API
 class Pump1API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Pump1 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Pump1 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, CoolingUnitId, PumpId):
-		logging.info('Pump1 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, CoolingUnitId, PumpId):
+        logging.info('Pump1 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}', 'index.json').format(CoolingUnitId, PumpId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}', 'index.json').format(CoolingUnitId, PumpId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, CoolingUnitId, PumpId):
-		logging.info('Pump1 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, CoolingUnitId, PumpId):
+        logging.info('Pump1 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}').format(CoolingUnitId, PumpId)
-			collection_path = os.path.join(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps', 'index.json').format(CoolingUnitId)
+        if code == 200:
+            path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}').format(CoolingUnitId, PumpId)
+            collection_path = os.path.join(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps', 'index.json').format(CoolingUnitId)
 
-			# Check if collection exists:
-			if not os.path.exists(collection_path):
-				Pump1CollectionAPI.post(self, CoolingUnitId)
+            # Check if collection exists:
+            if not os.path.exists(collection_path):
+                Pump1CollectionAPI.post(self, CoolingUnitId)
 
-			if PumpId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'CoolingUnitId':CoolingUnitId, 'PumpId':PumpId, 'rb':g.rest_base}
-				config=get_Pump1_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
+            if PumpId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'CoolingUnitId':CoolingUnitId, 'PumpId':PumpId, 'rb':g.rest_base}
+                config=get_Pump1_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    None
+                )
 
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('Pump1API POST exit')
-			return resp
-		else:
-			return msg, code
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('Pump1API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, CoolingUnitId, PumpId):
-		logging.info('Pump1 put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, CoolingUnitId, PumpId):
+        logging.info('Pump1 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}', 'index.json').format(CoolingUnitId, PumpId)
-			put_object(path)
-			return self.get(CoolingUnitId, PumpId)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}', 'index.json').format(CoolingUnitId, PumpId)
+            put_object(path)
+            return self.get(CoolingUnitId, PumpId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, CoolingUnitId, PumpId):
-		logging.info('Pump1 patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, CoolingUnitId, PumpId):
+        logging.info('Pump1 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}', 'index.json').format(CoolingUnitId, PumpId)
-			patch_object(path)
-			return self.get(CoolingUnitId, PumpId)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}', 'index.json').format(CoolingUnitId, PumpId)
+            patch_object(path)
+            return self.get(CoolingUnitId, PumpId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, CoolingUnitId, PumpId):
-		logging.info('Pump1 delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, CoolingUnitId, PumpId):
+        logging.info('Pump1 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}').format(CoolingUnitId, PumpId)
-			base_path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps').format(CoolingUnitId)
-			return delete_object(path, base_path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}').format(CoolingUnitId, PumpId)
+            base_path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps').format(CoolingUnitId)
+            return delete_object(path, base_path)
+        else:
+            return msg, code
 

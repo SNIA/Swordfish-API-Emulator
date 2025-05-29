@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.RouteEntry35 import get_RouteEntry35_instance
 
 members = []
@@ -47,141 +47,149 @@ INTERNAL_ERROR = 500
 
 # RouteEntry35 Collection API
 class RouteEntry35CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('RouteEntry35 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('RouteEntry35 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId):
-		logging.info('RouteEntry35 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId):
+        logging.info('RouteEntry35 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/GenZ/MPRT', 'index.json').format(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/GenZ/MPRT', 'index.json').format(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId):
-		logging.info('RouteEntry35 Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId):
+        logging.info('RouteEntry35 Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			if PortId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/GenZ/MPRT').format(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId)
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'RouteEntry', parent_path)
+            if PortId in members:
+                resp = 404
+                return resp
+            path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/GenZ/MPRT').format(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId)
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'RouteEntry', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return RouteEntry35API.post(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, os.path.basename(config['@odata.id']))
-				else:
-					return RouteEntry35API.post(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, str(res))
-			else:
-				return RouteEntry35API.post(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return RouteEntry35API.post(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, os.path.basename(config['@odata.id']))
+                else:
+                    return RouteEntry35API.post(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, str(res))
+            else:
+                return RouteEntry35API.post(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, str(res))
+        else:
+            return msg, code
 
 # RouteEntry35 API
 class RouteEntry35API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('RouteEntry35 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('RouteEntry35 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId):
-		logging.info('RouteEntry35 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId):
+        logging.info('RouteEntry35 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/GenZ/MPRT/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/GenZ/MPRT/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId):
-		logging.info('RouteEntry35 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId):
+        logging.info('RouteEntry35 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/GenZ/MPRT/{4}').format(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId)
-			collection_path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/GenZ/MPRT', 'index.json').format(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId)
+        if code == 200:
+            path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/GenZ/MPRT/{4}').format(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId)
+            collection_path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/GenZ/MPRT', 'index.json').format(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId)
 
-			# Check if collection exists:
-			if not os.path.exists(collection_path):
-				RouteEntry35CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId)
+            # Check if collection exists:
+            if not os.path.exists(collection_path):
+                RouteEntry35CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId)
 
-			if MPRTId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'FabricAdapterId':FabricAdapterId, 'PortId':PortId, 'MPRTId':MPRTId, 'rb':g.rest_base}
-				config=get_RouteEntry35_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
+            if MPRTId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'FabricAdapterId':FabricAdapterId, 'PortId':PortId, 'MPRTId':MPRTId, 'rb':g.rest_base}
+                config=get_RouteEntry35_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    None
+                )
 
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('RouteEntry35API POST exit')
-			return resp
-		else:
-			return msg, code
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('RouteEntry35API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId):
-		logging.info('RouteEntry35 put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId):
+        logging.info('RouteEntry35 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/GenZ/MPRT/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId)
-			put_object(path)
-			return self.get(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/GenZ/MPRT/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId)
+            put_object(path)
+            return self.get(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId):
-		logging.info('RouteEntry35 patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId):
+        logging.info('RouteEntry35 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/GenZ/MPRT/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId)
-			patch_object(path)
-			return self.get(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/GenZ/MPRT/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId)
+            patch_object(path)
+            return self.get(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId):
-		logging.info('RouteEntry35 delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId):
+        logging.info('RouteEntry35 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/GenZ/MPRT/{4}').format(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId)
-			base_path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/GenZ/MPRT').format(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId)
-			return delete_object(path, base_path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/GenZ/MPRT/{4}').format(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId, MPRTId)
+            base_path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/FabricAdapters/{2}/Ports/{3}/GenZ/MPRT').format(ResourceBlockId, ComputerSystemId, FabricAdapterId, PortId)
+            return delete_object(path, base_path)
+        else:
+            return msg, code
 

@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.Triggers import get_Triggers_instance
 
 members = []
@@ -47,138 +47,146 @@ INTERNAL_ERROR = 500
 
 # Triggers Collection API
 class TriggersCollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Triggers Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Triggers Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self):
-		logging.info('Triggers Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self):
+        logging.info('Triggers Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'TelemetryService/Triggers', 'index.json')
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'TelemetryService/Triggers', 'index.json')
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self):
-		logging.info('Triggers Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self):
+        logging.info('Triggers Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			path = create_path(self.root, 'TelemetryService/Triggers')
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'Triggers', parent_path)
+            path = create_path(self.root, 'TelemetryService/Triggers')
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'Triggers', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return TriggersAPI.post(self, os.path.basename(config['@odata.id']))
-				else:
-					return TriggersAPI.post(self, str(res))
-			else:
-				return TriggersAPI.post(self, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return TriggersAPI.post(self, os.path.basename(config['@odata.id']))
+                else:
+                    return TriggersAPI.post(self, str(res))
+            else:
+                return TriggersAPI.post(self, str(res))
+        else:
+            return msg, code
 
 # Triggers API
 class TriggersAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Triggers init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Triggers init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, TriggersId):
-		logging.info('Triggers get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, TriggersId):
+        logging.info('Triggers get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'TelemetryService/Triggers/{0}', 'index.json').format(TriggersId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'TelemetryService/Triggers/{0}', 'index.json').format(TriggersId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, TriggersId):
-		logging.info('Triggers post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, TriggersId):
+        logging.info('Triggers post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'TelemetryService/Triggers/{0}').format(TriggersId)
-			collection_path = os.path.join(self.root, 'TelemetryService/Triggers', 'index.json')
+        if code == 200:
+            path = create_path(self.root, 'TelemetryService/Triggers/{0}').format(TriggersId)
+            collection_path = os.path.join(self.root, 'TelemetryService/Triggers', 'index.json')
 
-			# Check if collection exists:
-			if not os.path.exists(collection_path):
-				TriggersCollectionAPI.post(self)
+            # Check if collection exists:
+            if not os.path.exists(collection_path):
+                TriggersCollectionAPI.post(self)
 
-			if TriggersId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'TriggersId':TriggersId, 'rb':g.rest_base}
-				config=get_Triggers_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
+            if TriggersId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'TriggersId':TriggersId, 'rb':g.rest_base}
+                config=get_Triggers_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    None
+                )
 
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('TriggersAPI POST exit')
-			return resp
-		else:
-			return msg, code
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('TriggersAPI POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, TriggersId):
-		logging.info('Triggers put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, TriggersId):
+        logging.info('Triggers put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'TelemetryService/Triggers/{0}', 'index.json').format(TriggersId)
-			put_object(path)
-			return self.get(TriggersId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'TelemetryService/Triggers/{0}', 'index.json').format(TriggersId)
+            put_object(path)
+            return self.get(TriggersId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, TriggersId):
-		logging.info('Triggers patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, TriggersId):
+        logging.info('Triggers patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'TelemetryService/Triggers/{0}', 'index.json').format(TriggersId)
-			patch_object(path)
-			return self.get(TriggersId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'TelemetryService/Triggers/{0}', 'index.json').format(TriggersId)
+            patch_object(path)
+            return self.get(TriggersId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, TriggersId):
-		logging.info('Triggers delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, TriggersId):
+        logging.info('Triggers delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'TelemetryService/Triggers/{0}').format(TriggersId)
-			base_path = create_path(self.root, 'TelemetryService/Triggers')
-			return delete_object(path, base_path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'TelemetryService/Triggers/{0}').format(TriggersId)
+            base_path = create_path(self.root, 'TelemetryService/Triggers')
+            return delete_object(path, base_path)
+        else:
+            return msg, code
 

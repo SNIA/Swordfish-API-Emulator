@@ -52,7 +52,7 @@ def get_EventDestination_instance(wildcards):
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{EventDestinationId}', '-0-')
+		g = d.replace('{EventDestinationId}', '0')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

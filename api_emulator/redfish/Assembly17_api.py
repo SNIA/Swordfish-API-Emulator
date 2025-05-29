@@ -38,7 +38,7 @@ import logging, random, requests, string, jwt
 from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
 
 config = {}
 
@@ -51,40 +51,40 @@ INTERNAL_ERROR = 500
 
 # Assembly17 API
 class Assembly17API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Assembly17 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Assembly17 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ChassisId, PowerSupplyId):
-		logging.info('Assembly17 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ChassisId, PowerSupplyId):
+        logging.info('Assembly17 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/Power/PowerSupplies/{1}/Assembly', 'index.json').format(ChassisId, PowerSupplyId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Chassis/{0}/Power/PowerSupplies/{1}/Assembly', 'index.json').format(ChassisId, PowerSupplyId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, ChassisId, PowerSupplyId):
-		logging.info('Assembly17 post called')
-		return 'POST is not a supported command for Assembly17API', 405
+    # HTTP POST
+    def post(self, ChassisId, PowerSupplyId):
+        logging.info('Assembly17 post called')
+        return 'POST is not a supported command for Assembly17API', 405
 
-	# HTTP PUT
-	def put(self, ChassisId, PowerSupplyId):
-		logging.info('Assembly17 put called')
-		return 'PUT is not a supported command for Assembly17API', 405
+    # HTTP PUT
+    def put(self, ChassisId, PowerSupplyId):
+        logging.info('Assembly17 put called')
+        return 'PUT is not a supported command for Assembly17API', 405
 
-	# HTTP PATCH
-	def patch(self, ChassisId, PowerSupplyId):
-		logging.info('Assembly17 patch called')
-		return 'PATCH is not a supported command for Assembly17API', 405
+    # HTTP PATCH
+    def patch(self, ChassisId, PowerSupplyId):
+        logging.info('Assembly17 patch called')
+        return 'PATCH is not a supported command for Assembly17API', 405
 
-	# HTTP DELETE
-	def delete(self, ChassisId, PowerSupplyId):
-		logging.info('Assembly17 delete called')
-		return 'DELETE is not a supported command for Assembly17API', 405
+    # HTTP DELETE
+    def delete(self, ChassisId, PowerSupplyId):
+        logging.info('Assembly17 delete called')
+        return 'DELETE is not a supported command for Assembly17API', 405
 
 

@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.Job1 import get_Job1_instance
 
 members = []
@@ -47,141 +47,149 @@ INTERNAL_ERROR = 500
 
 # Job1 Collection API
 class Job1CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Job1 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Job1 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, JobId):
-		logging.info('Job1 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, JobId):
+        logging.info('Job1 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'JobService/Jobs/{0}/Steps', 'index.json').format(JobId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'JobService/Jobs/{0}/Steps', 'index.json').format(JobId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self, JobId):
-		logging.info('Job1 Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self, JobId):
+        logging.info('Job1 Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			if JobId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'JobService/Jobs/{0}/Steps').format(JobId)
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'Job', parent_path)
+            if JobId in members:
+                resp = 404
+                return resp
+            path = create_path(self.root, 'JobService/Jobs/{0}/Steps').format(JobId)
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'Job', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return Job1API.post(self, JobId, os.path.basename(config['@odata.id']))
-				else:
-					return Job1API.post(self, JobId, str(res))
-			else:
-				return Job1API.post(self, JobId, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return Job1API.post(self, JobId, os.path.basename(config['@odata.id']))
+                else:
+                    return Job1API.post(self, JobId, str(res))
+            else:
+                return Job1API.post(self, JobId, str(res))
+        else:
+            return msg, code
 
 # Job1 API
 class Job1API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Job1 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Job1 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, JobId, JobId2):
-		logging.info('Job1 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, JobId, JobId2):
+        logging.info('Job1 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'JobService/Jobs/{0}/Steps/{02}', 'index.json').format(JobId, JobId2)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'JobService/Jobs/{0}/Steps/{02}', 'index.json').format(JobId, JobId2)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, JobId, JobId2):
-		logging.info('Job1 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, JobId, JobId2):
+        logging.info('Job1 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'JobService/Jobs/{0}/Steps/{02}').format(JobId, JobId2)
-			collection_path = os.path.join(self.root, 'JobService/Jobs/{0}/Steps', 'index.json').format(JobId)
+        if code == 200:
+            path = create_path(self.root, 'JobService/Jobs/{0}/Steps/{02}').format(JobId, JobId2)
+            collection_path = os.path.join(self.root, 'JobService/Jobs/{0}/Steps', 'index.json').format(JobId)
 
-			# Check if collection exists:
-			if not os.path.exists(collection_path):
-				Job1CollectionAPI.post(self, JobId)
+            # Check if collection exists:
+            if not os.path.exists(collection_path):
+                Job1CollectionAPI.post(self, JobId)
 
-			if JobId2 in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'JobId':JobId, 'JobId2':JobId2, 'rb':g.rest_base}
-				config=get_Job1_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
+            if JobId2 in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'JobId':JobId, 'JobId2':JobId2, 'rb':g.rest_base}
+                config=get_Job1_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    None
+                )
 
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('Job1API POST exit')
-			return resp
-		else:
-			return msg, code
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('Job1API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, JobId, JobId2):
-		logging.info('Job1 put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, JobId, JobId2):
+        logging.info('Job1 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'JobService/Jobs/{0}/Steps/{02}', 'index.json').format(JobId, JobId2)
-			put_object(path)
-			return self.get(JobId, JobId2)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'JobService/Jobs/{0}/Steps/{02}', 'index.json').format(JobId, JobId2)
+            put_object(path)
+            return self.get(JobId, JobId2)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, JobId, JobId2):
-		logging.info('Job1 patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, JobId, JobId2):
+        logging.info('Job1 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'JobService/Jobs/{0}/Steps/{02}', 'index.json').format(JobId, JobId2)
-			patch_object(path)
-			return self.get(JobId, JobId2)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'JobService/Jobs/{0}/Steps/{02}', 'index.json').format(JobId, JobId2)
+            patch_object(path)
+            return self.get(JobId, JobId2)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, JobId, JobId2):
-		logging.info('Job1 delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, JobId, JobId2):
+        logging.info('Job1 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'JobService/Jobs/{0}/Steps/{02}').format(JobId, JobId2)
-			base_path = create_path(self.root, 'JobService/Jobs/{0}/Steps').format(JobId)
-			return delete_object(path, base_path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'JobService/Jobs/{0}/Steps/{02}').format(JobId, JobId2)
+            base_path = create_path(self.root, 'JobService/Jobs/{0}/Steps').format(JobId)
+            return delete_object(path, base_path)
+        else:
+            return msg, code
 

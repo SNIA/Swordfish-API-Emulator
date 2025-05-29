@@ -38,7 +38,7 @@ import logging, random, requests, string, jwt
 from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
 
 config = {}
 
@@ -48,79 +48,79 @@ INTERNAL_ERROR = 500
 
 # DataSecurityLineOfService0 Collection API
 class DataSecurityLineOfService0CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('DataSecurityLineOfService0 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('DataSecurityLineOfService0 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, StorageServiceId):
-		logging.info('DataSecurityLineOfService0 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, StorageServiceId):
+        logging.info('DataSecurityLineOfService0 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'StorageServices/{0}/LinesOfService/DataSecurityLinesOfService', 'index.json').format(StorageServiceId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'StorageServices/{0}/LinesOfService/DataSecurityLinesOfService', 'index.json').format(StorageServiceId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, StorageServiceId):
-		logging.info('DataSecurityLineOfService0 Collection post called')
-		return 'POST is not a supported command for DataSecurityLineOfService0CollectionAPI', 405
+    # HTTP POST
+    def post(self, StorageServiceId):
+        logging.info('DataSecurityLineOfService0 Collection post called')
+        return 'POST is not a supported command for DataSecurityLineOfService0CollectionAPI', 405
 
-	# HTTP PUT
-	def put(self, StorageServiceId):
-		logging.info('DataSecurityLineOfService0 Collection put called')
-		return 'PUT is not a supported command for DataSecurityLineOfService0CollectionAPI', 405
+    # HTTP PUT
+    def put(self, StorageServiceId):
+        logging.info('DataSecurityLineOfService0 Collection put called')
+        return 'PUT is not a supported command for DataSecurityLineOfService0CollectionAPI', 405
 
-	# HTTP PATCH
-	def patch(self, StorageServiceId):
-		logging.info('DataSecurityLineOfService0 Collection patch called')
-		return 'PATCH is not a supported command for DataSecurityLineOfService0CollectionAPI', 405
+    # HTTP PATCH
+    def patch(self, StorageServiceId):
+        logging.info('DataSecurityLineOfService0 Collection patch called')
+        return 'PATCH is not a supported command for DataSecurityLineOfService0CollectionAPI', 405
 
-	# HTTP DELETE
-	def delete(self, StorageServiceId):
-		logging.info('DataSecurityLineOfService0 Collection delete called')
-		return 'DELETE is not a supported command for DataSecurityLineOfService0CollectionAPI', 405
+    # HTTP DELETE
+    def delete(self, StorageServiceId):
+        logging.info('DataSecurityLineOfService0 Collection delete called')
+        return 'DELETE is not a supported command for DataSecurityLineOfService0CollectionAPI', 405
 
 
 # DataSecurityLineOfService0 API
 class DataSecurityLineOfService0API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('DataSecurityLineOfService0 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('DataSecurityLineOfService0 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, StorageServiceId, DataSecurityLineOfServiceId):
-		logging.info('DataSecurityLineOfService0 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, StorageServiceId, DataSecurityLineOfServiceId):
+        logging.info('DataSecurityLineOfService0 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'StorageServices/{0}/LinesOfService/DataSecurityLinesOfService/{1}', 'index.json').format(StorageServiceId, DataSecurityLineOfServiceId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'StorageServices/{0}/LinesOfService/DataSecurityLinesOfService/{1}', 'index.json').format(StorageServiceId, DataSecurityLineOfServiceId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, StorageServiceId, DataSecurityLineOfServiceId):
-		logging.info('DataSecurityLineOfService0 post called')
-		return 'POST is not a supported command for DataSecurityLineOfService0API', 405
+    # HTTP POST
+    def post(self, StorageServiceId, DataSecurityLineOfServiceId):
+        logging.info('DataSecurityLineOfService0 post called')
+        return 'POST is not a supported command for DataSecurityLineOfService0API', 405
 
-	# HTTP PUT
-	def put(self, StorageServiceId, DataSecurityLineOfServiceId):
-		logging.info('DataSecurityLineOfService0 put called')
-		return 'PUT is not a supported command for DataSecurityLineOfService0API', 405
+    # HTTP PUT
+    def put(self, StorageServiceId, DataSecurityLineOfServiceId):
+        logging.info('DataSecurityLineOfService0 put called')
+        return 'PUT is not a supported command for DataSecurityLineOfService0API', 405
 
-	# HTTP PATCH
-	def patch(self, StorageServiceId, DataSecurityLineOfServiceId):
-		logging.info('DataSecurityLineOfService0 patch called')
-		return 'PATCH is not a supported command for DataSecurityLineOfService0API', 405
+    # HTTP PATCH
+    def patch(self, StorageServiceId, DataSecurityLineOfServiceId):
+        logging.info('DataSecurityLineOfService0 patch called')
+        return 'PATCH is not a supported command for DataSecurityLineOfService0API', 405
 
-	# HTTP DELETE
-	def delete(self, StorageServiceId, DataSecurityLineOfServiceId):
-		logging.info('DataSecurityLineOfService0 delete called')
-		return 'DELETE is not a supported command for DataSecurityLineOfService0API', 405
+    # HTTP DELETE
+    def delete(self, StorageServiceId, DataSecurityLineOfServiceId):
+        logging.info('DataSecurityLineOfService0 delete called')
+        return 'DELETE is not a supported command for DataSecurityLineOfService0API', 405
 
 

@@ -38,7 +38,7 @@ import logging, random, requests, string, jwt
 from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
 
 config = {}
 
@@ -51,40 +51,40 @@ INTERNAL_ERROR = 500
 
 # Assembly24 API
 class Assembly24API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Assembly24 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Assembly24 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, ProcessorId):
-		logging.info('Assembly24 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ResourceBlockId, ComputerSystemId, ProcessorId):
+        logging.info('Assembly24 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Processors/{2}/Assembly', 'index.json').format(ResourceBlockId, ComputerSystemId, ProcessorId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Processors/{2}/Assembly', 'index.json').format(ResourceBlockId, ComputerSystemId, ProcessorId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, ResourceBlockId, ComputerSystemId, ProcessorId):
-		logging.info('Assembly24 post called')
-		return 'POST is not a supported command for Assembly24API', 405
+    # HTTP POST
+    def post(self, ResourceBlockId, ComputerSystemId, ProcessorId):
+        logging.info('Assembly24 post called')
+        return 'POST is not a supported command for Assembly24API', 405
 
-	# HTTP PUT
-	def put(self, ResourceBlockId, ComputerSystemId, ProcessorId):
-		logging.info('Assembly24 put called')
-		return 'PUT is not a supported command for Assembly24API', 405
+    # HTTP PUT
+    def put(self, ResourceBlockId, ComputerSystemId, ProcessorId):
+        logging.info('Assembly24 put called')
+        return 'PUT is not a supported command for Assembly24API', 405
 
-	# HTTP PATCH
-	def patch(self, ResourceBlockId, ComputerSystemId, ProcessorId):
-		logging.info('Assembly24 patch called')
-		return 'PATCH is not a supported command for Assembly24API', 405
+    # HTTP PATCH
+    def patch(self, ResourceBlockId, ComputerSystemId, ProcessorId):
+        logging.info('Assembly24 patch called')
+        return 'PATCH is not a supported command for Assembly24API', 405
 
-	# HTTP DELETE
-	def delete(self, ResourceBlockId, ComputerSystemId, ProcessorId):
-		logging.info('Assembly24 delete called')
-		return 'DELETE is not a supported command for Assembly24API', 405
+    # HTTP DELETE
+    def delete(self, ResourceBlockId, ComputerSystemId, ProcessorId):
+        logging.info('Assembly24 delete called')
+        return 'DELETE is not a supported command for Assembly24API', 405
 
 

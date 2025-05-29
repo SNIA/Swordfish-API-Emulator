@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.Filter4 import get_Filter4_instance
 
 members = []
@@ -47,141 +47,149 @@ INTERNAL_ERROR = 500
 
 # Filter4 Collection API
 class Filter4CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Filter4 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Filter4 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, CoolingUnitId):
-		logging.info('Filter4 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, CoolingUnitId):
+        logging.info('Filter4 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Filters', 'index.json').format(CoolingUnitId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Filters', 'index.json').format(CoolingUnitId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self, CoolingUnitId):
-		logging.info('Filter4 Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self, CoolingUnitId):
+        logging.info('Filter4 Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			if CoolingUnitId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Filters').format(CoolingUnitId)
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'Filter', parent_path)
+            if CoolingUnitId in members:
+                resp = 404
+                return resp
+            path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Filters').format(CoolingUnitId)
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'Filter', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return Filter4API.post(self, CoolingUnitId, os.path.basename(config['@odata.id']))
-				else:
-					return Filter4API.post(self, CoolingUnitId, str(res))
-			else:
-				return Filter4API.post(self, CoolingUnitId, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return Filter4API.post(self, CoolingUnitId, os.path.basename(config['@odata.id']))
+                else:
+                    return Filter4API.post(self, CoolingUnitId, str(res))
+            else:
+                return Filter4API.post(self, CoolingUnitId, str(res))
+        else:
+            return msg, code
 
 # Filter4 API
 class Filter4API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Filter4 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Filter4 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, CoolingUnitId, FilterId):
-		logging.info('Filter4 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, CoolingUnitId, FilterId):
+        logging.info('Filter4 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Filters/{1}', 'index.json').format(CoolingUnitId, FilterId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Filters/{1}', 'index.json').format(CoolingUnitId, FilterId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, CoolingUnitId, FilterId):
-		logging.info('Filter4 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, CoolingUnitId, FilterId):
+        logging.info('Filter4 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Filters/{1}').format(CoolingUnitId, FilterId)
-			collection_path = os.path.join(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Filters', 'index.json').format(CoolingUnitId)
+        if code == 200:
+            path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Filters/{1}').format(CoolingUnitId, FilterId)
+            collection_path = os.path.join(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Filters', 'index.json').format(CoolingUnitId)
 
-			# Check if collection exists:
-			if not os.path.exists(collection_path):
-				Filter4CollectionAPI.post(self, CoolingUnitId)
+            # Check if collection exists:
+            if not os.path.exists(collection_path):
+                Filter4CollectionAPI.post(self, CoolingUnitId)
 
-			if FilterId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'CoolingUnitId':CoolingUnitId, 'FilterId':FilterId, 'rb':g.rest_base}
-				config=get_Filter4_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
+            if FilterId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'CoolingUnitId':CoolingUnitId, 'FilterId':FilterId, 'rb':g.rest_base}
+                config=get_Filter4_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    None
+                )
 
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('Filter4API POST exit')
-			return resp
-		else:
-			return msg, code
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('Filter4API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, CoolingUnitId, FilterId):
-		logging.info('Filter4 put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, CoolingUnitId, FilterId):
+        logging.info('Filter4 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Filters/{1}', 'index.json').format(CoolingUnitId, FilterId)
-			put_object(path)
-			return self.get(CoolingUnitId, FilterId)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Filters/{1}', 'index.json').format(CoolingUnitId, FilterId)
+            put_object(path)
+            return self.get(CoolingUnitId, FilterId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, CoolingUnitId, FilterId):
-		logging.info('Filter4 patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, CoolingUnitId, FilterId):
+        logging.info('Filter4 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Filters/{1}', 'index.json').format(CoolingUnitId, FilterId)
-			patch_object(path)
-			return self.get(CoolingUnitId, FilterId)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Filters/{1}', 'index.json').format(CoolingUnitId, FilterId)
+            patch_object(path)
+            return self.get(CoolingUnitId, FilterId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, CoolingUnitId, FilterId):
-		logging.info('Filter4 delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, CoolingUnitId, FilterId):
+        logging.info('Filter4 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Filters/{1}').format(CoolingUnitId, FilterId)
-			base_path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Filters').format(CoolingUnitId)
-			return delete_object(path, base_path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Filters/{1}').format(CoolingUnitId, FilterId)
+            base_path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Filters').format(CoolingUnitId)
+            return delete_object(path, base_path)
+        else:
+            return msg, code
 

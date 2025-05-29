@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.VLanNetworkInterface2 import get_VLanNetworkInterface2_instance
 
 members = []
@@ -47,141 +47,149 @@ INTERNAL_ERROR = 500
 
 # VLanNetworkInterface2 Collection API
 class VLanNetworkInterface2CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('VLanNetworkInterface2 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('VLanNetworkInterface2 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ComputerSystemId, EthernetInterfaceId):
-		logging.info('VLanNetworkInterface2 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ComputerSystemId, EthernetInterfaceId):
+        logging.info('VLanNetworkInterface2 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/EthernetInterfaces/{1}/VLANs', 'index.json').format(ComputerSystemId, EthernetInterfaceId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Systems/{0}/EthernetInterfaces/{1}/VLANs', 'index.json').format(ComputerSystemId, EthernetInterfaceId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self, ComputerSystemId, EthernetInterfaceId):
-		logging.info('VLanNetworkInterface2 Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self, ComputerSystemId, EthernetInterfaceId):
+        logging.info('VLanNetworkInterface2 Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			if EthernetInterfaceId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'Systems/{0}/EthernetInterfaces/{1}/VLANs').format(ComputerSystemId, EthernetInterfaceId)
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'VLanNetworkInterface', parent_path)
+            if EthernetInterfaceId in members:
+                resp = 404
+                return resp
+            path = create_path(self.root, 'Systems/{0}/EthernetInterfaces/{1}/VLANs').format(ComputerSystemId, EthernetInterfaceId)
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'VLanNetworkInterface', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return VLanNetworkInterface2API.post(self, ComputerSystemId, EthernetInterfaceId, os.path.basename(config['@odata.id']))
-				else:
-					return VLanNetworkInterface2API.post(self, ComputerSystemId, EthernetInterfaceId, str(res))
-			else:
-				return VLanNetworkInterface2API.post(self, ComputerSystemId, EthernetInterfaceId, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return VLanNetworkInterface2API.post(self, ComputerSystemId, EthernetInterfaceId, os.path.basename(config['@odata.id']))
+                else:
+                    return VLanNetworkInterface2API.post(self, ComputerSystemId, EthernetInterfaceId, str(res))
+            else:
+                return VLanNetworkInterface2API.post(self, ComputerSystemId, EthernetInterfaceId, str(res))
+        else:
+            return msg, code
 
 # VLanNetworkInterface2 API
 class VLanNetworkInterface2API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('VLanNetworkInterface2 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('VLanNetworkInterface2 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId):
-		logging.info('VLanNetworkInterface2 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId):
+        logging.info('VLanNetworkInterface2 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/EthernetInterfaces/{1}/VLANs/{2}', 'index.json').format(ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Systems/{0}/EthernetInterfaces/{1}/VLANs/{2}', 'index.json').format(ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId):
-		logging.info('VLanNetworkInterface2 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId):
+        logging.info('VLanNetworkInterface2 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/EthernetInterfaces/{1}/VLANs/{2}').format(ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId)
-			collection_path = os.path.join(self.root, 'Systems/{0}/EthernetInterfaces/{1}/VLANs', 'index.json').format(ComputerSystemId, EthernetInterfaceId)
+        if code == 200:
+            path = create_path(self.root, 'Systems/{0}/EthernetInterfaces/{1}/VLANs/{2}').format(ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId)
+            collection_path = os.path.join(self.root, 'Systems/{0}/EthernetInterfaces/{1}/VLANs', 'index.json').format(ComputerSystemId, EthernetInterfaceId)
 
-			# Check if collection exists:
-			if not os.path.exists(collection_path):
-				VLanNetworkInterface2CollectionAPI.post(self, ComputerSystemId, EthernetInterfaceId)
+            # Check if collection exists:
+            if not os.path.exists(collection_path):
+                VLanNetworkInterface2CollectionAPI.post(self, ComputerSystemId, EthernetInterfaceId)
 
-			if VLanNetworkInterfaceId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'ComputerSystemId':ComputerSystemId, 'EthernetInterfaceId':EthernetInterfaceId, 'VLanNetworkInterfaceId':VLanNetworkInterfaceId, 'rb':g.rest_base}
-				config=get_VLanNetworkInterface2_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
+            if VLanNetworkInterfaceId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'ComputerSystemId':ComputerSystemId, 'EthernetInterfaceId':EthernetInterfaceId, 'VLanNetworkInterfaceId':VLanNetworkInterfaceId, 'rb':g.rest_base}
+                config=get_VLanNetworkInterface2_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    None
+                )
 
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('VLanNetworkInterface2API POST exit')
-			return resp
-		else:
-			return msg, code
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('VLanNetworkInterface2API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId):
-		logging.info('VLanNetworkInterface2 put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId):
+        logging.info('VLanNetworkInterface2 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/EthernetInterfaces/{1}/VLANs/{2}', 'index.json').format(ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId)
-			put_object(path)
-			return self.get(ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Systems/{0}/EthernetInterfaces/{1}/VLANs/{2}', 'index.json').format(ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId)
+            put_object(path)
+            return self.get(ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId):
-		logging.info('VLanNetworkInterface2 patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId):
+        logging.info('VLanNetworkInterface2 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/EthernetInterfaces/{1}/VLANs/{2}', 'index.json').format(ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId)
-			patch_object(path)
-			return self.get(ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Systems/{0}/EthernetInterfaces/{1}/VLANs/{2}', 'index.json').format(ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId)
+            patch_object(path)
+            return self.get(ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId):
-		logging.info('VLanNetworkInterface2 delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId):
+        logging.info('VLanNetworkInterface2 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/EthernetInterfaces/{1}/VLANs/{2}').format(ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId)
-			base_path = create_path(self.root, 'Systems/{0}/EthernetInterfaces/{1}/VLANs').format(ComputerSystemId, EthernetInterfaceId)
-			return delete_object(path, base_path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Systems/{0}/EthernetInterfaces/{1}/VLANs/{2}').format(ComputerSystemId, EthernetInterfaceId, VLanNetworkInterfaceId)
+            base_path = create_path(self.root, 'Systems/{0}/EthernetInterfaces/{1}/VLANs').format(ComputerSystemId, EthernetInterfaceId)
+            return delete_object(path, base_path)
+        else:
+            return msg, code
 

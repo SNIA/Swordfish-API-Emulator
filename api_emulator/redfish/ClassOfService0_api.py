@@ -38,7 +38,7 @@ import logging, random, requests, string, jwt
 from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
 
 config = {}
 
@@ -48,136 +48,179 @@ INTERNAL_ERROR = 500
 
 # ClassOfService0 Collection API
 class ClassOfService0CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('ClassOfService0 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('ClassOfService0 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, StorageServiceId):
-		logging.info('ClassOfService0 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, StorageServiceId):
+        logging.info('ClassOfService0 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'StorageServices/{0}/ClassesOfService', 'index.json').format(StorageServiceId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'StorageServices/{0}/ClassesOfService', 'index.json').format(StorageServiceId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, StorageServiceId):
-		logging.info('ClassOfService0 Collection post called')
-		return 'POST is not a supported command for ClassOfService0CollectionAPI', 405
+    # HTTP POST
+    def post(self, StorageServiceId):
+        logging.info('ClassOfService0 Collection post called')
+        return 'POST is not a supported command for ClassOfService0CollectionAPI', 405
 
-	# HTTP PUT
-	def put(self, StorageServiceId):
-		logging.info('ClassOfService0 Collection put called')
-		return 'PUT is not a supported command for ClassOfService0CollectionAPI', 405
+    # HTTP PUT
+    def put(self, StorageServiceId):
+        logging.info('ClassOfService0 Collection put called')
+        return 'PUT is not a supported command for ClassOfService0CollectionAPI', 405
 
-	# HTTP PATCH
-	def patch(self, StorageServiceId):
-		logging.info('ClassOfService0 Collection patch called')
-		return 'PATCH is not a supported command for ClassOfService0CollectionAPI', 405
+    # HTTP PATCH
+    def patch(self, StorageServiceId):
+        logging.info('ClassOfService0 Collection patch called')
+        return 'PATCH is not a supported command for ClassOfService0CollectionAPI', 405
 
-	# HTTP DELETE
-	def delete(self, StorageServiceId):
-		logging.info('ClassOfService0 Collection delete called')
-		return 'DELETE is not a supported command for ClassOfService0CollectionAPI', 405
+    # HTTP DELETE
+    def delete(self, StorageServiceId):
+        logging.info('ClassOfService0 Collection delete called')
+        return 'DELETE is not a supported command for ClassOfService0CollectionAPI', 405
 
 
 # ClassOfService0 API
 class ClassOfService0API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('ClassOfService0 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('ClassOfService0 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, StorageServiceId, ClassOfServiceId):
-		logging.info('ClassOfService0 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, StorageServiceId, ClassOfServiceId):
+        logging.info('ClassOfService0 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'StorageServices/{0}/ClassesOfService/{1}', 'index.json').format(StorageServiceId, ClassOfServiceId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'StorageServices/{0}/ClassesOfService/{1}', 'index.json').format(StorageServiceId, ClassOfServiceId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, StorageServiceId, ClassOfServiceId):
-		logging.info('ClassOfService0 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    def post(self, StorageServiceId, ClassOfServiceId):
+        logging.info('ClassOfService0 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'StorageServices/{0}/ClassesOfService/{1}').format(StorageServiceId, ClassOfServiceId)
-			collection_path = os.path.join(self.root, 'StorageServices/{0}/ClassesOfService', 'index.json').format(StorageServiceId)
-			if not os.path.exists(collection_path):
-				# Not calling collection POST since not supported
-				pass
-			if ClassOfServiceId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'StorageServiceId':StorageServiceId, 'ClassOfServiceId':ClassOfServiceId, 'rb':g.rest_base}
-				config=get_json_data(path) if os.path.exists(path) else {}
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
-				send_event('ResourceCreated', path)
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('ClassOfService0API POST exit')
-			return resp
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'StorageServices/{0}/ClassesOfService/{1}').format(StorageServiceId, ClassOfServiceId)
+            collection_path = os.path.join(self.root, 'StorageServices/{0}/ClassesOfService', 'index.json').format(StorageServiceId)
+            if not os.path.exists(collection_path):
+                # Not calling collection POST since not supported
+                pass
+            if ClassOfServiceId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'StorageServiceId':StorageServiceId, 'ClassOfServiceId':ClassOfServiceId, 'rb':g.rest_base}
+                config=get_json_data(path) if os.path.exists(path) else {}
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    config
+                )
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('ClassOfService0API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, StorageServiceId, ClassOfServiceId):
-		logging.info('ClassOfService0 put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, StorageServiceId, ClassOfServiceId):
+        logging.info('ClassOfService0 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'StorageServices/{0}/ClassesOfService/{1}', 'index.json').format(StorageServiceId, ClassOfServiceId)
-			old_data = get_json_data(path)
-			put_object(path)
-			new_data = get_json_data(path)
-			send_event('ResourceChanged', path)
-			if old_data.get('Status') != new_data.get('Status'):
-				send_event('ResourceStatusChanged', path)
-			return self.get(StorageServiceId, ClassOfServiceId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'StorageServices/{0}/ClassesOfService/{1}', 'index.json').format(StorageServiceId, ClassOfServiceId)
+            old_data = get_json_data(path)
+            put_object(path)
+            new_data = get_json_data(path)
+            send_event(
+                "ResourceChanged",
+                "ResourceChanged",
+                f"ClassOfService {ClassOfServiceId} changed",
+                "OK",
+                path,
+                new_data
+            )
+            if old_data.get('Status') != new_data.get('Status'):
+                send_event(
+                    "ResourceStatusChanged",
+                    "ResourceStatusChanged",
+                    f"ClassOfService {ClassOfServiceId} status changed",
+                    "OK",
+                    path,
+                    new_data
+                )
+            return self.get(ClassOfServiceId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, StorageServiceId, ClassOfServiceId):
-		logging.info('ClassOfService0 patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, StorageServiceId, ClassOfServiceId):
+        logging.info('ClassOfService0 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'StorageServices/{0}/ClassesOfService/{1}', 'index.json').format(StorageServiceId, ClassOfServiceId)
-			old_data = get_json_data(path)
-			patch_object(path)
-			new_data = get_json_data(path)
-			send_event('ResourceChanged', path)
-			if old_data.get('Status') != new_data.get('Status'):
-				send_event('ResourceStatusChanged', path)
-			return self.get(StorageServiceId, ClassOfServiceId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'StorageServices/{0}/ClassesOfService/{1}', 'index.json').format(StorageServiceId, ClassOfServiceId)
+            old_data = get_json_data(path)
+            patch_object(path)
+            new_data = get_json_data(path)
+            send_event(
+                "ResourceChanged",
+                "ResourceChanged",
+                f"ClassOfService {ClassOfServiceId} changed",
+                "OK",
+                path,
+                new_data
+            )
+            if old_data.get('Status') != new_data.get('Status'):
+                send_event(
+                    "ResourceStatusChanged",
+                    "ResourceStatusChanged",
+                    f"ClassOfService {ClassOfServiceId} status changed",
+                    "OK",
+                    path,
+                    new_data
+                )
+            return self.get(ClassOfServiceId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, StorageServiceId, ClassOfServiceId):
-		logging.info('ClassOfService0 delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, StorageServiceId, ClassOfServiceId):
+        logging.info('ClassOfService0 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'StorageServices/{0}/ClassesOfService/{1}').format(StorageServiceId, ClassOfServiceId)
-			base_path = create_path(self.root, 'StorageServices/{0}/ClassesOfService').format(StorageServiceId)
-			delete_object(path, base_path)
-			send_event('ResourceRemoved', path)
-			return '', 204
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'StorageServices/{0}/ClassesOfService/{1}').format(StorageServiceId, ClassOfServiceId)
+            base_path = create_path(self.root, 'StorageServices/{0}/ClassesOfService').format(StorageServiceId)
+            obj = get_json_data(path)
+            send_event(
+                "ResourceRemoved",
+                "ResourceRemoved",
+                f"ClassOfService {ClassOfServiceId} removed",
+                "OK",
+                path,
+                obj
+            )
+            delete_object(path, base_path)
+            return '', 204
+        else:
+            return msg, code
 
 

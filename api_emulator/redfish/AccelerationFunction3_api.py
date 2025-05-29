@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.AccelerationFunction3 import get_AccelerationFunction3_instance
 
 members = []
@@ -47,250 +47,193 @@ INTERNAL_ERROR = 500
 
 # AccelerationFunction3 Collection API
 class AccelerationFunction3CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('AccelerationFunction3 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('AccelerationFunction3 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ResourceBlockId, ProcessorId):
-		logging.info('AccelerationFunction3 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ResourceBlockId, ProcessorId):
+        logging.info('AccelerationFunction3 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions', 'index.json').format(ResourceBlockId, ProcessorId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions', 'index.json').format(ResourceBlockId, ProcessorId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self, ResourceBlockId, ProcessorId):
-		logging.info('AccelerationFunction3 Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self, ResourceBlockId, ProcessorId):
+        logging.info('AccelerationFunction3 Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			if ProcessorId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions').format(ResourceBlockId, ProcessorId)
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'AccelerationFunction', parent_path)
+            if ProcessorId in members:
+                resp = 404
+                return resp
+            path = create_path(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions').format(ResourceBlockId, ProcessorId)
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'AccelerationFunction', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return AccelerationFunction3API.post(self, ResourceBlockId, ProcessorId, os.path.basename(config['@odata.id']))
-				else:
-					return AccelerationFunction3API.post(self, ResourceBlockId, ProcessorId, str(res))
-			else:
-				return AccelerationFunction3API.post(self, ResourceBlockId, ProcessorId, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return AccelerationFunction3API.post(self, ResourceBlockId, ProcessorId, os.path.basename(config['@odata.id']))
+                else:
+                    return AccelerationFunction3API.post(self, ResourceBlockId, ProcessorId, str(res))
+            else:
+                return AccelerationFunction3API.post(self, ResourceBlockId, ProcessorId, str(res))
+        else:
+            return msg, code
 
 # AccelerationFunction3 API
 class AccelerationFunction3API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('AccelerationFunction3 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('AccelerationFunction3 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ResourceBlockId, ProcessorId, AccelerationFunctionId):
-		logging.info('AccelerationFunction3 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ResourceBlockId, ProcessorId, AccelerationFunctionId):
+        logging.info('AccelerationFunction3 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}', 'index.json').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}', 'index.json').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, ResourceBlockId, ProcessorId, AccelerationFunctionId):
-		logging.info('AccelerationFunction3 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, ResourceBlockId, ProcessorId, AccelerationFunctionId):
+        logging.info('AccelerationFunction3 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
-			collection_path = os.path.join(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions', 'index.json').format(ResourceBlockId, ProcessorId)
+        if code == 200:
+            path = create_path(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
+            collection_path = os.path.join(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions', 'index.json').format(ResourceBlockId, ProcessorId)
 
-			# Check if collection exists:
-			if not os.path.exists(collection_path):
-				AccelerationFunction3CollectionAPI.post(self, ResourceBlockId, ProcessorId)
+            # Check if collection exists:
+            if not os.path.exists(collection_path):
+                AccelerationFunction3CollectionAPI.post(self, ResourceBlockId, ProcessorId)
 
-			if AccelerationFunctionId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'ResourceBlockId':ResourceBlockId, 'ProcessorId':ProcessorId, 'AccelerationFunctionId':AccelerationFunctionId, 'rb':g.rest_base}
-				config = get_AccelerationFunction3_instance(wildcards)
-				config = create_and_patch_object(config, members, member_ids, path, collection_path)
-				resp = config, 200
-				# Send ResourceCreated event
-				resource_odata_id = config.get('@odata.id', f"/redfish/v1/ResourceBlocks/{ResourceBlockId}/Processors/{ProcessorId}/AccelerationFunctions/{AccelerationFunctionId}")
-				send_event(
-					"ResourceCreated",
-					"ResourceEvent.1.0.ResourceCreated",
-					"The resource was created successfully.",
-					"OK",
-					resource_odata_id
-				)
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('AccelerationFunction3API POST exit')
-			return resp
-		else:
-			return msg, code
+            if AccelerationFunctionId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'ResourceBlockId': ResourceBlockId, 'ProcessorId': ProcessorId, 'AccelerationFunctionId': AccelerationFunctionId, 'rb': g.rest_base}
+                config = get_AccelerationFunction3_instance(wildcards)
+                config = create_and_patch_object(config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    config
+                )
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('AccelerationFunction3API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	def put(self, ResourceBlockId, ProcessorId, AccelerationFunctionId):
-		logging.info('AccelerationFunction3 put called')
-		msg, code = check_authentication(self.auth)
+    def put(self, ResourceBlockId, ProcessorId, AccelerationFunctionId):
+        logging.info('AccelerationFunction3 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}', 'index.json').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
-			# Load old data for status comparison
-			try:
-				with open(path, 'r') as f:
-					old_data = json.load(f)
-			except Exception:
-				old_data = {}
-			put_object(path)
-			new_data = get_json_data(path)
-			# Send ResourceChanged event
-			resource_odata_id = new_data.get('@odata.id', f"/redfish/v1/ResourceBlocks/{ResourceBlockId}/Processors/{ProcessorId}/AccelerationFunctions/{AccelerationFunctionId}")
-			send_event(
-				"ResourceChanged",
-				"ResourceEvent.1.0.ResourceChanged",
-				"One or more resource properties have changed.",
-				"OK",
-				resource_odata_id
-			)
-			# Check for Status.Health change
-			old_health = old_data.get('Status', {}).get('Health') if old_data else None
-			new_health = new_data.get('Status', {}).get('Health') if new_data else None
-			if new_health and new_health != old_health:
-				if new_health == "OK":
-					send_event(
-						"ResourceStatusChangedOK",
-						"ResourceEvent.1.0.ResourceStatusChangedOK",
-						f"The health of resource '{resource_odata_id}' has changed to {new_health}.",
-						"OK",
-						resource_odata_id,
-						extra={"ResourceName": resource_odata_id, "NewHealth": new_health}
-					)
-				elif new_health == "Warning":
-					send_event(
-						"ResourceStatusChangedWarning",
-						"ResourceEvent.1.0.ResourceStatusChangedWarning",
-						f"The health of resource '{resource_odata_id}' has changed to {new_health}.",
-						"Warning",
-						resource_odata_id,
-						extra={"ResourceName": resource_odata_id, "NewHealth": new_health}
-					)
-				elif new_health == "Critical":
-					send_event(
-						"ResourceStatusChangedCritical",
-						"ResourceEvent.1.0.ResourceStatusChangedCritical",
-						f"The health of resource '{resource_odata_id}' has changed to {new_health}.",
-						"Critical",
-						resource_odata_id,
-						extra={"ResourceName": resource_odata_id, "NewHealth": new_health}
-					)
-			return self.get(ResourceBlockId, ProcessorId, AccelerationFunctionId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}', 'index.json').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
+            old_data = get_json_data(path)
+            put_object(path)
+            new_data = get_json_data(path)
+            send_event(
+                "ResourceChanged",
+                "ResourceChanged",
+                f"AccelerationFunction {AccelerationFunctionId} changed",
+                "OK",
+                path,
+                new_data
+            )
+            if old_data.get('Status') != new_data.get('Status'):
+                send_event(
+                    "ResourceStatusChanged",
+                    "ResourceStatusChanged",
+                    f"AccelerationFunction {AccelerationFunctionId} status changed",
+                    "OK",
+                    path,
+                    new_data
+                )
+            return self.get(ResourceBlockId, ProcessorId, AccelerationFunctionId)
+        else:
+            return msg, code
 
-	def patch(self, ResourceBlockId, ProcessorId, AccelerationFunctionId):
-		logging.info('AccelerationFunction3 patch called')
-		msg, code = check_authentication(self.auth)
+    def patch(self, ResourceBlockId, ProcessorId, AccelerationFunctionId):
+        logging.info('AccelerationFunction3 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}', 'index.json').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
-			# Load old data for status comparison
-			try:
-				with open(path, 'r') as f:
-					old_data = json.load(f)
-			except Exception:
-				old_data = {}
-			patch_object(path)
-			new_data = get_json_data(path)
-			# Send ResourceChanged event
-			resource_odata_id = new_data.get('@odata.id', f"/redfish/v1/ResourceBlocks/{ResourceBlockId}/Processors/{ProcessorId}/AccelerationFunctions/{AccelerationFunctionId}")
-			send_event(
-				"ResourceChanged",
-				"ResourceEvent.1.0.ResourceChanged",
-				"One or more resource properties have changed.",
-				"OK",
-				resource_odata_id
-			)
-			# Check for Status.Health change
-			old_health = old_data.get('Status', {}).get('Health') if old_data else None
-			new_health = new_data.get('Status', {}).get('Health') if new_data else None
-			if new_health and new_health != old_health:
-				if new_health == "OK":
-					send_event(
-						"ResourceStatusChangedOK",
-						"ResourceEvent.1.0.ResourceStatusChangedOK",
-						f"The health of resource '{resource_odata_id}' has changed to {new_health}.",
-						"OK",
-						resource_odata_id,
-						extra={"ResourceName": resource_odata_id, "NewHealth": new_health}
-					)
-				elif new_health == "Warning":
-					send_event(
-						"ResourceStatusChangedWarning",
-						"ResourceEvent.1.0.ResourceStatusChangedWarning",
-						f"The health of resource '{resource_odata_id}' has changed to {new_health}.",
-						"Warning",
-						resource_odata_id,
-						extra={"ResourceName": resource_odata_id, "NewHealth": new_health}
-					)
-				elif new_health == "Critical":
-					send_event(
-						"ResourceStatusChangedCritical",
-						"ResourceEvent.1.0.ResourceStatusChangedCritical",
-						f"The health of resource '{resource_odata_id}' has changed to {new_health}.",
-						"Critical",
-						resource_odata_id,
-						extra={"ResourceName": resource_odata_id, "NewHealth": new_health}
-					)
-			return self.get(ResourceBlockId, ProcessorId, AccelerationFunctionId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}', 'index.json').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
+            old_data = get_json_data(path)
+            patch_object(path)
+            new_data = get_json_data(path)
+            send_event(
+                "ResourceChanged",
+                "ResourceChanged",
+                f"AccelerationFunction {AccelerationFunctionId} changed",
+                "OK",
+                path,
+                new_data
+            )
+            if old_data.get('Status') != new_data.get('Status'):
+                send_event(
+                    "ResourceStatusChanged",
+                    "ResourceStatusChanged",
+                    f"AccelerationFunction {AccelerationFunctionId} status changed",
+                    "OK",
+                    path,
+                    new_data
+                )
+            return self.get(ResourceBlockId, ProcessorId, AccelerationFunctionId)
+        else:
+            return msg, code
 
-	def delete(self, ResourceBlockId, ProcessorId, AccelerationFunctionId):
-		logging.info('AccelerationFunction3 delete called')
-		msg, code = check_authentication(self.auth)
+    def delete(self, ResourceBlockId, ProcessorId, AccelerationFunctionId):
+        logging.info('AccelerationFunction3 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
-			base_path = create_path(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions').format(ResourceBlockId, ProcessorId)
-			resp = delete_object(path, base_path)
-			# Send ResourceRemoved event
-			resource_odata_id = f"/redfish/v1/ResourceBlocks/{ResourceBlockId}/Processors/{ProcessorId}/AccelerationFunctions/{AccelerationFunctionId}"
-			send_event(
-				"ResourceRemoved",
-				"ResourceEvent.1.0.ResourceRemoved",
-				"The resource was removed successfully.",
-				"OK",
-				resource_odata_id
-			)
-			return resp
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
+            base_path = create_path(self.root, 'ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions').format(ResourceBlockId, ProcessorId)
+            obj = get_json_data(path)
+            send_event(
+                "ResourceRemoved",
+                "ResourceRemoved",
+                "The resource was removed successfully.",
+                "OK",
+                path,
+                obj
+            )
+            resp = delete_object(path, base_path)
+            return resp
+        else:
+            return msg, code
 

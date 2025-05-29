@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.Circuit4 import get_Circuit4_instance
 
 members = []
@@ -47,141 +47,149 @@ INTERNAL_ERROR = 500
 
 # Circuit4 Collection API
 class Circuit4CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Circuit4 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Circuit4 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, PowerDistributionId):
-		logging.info('Circuit4 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, PowerDistributionId):
+        logging.info('Circuit4 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'PowerEquipment/FloorPDUs/{0}/Subfeeds', 'index.json').format(PowerDistributionId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'PowerEquipment/FloorPDUs/{0}/Subfeeds', 'index.json').format(PowerDistributionId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self, PowerDistributionId):
-		logging.info('Circuit4 Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self, PowerDistributionId):
+        logging.info('Circuit4 Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			if PowerDistributionId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'PowerEquipment/FloorPDUs/{0}/Subfeeds').format(PowerDistributionId)
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'Circuit', parent_path)
+            if PowerDistributionId in members:
+                resp = 404
+                return resp
+            path = create_path(self.root, 'PowerEquipment/FloorPDUs/{0}/Subfeeds').format(PowerDistributionId)
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'Circuit', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return Circuit4API.post(self, PowerDistributionId, os.path.basename(config['@odata.id']))
-				else:
-					return Circuit4API.post(self, PowerDistributionId, str(res))
-			else:
-				return Circuit4API.post(self, PowerDistributionId, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return Circuit4API.post(self, PowerDistributionId, os.path.basename(config['@odata.id']))
+                else:
+                    return Circuit4API.post(self, PowerDistributionId, str(res))
+            else:
+                return Circuit4API.post(self, PowerDistributionId, str(res))
+        else:
+            return msg, code
 
 # Circuit4 API
 class Circuit4API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Circuit4 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Circuit4 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, PowerDistributionId, CircuitId):
-		logging.info('Circuit4 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, PowerDistributionId, CircuitId):
+        logging.info('Circuit4 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'PowerEquipment/FloorPDUs/{0}/Subfeeds/{1}', 'index.json').format(PowerDistributionId, CircuitId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'PowerEquipment/FloorPDUs/{0}/Subfeeds/{1}', 'index.json').format(PowerDistributionId, CircuitId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, PowerDistributionId, CircuitId):
-		logging.info('Circuit4 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, PowerDistributionId, CircuitId):
+        logging.info('Circuit4 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'PowerEquipment/FloorPDUs/{0}/Subfeeds/{1}').format(PowerDistributionId, CircuitId)
-			collection_path = os.path.join(self.root, 'PowerEquipment/FloorPDUs/{0}/Subfeeds', 'index.json').format(PowerDistributionId)
+        if code == 200:
+            path = create_path(self.root, 'PowerEquipment/FloorPDUs/{0}/Subfeeds/{1}').format(PowerDistributionId, CircuitId)
+            collection_path = os.path.join(self.root, 'PowerEquipment/FloorPDUs/{0}/Subfeeds', 'index.json').format(PowerDistributionId)
 
-			# Check if collection exists:
-			if not os.path.exists(collection_path):
-				Circuit4CollectionAPI.post(self, PowerDistributionId)
+            # Check if collection exists:
+            if not os.path.exists(collection_path):
+                Circuit4CollectionAPI.post(self, PowerDistributionId)
 
-			if CircuitId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'PowerDistributionId':PowerDistributionId, 'CircuitId':CircuitId, 'rb':g.rest_base}
-				config=get_Circuit4_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
+            if CircuitId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'PowerDistributionId':PowerDistributionId, 'CircuitId':CircuitId, 'rb':g.rest_base}
+                config=get_Circuit4_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    None
+                )
 
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('Circuit4API POST exit')
-			return resp
-		else:
-			return msg, code
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('Circuit4API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, PowerDistributionId, CircuitId):
-		logging.info('Circuit4 put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, PowerDistributionId, CircuitId):
+        logging.info('Circuit4 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'PowerEquipment/FloorPDUs/{0}/Subfeeds/{1}', 'index.json').format(PowerDistributionId, CircuitId)
-			put_object(path)
-			return self.get(PowerDistributionId, CircuitId)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'PowerEquipment/FloorPDUs/{0}/Subfeeds/{1}', 'index.json').format(PowerDistributionId, CircuitId)
+            put_object(path)
+            return self.get(PowerDistributionId, CircuitId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, PowerDistributionId, CircuitId):
-		logging.info('Circuit4 patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, PowerDistributionId, CircuitId):
+        logging.info('Circuit4 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'PowerEquipment/FloorPDUs/{0}/Subfeeds/{1}', 'index.json').format(PowerDistributionId, CircuitId)
-			patch_object(path)
-			return self.get(PowerDistributionId, CircuitId)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'PowerEquipment/FloorPDUs/{0}/Subfeeds/{1}', 'index.json').format(PowerDistributionId, CircuitId)
+            patch_object(path)
+            return self.get(PowerDistributionId, CircuitId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, PowerDistributionId, CircuitId):
-		logging.info('Circuit4 delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, PowerDistributionId, CircuitId):
+        logging.info('Circuit4 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'PowerEquipment/FloorPDUs/{0}/Subfeeds/{1}').format(PowerDistributionId, CircuitId)
-			base_path = create_path(self.root, 'PowerEquipment/FloorPDUs/{0}/Subfeeds').format(PowerDistributionId)
-			return delete_object(path, base_path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'PowerEquipment/FloorPDUs/{0}/Subfeeds/{1}').format(PowerDistributionId, CircuitId)
+            base_path = create_path(self.root, 'PowerEquipment/FloorPDUs/{0}/Subfeeds').format(PowerDistributionId)
+            return delete_object(path, base_path)
+        else:
+            return msg, code
 

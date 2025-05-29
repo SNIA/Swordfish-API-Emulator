@@ -39,7 +39,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
 
 config = {}
 
@@ -49,82 +49,82 @@ INTERNAL_ERROR = 500
 
 
 class MessageRegistryFileCollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('MessageRegistryFile Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('MessageRegistryFile Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self):
-		logging.info('MessageRegistryFile Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self):
+        logging.info('MessageRegistryFile Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Registries', 'index.json')
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Registries', 'index.json')
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self):
-		logging.info('MessageRegistryFile Collection post called')
-		return 'POST is not a supported command for MessageRegistryFileCollectionAPI', 405
+    # HTTP POST
+    def post(self):
+        logging.info('MessageRegistryFile Collection post called')
+        return 'POST is not a supported command for MessageRegistryFileCollectionAPI', 405
 
-	# HTTP PUT
-	def put(self):
-		logging.info('MessageRegistryFile Collection put called')
-		return 'PUT is not a supported command for MessageRegistryFileCollectionAPI', 405
+    # HTTP PUT
+    def put(self):
+        logging.info('MessageRegistryFile Collection put called')
+        return 'PUT is not a supported command for MessageRegistryFileCollectionAPI', 405
 
-	# HTTP PATCH
-	def patch(self):
-		logging.info('MessageRegistryFile Collection patch called')
-		return 'PATCH is not a supported command for MessageRegistryFileCollectionAPI', 405
+    # HTTP PATCH
+    def patch(self):
+        logging.info('MessageRegistryFile Collection patch called')
+        return 'PATCH is not a supported command for MessageRegistryFileCollectionAPI', 405
 
-	# HTTP DELETE
-	def delete(self):
-		logging.info('MessageRegistryFile Collection delete called')
-		return 'DELETE is not a supported command for MessageRegistryFileCollectionAPI', 405
+    # HTTP DELETE
+    def delete(self):
+        logging.info('MessageRegistryFile Collection delete called')
+        return 'DELETE is not a supported command for MessageRegistryFileCollectionAPI', 405
 
 
 # MessageRegistryFile API
 class MessageRegistryFileAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('MessageRegistryFile init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('MessageRegistryFile init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, MessageRegistryFileId):
-		logging.info('MessageRegistryFile get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, MessageRegistryFileId):
+        logging.info('MessageRegistryFile get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if '.json' not in MessageRegistryFileId:
-				path = create_path(
-					self.root, 'Registries/{0}', 'index.json').format(MessageRegistryFileId)
-			else:
-				path = create_path(
-					self.root, 'Registries/{0}').format(MessageRegistryFileId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            if '.json' not in MessageRegistryFileId:
+                path = create_path(
+                    self.root, 'Registries/{0}', 'index.json').format(MessageRegistryFileId)
+            else:
+                path = create_path(
+                    self.root, 'Registries/{0}').format(MessageRegistryFileId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, MessageRegistryFileId):
-		logging.info('MessageRegistryFile post called')
-		return 'POST is not a supported command for MessageRegistryFileAPI', 405
+    # HTTP POST
+    def post(self, MessageRegistryFileId):
+        logging.info('MessageRegistryFile post called')
+        return 'POST is not a supported command for MessageRegistryFileAPI', 405
 
-	# HTTP PUT
-	def put(self, MessageRegistryFileId):
-		logging.info('MessageRegistryFile put called')
-		return 'PUT is not a supported command for MessageRegistryFileAPI', 405
+    # HTTP PUT
+    def put(self, MessageRegistryFileId):
+        logging.info('MessageRegistryFile put called')
+        return 'PUT is not a supported command for MessageRegistryFileAPI', 405
 
-	# HTTP PATCH
-	def patch(self, MessageRegistryFileId):
-		logging.info('MessageRegistryFile patch called')
-		return 'PATCH is not a supported command for MessageRegistryFileAPI', 405
+    # HTTP PATCH
+    def patch(self, MessageRegistryFileId):
+        logging.info('MessageRegistryFile patch called')
+        return 'PATCH is not a supported command for MessageRegistryFileAPI', 405
 
-	# HTTP DELETE
-	def delete(self, MessageRegistryFileId):
-		logging.info('MessageRegistryFile delete called')
-		return 'DELETE is not a supported command for MessageRegistryFileAPI', 405
+    # HTTP DELETE
+    def delete(self, MessageRegistryFileId):
+        logging.info('MessageRegistryFile delete called')
+        return 'DELETE is not a supported command for MessageRegistryFileAPI', 405

@@ -38,7 +38,7 @@ import logging, random, requests, string, jwt
 from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
 
 config = {}
 
@@ -51,40 +51,40 @@ INTERNAL_ERROR = 500
 
 # EnvironmentMetrics55 API
 class EnvironmentMetrics55API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('EnvironmentMetrics55 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('EnvironmentMetrics55 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
-		logging.info('EnvironmentMetrics55 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
+        logging.info('EnvironmentMetrics55 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}/EnvironmentMetrics', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Ports/{3}/EnvironmentMetrics', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId, PortId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
-		logging.info('EnvironmentMetrics55 post called')
-		return 'POST is not a supported command for EnvironmentMetrics55API', 405
+    # HTTP POST
+    def post(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
+        logging.info('EnvironmentMetrics55 post called')
+        return 'POST is not a supported command for EnvironmentMetrics55API', 405
 
-	# HTTP PUT
-	def put(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
-		logging.info('EnvironmentMetrics55 put called')
-		return 'PUT is not a supported command for EnvironmentMetrics55API', 405
+    # HTTP PUT
+    def put(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
+        logging.info('EnvironmentMetrics55 put called')
+        return 'PUT is not a supported command for EnvironmentMetrics55API', 405
 
-	# HTTP PATCH
-	def patch(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
-		logging.info('EnvironmentMetrics55 patch called')
-		return 'PATCH is not a supported command for EnvironmentMetrics55API', 405
+    # HTTP PATCH
+    def patch(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
+        logging.info('EnvironmentMetrics55 patch called')
+        return 'PATCH is not a supported command for EnvironmentMetrics55API', 405
 
-	# HTTP DELETE
-	def delete(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
-		logging.info('EnvironmentMetrics55 delete called')
-		return 'DELETE is not a supported command for EnvironmentMetrics55API', 405
+    # HTTP DELETE
+    def delete(self, ResourceBlockId, StorageId, StorageControllerId, PortId):
+        logging.info('EnvironmentMetrics55 delete called')
+        return 'DELETE is not a supported command for EnvironmentMetrics55API', 405
 
 

@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
 
 config = {}
 
@@ -49,40 +49,40 @@ INTERNAL_ERROR = 500
 
 # SessionService API
 class SessionServiceAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('SessionService init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('SessionService init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self):
-		logging.info('SessionService get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self):
+        logging.info('SessionService get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'SessionService', 'index.json')
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'SessionService', 'index.json')
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self):
-		logging.info('SessionService post called')
-		return 'POST is not a supported command for SessionServiceAPI', 405
+    # HTTP POST
+    def post(self):
+        logging.info('SessionService post called')
+        return 'POST is not a supported command for SessionServiceAPI', 405
 
-	# HTTP PUT
-	def put(self):
-		logging.info('SessionService put called')
-		return 'PUT is not a supported command for SessionServiceAPI', 405
+    # HTTP PUT
+    def put(self):
+        logging.info('SessionService put called')
+        return 'PUT is not a supported command for SessionServiceAPI', 405
 
-	# HTTP PATCH
-	def patch(self):
-		logging.info('SessionService patch called')
-		return 'PATCH is not a supported command for SessionServiceAPI', 405
+    # HTTP PATCH
+    def patch(self):
+        logging.info('SessionService patch called')
+        return 'PATCH is not a supported command for SessionServiceAPI', 405
 
-	# HTTP DELETE
-	def delete(self):
-		logging.info('SessionService delete called')
-		return 'DELETE is not a supported command for SessionServiceAPI', 405
+    # HTTP DELETE
+    def delete(self):
+        logging.info('SessionService delete called')
+        return 'DELETE is not a supported command for SessionServiceAPI', 405
 
 

@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.AccelerationFunction4 import get_AccelerationFunction4_instance
 
 members = []
@@ -47,146 +47,189 @@ INTERNAL_ERROR = 500
 
 # AccelerationFunction4 Collection API
 class AccelerationFunction4CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('AccelerationFunction4 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('AccelerationFunction4 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, ProcessorId):
-		logging.info('AccelerationFunction4 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ResourceBlockId, ComputerSystemId, ProcessorId):
+        logging.info('AccelerationFunction4 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/Processors/{2}/AccelerationFunctions', 'index.json').format(ResourceBlockId, ComputerSystemId, ProcessorId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/Processors/{2}/AccelerationFunctions', 'index.json').format(ResourceBlockId, ComputerSystemId, ProcessorId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self, ResourceBlockId, ComputerSystemId, ProcessorId):
-		logging.info('AccelerationFunction4 Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self, ResourceBlockId, ComputerSystemId, ProcessorId):
+        logging.info('AccelerationFunction4 Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			if ProcessorId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Processors/{2}/AccelerationFunctions').format(ResourceBlockId, ComputerSystemId, ProcessorId)
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'AccelerationFunction', parent_path)
+            if ProcessorId in members:
+                resp = 404
+                return resp
+            path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Processors/{2}/AccelerationFunctions').format(ResourceBlockId, ComputerSystemId, ProcessorId)
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'AccelerationFunction', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return AccelerationFunction4API.post(self, ResourceBlockId, ComputerSystemId, ProcessorId, os.path.basename(config['@odata.id']))
-				else:
-					return AccelerationFunction4API.post(self, ResourceBlockId, ComputerSystemId, ProcessorId, str(res))
-			else:
-				return AccelerationFunction4API.post(self, ResourceBlockId, ComputerSystemId, ProcessorId, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return AccelerationFunction4API.post(self, ResourceBlockId, ComputerSystemId, ProcessorId, os.path.basename(config['@odata.id']))
+                else:
+                    return AccelerationFunction4API.post(self, ResourceBlockId, ComputerSystemId, ProcessorId, str(res))
+            else:
+                return AccelerationFunction4API.post(self, ResourceBlockId, ComputerSystemId, ProcessorId, str(res))
+        else:
+            return msg, code
 
 # AccelerationFunction4 API
 class AccelerationFunction4API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('AccelerationFunction4 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('AccelerationFunction4 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId):
-		logging.info('AccelerationFunction4 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId):
+        logging.info('AccelerationFunction4 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Processors/{2}/AccelerationFunctions/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Processors/{2}/AccelerationFunctions/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId):
-		logging.info('AccelerationFunction4 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    def post(self, ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId):
+        logging.info('AccelerationFunction4 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Processors/{2}/AccelerationFunctions/{3}').format(ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId)
-			collection_path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/Processors/{2}/AccelerationFunctions', 'index.json').format(ResourceBlockId, ComputerSystemId, ProcessorId)
-			if not os.path.exists(collection_path):
-				AccelerationFunction4CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, ProcessorId)
-			if AccelerationFunctionId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'ProcessorId':ProcessorId, 'AccelerationFunctionId':AccelerationFunctionId, 'rb':g.rest_base}
-				config=get_AccelerationFunction4_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
-				send_event('ResourceCreated', path)
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('AccelerationFunction4API POST exit')
-			return resp
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Processors/{2}/AccelerationFunctions/{3}').format(ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId)
+            collection_path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/Processors/{2}/AccelerationFunctions', 'index.json').format(ResourceBlockId, ComputerSystemId, ProcessorId)
+            if not os.path.exists(collection_path):
+                AccelerationFunction4CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, ProcessorId)
+            if AccelerationFunctionId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'ProcessorId':ProcessorId, 'AccelerationFunctionId':AccelerationFunctionId, 'rb':g.rest_base}
+                config=get_AccelerationFunction4_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    config
+                )
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('AccelerationFunction4API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId):
-		logging.info('AccelerationFunction4 put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId):
+        logging.info('AccelerationFunction4 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/Processors/{2}/AccelerationFunctions/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId)
-			old_data = get_json_data(path)
-			put_object(path)
-			new_data = get_json_data(path)
-			send_event('ResourceChanged', path)
-			if old_data.get('Status') != new_data.get('Status'):
-				send_event('ResourceStatusChanged', path)
-			return self.get(ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/Processors/{2}/AccelerationFunctions/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId)
+            old_data = get_json_data(path)
+            put_object(path)
+            new_data = get_json_data(path)
+            send_event(
+                "ResourceChanged",
+                "ResourceChanged",
+                f"AccelerationFunction {AccelerationFunctionId} changed",
+                "OK",
+                path,
+                new_data
+            )
+            if old_data.get('Status') != new_data.get('Status'):
+                send_event(
+                    "ResourceStatusChanged",
+                    "ResourceStatusChanged",
+                    f"AccelerationFunction {AccelerationFunctionId} status changed",
+                    "OK",
+                    path,
+                    new_data
+                )
+            return self.get(ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId):
-		logging.info('AccelerationFunction4 patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId):
+        logging.info('AccelerationFunction4 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/Processors/{2}/AccelerationFunctions/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId)
-			old_data = get_json_data(path)
-			patch_object(path)
-			new_data = get_json_data(path)
-			send_event('ResourceChanged', path)
-			if old_data.get('Status') != new_data.get('Status'):
-				send_event('ResourceStatusChanged', path)
-			return self.get(ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/Processors/{2}/AccelerationFunctions/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId)
+            old_data = get_json_data(path)
+            patch_object(path)
+            new_data = get_json_data(path)
+            send_event(
+                "ResourceChanged",
+                "ResourceChanged",
+                f"AccelerationFunction {AccelerationFunctionId} changed",
+                "OK",
+                path,
+                new_data
+            )
+            if old_data.get('Status') != new_data.get('Status'):
+                send_event(
+                    "ResourceStatusChanged",
+                    "ResourceStatusChanged",
+                    f"AccelerationFunction {AccelerationFunctionId} status changed",
+                    "OK",
+                    path,
+                    new_data
+                )
+            return self.get(ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId):
-		logging.info('AccelerationFunction4 delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId):
+        logging.info('AccelerationFunction4 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Processors/{2}/AccelerationFunctions/{3}').format(ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId)
-			base_path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Processors/{2}/AccelerationFunctions').format(ResourceBlockId, ComputerSystemId, ProcessorId)
-			delete_object(path, base_path)
-			send_event('ResourceRemoved', path)
-			return '', 204
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Processors/{2}/AccelerationFunctions/{3}').format(ResourceBlockId, ComputerSystemId, ProcessorId, AccelerationFunctionId)
+            base_path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Processors/{2}/AccelerationFunctions').format(ResourceBlockId, ComputerSystemId, ProcessorId)
+            obj = get_json_data(path)
+            send_event(
+                "ResourceRemoved",
+                "ResourceRemoved",
+                "The resource was removed successfully.",
+                "OK",
+                path,
+                obj
+            )
+            delete_object(path, base_path)
+            return '', 204
+        else:
+            return msg, code
 

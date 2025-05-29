@@ -16,6 +16,9 @@
     "SessionService": {
         "@odata.id": "/redfish/v1/SessionService"
     },
+    "EventService": {
+        "@odata.id": "/redfish/v1/EventService"
+    },
     "Registries": {
         "@odata.id": "/redfish/v1/Registries"
     },

@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.Certificate77 import get_Certificate77_instance
 
 members = []
@@ -47,141 +47,149 @@ INTERNAL_ERROR = 500
 
 # Certificate77 Collection API
 class Certificate77CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Certificate77 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Certificate77 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, OutboundConnectionId):
-		logging.info('Certificate77 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, OutboundConnectionId):
+        logging.info('Certificate77 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'AccountService/OutboundConnections/{0}/Certificates', 'index.json').format(OutboundConnectionId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'AccountService/OutboundConnections/{0}/Certificates', 'index.json').format(OutboundConnectionId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self, OutboundConnectionId):
-		logging.info('Certificate77 Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self, OutboundConnectionId):
+        logging.info('Certificate77 Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			if OutboundConnectionId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates').format(OutboundConnectionId)
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'Certificate', parent_path)
+            if OutboundConnectionId in members:
+                resp = 404
+                return resp
+            path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates').format(OutboundConnectionId)
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'Certificate', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return Certificate77API.post(self, OutboundConnectionId, os.path.basename(config['@odata.id']))
-				else:
-					return Certificate77API.post(self, OutboundConnectionId, str(res))
-			else:
-				return Certificate77API.post(self, OutboundConnectionId, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return Certificate77API.post(self, OutboundConnectionId, os.path.basename(config['@odata.id']))
+                else:
+                    return Certificate77API.post(self, OutboundConnectionId, str(res))
+            else:
+                return Certificate77API.post(self, OutboundConnectionId, str(res))
+        else:
+            return msg, code
 
 # Certificate77 API
 class Certificate77API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Certificate77 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Certificate77 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, OutboundConnectionId, CertificateId):
-		logging.info('Certificate77 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, OutboundConnectionId, CertificateId):
+        logging.info('Certificate77 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates/{1}', 'index.json').format(OutboundConnectionId, CertificateId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates/{1}', 'index.json').format(OutboundConnectionId, CertificateId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, OutboundConnectionId, CertificateId):
-		logging.info('Certificate77 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, OutboundConnectionId, CertificateId):
+        logging.info('Certificate77 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates/{1}').format(OutboundConnectionId, CertificateId)
-			collection_path = os.path.join(self.root, 'AccountService/OutboundConnections/{0}/Certificates', 'index.json').format(OutboundConnectionId)
+        if code == 200:
+            path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates/{1}').format(OutboundConnectionId, CertificateId)
+            collection_path = os.path.join(self.root, 'AccountService/OutboundConnections/{0}/Certificates', 'index.json').format(OutboundConnectionId)
 
-			# Check if collection exists:
-			if not os.path.exists(collection_path):
-				Certificate77CollectionAPI.post(self, OutboundConnectionId)
+            # Check if collection exists:
+            if not os.path.exists(collection_path):
+                Certificate77CollectionAPI.post(self, OutboundConnectionId)
 
-			if CertificateId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'OutboundConnectionId':OutboundConnectionId, 'CertificateId':CertificateId, 'rb':g.rest_base}
-				config=get_Certificate77_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
+            if CertificateId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'OutboundConnectionId':OutboundConnectionId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+                config=get_Certificate77_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    None
+                )
 
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('Certificate77API POST exit')
-			return resp
-		else:
-			return msg, code
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('Certificate77API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, OutboundConnectionId, CertificateId):
-		logging.info('Certificate77 put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, OutboundConnectionId, CertificateId):
+        logging.info('Certificate77 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates/{1}', 'index.json').format(OutboundConnectionId, CertificateId)
-			put_object(path)
-			return self.get(OutboundConnectionId, CertificateId)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates/{1}', 'index.json').format(OutboundConnectionId, CertificateId)
+            put_object(path)
+            return self.get(OutboundConnectionId, CertificateId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, OutboundConnectionId, CertificateId):
-		logging.info('Certificate77 patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, OutboundConnectionId, CertificateId):
+        logging.info('Certificate77 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates/{1}', 'index.json').format(OutboundConnectionId, CertificateId)
-			patch_object(path)
-			return self.get(OutboundConnectionId, CertificateId)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates/{1}', 'index.json').format(OutboundConnectionId, CertificateId)
+            patch_object(path)
+            return self.get(OutboundConnectionId, CertificateId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, OutboundConnectionId, CertificateId):
-		logging.info('Certificate77 delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, OutboundConnectionId, CertificateId):
+        logging.info('Certificate77 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates/{1}').format(OutboundConnectionId, CertificateId)
-			base_path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates').format(OutboundConnectionId)
-			return delete_object(path, base_path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates/{1}').format(OutboundConnectionId, CertificateId)
+            base_path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates').format(OutboundConnectionId)
+            return delete_object(path, base_path)
+        else:
+            return msg, code
 

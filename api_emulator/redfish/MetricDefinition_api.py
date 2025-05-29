@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.MetricDefinition import get_MetricDefinition_instance
 
 members = []
@@ -47,138 +47,146 @@ INTERNAL_ERROR = 500
 
 # MetricDefinition Collection API
 class MetricDefinitionCollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('MetricDefinition Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('MetricDefinition Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self):
-		logging.info('MetricDefinition Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self):
+        logging.info('MetricDefinition Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'TelemetryService/MetricDefinitions', 'index.json')
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'TelemetryService/MetricDefinitions', 'index.json')
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self):
-		logging.info('MetricDefinition Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self):
+        logging.info('MetricDefinition Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			path = create_path(self.root, 'TelemetryService/MetricDefinitions')
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'MetricDefinition', parent_path)
+            path = create_path(self.root, 'TelemetryService/MetricDefinitions')
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'MetricDefinition', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return MetricDefinitionAPI.post(self, os.path.basename(config['@odata.id']))
-				else:
-					return MetricDefinitionAPI.post(self, str(res))
-			else:
-				return MetricDefinitionAPI.post(self, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return MetricDefinitionAPI.post(self, os.path.basename(config['@odata.id']))
+                else:
+                    return MetricDefinitionAPI.post(self, str(res))
+            else:
+                return MetricDefinitionAPI.post(self, str(res))
+        else:
+            return msg, code
 
 # MetricDefinition API
 class MetricDefinitionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('MetricDefinition init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('MetricDefinition init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, MetricDefinitionId):
-		logging.info('MetricDefinition get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, MetricDefinitionId):
+        logging.info('MetricDefinition get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'TelemetryService/MetricDefinitions/{0}', 'index.json').format(MetricDefinitionId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'TelemetryService/MetricDefinitions/{0}', 'index.json').format(MetricDefinitionId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, MetricDefinitionId):
-		logging.info('MetricDefinition post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, MetricDefinitionId):
+        logging.info('MetricDefinition post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'TelemetryService/MetricDefinitions/{0}').format(MetricDefinitionId)
-			collection_path = os.path.join(self.root, 'TelemetryService/MetricDefinitions', 'index.json')
+        if code == 200:
+            path = create_path(self.root, 'TelemetryService/MetricDefinitions/{0}').format(MetricDefinitionId)
+            collection_path = os.path.join(self.root, 'TelemetryService/MetricDefinitions', 'index.json')
 
-			# Check if collection exists:
-			if not os.path.exists(collection_path):
-				MetricDefinitionCollectionAPI.post(self)
+            # Check if collection exists:
+            if not os.path.exists(collection_path):
+                MetricDefinitionCollectionAPI.post(self)
 
-			if MetricDefinitionId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'MetricDefinitionId':MetricDefinitionId, 'rb':g.rest_base}
-				config=get_MetricDefinition_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
+            if MetricDefinitionId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'MetricDefinitionId':MetricDefinitionId, 'rb':g.rest_base}
+                config=get_MetricDefinition_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    None
+                )
 
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('MetricDefinitionAPI POST exit')
-			return resp
-		else:
-			return msg, code
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('MetricDefinitionAPI POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, MetricDefinitionId):
-		logging.info('MetricDefinition put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, MetricDefinitionId):
+        logging.info('MetricDefinition put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'TelemetryService/MetricDefinitions/{0}', 'index.json').format(MetricDefinitionId)
-			put_object(path)
-			return self.get(MetricDefinitionId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'TelemetryService/MetricDefinitions/{0}', 'index.json').format(MetricDefinitionId)
+            put_object(path)
+            return self.get(MetricDefinitionId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, MetricDefinitionId):
-		logging.info('MetricDefinition patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, MetricDefinitionId):
+        logging.info('MetricDefinition patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'TelemetryService/MetricDefinitions/{0}', 'index.json').format(MetricDefinitionId)
-			patch_object(path)
-			return self.get(MetricDefinitionId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'TelemetryService/MetricDefinitions/{0}', 'index.json').format(MetricDefinitionId)
+            patch_object(path)
+            return self.get(MetricDefinitionId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, MetricDefinitionId):
-		logging.info('MetricDefinition delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, MetricDefinitionId):
+        logging.info('MetricDefinition delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'TelemetryService/MetricDefinitions/{0}').format(MetricDefinitionId)
-			base_path = create_path(self.root, 'TelemetryService/MetricDefinitions')
-			return delete_object(path, base_path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'TelemetryService/MetricDefinitions/{0}').format(MetricDefinitionId)
+            base_path = create_path(self.root, 'TelemetryService/MetricDefinitions')
+            return delete_object(path, base_path)
+        else:
+            return msg, code
 

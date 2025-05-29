@@ -38,7 +38,7 @@ import logging, random, requests, string, jwt
 from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
 
 config = {}
 
@@ -51,40 +51,40 @@ INTERNAL_ERROR = 500
 
 # EnvironmentMetrics64 API
 class EnvironmentMetrics64API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('EnvironmentMetrics64 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('EnvironmentMetrics64 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, StorageId, StorageControllerId, PortId):
-		logging.info('EnvironmentMetrics64 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, StorageId, StorageControllerId, PortId):
+        logging.info('EnvironmentMetrics64 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Storage/{0}/Controllers/{1}/Ports/{2}/EnvironmentMetrics', 'index.json').format(StorageId, StorageControllerId, PortId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Storage/{0}/Controllers/{1}/Ports/{2}/EnvironmentMetrics', 'index.json').format(StorageId, StorageControllerId, PortId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, StorageId, StorageControllerId, PortId):
-		logging.info('EnvironmentMetrics64 post called')
-		return 'POST is not a supported command for EnvironmentMetrics64API', 405
+    # HTTP POST
+    def post(self, StorageId, StorageControllerId, PortId):
+        logging.info('EnvironmentMetrics64 post called')
+        return 'POST is not a supported command for EnvironmentMetrics64API', 405
 
-	# HTTP PUT
-	def put(self, StorageId, StorageControllerId, PortId):
-		logging.info('EnvironmentMetrics64 put called')
-		return 'PUT is not a supported command for EnvironmentMetrics64API', 405
+    # HTTP PUT
+    def put(self, StorageId, StorageControllerId, PortId):
+        logging.info('EnvironmentMetrics64 put called')
+        return 'PUT is not a supported command for EnvironmentMetrics64API', 405
 
-	# HTTP PATCH
-	def patch(self, StorageId, StorageControllerId, PortId):
-		logging.info('EnvironmentMetrics64 patch called')
-		return 'PATCH is not a supported command for EnvironmentMetrics64API', 405
+    # HTTP PATCH
+    def patch(self, StorageId, StorageControllerId, PortId):
+        logging.info('EnvironmentMetrics64 patch called')
+        return 'PATCH is not a supported command for EnvironmentMetrics64API', 405
 
-	# HTTP DELETE
-	def delete(self, StorageId, StorageControllerId, PortId):
-		logging.info('EnvironmentMetrics64 delete called')
-		return 'DELETE is not a supported command for EnvironmentMetrics64API', 405
+    # HTTP DELETE
+    def delete(self, StorageId, StorageControllerId, PortId):
+        logging.info('EnvironmentMetrics64 delete called')
+        return 'DELETE is not a supported command for EnvironmentMetrics64API', 405
 
 

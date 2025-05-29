@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.Port17 import get_Port17_instance
 
 members = []
@@ -47,141 +47,149 @@ INTERNAL_ERROR = 500
 
 # Port17 Collection API
 class Port17CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Port17 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Port17 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, ControllerId):
-		logging.info('Port17 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ResourceBlockId, ComputerSystemId, ControllerId):
+        logging.info('Port17 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self, ResourceBlockId, ComputerSystemId, ControllerId):
-		logging.info('Port17 Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self, ResourceBlockId, ComputerSystemId, ControllerId):
+        logging.info('Port17 Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			if ControllerId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports').format(ResourceBlockId, ComputerSystemId, ControllerId)
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'Port', parent_path)
+            if ControllerId in members:
+                resp = 404
+                return resp
+            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports').format(ResourceBlockId, ComputerSystemId, ControllerId)
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'Port', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return Port17API.post(self, ResourceBlockId, ComputerSystemId, ControllerId, os.path.basename(config['@odata.id']))
-				else:
-					return Port17API.post(self, ResourceBlockId, ComputerSystemId, ControllerId, str(res))
-			else:
-				return Port17API.post(self, ResourceBlockId, ComputerSystemId, ControllerId, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return Port17API.post(self, ResourceBlockId, ComputerSystemId, ControllerId, os.path.basename(config['@odata.id']))
+                else:
+                    return Port17API.post(self, ResourceBlockId, ComputerSystemId, ControllerId, str(res))
+            else:
+                return Port17API.post(self, ResourceBlockId, ComputerSystemId, ControllerId, str(res))
+        else:
+            return msg, code
 
 # Port17 API
 class Port17API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Port17 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Port17 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
-		logging.info('Port17 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
+        logging.info('Port17 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
-		logging.info('Port17 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
+        logging.info('Port17 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
-			collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId)
+        if code == 200:
+            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
+            collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId)
 
-			# Check if collection exists:
-			if not os.path.exists(collection_path):
-				Port17CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, ControllerId)
+            # Check if collection exists:
+            if not os.path.exists(collection_path):
+                Port17CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, ControllerId)
 
-			if PortId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'ControllerId':ControllerId, 'PortId':PortId, 'rb':g.rest_base}
-				config=get_Port17_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
+            if PortId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'ControllerId':ControllerId, 'PortId':PortId, 'rb':g.rest_base}
+                config=get_Port17_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    None
+                )
 
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('Port17API POST exit')
-			return resp
-		else:
-			return msg, code
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('Port17API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
-		logging.info('Port17 put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
+        logging.info('Port17 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
-			put_object(path)
-			return self.get(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
+            put_object(path)
+            return self.get(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
-		logging.info('Port17 patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
+        logging.info('Port17 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
-			patch_object(path)
-			return self.get(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
+            patch_object(path)
+            return self.get(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
-		logging.info('Port17 delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
+        logging.info('Port17 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
-			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports').format(ResourceBlockId, ComputerSystemId, ControllerId)
-			return delete_object(path, base_path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
+            base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports').format(ResourceBlockId, ComputerSystemId, ControllerId)
+            return delete_object(path, base_path)
+        else:
+            return msg, code
 

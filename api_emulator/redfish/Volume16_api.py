@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.Volume16 import get_Volume16_instance
 
 members = []
@@ -47,141 +47,149 @@ INTERNAL_ERROR = 500
 
 # Volume16 Collection API
 class Volume16CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Volume16 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Volume16 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, StorageServiceId, StoragePoolId):
-		logging.info('Volume16 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, StorageServiceId, StoragePoolId):
+        logging.info('Volume16 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'StorageServices/{0}/StoragePools/{1}/AllocatedVolumes', 'index.json').format(StorageServiceId, StoragePoolId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'StorageServices/{0}/StoragePools/{1}/AllocatedVolumes', 'index.json').format(StorageServiceId, StoragePoolId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self, StorageServiceId, StoragePoolId):
-		logging.info('Volume16 Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self, StorageServiceId, StoragePoolId):
+        logging.info('Volume16 Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			if StoragePoolId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/AllocatedVolumes').format(StorageServiceId, StoragePoolId)
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'Volume', parent_path)
+            if StoragePoolId in members:
+                resp = 404
+                return resp
+            path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/AllocatedVolumes').format(StorageServiceId, StoragePoolId)
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'Volume', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return Volume16API.post(self, StorageServiceId, StoragePoolId, os.path.basename(config['@odata.id']))
-				else:
-					return Volume16API.post(self, StorageServiceId, StoragePoolId, str(res))
-			else:
-				return Volume16API.post(self, StorageServiceId, StoragePoolId, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return Volume16API.post(self, StorageServiceId, StoragePoolId, os.path.basename(config['@odata.id']))
+                else:
+                    return Volume16API.post(self, StorageServiceId, StoragePoolId, str(res))
+            else:
+                return Volume16API.post(self, StorageServiceId, StoragePoolId, str(res))
+        else:
+            return msg, code
 
 # Volume16 API
 class Volume16API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Volume16 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Volume16 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, StorageServiceId, StoragePoolId, VolumeId):
-		logging.info('Volume16 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, StorageServiceId, StoragePoolId, VolumeId):
+        logging.info('Volume16 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/AllocatedVolumes/{2}', 'index.json').format(StorageServiceId, StoragePoolId, VolumeId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/AllocatedVolumes/{2}', 'index.json').format(StorageServiceId, StoragePoolId, VolumeId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, StorageServiceId, StoragePoolId, VolumeId):
-		logging.info('Volume16 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, StorageServiceId, StoragePoolId, VolumeId):
+        logging.info('Volume16 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/AllocatedVolumes/{2}').format(StorageServiceId, StoragePoolId, VolumeId)
-			collection_path = os.path.join(self.root, 'StorageServices/{0}/StoragePools/{1}/AllocatedVolumes', 'index.json').format(StorageServiceId, StoragePoolId)
+        if code == 200:
+            path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/AllocatedVolumes/{2}').format(StorageServiceId, StoragePoolId, VolumeId)
+            collection_path = os.path.join(self.root, 'StorageServices/{0}/StoragePools/{1}/AllocatedVolumes', 'index.json').format(StorageServiceId, StoragePoolId)
 
-			# Check if collection exists:
-			if not os.path.exists(collection_path):
-				Volume16CollectionAPI.post(self, StorageServiceId, StoragePoolId)
+            # Check if collection exists:
+            if not os.path.exists(collection_path):
+                Volume16CollectionAPI.post(self, StorageServiceId, StoragePoolId)
 
-			if VolumeId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'StorageServiceId':StorageServiceId, 'StoragePoolId':StoragePoolId, 'VolumeId':VolumeId, 'rb':g.rest_base}
-				config=get_Volume16_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
+            if VolumeId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'StorageServiceId':StorageServiceId, 'StoragePoolId':StoragePoolId, 'VolumeId':VolumeId, 'rb':g.rest_base}
+                config=get_Volume16_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    None
+                )
 
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('Volume16API POST exit')
-			return resp
-		else:
-			return msg, code
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('Volume16API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, StorageServiceId, StoragePoolId, VolumeId):
-		logging.info('Volume16 put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, StorageServiceId, StoragePoolId, VolumeId):
+        logging.info('Volume16 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'StorageServices/{0}/StoragePools/{1}/AllocatedVolumes/{2}', 'index.json').format(StorageServiceId, StoragePoolId, VolumeId)
-			put_object(path)
-			return self.get(StorageServiceId, StoragePoolId, VolumeId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'StorageServices/{0}/StoragePools/{1}/AllocatedVolumes/{2}', 'index.json').format(StorageServiceId, StoragePoolId, VolumeId)
+            put_object(path)
+            return self.get(StorageServiceId, StoragePoolId, VolumeId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, StorageServiceId, StoragePoolId, VolumeId):
-		logging.info('Volume16 patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, StorageServiceId, StoragePoolId, VolumeId):
+        logging.info('Volume16 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'StorageServices/{0}/StoragePools/{1}/AllocatedVolumes/{2}', 'index.json').format(StorageServiceId, StoragePoolId, VolumeId)
-			patch_object(path)
-			return self.get(StorageServiceId, StoragePoolId, VolumeId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'StorageServices/{0}/StoragePools/{1}/AllocatedVolumes/{2}', 'index.json').format(StorageServiceId, StoragePoolId, VolumeId)
+            patch_object(path)
+            return self.get(StorageServiceId, StoragePoolId, VolumeId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, StorageServiceId, StoragePoolId, VolumeId):
-		logging.info('Volume16 delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, StorageServiceId, StoragePoolId, VolumeId):
+        logging.info('Volume16 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/AllocatedVolumes/{2}').format(StorageServiceId, StoragePoolId, VolumeId)
-			base_path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/AllocatedVolumes').format(StorageServiceId, StoragePoolId)
-			return delete_object(path, base_path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/AllocatedVolumes/{2}').format(StorageServiceId, StoragePoolId, VolumeId)
+            base_path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/AllocatedVolumes').format(StorageServiceId, StoragePoolId)
+            return delete_object(path, base_path)
+        else:
+            return msg, code
 

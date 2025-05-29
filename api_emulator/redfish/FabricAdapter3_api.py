@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.FabricAdapter3 import get_FabricAdapter3_instance
 
 members = []
@@ -47,141 +47,149 @@ INTERNAL_ERROR = 500
 
 # FabricAdapter3 Collection API
 class FabricAdapter3CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('FabricAdapter3 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('FabricAdapter3 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ChassisId):
-		logging.info('FabricAdapter3 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ChassisId):
+        logging.info('FabricAdapter3 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters', 'index.json').format(ChassisId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters', 'index.json').format(ChassisId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self, ChassisId):
-		logging.info('FabricAdapter3 Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self, ChassisId):
+        logging.info('FabricAdapter3 Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			if ChassisId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters').format(ChassisId)
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'FabricAdapter', parent_path)
+            if ChassisId in members:
+                resp = 404
+                return resp
+            path = create_path(self.root, 'Chassis/{0}/FabricAdapters').format(ChassisId)
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'FabricAdapter', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return FabricAdapter3API.post(self, ChassisId, os.path.basename(config['@odata.id']))
-				else:
-					return FabricAdapter3API.post(self, ChassisId, str(res))
-			else:
-				return FabricAdapter3API.post(self, ChassisId, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return FabricAdapter3API.post(self, ChassisId, os.path.basename(config['@odata.id']))
+                else:
+                    return FabricAdapter3API.post(self, ChassisId, str(res))
+            else:
+                return FabricAdapter3API.post(self, ChassisId, str(res))
+        else:
+            return msg, code
 
 # FabricAdapter3 API
 class FabricAdapter3API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('FabricAdapter3 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('FabricAdapter3 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ChassisId, FabricAdapterId):
-		logging.info('FabricAdapter3 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ChassisId, FabricAdapterId):
+        logging.info('FabricAdapter3 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}', 'index.json').format(ChassisId, FabricAdapterId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}', 'index.json').format(ChassisId, FabricAdapterId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, ChassisId, FabricAdapterId):
-		logging.info('FabricAdapter3 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, ChassisId, FabricAdapterId):
+        logging.info('FabricAdapter3 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}').format(ChassisId, FabricAdapterId)
-			collection_path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters', 'index.json').format(ChassisId)
+        if code == 200:
+            path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}').format(ChassisId, FabricAdapterId)
+            collection_path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters', 'index.json').format(ChassisId)
 
-			# Check if collection exists:
-			if not os.path.exists(collection_path):
-				FabricAdapter3CollectionAPI.post(self, ChassisId)
+            # Check if collection exists:
+            if not os.path.exists(collection_path):
+                FabricAdapter3CollectionAPI.post(self, ChassisId)
 
-			if FabricAdapterId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'ChassisId':ChassisId, 'FabricAdapterId':FabricAdapterId, 'rb':g.rest_base}
-				config=get_FabricAdapter3_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
+            if FabricAdapterId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'ChassisId':ChassisId, 'FabricAdapterId':FabricAdapterId, 'rb':g.rest_base}
+                config=get_FabricAdapter3_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    None
+                )
 
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('FabricAdapter3API POST exit')
-			return resp
-		else:
-			return msg, code
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('FabricAdapter3API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, ChassisId, FabricAdapterId):
-		logging.info('FabricAdapter3 put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, ChassisId, FabricAdapterId):
+        logging.info('FabricAdapter3 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}', 'index.json').format(ChassisId, FabricAdapterId)
-			put_object(path)
-			return self.get(ChassisId, FabricAdapterId)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}', 'index.json').format(ChassisId, FabricAdapterId)
+            put_object(path)
+            return self.get(ChassisId, FabricAdapterId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, ChassisId, FabricAdapterId):
-		logging.info('FabricAdapter3 patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, ChassisId, FabricAdapterId):
+        logging.info('FabricAdapter3 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}', 'index.json').format(ChassisId, FabricAdapterId)
-			patch_object(path)
-			return self.get(ChassisId, FabricAdapterId)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}', 'index.json').format(ChassisId, FabricAdapterId)
+            patch_object(path)
+            return self.get(ChassisId, FabricAdapterId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, ChassisId, FabricAdapterId):
-		logging.info('FabricAdapter3 delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, ChassisId, FabricAdapterId):
+        logging.info('FabricAdapter3 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}').format(ChassisId, FabricAdapterId)
-			base_path = create_path(self.root, 'Chassis/{0}/FabricAdapters').format(ChassisId)
-			return delete_object(path, base_path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}').format(ChassisId, FabricAdapterId)
+            base_path = create_path(self.root, 'Chassis/{0}/FabricAdapters').format(ChassisId)
+            return delete_object(path, base_path)
+        else:
+            return msg, code
 

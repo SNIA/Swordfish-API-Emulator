@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.RouteEntry2 import get_RouteEntry2_instance
 
 members = []
@@ -47,141 +47,149 @@ INTERNAL_ERROR = 500
 
 # RouteEntry2 Collection API
 class RouteEntry2CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('RouteEntry2 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('RouteEntry2 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ChassisId, FabricAdapterId):
-		logging.info('RouteEntry2 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ChassisId, FabricAdapterId):
+        logging.info('RouteEntry2 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT', 'index.json').format(ChassisId, FabricAdapterId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT', 'index.json').format(ChassisId, FabricAdapterId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self, ChassisId, FabricAdapterId):
-		logging.info('RouteEntry2 Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self, ChassisId, FabricAdapterId):
+        logging.info('RouteEntry2 Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			if FabricAdapterId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT').format(ChassisId, FabricAdapterId)
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'RouteEntry', parent_path)
+            if FabricAdapterId in members:
+                resp = 404
+                return resp
+            path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT').format(ChassisId, FabricAdapterId)
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'RouteEntry', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return RouteEntry2API.post(self, ChassisId, FabricAdapterId, os.path.basename(config['@odata.id']))
-				else:
-					return RouteEntry2API.post(self, ChassisId, FabricAdapterId, str(res))
-			else:
-				return RouteEntry2API.post(self, ChassisId, FabricAdapterId, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return RouteEntry2API.post(self, ChassisId, FabricAdapterId, os.path.basename(config['@odata.id']))
+                else:
+                    return RouteEntry2API.post(self, ChassisId, FabricAdapterId, str(res))
+            else:
+                return RouteEntry2API.post(self, ChassisId, FabricAdapterId, str(res))
+        else:
+            return msg, code
 
 # RouteEntry2 API
 class RouteEntry2API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('RouteEntry2 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('RouteEntry2 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ChassisId, FabricAdapterId, SSDTId):
-		logging.info('RouteEntry2 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ChassisId, FabricAdapterId, SSDTId):
+        logging.info('RouteEntry2 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}', 'index.json').format(ChassisId, FabricAdapterId, SSDTId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}', 'index.json').format(ChassisId, FabricAdapterId, SSDTId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, ChassisId, FabricAdapterId, SSDTId):
-		logging.info('RouteEntry2 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, ChassisId, FabricAdapterId, SSDTId):
+        logging.info('RouteEntry2 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}').format(ChassisId, FabricAdapterId, SSDTId)
-			collection_path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT', 'index.json').format(ChassisId, FabricAdapterId)
+        if code == 200:
+            path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}').format(ChassisId, FabricAdapterId, SSDTId)
+            collection_path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT', 'index.json').format(ChassisId, FabricAdapterId)
 
-			# Check if collection exists:
-			if not os.path.exists(collection_path):
-				RouteEntry2CollectionAPI.post(self, ChassisId, FabricAdapterId)
+            # Check if collection exists:
+            if not os.path.exists(collection_path):
+                RouteEntry2CollectionAPI.post(self, ChassisId, FabricAdapterId)
 
-			if SSDTId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'ChassisId':ChassisId, 'FabricAdapterId':FabricAdapterId, 'SSDTId':SSDTId, 'rb':g.rest_base}
-				config=get_RouteEntry2_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
+            if SSDTId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'ChassisId':ChassisId, 'FabricAdapterId':FabricAdapterId, 'SSDTId':SSDTId, 'rb':g.rest_base}
+                config=get_RouteEntry2_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    None
+                )
 
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('RouteEntry2API POST exit')
-			return resp
-		else:
-			return msg, code
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('RouteEntry2API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, ChassisId, FabricAdapterId, SSDTId):
-		logging.info('RouteEntry2 put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, ChassisId, FabricAdapterId, SSDTId):
+        logging.info('RouteEntry2 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}', 'index.json').format(ChassisId, FabricAdapterId, SSDTId)
-			put_object(path)
-			return self.get(ChassisId, FabricAdapterId, SSDTId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}', 'index.json').format(ChassisId, FabricAdapterId, SSDTId)
+            put_object(path)
+            return self.get(ChassisId, FabricAdapterId, SSDTId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, ChassisId, FabricAdapterId, SSDTId):
-		logging.info('RouteEntry2 patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, ChassisId, FabricAdapterId, SSDTId):
+        logging.info('RouteEntry2 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}', 'index.json').format(ChassisId, FabricAdapterId, SSDTId)
-			patch_object(path)
-			return self.get(ChassisId, FabricAdapterId, SSDTId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}', 'index.json').format(ChassisId, FabricAdapterId, SSDTId)
+            patch_object(path)
+            return self.get(ChassisId, FabricAdapterId, SSDTId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, ChassisId, FabricAdapterId, SSDTId):
-		logging.info('RouteEntry2 delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, ChassisId, FabricAdapterId, SSDTId):
+        logging.info('RouteEntry2 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}').format(ChassisId, FabricAdapterId, SSDTId)
-			base_path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT').format(ChassisId, FabricAdapterId)
-			return delete_object(path, base_path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT/{2}').format(ChassisId, FabricAdapterId, SSDTId)
+            base_path = create_path(self.root, 'Chassis/{0}/FabricAdapters/{1}/SSDT').format(ChassisId, FabricAdapterId)
+            return delete_object(path, base_path)
+        else:
+            return msg, code
 

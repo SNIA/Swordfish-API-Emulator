@@ -38,7 +38,7 @@ import logging, random, requests, string, jwt
 from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
 
 config = {}
 
@@ -48,79 +48,79 @@ INTERNAL_ERROR = 500
 
 # LogService3 Collection API
 class LogService3CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('LogService3 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('LogService3 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId):
-		logging.info('LogService3 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ResourceBlockId, ComputerSystemId):
+        logging.info('LogService3 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/LogServices', 'index.json').format(ResourceBlockId, ComputerSystemId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/LogServices', 'index.json').format(ResourceBlockId, ComputerSystemId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, ResourceBlockId, ComputerSystemId):
-		logging.info('LogService3 Collection post called')
-		return 'POST is not a supported command for LogService3CollectionAPI', 405
+    # HTTP POST
+    def post(self, ResourceBlockId, ComputerSystemId):
+        logging.info('LogService3 Collection post called')
+        return 'POST is not a supported command for LogService3CollectionAPI', 405
 
-	# HTTP PUT
-	def put(self, ResourceBlockId, ComputerSystemId):
-		logging.info('LogService3 Collection put called')
-		return 'PUT is not a supported command for LogService3CollectionAPI', 405
+    # HTTP PUT
+    def put(self, ResourceBlockId, ComputerSystemId):
+        logging.info('LogService3 Collection put called')
+        return 'PUT is not a supported command for LogService3CollectionAPI', 405
 
-	# HTTP PATCH
-	def patch(self, ResourceBlockId, ComputerSystemId):
-		logging.info('LogService3 Collection patch called')
-		return 'PATCH is not a supported command for LogService3CollectionAPI', 405
+    # HTTP PATCH
+    def patch(self, ResourceBlockId, ComputerSystemId):
+        logging.info('LogService3 Collection patch called')
+        return 'PATCH is not a supported command for LogService3CollectionAPI', 405
 
-	# HTTP DELETE
-	def delete(self, ResourceBlockId, ComputerSystemId):
-		logging.info('LogService3 Collection delete called')
-		return 'DELETE is not a supported command for LogService3CollectionAPI', 405
+    # HTTP DELETE
+    def delete(self, ResourceBlockId, ComputerSystemId):
+        logging.info('LogService3 Collection delete called')
+        return 'DELETE is not a supported command for LogService3CollectionAPI', 405
 
 
 # LogService3 API
 class LogService3API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('LogService3 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('LogService3 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, LogServiceId):
-		logging.info('LogService3 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ResourceBlockId, ComputerSystemId, LogServiceId):
+        logging.info('LogService3 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/LogServices/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, LogServiceId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/LogServices/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, LogServiceId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, ResourceBlockId, ComputerSystemId, LogServiceId):
-		logging.info('LogService3 post called')
-		return 'POST is not a supported command for LogService3API', 405
+    # HTTP POST
+    def post(self, ResourceBlockId, ComputerSystemId, LogServiceId):
+        logging.info('LogService3 post called')
+        return 'POST is not a supported command for LogService3API', 405
 
-	# HTTP PUT
-	def put(self, ResourceBlockId, ComputerSystemId, LogServiceId):
-		logging.info('LogService3 put called')
-		return 'PUT is not a supported command for LogService3API', 405
+    # HTTP PUT
+    def put(self, ResourceBlockId, ComputerSystemId, LogServiceId):
+        logging.info('LogService3 put called')
+        return 'PUT is not a supported command for LogService3API', 405
 
-	# HTTP PATCH
-	def patch(self, ResourceBlockId, ComputerSystemId, LogServiceId):
-		logging.info('LogService3 patch called')
-		return 'PATCH is not a supported command for LogService3API', 405
+    # HTTP PATCH
+    def patch(self, ResourceBlockId, ComputerSystemId, LogServiceId):
+        logging.info('LogService3 patch called')
+        return 'PATCH is not a supported command for LogService3API', 405
 
-	# HTTP DELETE
-	def delete(self, ResourceBlockId, ComputerSystemId, LogServiceId):
-		logging.info('LogService3 delete called')
-		return 'DELETE is not a supported command for LogService3API', 405
+    # HTTP DELETE
+    def delete(self, ResourceBlockId, ComputerSystemId, LogServiceId):
+        logging.info('LogService3 delete called')
+        return 'DELETE is not a supported command for LogService3API', 405
 
 

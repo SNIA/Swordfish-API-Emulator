@@ -38,7 +38,7 @@ import logging, random, requests, string, jwt
 from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
 
 config = {}
 
@@ -48,79 +48,79 @@ INTERNAL_ERROR = 500
 
 # IOPerformanceLineOfService0 Collection API
 class IOPerformanceLineOfService0CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('IOPerformanceLineOfService0 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('IOPerformanceLineOfService0 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, StorageServiceId):
-		logging.info('IOPerformanceLineOfService0 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, StorageServiceId):
+        logging.info('IOPerformanceLineOfService0 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'StorageServices/{0}/LinesOfService/IOPerformanceLinesOfService', 'index.json').format(StorageServiceId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'StorageServices/{0}/LinesOfService/IOPerformanceLinesOfService', 'index.json').format(StorageServiceId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, StorageServiceId):
-		logging.info('IOPerformanceLineOfService0 Collection post called')
-		return 'POST is not a supported command for IOPerformanceLineOfService0CollectionAPI', 405
+    # HTTP POST
+    def post(self, StorageServiceId):
+        logging.info('IOPerformanceLineOfService0 Collection post called')
+        return 'POST is not a supported command for IOPerformanceLineOfService0CollectionAPI', 405
 
-	# HTTP PUT
-	def put(self, StorageServiceId):
-		logging.info('IOPerformanceLineOfService0 Collection put called')
-		return 'PUT is not a supported command for IOPerformanceLineOfService0CollectionAPI', 405
+    # HTTP PUT
+    def put(self, StorageServiceId):
+        logging.info('IOPerformanceLineOfService0 Collection put called')
+        return 'PUT is not a supported command for IOPerformanceLineOfService0CollectionAPI', 405
 
-	# HTTP PATCH
-	def patch(self, StorageServiceId):
-		logging.info('IOPerformanceLineOfService0 Collection patch called')
-		return 'PATCH is not a supported command for IOPerformanceLineOfService0CollectionAPI', 405
+    # HTTP PATCH
+    def patch(self, StorageServiceId):
+        logging.info('IOPerformanceLineOfService0 Collection patch called')
+        return 'PATCH is not a supported command for IOPerformanceLineOfService0CollectionAPI', 405
 
-	# HTTP DELETE
-	def delete(self, StorageServiceId):
-		logging.info('IOPerformanceLineOfService0 Collection delete called')
-		return 'DELETE is not a supported command for IOPerformanceLineOfService0CollectionAPI', 405
+    # HTTP DELETE
+    def delete(self, StorageServiceId):
+        logging.info('IOPerformanceLineOfService0 Collection delete called')
+        return 'DELETE is not a supported command for IOPerformanceLineOfService0CollectionAPI', 405
 
 
 # IOPerformanceLineOfService0 API
 class IOPerformanceLineOfService0API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('IOPerformanceLineOfService0 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('IOPerformanceLineOfService0 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, StorageServiceId, IOPerformanceLineOfServiceId):
-		logging.info('IOPerformanceLineOfService0 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, StorageServiceId, IOPerformanceLineOfServiceId):
+        logging.info('IOPerformanceLineOfService0 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'StorageServices/{0}/LinesOfService/IOPerformanceLinesOfService/{1}', 'index.json').format(StorageServiceId, IOPerformanceLineOfServiceId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'StorageServices/{0}/LinesOfService/IOPerformanceLinesOfService/{1}', 'index.json').format(StorageServiceId, IOPerformanceLineOfServiceId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, StorageServiceId, IOPerformanceLineOfServiceId):
-		logging.info('IOPerformanceLineOfService0 post called')
-		return 'POST is not a supported command for IOPerformanceLineOfService0API', 405
+    # HTTP POST
+    def post(self, StorageServiceId, IOPerformanceLineOfServiceId):
+        logging.info('IOPerformanceLineOfService0 post called')
+        return 'POST is not a supported command for IOPerformanceLineOfService0API', 405
 
-	# HTTP PUT
-	def put(self, StorageServiceId, IOPerformanceLineOfServiceId):
-		logging.info('IOPerformanceLineOfService0 put called')
-		return 'PUT is not a supported command for IOPerformanceLineOfService0API', 405
+    # HTTP PUT
+    def put(self, StorageServiceId, IOPerformanceLineOfServiceId):
+        logging.info('IOPerformanceLineOfService0 put called')
+        return 'PUT is not a supported command for IOPerformanceLineOfService0API', 405
 
-	# HTTP PATCH
-	def patch(self, StorageServiceId, IOPerformanceLineOfServiceId):
-		logging.info('IOPerformanceLineOfService0 patch called')
-		return 'PATCH is not a supported command for IOPerformanceLineOfService0API', 405
+    # HTTP PATCH
+    def patch(self, StorageServiceId, IOPerformanceLineOfServiceId):
+        logging.info('IOPerformanceLineOfService0 patch called')
+        return 'PATCH is not a supported command for IOPerformanceLineOfService0API', 405
 
-	# HTTP DELETE
-	def delete(self, StorageServiceId, IOPerformanceLineOfServiceId):
-		logging.info('IOPerformanceLineOfService0 delete called')
-		return 'DELETE is not a supported command for IOPerformanceLineOfService0API', 405
+    # HTTP DELETE
+    def delete(self, StorageServiceId, IOPerformanceLineOfServiceId):
+        logging.info('IOPerformanceLineOfService0 delete called')
+        return 'DELETE is not a supported command for IOPerformanceLineOfService0API', 405
 
 

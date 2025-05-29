@@ -38,7 +38,7 @@ import logging, random, requests, string, jwt
 from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
 
 config = {}
 
@@ -51,40 +51,40 @@ INTERNAL_ERROR = 500
 
 # ProcessorMetrics4 API
 class ProcessorMetrics4API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('ProcessorMetrics4 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('ProcessorMetrics4 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ResourceBlockId, ProcessorId):
-		logging.info('ProcessorMetrics4 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ResourceBlockId, ProcessorId):
+        logging.info('ProcessorMetrics4 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/ProcessorMetrics', 'index.json').format(ResourceBlockId, ProcessorId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/ProcessorMetrics', 'index.json').format(ResourceBlockId, ProcessorId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, ResourceBlockId, ProcessorId):
-		logging.info('ProcessorMetrics4 post called')
-		return 'POST is not a supported command for ProcessorMetrics4API', 405
+    # HTTP POST
+    def post(self, ResourceBlockId, ProcessorId):
+        logging.info('ProcessorMetrics4 post called')
+        return 'POST is not a supported command for ProcessorMetrics4API', 405
 
-	# HTTP PUT
-	def put(self, ResourceBlockId, ProcessorId):
-		logging.info('ProcessorMetrics4 put called')
-		return 'PUT is not a supported command for ProcessorMetrics4API', 405
+    # HTTP PUT
+    def put(self, ResourceBlockId, ProcessorId):
+        logging.info('ProcessorMetrics4 put called')
+        return 'PUT is not a supported command for ProcessorMetrics4API', 405
 
-	# HTTP PATCH
-	def patch(self, ResourceBlockId, ProcessorId):
-		logging.info('ProcessorMetrics4 patch called')
-		return 'PATCH is not a supported command for ProcessorMetrics4API', 405
+    # HTTP PATCH
+    def patch(self, ResourceBlockId, ProcessorId):
+        logging.info('ProcessorMetrics4 patch called')
+        return 'PATCH is not a supported command for ProcessorMetrics4API', 405
 
-	# HTTP DELETE
-	def delete(self, ResourceBlockId, ProcessorId):
-		logging.info('ProcessorMetrics4 delete called')
-		return 'DELETE is not a supported command for ProcessorMetrics4API', 405
+    # HTTP DELETE
+    def delete(self, ResourceBlockId, ProcessorId):
+        logging.info('ProcessorMetrics4 delete called')
+        return 'DELETE is not a supported command for ProcessorMetrics4API', 405
 
 

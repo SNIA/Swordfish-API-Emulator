@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.Circuit15 import get_Circuit15_instance
 
 members = []
@@ -47,141 +47,149 @@ INTERNAL_ERROR = 500
 
 # Circuit15 Collection API
 class Circuit15CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Circuit15 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Circuit15 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, PowerDistributionId):
-		logging.info('Circuit15 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, PowerDistributionId):
+        logging.info('Circuit15 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'PowerEquipment/ElectricalBuses/{0}/Branches', 'index.json').format(PowerDistributionId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'PowerEquipment/ElectricalBuses/{0}/Branches', 'index.json').format(PowerDistributionId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self, PowerDistributionId):
-		logging.info('Circuit15 Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self, PowerDistributionId):
+        logging.info('Circuit15 Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			if PowerDistributionId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'PowerEquipment/ElectricalBuses/{0}/Branches').format(PowerDistributionId)
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'Circuit', parent_path)
+            if PowerDistributionId in members:
+                resp = 404
+                return resp
+            path = create_path(self.root, 'PowerEquipment/ElectricalBuses/{0}/Branches').format(PowerDistributionId)
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'Circuit', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return Circuit15API.post(self, PowerDistributionId, os.path.basename(config['@odata.id']))
-				else:
-					return Circuit15API.post(self, PowerDistributionId, str(res))
-			else:
-				return Circuit15API.post(self, PowerDistributionId, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return Circuit15API.post(self, PowerDistributionId, os.path.basename(config['@odata.id']))
+                else:
+                    return Circuit15API.post(self, PowerDistributionId, str(res))
+            else:
+                return Circuit15API.post(self, PowerDistributionId, str(res))
+        else:
+            return msg, code
 
 # Circuit15 API
 class Circuit15API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Circuit15 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Circuit15 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, PowerDistributionId, CircuitId):
-		logging.info('Circuit15 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, PowerDistributionId, CircuitId):
+        logging.info('Circuit15 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'PowerEquipment/ElectricalBuses/{0}/Branches/{1}', 'index.json').format(PowerDistributionId, CircuitId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'PowerEquipment/ElectricalBuses/{0}/Branches/{1}', 'index.json').format(PowerDistributionId, CircuitId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, PowerDistributionId, CircuitId):
-		logging.info('Circuit15 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, PowerDistributionId, CircuitId):
+        logging.info('Circuit15 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'PowerEquipment/ElectricalBuses/{0}/Branches/{1}').format(PowerDistributionId, CircuitId)
-			collection_path = os.path.join(self.root, 'PowerEquipment/ElectricalBuses/{0}/Branches', 'index.json').format(PowerDistributionId)
+        if code == 200:
+            path = create_path(self.root, 'PowerEquipment/ElectricalBuses/{0}/Branches/{1}').format(PowerDistributionId, CircuitId)
+            collection_path = os.path.join(self.root, 'PowerEquipment/ElectricalBuses/{0}/Branches', 'index.json').format(PowerDistributionId)
 
-			# Check if collection exists:
-			if not os.path.exists(collection_path):
-				Circuit15CollectionAPI.post(self, PowerDistributionId)
+            # Check if collection exists:
+            if not os.path.exists(collection_path):
+                Circuit15CollectionAPI.post(self, PowerDistributionId)
 
-			if CircuitId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'PowerDistributionId':PowerDistributionId, 'CircuitId':CircuitId, 'rb':g.rest_base}
-				config=get_Circuit15_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
+            if CircuitId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'PowerDistributionId':PowerDistributionId, 'CircuitId':CircuitId, 'rb':g.rest_base}
+                config=get_Circuit15_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    None
+                )
 
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('Circuit15API POST exit')
-			return resp
-		else:
-			return msg, code
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('Circuit15API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, PowerDistributionId, CircuitId):
-		logging.info('Circuit15 put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, PowerDistributionId, CircuitId):
+        logging.info('Circuit15 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'PowerEquipment/ElectricalBuses/{0}/Branches/{1}', 'index.json').format(PowerDistributionId, CircuitId)
-			put_object(path)
-			return self.get(PowerDistributionId, CircuitId)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'PowerEquipment/ElectricalBuses/{0}/Branches/{1}', 'index.json').format(PowerDistributionId, CircuitId)
+            put_object(path)
+            return self.get(PowerDistributionId, CircuitId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, PowerDistributionId, CircuitId):
-		logging.info('Circuit15 patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, PowerDistributionId, CircuitId):
+        logging.info('Circuit15 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'PowerEquipment/ElectricalBuses/{0}/Branches/{1}', 'index.json').format(PowerDistributionId, CircuitId)
-			patch_object(path)
-			return self.get(PowerDistributionId, CircuitId)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'PowerEquipment/ElectricalBuses/{0}/Branches/{1}', 'index.json').format(PowerDistributionId, CircuitId)
+            patch_object(path)
+            return self.get(PowerDistributionId, CircuitId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, PowerDistributionId, CircuitId):
-		logging.info('Circuit15 delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, PowerDistributionId, CircuitId):
+        logging.info('Circuit15 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'PowerEquipment/ElectricalBuses/{0}/Branches/{1}').format(PowerDistributionId, CircuitId)
-			base_path = create_path(self.root, 'PowerEquipment/ElectricalBuses/{0}/Branches').format(PowerDistributionId)
-			return delete_object(path, base_path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'PowerEquipment/ElectricalBuses/{0}/Branches/{1}').format(PowerDistributionId, CircuitId)
+            base_path = create_path(self.root, 'PowerEquipment/ElectricalBuses/{0}/Branches').format(PowerDistributionId)
+            return delete_object(path, base_path)
+        else:
+            return msg, code
 

@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.StorageController1 import get_StorageController1_instance
 
 members = []
@@ -47,156 +47,199 @@ INTERNAL_ERROR = 500
 
 # StorageController1 Collection API
 class StorageController1CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('StorageController1 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('StorageController1 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ComputerSystemId, StorageId):
-		logging.info('StorageController1 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ComputerSystemId, StorageId):
+        logging.info('StorageController1 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/Controllers', 'index.json').format(ComputerSystemId, StorageId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/Controllers', 'index.json').format(ComputerSystemId, StorageId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self, ComputerSystemId, StorageId):
-		logging.info('StorageController1 Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self, ComputerSystemId, StorageId):
+        logging.info('StorageController1 Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			if StorageId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'Systems/{0}/Storage/{1}/Controllers').format(ComputerSystemId, StorageId)
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'StorageController', parent_path)
+            if StorageId in members:
+                resp = 404
+                return resp
+            path = create_path(self.root, 'Systems/{0}/Storage/{1}/Controllers').format(ComputerSystemId, StorageId)
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'StorageController', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return StorageController1API.post(self, ComputerSystemId, StorageId, os.path.basename(config['@odata.id']))
-				else:
-					return StorageController1API.post(self, ComputerSystemId, StorageId, str(res))
-			else:
-				return StorageController1API.post(self, ComputerSystemId, StorageId, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return StorageController1API.post(self, ComputerSystemId, StorageId, os.path.basename(config['@odata.id']))
+                else:
+                    return StorageController1API.post(self, ComputerSystemId, StorageId, str(res))
+            else:
+                return StorageController1API.post(self, ComputerSystemId, StorageId, str(res))
+        else:
+            return msg, code
 
 # StorageController1 API
 class StorageController1API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('StorageController1 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('StorageController1 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ComputerSystemId, StorageId, ControllerId):
-		logging.info('StorageController1 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ComputerSystemId, StorageId, ControllerId):
+        logging.info('StorageController1 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}', 'index.json').format(ComputerSystemId, StorageId, ControllerId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}', 'index.json').format(ComputerSystemId, StorageId, ControllerId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, ComputerSystemId, StorageId, ControllerId):
-		logging.info('StorageController1 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, ComputerSystemId, StorageId, ControllerId):
+        logging.info('StorageController1 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}').format(ComputerSystemId, StorageId, ControllerId)
-			collection_path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/Controllers', 'index.json').format(ComputerSystemId, StorageId)
+        if code == 200:
+            path = create_path(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}').format(ComputerSystemId, StorageId, ControllerId)
+            collection_path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/Controllers', 'index.json').format(ComputerSystemId, StorageId)
 
-			# Check if collection exists:
-			if not os.path.exists(collection_path):
-				StorageController1CollectionAPI.post(self, ComputerSystemId, StorageId)
+            # Check if collection exists:
+            if not os.path.exists(collection_path):
+                StorageController1CollectionAPI.post(self, ComputerSystemId, StorageId)
 
-			if ControllerId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'ComputerSystemId':ComputerSystemId, 'StorageId':StorageId, 'ControllerId':ControllerId, 'rb':g.rest_base}
-				config=get_StorageController1_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
-				send_event('ResourceCreated', path)
+            if ControllerId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'ComputerSystemId':ComputerSystemId, 'StorageId':StorageId, 'ControllerId':ControllerId, 'rb':g.rest_base}
+                config=get_StorageController1_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    config
+                )
 
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('StorageController1API POST exit')
-			return resp
-		else:
-			return msg, code
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('StorageController1API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, ComputerSystemId, StorageId, ControllerId):
-		logging.info('StorageController1 put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, ComputerSystemId, StorageId, ControllerId):
+        logging.info('StorageController1 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}', 'index.json').format(ComputerSystemId, StorageId, ControllerId)
-			# Read old status for health/status change detection
-			old_data = get_json_data(path)
-			put_object(path)
-			new_data = get_json_data(path)
-			send_event('ResourceChanged', path)
-			# Health/status change detection
-			if old_data.get('Status') != new_data.get('Status'):
-				send_event('ResourceStatusChanged', path)
-			return self.get(ComputerSystemId, StorageId, ControllerId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}', 'index.json').format(ComputerSystemId, StorageId, ControllerId)
+            # Read old status for health/status change detection
+            old_data = get_json_data(path)
+            put_object(path)
+            new_data = get_json_data(path)
+            send_event(
+                "ResourceChanged",
+                "ResourceChanged",
+                f"StorageController {ControllerId} changed",
+                "OK",
+                path,
+                new_data
+            )
+            # Health/status change detection
+            if old_data.get('Status') != new_data.get('Status'):
+                send_event(
+                    "ResourceStatusChanged",
+                    "ResourceStatusChanged",
+                    f"StorageController {ControllerId} status changed",
+                    "OK",
+                    path,
+                    new_data
+                )
+            return self.get(ComputerSystemId, StorageId, ControllerId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, ComputerSystemId, StorageId, ControllerId):
-		logging.info('StorageController1 patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, ComputerSystemId, StorageId, ControllerId):
+        logging.info('StorageController1 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}', 'index.json').format(ComputerSystemId, StorageId, ControllerId)
-			old_data = get_json_data(path)
-			patch_object(path)
-			new_data = get_json_data(path)
-			send_event('ResourceChanged', path)
-			if old_data.get('Status') != new_data.get('Status'):
-				send_event('ResourceStatusChanged', path)
-			return self.get(ComputerSystemId, StorageId, ControllerId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}', 'index.json').format(ComputerSystemId, StorageId, ControllerId)
+            old_data = get_json_data(path)
+            patch_object(path)
+            new_data = get_json_data(path)
+            send_event(
+                "ResourceChanged",
+                "ResourceChanged",
+                f"StorageController {ControllerId} changed",
+                "OK",
+                path,
+                new_data
+            )
+            if old_data.get('Status') != new_data.get('Status'):
+                send_event(
+                    "ResourceStatusChanged",
+                    "ResourceStatusChanged",
+                    f"StorageController {ControllerId} status changed",
+                    "OK",
+                    path,
+                    new_data
+                )
+            return self.get(ComputerSystemId, StorageId, ControllerId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, ComputerSystemId, StorageId, ControllerId):
-		logging.info('StorageController1 delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, ComputerSystemId, StorageId, ControllerId):
+        logging.info('StorageController1 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}').format(ComputerSystemId, StorageId, ControllerId)
-			base_path = create_path(self.root, 'Systems/{0}/Storage/{1}/Controllers').format(ComputerSystemId, StorageId)
-			delete_object(path, base_path)
-			send_event('ResourceRemoved', path)
-			return '', 204
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}').format(ComputerSystemId, StorageId, ControllerId)
+            base_path = create_path(self.root, 'Systems/{0}/Storage/{1}/Controllers').format(ComputerSystemId, StorageId)
+            delete_object(path, base_path)
+            obj = get_json_data(path)
+            send_event(
+                "ResourceRemoved",
+                "ResourceRemoved",
+                f"StorageController {ControllerId} removed",
+                "OK",
+                path,
+                obj
+            )
+            return '', 204
+        else:
+            return msg, code
 

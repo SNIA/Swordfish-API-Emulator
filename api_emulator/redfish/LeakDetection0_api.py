@@ -38,7 +38,7 @@ import logging, random, requests, string, jwt
 from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
 
 config = {}
 
@@ -51,40 +51,40 @@ INTERNAL_ERROR = 500
 
 # LeakDetection0 API
 class LeakDetection0API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('LeakDetection0 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('LeakDetection0 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ChassisId):
-		logging.info('LeakDetection0 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ChassisId):
+        logging.info('LeakDetection0 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/LeakDetection', 'index.json').format(ChassisId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/LeakDetection', 'index.json').format(ChassisId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, ChassisId):
-		logging.info('LeakDetection0 post called')
-		return 'POST is not a supported command for LeakDetection0API', 405
+    # HTTP POST
+    def post(self, ChassisId):
+        logging.info('LeakDetection0 post called')
+        return 'POST is not a supported command for LeakDetection0API', 405
 
-	# HTTP PUT
-	def put(self, ChassisId):
-		logging.info('LeakDetection0 put called')
-		return 'PUT is not a supported command for LeakDetection0API', 405
+    # HTTP PUT
+    def put(self, ChassisId):
+        logging.info('LeakDetection0 put called')
+        return 'PUT is not a supported command for LeakDetection0API', 405
 
-	# HTTP PATCH
-	def patch(self, ChassisId):
-		logging.info('LeakDetection0 patch called')
-		return 'PATCH is not a supported command for LeakDetection0API', 405
+    # HTTP PATCH
+    def patch(self, ChassisId):
+        logging.info('LeakDetection0 patch called')
+        return 'PATCH is not a supported command for LeakDetection0API', 405
 
-	# HTTP DELETE
-	def delete(self, ChassisId):
-		logging.info('LeakDetection0 delete called')
-		return 'DELETE is not a supported command for LeakDetection0API', 405
+    # HTTP DELETE
+    def delete(self, ChassisId):
+        logging.info('LeakDetection0 delete called')
+        return 'DELETE is not a supported command for LeakDetection0API', 405
 
 

@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.ComputerSystem0 import get_ComputerSystem0_instance
 
 members = []
@@ -47,144 +47,187 @@ INTERNAL_ERROR = 500
 
 # ComputerSystem0 Collection API
 class ComputerSystem0CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('ComputerSystem0 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('ComputerSystem0 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self):
-		logging.info('ComputerSystem0 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self):
+        logging.info('ComputerSystem0 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Systems', 'index.json')
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Systems', 'index.json')
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self):
-		logging.info('ComputerSystem0 Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self):
+        logging.info('ComputerSystem0 Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			path = create_path(self.root, 'Systems')
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'ComputerSystem', parent_path)
+            path = create_path(self.root, 'Systems')
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'ComputerSystem', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return ComputerSystem0API.post(self, os.path.basename(config['@odata.id']))
-				else:
-					return ComputerSystem0API.post(self, str(res))
-			else:
-				return ComputerSystem0API.post(self, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return ComputerSystem0API.post(self, os.path.basename(config['@odata.id']))
+                else:
+                    return ComputerSystem0API.post(self, str(res))
+            else:
+                return ComputerSystem0API.post(self, str(res))
+        else:
+            return msg, code
 
 # ComputerSystem0 API
 class ComputerSystem0API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('ComputerSystem0 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('ComputerSystem0 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ComputerSystemId):
-		logging.info('ComputerSystem0 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ComputerSystemId):
+        logging.info('ComputerSystem0 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Systems/{0}', 'index.json').format(ComputerSystemId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Systems/{0}', 'index.json').format(ComputerSystemId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, ComputerSystemId):
-		logging.info('ComputerSystem0 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    def post(self, ComputerSystemId):
+        logging.info('ComputerSystem0 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Systems/{0}').format(ComputerSystemId)
-			collection_path = os.path.join(self.root, 'Systems', 'index.json')
-			if not os.path.exists(collection_path):
-				# Not calling collection POST since not supported
-				pass
-			if ComputerSystemId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'ComputerSystemId':ComputerSystemId, 'rb':g.rest_base}
-				config=get_ComputerSystem0_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
-				send_event('ResourceCreated', path)
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('ComputerSystem0API POST exit')
-			return resp
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Systems/{0}').format(ComputerSystemId)
+            collection_path = os.path.join(self.root, 'Systems', 'index.json')
+            if not os.path.exists(collection_path):
+                # Not calling collection POST since not supported
+                pass
+            if ComputerSystemId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'ComputerSystemId':ComputerSystemId, 'rb':g.rest_base}
+                config=get_ComputerSystem0_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    config
+                )
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('ComputerSystem0API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, ComputerSystemId):
-		logging.info('ComputerSystem0 put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, ComputerSystemId):
+        logging.info('ComputerSystem0 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}', 'index.json').format(ComputerSystemId)
-			old_data = get_json_data(path)
-			put_object(path)
-			new_data = get_json_data(path)
-			send_event('ResourceChanged', path)
-			if old_data.get('Status') != new_data.get('Status'):
-				send_event('ResourceStatusChanged', path)
-			return self.get(ComputerSystemId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Systems/{0}', 'index.json').format(ComputerSystemId)
+            old_data = get_json_data(path)
+            put_object(path)
+            new_data = get_json_data(path)
+            send_event(
+                "ResourceChanged",
+                "ResourceChanged",
+                f"ComputerSystem {ComputerSystemId} changed",
+                "OK",
+                path,
+                new_data
+            )
+            if old_data.get('Status') != new_data.get('Status'):
+                send_event(
+                    "ResourceStatusChanged",
+                    "ResourceStatusChanged",
+                    f"ComputerSystem {ComputerSystemId} status changed",
+                    "OK",
+                    path,
+                    new_data
+                )
+            return self.get(ComputerSystemId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, ComputerSystemId):
-		logging.info('ComputerSystem0 patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, ComputerSystemId):
+        logging.info('ComputerSystem0 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}', 'index.json').format(ComputerSystemId)
-			old_data = get_json_data(path)
-			patch_object(path)
-			new_data = get_json_data(path)
-			send_event('ResourceChanged', path)
-			if old_data.get('Status') != new_data.get('Status'):
-				send_event('ResourceStatusChanged', path)
-			return self.get(ComputerSystemId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Systems/{0}', 'index.json').format(ComputerSystemId)
+            old_data = get_json_data(path)
+            patch_object(path)
+            new_data = get_json_data(path)
+            send_event(
+                "ResourceChanged",
+                "ResourceChanged",
+                f"ComputerSystem {ComputerSystemId} changed",
+                "OK",
+                path,
+                new_data
+            )
+            if old_data.get('Status') != new_data.get('Status'):
+                send_event(
+                    "ResourceStatusChanged",
+                    "ResourceStatusChanged",
+                    f"ComputerSystem {ComputerSystemId} status changed",
+                    "OK",
+                    path,
+                    new_data
+                )
+            return self.get(ComputerSystemId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, ComputerSystemId):
-		logging.info('ComputerSystem0 delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, ComputerSystemId):
+        logging.info('ComputerSystem0 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Systems/{0}').format(ComputerSystemId)
-			base_path = create_path(self.root, 'Systems')
-			delete_object(path, base_path)
-			send_event('ResourceRemoved', path)
-			return '', 204
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Systems/{0}').format(ComputerSystemId)
+            base_path = create_path(self.root, 'Systems')
+            obj = get_json_data(path)
+            send_event(
+                "ResourceRemoved",
+                "ResourceRemoved",
+                f"ComputerSystem {ComputerSystemId} removed",
+                "OK",
+                path,
+                obj
+            )
+            delete_object(path, base_path)
+            return '', 204
+        else:
+            return msg, code
 

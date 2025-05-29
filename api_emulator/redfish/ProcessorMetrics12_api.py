@@ -38,7 +38,7 @@ import logging, random, requests, string, jwt
 from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
 
 config = {}
 
@@ -51,40 +51,40 @@ INTERNAL_ERROR = 500
 
 # ProcessorMetrics12 API
 class ProcessorMetrics12API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('ProcessorMetrics12 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('ProcessorMetrics12 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ResourceBlockId, ProcessorId, ProcessorId2):
-		logging.info('ProcessorMetrics12 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ResourceBlockId, ProcessorId, ProcessorId2):
+        logging.info('ProcessorMetrics12 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Processors/{1}/SubProcessors/{12}/ProcessorMetrics', 'index.json').format(ResourceBlockId, ProcessorId, ProcessorId2)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'ResourceBlocks/{0}/Processors/{1}/SubProcessors/{12}/ProcessorMetrics', 'index.json').format(ResourceBlockId, ProcessorId, ProcessorId2)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, ResourceBlockId, ProcessorId, ProcessorId2):
-		logging.info('ProcessorMetrics12 post called')
-		return 'POST is not a supported command for ProcessorMetrics12API', 405
+    # HTTP POST
+    def post(self, ResourceBlockId, ProcessorId, ProcessorId2):
+        logging.info('ProcessorMetrics12 post called')
+        return 'POST is not a supported command for ProcessorMetrics12API', 405
 
-	# HTTP PUT
-	def put(self, ResourceBlockId, ProcessorId, ProcessorId2):
-		logging.info('ProcessorMetrics12 put called')
-		return 'PUT is not a supported command for ProcessorMetrics12API', 405
+    # HTTP PUT
+    def put(self, ResourceBlockId, ProcessorId, ProcessorId2):
+        logging.info('ProcessorMetrics12 put called')
+        return 'PUT is not a supported command for ProcessorMetrics12API', 405
 
-	# HTTP PATCH
-	def patch(self, ResourceBlockId, ProcessorId, ProcessorId2):
-		logging.info('ProcessorMetrics12 patch called')
-		return 'PATCH is not a supported command for ProcessorMetrics12API', 405
+    # HTTP PATCH
+    def patch(self, ResourceBlockId, ProcessorId, ProcessorId2):
+        logging.info('ProcessorMetrics12 patch called')
+        return 'PATCH is not a supported command for ProcessorMetrics12API', 405
 
-	# HTTP DELETE
-	def delete(self, ResourceBlockId, ProcessorId, ProcessorId2):
-		logging.info('ProcessorMetrics12 delete called')
-		return 'DELETE is not a supported command for ProcessorMetrics12API', 405
+    # HTTP DELETE
+    def delete(self, ResourceBlockId, ProcessorId, ProcessorId2):
+        logging.info('ProcessorMetrics12 delete called')
+        return 'DELETE is not a supported command for ProcessorMetrics12API', 405
 
 

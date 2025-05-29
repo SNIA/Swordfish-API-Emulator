@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.Key3 import get_Key3_instance
 
 members = []
@@ -47,141 +47,149 @@ INTERNAL_ERROR = 500
 
 # Key3 Collection API
 class Key3CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Key3 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Key3 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ManagerAccountId):
-		logging.info('Key3 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ManagerAccountId):
+        logging.info('Key3 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'AccountService/Accounts/{0}/Keys', 'index.json').format(ManagerAccountId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'AccountService/Accounts/{0}/Keys', 'index.json').format(ManagerAccountId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self, ManagerAccountId):
-		logging.info('Key3 Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self, ManagerAccountId):
+        logging.info('Key3 Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			if ManagerAccountId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'AccountService/Accounts/{0}/Keys').format(ManagerAccountId)
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'Key', parent_path)
+            if ManagerAccountId in members:
+                resp = 404
+                return resp
+            path = create_path(self.root, 'AccountService/Accounts/{0}/Keys').format(ManagerAccountId)
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'Key', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return Key3API.post(self, ManagerAccountId, os.path.basename(config['@odata.id']))
-				else:
-					return Key3API.post(self, ManagerAccountId, str(res))
-			else:
-				return Key3API.post(self, ManagerAccountId, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return Key3API.post(self, ManagerAccountId, os.path.basename(config['@odata.id']))
+                else:
+                    return Key3API.post(self, ManagerAccountId, str(res))
+            else:
+                return Key3API.post(self, ManagerAccountId, str(res))
+        else:
+            return msg, code
 
 # Key3 API
 class Key3API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Key3 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Key3 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ManagerAccountId, KeyId):
-		logging.info('Key3 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ManagerAccountId, KeyId):
+        logging.info('Key3 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'AccountService/Accounts/{0}/Keys/{1}', 'index.json').format(ManagerAccountId, KeyId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'AccountService/Accounts/{0}/Keys/{1}', 'index.json').format(ManagerAccountId, KeyId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, ManagerAccountId, KeyId):
-		logging.info('Key3 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, ManagerAccountId, KeyId):
+        logging.info('Key3 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'AccountService/Accounts/{0}/Keys/{1}').format(ManagerAccountId, KeyId)
-			collection_path = os.path.join(self.root, 'AccountService/Accounts/{0}/Keys', 'index.json').format(ManagerAccountId)
+        if code == 200:
+            path = create_path(self.root, 'AccountService/Accounts/{0}/Keys/{1}').format(ManagerAccountId, KeyId)
+            collection_path = os.path.join(self.root, 'AccountService/Accounts/{0}/Keys', 'index.json').format(ManagerAccountId)
 
-			# Check if collection exists:
-			if not os.path.exists(collection_path):
-				Key3CollectionAPI.post(self, ManagerAccountId)
+            # Check if collection exists:
+            if not os.path.exists(collection_path):
+                Key3CollectionAPI.post(self, ManagerAccountId)
 
-			if KeyId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'ManagerAccountId':ManagerAccountId, 'KeyId':KeyId, 'rb':g.rest_base}
-				config=get_Key3_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
+            if KeyId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'ManagerAccountId':ManagerAccountId, 'KeyId':KeyId, 'rb':g.rest_base}
+                config=get_Key3_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    None
+                )
 
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('Key3API POST exit')
-			return resp
-		else:
-			return msg, code
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('Key3API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, ManagerAccountId, KeyId):
-		logging.info('Key3 put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, ManagerAccountId, KeyId):
+        logging.info('Key3 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'AccountService/Accounts/{0}/Keys/{1}', 'index.json').format(ManagerAccountId, KeyId)
-			put_object(path)
-			return self.get(ManagerAccountId, KeyId)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'AccountService/Accounts/{0}/Keys/{1}', 'index.json').format(ManagerAccountId, KeyId)
+            put_object(path)
+            return self.get(ManagerAccountId, KeyId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, ManagerAccountId, KeyId):
-		logging.info('Key3 patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, ManagerAccountId, KeyId):
+        logging.info('Key3 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'AccountService/Accounts/{0}/Keys/{1}', 'index.json').format(ManagerAccountId, KeyId)
-			patch_object(path)
-			return self.get(ManagerAccountId, KeyId)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'AccountService/Accounts/{0}/Keys/{1}', 'index.json').format(ManagerAccountId, KeyId)
+            patch_object(path)
+            return self.get(ManagerAccountId, KeyId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, ManagerAccountId, KeyId):
-		logging.info('Key3 delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, ManagerAccountId, KeyId):
+        logging.info('Key3 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'AccountService/Accounts/{0}/Keys/{1}').format(ManagerAccountId, KeyId)
-			base_path = create_path(self.root, 'AccountService/Accounts/{0}/Keys').format(ManagerAccountId)
-			return delete_object(path, base_path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'AccountService/Accounts/{0}/Keys/{1}').format(ManagerAccountId, KeyId)
+            base_path = create_path(self.root, 'AccountService/Accounts/{0}/Keys').format(ManagerAccountId)
+            return delete_object(path, base_path)
+        else:
+            return msg, code
 

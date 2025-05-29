@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.FileSystem0 import get_FileSystem0_instance
 
 members = []
@@ -47,150 +47,185 @@ INTERNAL_ERROR = 500
 
 # FileSystem0 Collection API
 class FileSystem0CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('FileSystem0 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('FileSystem0 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, StorageServiceId):
-		logging.info('FileSystem0 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, StorageServiceId):
+        logging.info('FileSystem0 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'StorageServices/{0}/FileSystems', 'index.json').format(StorageServiceId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'StorageServices/{0}/FileSystems', 'index.json').format(StorageServiceId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self, StorageServiceId):
-		logging.info('FileSystem0 Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self, StorageServiceId):
+        logging.info('FileSystem0 Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			if StorageServiceId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'StorageServices/{0}/FileSystems').format(StorageServiceId)
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'FileSystem', parent_path)
+            if StorageServiceId in members:
+                resp = 404
+                return resp
+            path = create_path(self.root, 'StorageServices/{0}/FileSystems').format(StorageServiceId)
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'FileSystem', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return FileSystem0API.post(self, StorageServiceId, os.path.basename(config['@odata.id']))
-				else:
-					return FileSystem0API.post(self, StorageServiceId, str(res))
-			else:
-				return FileSystem0API.post(self, StorageServiceId, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return FileSystem0API.post(self, StorageServiceId, os.path.basename(config['@odata.id']))
+                else:
+                    return FileSystem0API.post(self, StorageServiceId, str(res))
+            else:
+                return FileSystem0API.post(self, StorageServiceId, str(res))
+        else:
+            return msg, code
 
 # FileSystem0 API
 class FileSystem0API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('FileSystem0 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('FileSystem0 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, StorageServiceId, FileSystemId):
-		logging.info('FileSystem0 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, StorageServiceId, FileSystemId):
+        logging.info('FileSystem0 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'StorageServices/{0}/FileSystems/{1}', 'index.json').format(StorageServiceId, FileSystemId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'StorageServices/{0}/FileSystems/{1}', 'index.json').format(StorageServiceId, FileSystemId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, StorageServiceId, FileSystemId):
-		logging.info('FileSystem0 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, StorageServiceId, FileSystemId):
+        logging.info('FileSystem0 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'StorageServices/{0}/FileSystems/{1}').format(StorageServiceId, FileSystemId)
-			collection_path = os.path.join(self.root, 'StorageServices/{0}/FileSystems', 'index.json').format(StorageServiceId)
-			if not os.path.exists(collection_path):
-				FileSystem0CollectionAPI.post(self, StorageServiceId)
-			if FileSystemId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'StorageServiceId':StorageServiceId, 'FileSystemId':FileSystemId, 'rb':g.rest_base}
-				config=get_FileSystem0_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
-				send_event('ResourceCreated', path)
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('FileSystem0API POST exit')
-			return resp
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'StorageServices/{0}/FileSystems/{1}').format(StorageServiceId, FileSystemId)
+            collection_path = os.path.join(self.root, 'StorageServices/{0}/FileSystems', 'index.json').format(StorageServiceId)
+            if not os.path.exists(collection_path):
+                FileSystem0CollectionAPI.post(self, StorageServiceId)
+            if FileSystemId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'StorageServiceId':StorageServiceId, 'FileSystemId':FileSystemId, 'rb':g.rest_base}
+                config=get_FileSystem0_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    config
+                )
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('FileSystem0API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, StorageServiceId, FileSystemId):
-		logging.info('FileSystem0 put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, StorageServiceId, FileSystemId):
+        logging.info('FileSystem0 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'StorageServices/{0}/FileSystems/{1}', 'index.json').format(StorageServiceId, FileSystemId)
-			old_data = get_json_data(path)
-			put_object(path)
-			new_data = get_json_data(path)
-			send_event('ResourceChanged', path)
-			if old_data.get('Status') != new_data.get('Status'):
-				send_event('ResourceStatusChanged', path)
-			return self.get(StorageServiceId, FileSystemId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'StorageServices/{0}/FileSystems/{1}', 'index.json').format(StorageServiceId, FileSystemId)
+            old_data = get_json_data(path)
+            put_object(path)
+            new_data = get_json_data(path)
+            send_event(
+                "ResourceChanged",
+                "ResourceChanged",
+                f"FileSystem {FileSystemId} changed",
+                "OK",
+                path,
+                new_data
+            )
+            if old_data.get('Status') != new_data.get('Status'):
+                send_event(
+                    "ResourceStatusChanged",
+                    "ResourceStatusChanged",
+                    f"FileSystem {FileSystemId} status changed",
+                    "OK",
+                    path,
+                    new_data
+                )
+            return self.get(StorageServiceId, FileSystemId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, StorageServiceId, FileSystemId):
-		logging.info('FileSystem0 patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, StorageServiceId, FileSystemId):
+        logging.info('FileSystem0 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'StorageServices/{0}/FileSystems/{1}', 'index.json').format(StorageServiceId, FileSystemId)
-			old_data = get_json_data(path)
-			patch_object(path)
-			new_data = get_json_data(path)
-			send_event('ResourceChanged', path)
-			if old_data.get('Status') != new_data.get('Status'):
-				send_event('ResourceStatusChanged', path)
-			return self.get(StorageServiceId, FileSystemId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'StorageServices/{0}/FileSystems/{1}', 'index.json').format(StorageServiceId, FileSystemId)
+            old_data = get_json_data(path)
+            patch_object(path)
+            new_data = get_json_data(path)
+            send_event(
+                "ResourceChanged",
+                "ResourceChanged",
+                f"FileSystem {FileSystemId} changed",
+                "OK",
+                path,
+                new_data
+            )
+            if old_data.get('Status') != new_data.get('Status'):
+                send_event(
+                    "ResourceStatusChanged",
+                    "ResourceStatusChanged",
+                    f"FileSystem {FileSystemId} status changed",
+                    "OK",
+                    path,
+                    new_data
+                )
+            return self.get(StorageServiceId, FileSystemId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, StorageServiceId, FileSystemId):
-		logging.info('FileSystem0 delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, StorageServiceId, FileSystemId):
+        logging.info('FileSystem0 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'StorageServices/{0}/FileSystems/{1}').format(StorageServiceId, FileSystemId)
-			base_path = create_path(self.root, 'StorageServices/{0}/FileSystems').format(StorageServiceId)
-			delete_object(path, base_path)
-			send_event('ResourceRemoved', path)
-			return '', 204
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'StorageServices/{0}/FileSystems/{1}').format(StorageServiceId, FileSystemId)
+            base_path = create_path(self.root, 'StorageServices/{0}/FileSystems').format(StorageServiceId)
+            delete_object(path, base_path)
+            send_event('ResourceRemoved', path)
+            return '', 204
+        else:
+            return msg, code
 

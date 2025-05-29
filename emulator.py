@@ -64,7 +64,7 @@ from api_emulator.exceptions import CreatePooledNodeError, ConfigurationError, R
 from api_emulator.resource_dictionary import ResourceDictionary
 from api_emulator.redfish.ServiceRoot1_api import *
 from api_emulator.redfish.EventService_api import EventServiceAPI
-from api_emulator.redfish.EventServiceSubscriptions_api import EventServiceSubscriptionsAPI
+from api_emulator.redfish.EventDestination_api import EventDestinationAPI
 from api_emulator.redfish.EventServiceEvents_api import EventServiceEventsAPI
 from api_emulator.utils import *
 
@@ -539,9 +539,6 @@ def get_odata():
 def startup():
 
     init_resource_manager()
-    g.api.add_resource(EventServiceAPI, '/redfish/v1/EventService')
-    g.api.add_resource(EventServiceSubscriptionsAPI, '/redfish/v1/EventService/Subscriptions')
-    g.api.add_resource(EventServiceEventsAPI, '/redfish/v1/EventService/Events')
 
 #
 # Main method

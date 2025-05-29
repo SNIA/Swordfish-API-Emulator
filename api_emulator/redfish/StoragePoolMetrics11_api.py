@@ -38,7 +38,7 @@ import logging, random, requests, string, jwt
 from flask import Flask, request, session
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
 
 config = {}
 
@@ -51,40 +51,40 @@ INTERNAL_ERROR = 500
 
 # StoragePoolMetrics11 API
 class StoragePoolMetrics11API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('StoragePoolMetrics11 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('StoragePoolMetrics11 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, StorageId, FileSystemId, CapacitySourceId, StoragePoolId):
-		logging.info('StoragePoolMetrics11 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, StorageId, FileSystemId, CapacitySourceId, StoragePoolId):
+        logging.info('StoragePoolMetrics11 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingPools/{3}/Metrics', 'index.json').format(StorageId, FileSystemId, CapacitySourceId, StoragePoolId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Storage/{0}/FileSystems/{1}/CapacitySources/{2}/ProvidingPools/{3}/Metrics', 'index.json').format(StorageId, FileSystemId, CapacitySourceId, StoragePoolId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	def post(self, StorageId, FileSystemId, CapacitySourceId, StoragePoolId):
-		logging.info('StoragePoolMetrics11 post called')
-		return 'POST is not a supported command for StoragePoolMetrics11API', 405
+    # HTTP POST
+    def post(self, StorageId, FileSystemId, CapacitySourceId, StoragePoolId):
+        logging.info('StoragePoolMetrics11 post called')
+        return 'POST is not a supported command for StoragePoolMetrics11API', 405
 
-	# HTTP PUT
-	def put(self, StorageId, FileSystemId, CapacitySourceId, StoragePoolId):
-		logging.info('StoragePoolMetrics11 put called')
-		return 'PUT is not a supported command for StoragePoolMetrics11API', 405
+    # HTTP PUT
+    def put(self, StorageId, FileSystemId, CapacitySourceId, StoragePoolId):
+        logging.info('StoragePoolMetrics11 put called')
+        return 'PUT is not a supported command for StoragePoolMetrics11API', 405
 
-	# HTTP PATCH
-	def patch(self, StorageId, FileSystemId, CapacitySourceId, StoragePoolId):
-		logging.info('StoragePoolMetrics11 patch called')
-		return 'PATCH is not a supported command for StoragePoolMetrics11API', 405
+    # HTTP PATCH
+    def patch(self, StorageId, FileSystemId, CapacitySourceId, StoragePoolId):
+        logging.info('StoragePoolMetrics11 patch called')
+        return 'PATCH is not a supported command for StoragePoolMetrics11API', 405
 
-	# HTTP DELETE
-	def delete(self, StorageId, FileSystemId, CapacitySourceId, StoragePoolId):
-		logging.info('StoragePoolMetrics11 delete called')
-		return 'DELETE is not a supported command for StoragePoolMetrics11API', 405
+    # HTTP DELETE
+    def delete(self, StorageId, FileSystemId, CapacitySourceId, StoragePoolId):
+        logging.info('StoragePoolMetrics11 delete called')
+        return 'DELETE is not a supported command for StoragePoolMetrics11API', 405
 
 

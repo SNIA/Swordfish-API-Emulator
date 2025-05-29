@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.VCATEntry13 import get_VCATEntry13_instance
 
 members = []
@@ -47,141 +47,149 @@ INTERNAL_ERROR = 500
 
 # VCATEntry13 Collection API
 class VCATEntry13CollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('VCATEntry13 Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('VCATEntry13 Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, FabricId, SwitchId, PortId):
-		logging.info('VCATEntry13 Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, FabricId, SwitchId, PortId):
+        logging.info('VCATEntry13 Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/GenZ/VCAT', 'index.json').format(FabricId, SwitchId, PortId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/GenZ/VCAT', 'index.json').format(FabricId, SwitchId, PortId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self, FabricId, SwitchId, PortId):
-		logging.info('VCATEntry13 Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self, FabricId, SwitchId, PortId):
+        logging.info('VCATEntry13 Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			if PortId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/GenZ/VCAT').format(FabricId, SwitchId, PortId)
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'VCATEntry', parent_path)
+            if PortId in members:
+                resp = 404
+                return resp
+            path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/GenZ/VCAT').format(FabricId, SwitchId, PortId)
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'VCATEntry', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return VCATEntry13API.post(self, FabricId, SwitchId, PortId, os.path.basename(config['@odata.id']))
-				else:
-					return VCATEntry13API.post(self, FabricId, SwitchId, PortId, str(res))
-			else:
-				return VCATEntry13API.post(self, FabricId, SwitchId, PortId, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return VCATEntry13API.post(self, FabricId, SwitchId, PortId, os.path.basename(config['@odata.id']))
+                else:
+                    return VCATEntry13API.post(self, FabricId, SwitchId, PortId, str(res))
+            else:
+                return VCATEntry13API.post(self, FabricId, SwitchId, PortId, str(res))
+        else:
+            return msg, code
 
 # VCATEntry13 API
 class VCATEntry13API(Resource):
-	def __init__(self, **kwargs):
-		logging.info('VCATEntry13 init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('VCATEntry13 init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, FabricId, SwitchId, PortId, VCATEntryId):
-		logging.info('VCATEntry13 get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, FabricId, SwitchId, PortId, VCATEntryId):
+        logging.info('VCATEntry13 get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/GenZ/VCAT/{3}', 'index.json').format(FabricId, SwitchId, PortId, VCATEntryId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/GenZ/VCAT/{3}', 'index.json').format(FabricId, SwitchId, PortId, VCATEntryId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, FabricId, SwitchId, PortId, VCATEntryId):
-		logging.info('VCATEntry13 post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, FabricId, SwitchId, PortId, VCATEntryId):
+        logging.info('VCATEntry13 post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/GenZ/VCAT/{3}').format(FabricId, SwitchId, PortId, VCATEntryId)
-			collection_path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/GenZ/VCAT', 'index.json').format(FabricId, SwitchId, PortId)
+        if code == 200:
+            path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/GenZ/VCAT/{3}').format(FabricId, SwitchId, PortId, VCATEntryId)
+            collection_path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/GenZ/VCAT', 'index.json').format(FabricId, SwitchId, PortId)
 
-			# Check if collection exists:
-			if not os.path.exists(collection_path):
-				VCATEntry13CollectionAPI.post(self, FabricId, SwitchId, PortId)
+            # Check if collection exists:
+            if not os.path.exists(collection_path):
+                VCATEntry13CollectionAPI.post(self, FabricId, SwitchId, PortId)
 
-			if VCATEntryId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'FabricId':FabricId, 'SwitchId':SwitchId, 'PortId':PortId, 'VCATEntryId':VCATEntryId, 'rb':g.rest_base}
-				config=get_VCATEntry13_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
+            if VCATEntryId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'FabricId':FabricId, 'SwitchId':SwitchId, 'PortId':PortId, 'VCATEntryId':VCATEntryId, 'rb':g.rest_base}
+                config=get_VCATEntry13_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    None
+                )
 
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('VCATEntry13API POST exit')
-			return resp
-		else:
-			return msg, code
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('VCATEntry13API POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, FabricId, SwitchId, PortId, VCATEntryId):
-		logging.info('VCATEntry13 put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, FabricId, SwitchId, PortId, VCATEntryId):
+        logging.info('VCATEntry13 put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/GenZ/VCAT/{3}', 'index.json').format(FabricId, SwitchId, PortId, VCATEntryId)
-			put_object(path)
-			return self.get(FabricId, SwitchId, PortId, VCATEntryId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/GenZ/VCAT/{3}', 'index.json').format(FabricId, SwitchId, PortId, VCATEntryId)
+            put_object(path)
+            return self.get(FabricId, SwitchId, PortId, VCATEntryId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, FabricId, SwitchId, PortId, VCATEntryId):
-		logging.info('VCATEntry13 patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, FabricId, SwitchId, PortId, VCATEntryId):
+        logging.info('VCATEntry13 patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/GenZ/VCAT/{3}', 'index.json').format(FabricId, SwitchId, PortId, VCATEntryId)
-			patch_object(path)
-			return self.get(FabricId, SwitchId, PortId, VCATEntryId)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/GenZ/VCAT/{3}', 'index.json').format(FabricId, SwitchId, PortId, VCATEntryId)
+            patch_object(path)
+            return self.get(FabricId, SwitchId, PortId, VCATEntryId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, FabricId, SwitchId, PortId, VCATEntryId):
-		logging.info('VCATEntry13 delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, FabricId, SwitchId, PortId, VCATEntryId):
+        logging.info('VCATEntry13 delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/GenZ/VCAT/{3}').format(FabricId, SwitchId, PortId, VCATEntryId)
-			base_path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/GenZ/VCAT').format(FabricId, SwitchId, PortId)
-			return delete_object(path, base_path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/GenZ/VCAT/{3}').format(FabricId, SwitchId, PortId, VCATEntryId)
+            base_path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/GenZ/VCAT').format(FabricId, SwitchId, PortId)
+            return delete_object(path, base_path)
+        else:
+            return msg, code
 

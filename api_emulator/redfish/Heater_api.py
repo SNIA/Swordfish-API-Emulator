@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.Heater import get_Heater_instance
 
 members = []
@@ -47,141 +47,149 @@ INTERNAL_ERROR = 500
 
 # Heater Collection API
 class HeaterCollectionAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Heater Collection init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Heater Collection init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ChassisId):
-		logging.info('Heater Collection get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ChassisId):
+        logging.info('Heater Collection get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = os.path.join(self.root, 'Chassis/{0}/ThermalSubsystem/Heaters', 'index.json').format(ChassisId)
-			return get_json_data(path)
-		else:
-			return msg, code
+        if code == 200:
+            path = os.path.join(self.root, 'Chassis/{0}/ThermalSubsystem/Heaters', 'index.json').format(ChassisId)
+            return get_json_data(path)
+        else:
+            return msg, code
 
-	# HTTP POST Collection
-	def post(self, ChassisId):
-		logging.info('Heater Collection post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST Collection
+    def post(self, ChassisId):
+        logging.info('Heater Collection post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.type" in config:
-					if "Collection" in config["@odata.type"]:
-						return "Invalid data in POST body", 400
+        if code == 200:
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
 
-			if ChassisId in members:
-				resp = 404
-				return resp
-			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Heaters').format(ChassisId)
-			parent_path = os.path.dirname(path)
-			if not os.path.exists(path):
-				os.mkdir(path)
-				create_collection (path, 'Heater', parent_path)
+            if ChassisId in members:
+                resp = 404
+                return resp
+            path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Heaters').format(ChassisId)
+            parent_path = os.path.dirname(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+                create_collection (path, 'Heater', parent_path)
 
-			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-			if request.data:
-				config = json.loads(request.data)
-				if "@odata.id" in config:
-					return HeaterAPI.post(self, ChassisId, os.path.basename(config['@odata.id']))
-				else:
-					return HeaterAPI.post(self, ChassisId, str(res))
-			else:
-				return HeaterAPI.post(self, ChassisId, str(res))
-		else:
-			return msg, code
+            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return HeaterAPI.post(self, ChassisId, os.path.basename(config['@odata.id']))
+                else:
+                    return HeaterAPI.post(self, ChassisId, str(res))
+            else:
+                return HeaterAPI.post(self, ChassisId, str(res))
+        else:
+            return msg, code
 
 # Heater API
 class HeaterAPI(Resource):
-	def __init__(self, **kwargs):
-		logging.info('Heater init called')
-		self.root = PATHS['Root']
-		self.auth = kwargs['auth']
+    def __init__(self, **kwargs):
+        logging.info('Heater init called')
+        self.root = PATHS['Root']
+        self.auth = kwargs['auth']
 
-	# HTTP GET
-	def get(self, ChassisId, HeaterId):
-		logging.info('Heater get called')
-		msg, code = check_authentication(self.auth)
+    # HTTP GET
+    def get(self, ChassisId, HeaterId):
+        logging.info('Heater get called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Heaters/{1}', 'index.json').format(ChassisId, HeaterId)
-			return get_json_data (path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Heaters/{1}', 'index.json').format(ChassisId, HeaterId)
+            return get_json_data (path)
+        else:
+            return msg, code
 
-	# HTTP POST
-	# - Create the resource (since URI variables are available)
-	# - Update the members and members.id lists
-	# - Attach the APIs of subordinate resources (do this only once)
-	# - Finally, create an instance of the subordiante resources
-	def post(self, ChassisId, HeaterId):
-		logging.info('Heater post called')
-		msg, code = check_authentication(self.auth)
+    # HTTP POST
+    # - Create the resource (since URI variables are available)
+    # - Update the members and members.id lists
+    # - Attach the APIs of subordinate resources (do this only once)
+    # - Finally, create an instance of the subordinate resources
+    def post(self, ChassisId, HeaterId):
+        logging.info('Heater post called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Heaters/{1}').format(ChassisId, HeaterId)
-			collection_path = os.path.join(self.root, 'Chassis/{0}/ThermalSubsystem/Heaters', 'index.json').format(ChassisId)
+        if code == 200:
+            path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Heaters/{1}').format(ChassisId, HeaterId)
+            collection_path = os.path.join(self.root, 'Chassis/{0}/ThermalSubsystem/Heaters', 'index.json').format(ChassisId)
 
-			# Check if collection exists:
-			if not os.path.exists(collection_path):
-				HeaterCollectionAPI.post(self, ChassisId)
+            # Check if collection exists:
+            if not os.path.exists(collection_path):
+                HeaterCollectionAPI.post(self, ChassisId)
 
-			if HeaterId in members:
-				resp = 404
-				return resp
-			try:
-				global config
-				wildcards = {'ChassisId':ChassisId, 'HeaterId':HeaterId, 'rb':g.rest_base}
-				config=get_Heater_instance(wildcards)
-				config = create_and_patch_object (config, members, member_ids, path, collection_path)
-				resp = config, 200
+            if HeaterId in members:
+                resp = 404
+                return resp
+            try:
+                global config
+                wildcards = {'ChassisId':ChassisId, 'HeaterId':HeaterId, 'rb':g.rest_base}
+                config=get_Heater_instance(wildcards)
+                config = create_and_patch_object (config, members, member_ids, path, collection_path)
+                resp = config, 200
+                send_event(
+                    "ResourceCreated",
+                    "ResourceEvent.1.4.2.ResourceCreated",
+                    "The resource was created successfully.",
+                    "OK",
+                    path,
+                    None
+                )
 
-			except Exception:
-				traceback.print_exc()
-				resp = INTERNAL_ERROR
-			logging.info('HeaterAPI POST exit')
-			return resp
-		else:
-			return msg, code
+            except Exception:
+                traceback.print_exc()
+                resp = INTERNAL_ERROR
+            logging.info('HeaterAPI POST exit')
+            return resp
+        else:
+            return msg, code
 
-	# HTTP PUT
-	def put(self, ChassisId, HeaterId):
-		logging.info('Heater put called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PUT
+    def put(self, ChassisId, HeaterId):
+        logging.info('Heater put called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Heaters/{1}', 'index.json').format(ChassisId, HeaterId)
-			put_object(path)
-			return self.get(ChassisId, HeaterId)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Heaters/{1}', 'index.json').format(ChassisId, HeaterId)
+            put_object(path)
+            return self.get(ChassisId, HeaterId)
+        else:
+            return msg, code
 
-	# HTTP PATCH
-	def patch(self, ChassisId, HeaterId):
-		logging.info('Heater patch called')
-		msg, code = check_authentication(self.auth)
+    # HTTP PATCH
+    def patch(self, ChassisId, HeaterId):
+        logging.info('Heater patch called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Heaters/{1}', 'index.json').format(ChassisId, HeaterId)
-			patch_object(path)
-			return self.get(ChassisId, HeaterId)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Heaters/{1}', 'index.json').format(ChassisId, HeaterId)
+            patch_object(path)
+            return self.get(ChassisId, HeaterId)
+        else:
+            return msg, code
 
-	# HTTP DELETE
-	def delete(self, ChassisId, HeaterId):
-		logging.info('Heater delete called')
-		msg, code = check_authentication(self.auth)
+    # HTTP DELETE
+    def delete(self, ChassisId, HeaterId):
+        logging.info('Heater delete called')
+        msg, code = check_authentication(self.auth)
 
-		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Heaters/{1}').format(ChassisId, HeaterId)
-			base_path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Heaters').format(ChassisId)
-			return delete_object(path, base_path)
-		else:
-			return msg, code
+        if code == 200:
+            path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Heaters/{1}').format(ChassisId, HeaterId)
+            base_path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Heaters').format(ChassisId)
+            return delete_object(path, base_path)
+        else:
+            return msg, code
 

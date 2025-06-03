@@ -59,7 +59,7 @@ class LogService3CollectionAPI(Resource):
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'ResourceBlocks/{0}/Systems/{1}/LogServices', 'index.json').format(ResourceBlockId, ComputerSystemId)
+            path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/LogServices', 'index.json').format(ResourceBlockId, ComputerSystemId)
             return get_json_data(path)
         else:
             return msg, code

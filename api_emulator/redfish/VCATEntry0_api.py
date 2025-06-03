@@ -58,7 +58,7 @@ class VCATEntry0CollectionAPI(Resource):
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/VCAT', 'index.json').format(FabricId, SwitchId, PortId)
+            path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/VCAT', 'index.json').format(FabricId, SwitchId, PortId)
             return get_json_data(path)
         else:
             return msg, code
@@ -79,6 +79,7 @@ class VCATEntry0CollectionAPI(Resource):
                 resp = 404
                 return resp
             path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/VCAT').format(FabricId, SwitchId, PortId)
+            redfish_path = create_path('/redfish/v1/', 'Fabrics/{0}/Switches/{1}/Ports/{2}/VCAT').format(FabricId, SwitchId, PortId)
             parent_path = os.path.dirname(path)
             if not os.path.exists(path):
                 os.mkdir(path)
@@ -125,7 +126,8 @@ class VCATEntry0API(Resource):
 
         if code == 200:
             path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/VCAT/{3}').format(FabricId, SwitchId, PortId, VCATEntryId)
-            collection_path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/VCAT', 'index.json').format(FabricId, SwitchId, PortId)
+            redfish_path = create_path('/redfish/v1/', 'Fabrics/{0}/Switches/{1}/Ports/{2}/VCAT/{3}').format(FabricId, SwitchId, PortId, VCATEntryId)
+            collection_path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/VCAT', 'index.json').format(FabricId, SwitchId, PortId)
 
             # Check if collection exists:
             if not os.path.exists(collection_path):
@@ -159,11 +161,72 @@ class VCATEntry0API(Resource):
 
     # HTTP PUT
     def put(self, FabricId, SwitchId, PortId, VCATEntryId):
+        # Read old version and compare with new data for event logic
+        old_version = None
+        try:
+            with open(path, 'r') as data_json:
+                old_version = json.load(data_json)
+        except Exception:
+            old_version = {}
+        health_changed_to = None
+        state_changed = False
+        new_state = None
+        if request.data:
+            request_data = json.loads(request.data)
+            old_health = old_version.get('State', {}).get('Health')
+            new_health = request_data.get('State', {}).get('Health', old_health)
+            if old_health != new_health:
+                health_changed_to = new_health
+            old_status = old_version.get('State', {}).get('Status')
+            new_status = request_data.get('State', {}).get('Status', old_status)
+            if old_status != new_status:
+                state_changed = True
+                new_state = new_status
+        send_event(
+            "ResourceChanged",
+            "ResourceEvent.1.4.2ResourceChanged",
+            "One or more resource properties have changed.",
+            "OK",
+            redfish_path
+        )
+        if health_changed_to == "OK":
+            send_event(
+                "ResourceStatusChangedOK",
+                "ResourceEvent.1.4.2.ResourceStatusChangedOK",
+                f"The health of resource '{redfish_path}' has changed to OK.",
+                "OK",
+                redfish_path
+            )
+        if health_changed_to == "Critical":
+            send_event(
+                "ResourceStatusChangedCritical",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Critical.",
+                "Critical",
+                redfish_path
+            )
+        if health_changed_to == "Warning":
+            send_event(
+                "ResourceStatusChangedWarning",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Warning.",
+                "Warning",
+                redfish_path
+            )
+        if state_changed:
+            send_event(
+                "ResourceStateChanged",
+                "ResourceEvent.1.4.2.ResourceStateChanged",
+                f"The state of resource '{redfish_path}' has changed to {new_state}.",
+                "OK",
+                redfish_path
+            )
         logging.info('VCATEntry0 put called')
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/VCAT/{3}', 'index.json').format(FabricId, SwitchId, PortId, VCATEntryId)
+            path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/VCAT/{3}', 'index.json').format(FabricId, SwitchId, PortId, VCATEntryId)
+            redfish_path = create_path('/redfish/v1/', 'Fabrics/{0}/Switches/{1}/Ports/{2}/VCAT/{3}', 'index.json').format(FabricId, SwitchId, PortId, VCATEntryId)
             put_object(path)
             return self.get(FabricId, SwitchId, PortId, VCATEntryId)
         else:
@@ -171,11 +234,72 @@ class VCATEntry0API(Resource):
 
     # HTTP PATCH
     def patch(self, FabricId, SwitchId, PortId, VCATEntryId):
+        # Read old version and compare with new data for event logic
+        old_version = None
+        try:
+            with open(path, 'r') as data_json:
+                old_version = json.load(data_json)
+        except Exception:
+            old_version = {}
+        health_changed_to = None
+        state_changed = False
+        new_state = None
+        if request.data:
+            request_data = json.loads(request.data)
+            old_health = old_version.get('State', {}).get('Health')
+            new_health = request_data.get('State', {}).get('Health', old_health)
+            if old_health != new_health:
+                health_changed_to = new_health
+            old_status = old_version.get('State', {}).get('Status')
+            new_status = request_data.get('State', {}).get('Status', old_status)
+            if old_status != new_status:
+                state_changed = True
+                new_state = new_status
+        send_event(
+            "ResourceChanged",
+            "ResourceEvent.1.4.2ResourceChanged",
+            "One or more resource properties have changed.",
+            "OK",
+            redfish_path
+        )
+        if health_changed_to == "OK":
+            send_event(
+                "ResourceStatusChangedOK",
+                "ResourceEvent.1.4.2.ResourceStatusChangedOK",
+                f"The health of resource '{redfish_path}' has changed to OK.",
+                "OK",
+                redfish_path
+            )
+        if health_changed_to == "Critical":
+            send_event(
+                "ResourceStatusChangedCritical",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Critical.",
+                "Critical",
+                redfish_path
+            )
+        if health_changed_to == "Warning":
+            send_event(
+                "ResourceStatusChangedWarning",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Warning.",
+                "Warning",
+                redfish_path
+            )
+        if state_changed:
+            send_event(
+                "ResourceStateChanged",
+                "ResourceEvent.1.4.2.ResourceStateChanged",
+                f"The state of resource '{redfish_path}' has changed to {new_state}.",
+                "OK",
+                redfish_path
+            )
         logging.info('VCATEntry0 patch called')
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/VCAT/{3}', 'index.json').format(FabricId, SwitchId, PortId, VCATEntryId)
+            path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/VCAT/{3}', 'index.json').format(FabricId, SwitchId, PortId, VCATEntryId)
+            redfish_path = create_path('/redfish/v1/', 'Fabrics/{0}/Switches/{1}/Ports/{2}/VCAT/{3}', 'index.json').format(FabricId, SwitchId, PortId, VCATEntryId)
             patch_object(path)
             return self.get(FabricId, SwitchId, PortId, VCATEntryId)
         else:
@@ -188,7 +312,15 @@ class VCATEntry0API(Resource):
 
         if code == 200:
             path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/VCAT/{3}').format(FabricId, SwitchId, PortId, VCATEntryId)
+            redfish_path = create_path('/redfish/v1/', 'Fabrics/{0}/Switches/{1}/Ports/{2}/VCAT/{3}').format(FabricId, SwitchId, PortId, VCATEntryId)
             base_path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Ports/{2}/VCAT').format(FabricId, SwitchId, PortId)
+            send_event(
+                "ResourceRemoved",
+                "ResourceEvent.1.4.2.ResourceRemoved",
+                "The resource was removed successfully.",
+                "OK",
+                redfish_path
+            )
             return delete_object(path, base_path)
         else:
             return msg, code

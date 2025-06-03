@@ -1,0 +1,31 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/FeaturesRegistry.json",
+    "$ref": "#/definitions/FeaturesRegistry",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "FeaturesRegistry": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/FeaturesRegistry.v1_0_1.json#/definitions/FeaturesRegistry"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/FeaturesRegistry.v1_1_1.json#/definitions/FeaturesRegistry"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/FeaturesRegistry.v1_2_1.json#/definitions/FeaturesRegistry"
+                }
+            ],
+            "deletable": false,
+            "description": "This is the schema definition for all Features Registries.  It represents the properties for the registries themselves.  The FeatureId is formed per the Redfish specification.  It consists of the RegistryPrefix concatenated with the version concatenated with the unique identifier for the feature registry entry.",
+            "insertable": false,
+            "longDescription": "This resource shall be used to represent a Feature registry for a Redfish implementation.",
+            "updatable": false
+        }
+    },
+    "owningEntity": "SNIA",
+    "title": "#FeaturesRegistry.FeaturesRegistry"
+}

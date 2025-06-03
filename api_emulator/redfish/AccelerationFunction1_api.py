@@ -58,7 +58,7 @@ class AccelerationFunction1CollectionAPI(Resource):
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions', 'index.json').format(ResourceBlockId, ProcessorId)
+            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions', 'index.json').format(ResourceBlockId, ProcessorId)
             return get_json_data(path)
         else:
             return msg, code
@@ -79,6 +79,7 @@ class AccelerationFunction1CollectionAPI(Resource):
                 resp = 404
                 return resp
             path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions').format(ResourceBlockId, ProcessorId)
+            redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions').format(ResourceBlockId, ProcessorId)
             parent_path = os.path.dirname(path)
             if not os.path.exists(path):
                 os.mkdir(path)
@@ -125,7 +126,8 @@ class AccelerationFunction1API(Resource):
 
         if code == 200:
             path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
-            collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions', 'index.json').format(ResourceBlockId, ProcessorId)
+            redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
+            collection_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions', 'index.json').format(ResourceBlockId, ProcessorId)
             if not os.path.exists(collection_path):
                 AccelerationFunction1CollectionAPI.post(self, ResourceBlockId, ProcessorId)
             if AccelerationFunctionId in members:
@@ -155,62 +157,152 @@ class AccelerationFunction1API(Resource):
 
     # HTTP PUT
     def put(self, ResourceBlockId, ProcessorId, AccelerationFunctionId):
+        # Read old version and compare with new data for event logic
+        old_version = None
+        try:
+            with open(path, 'r') as data_json:
+                old_version = json.load(data_json)
+        except Exception:
+            old_version = {}
+        health_changed_to = None
+        state_changed = False
+        new_state = None
+        if request.data:
+            request_data = json.loads(request.data)
+            old_health = old_version.get('State', {}).get('Health')
+            new_health = request_data.get('State', {}).get('Health', old_health)
+            if old_health != new_health:
+                health_changed_to = new_health
+            old_status = old_version.get('State', {}).get('Status')
+            new_status = request_data.get('State', {}).get('Status', old_status)
+            if old_status != new_status:
+                state_changed = True
+                new_state = new_status
+        send_event(
+            "ResourceChanged",
+            "ResourceEvent.1.4.2ResourceChanged",
+            "One or more resource properties have changed.",
+            "OK",
+            redfish_path
+        )
+        if health_changed_to == "OK":
+            send_event(
+                "ResourceStatusChangedOK",
+                "ResourceEvent.1.4.2.ResourceStatusChangedOK",
+                f"The health of resource '{redfish_path}' has changed to OK.",
+                "OK",
+                redfish_path
+            )
+        if health_changed_to == "Critical":
+            send_event(
+                "ResourceStatusChangedCritical",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Critical.",
+                "Critical",
+                redfish_path
+            )
+        if health_changed_to == "Warning":
+            send_event(
+                "ResourceStatusChangedWarning",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Warning.",
+                "Warning",
+                redfish_path
+            )
+        if state_changed:
+            send_event(
+                "ResourceStateChanged",
+                "ResourceEvent.1.4.2.ResourceStateChanged",
+                f"The state of resource '{redfish_path}' has changed to {new_state}.",
+                "OK",
+                redfish_path
+            )
         logging.info('AccelerationFunction1 put called')
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}', 'index.json').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
+            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}', 'index.json').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
+            redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}', 'index.json').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
             old_data = get_json_data(path)
             put_object(path)
             new_data = get_json_data(path)
-            send_event(
-                "ResourceChanged",
-                "ResourceChanged",
-                f"AccelerationFunction {AccelerationFunctionId} changed",
-                "OK",
-                path,
-                new_data
-            )
             if old_data.get('Status') != new_data.get('Status'):
-                send_event(
-                    "ResourceStatusChanged",
-                    "ResourceStatusChanged",
-                    f"AccelerationFunction {AccelerationFunctionId} status changed",
-                    "OK",
-                    path,
-                    new_data
-                )
             return self.get(ResourceBlockId, ProcessorId, AccelerationFunctionId)
         else:
             return msg, code
 
     # HTTP PATCH
     def patch(self, ResourceBlockId, ProcessorId, AccelerationFunctionId):
+        # Read old version and compare with new data for event logic
+        old_version = None
+        try:
+            with open(path, 'r') as data_json:
+                old_version = json.load(data_json)
+        except Exception:
+            old_version = {}
+        health_changed_to = None
+        state_changed = False
+        new_state = None
+        if request.data:
+            request_data = json.loads(request.data)
+            old_health = old_version.get('State', {}).get('Health')
+            new_health = request_data.get('State', {}).get('Health', old_health)
+            if old_health != new_health:
+                health_changed_to = new_health
+            old_status = old_version.get('State', {}).get('Status')
+            new_status = request_data.get('State', {}).get('Status', old_status)
+            if old_status != new_status:
+                state_changed = True
+                new_state = new_status
+        send_event(
+            "ResourceChanged",
+            "ResourceEvent.1.4.2ResourceChanged",
+            "One or more resource properties have changed.",
+            "OK",
+            redfish_path
+        )
+        if health_changed_to == "OK":
+            send_event(
+                "ResourceStatusChangedOK",
+                "ResourceEvent.1.4.2.ResourceStatusChangedOK",
+                f"The health of resource '{redfish_path}' has changed to OK.",
+                "OK",
+                redfish_path
+            )
+        if health_changed_to == "Critical":
+            send_event(
+                "ResourceStatusChangedCritical",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Critical.",
+                "Critical",
+                redfish_path
+            )
+        if health_changed_to == "Warning":
+            send_event(
+                "ResourceStatusChangedWarning",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Warning.",
+                "Warning",
+                redfish_path
+            )
+        if state_changed:
+            send_event(
+                "ResourceStateChanged",
+                "ResourceEvent.1.4.2.ResourceStateChanged",
+                f"The state of resource '{redfish_path}' has changed to {new_state}.",
+                "OK",
+                redfish_path
+            )
         logging.info('AccelerationFunction1 patch called')
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}', 'index.json').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
+            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}', 'index.json').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
+            redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}', 'index.json').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
             old_data = get_json_data(path)
             patch_object(path)
             new_data = get_json_data(path)
-            send_event(
-                "ResourceChanged",
-                "ResourceChanged",
-                f"AccelerationFunction {AccelerationFunctionId} changed",
-                "OK",
-                path,
-                new_data
-            )
             if old_data.get('Status') != new_data.get('Status'):
-                send_event(
-                    "ResourceStatusChanged",
-                    "ResourceStatusChanged",
-                    f"AccelerationFunction {AccelerationFunctionId} status changed",
-                    "OK",
-                    path,
-                    new_data
-                )
             return self.get(ResourceBlockId, ProcessorId, AccelerationFunctionId)
         else:
             return msg, code
@@ -222,15 +314,15 @@ class AccelerationFunction1API(Resource):
 
         if code == 200:
             path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
+            redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions/{2}').format(ResourceBlockId, ProcessorId, AccelerationFunctionId)
             base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Processors/{1}/AccelerationFunctions').format(ResourceBlockId, ProcessorId)
             obj = get_json_data(path)
             send_event(
                 "ResourceRemoved",
-                "ResourceRemoved",
+                "ResourceEvent.1.4.2.ResourceRemoved",
                 "The resource was removed successfully.",
                 "OK",
-                path,
-                config
+                redfish_path
             )
             delete_object(path, base_path)
             return '', 204

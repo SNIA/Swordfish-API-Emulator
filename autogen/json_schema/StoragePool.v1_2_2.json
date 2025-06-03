@@ -1,0 +1,499 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/StoragePool.v1_2_2.json",
+    "$ref": "#/definitions/StoragePool",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "Actions": {
+            "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "#StoragePool.AddDrives": {
+                    "$ref": "#/definitions/AddDrives"
+                },
+                "#StoragePool.RemoveDrives": {
+                    "$ref": "#/definitions/RemoveDrives"
+                },
+                "#StoragePool.SetCompressionState": {
+                    "$ref": "#/definitions/SetCompressionState"
+                },
+                "#StoragePool.SetDeduplicationState": {
+                    "$ref": "#/definitions/SetDeduplicationState"
+                },
+                "#StoragePool.SetEncryptionState": {
+                    "$ref": "#/definitions/SetEncryptionState"
+                }
+            },
+            "type": "object"
+        },
+        "AddDrives": {
+            "additionalProperties": false,
+            "description": "This action is used to add an additional drive, or set of drives, to a capacity source for the storage pool.",
+            "longDescription": "This action shall be used to add a drive, or set of drives, to an underlying capacity source for the storage pool.",
+            "parameters": {
+                "CapacitySource": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Capacity.json#/definitions/CapacitySource",
+                    "description": "The capacity source to be extended.",
+                    "longDescription": "This parameter shall contain the target capacity source for the drive(s). This property does not need to be specified if the storage pool only contains one capacity source, or if the implementation is capable of automatically selecting the appropriate capacity source."
+                },
+                "Drives": {
+                    "description": "The drive(s) to be added.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/v1/Drive.json#/definitions/Drive"
+                    },
+                    "longDescription": "This parameter shall contain the Uri to the existing drive or drives to be added to a capacity source of the storage pool. The implementation may impose restrictions on the number of drives added simultaneously.",
+                    "requiredParameter": true,
+                    "type": "array"
+                }
+            },
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "target": {
+                    "description": "Link to invoke action",
+                    "format": "uri-reference",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Links": {
+            "additionalProperties": false,
+            "description": "The links object contains the links to other resources that are related to this resource.",
+            "longDescription": "The Links property, as described by the Redfish Specification, shall contain references to resources that are related to, but not contained by (subordinate to), this resource.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "DedicatedSpareDrives": {
+                    "description": "An array of references to the drives which are dedicated spares for this StoragePool.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/v1/Drive.json#/definitions/Drive"
+                    },
+                    "longDescription": "The value of this property shall be a reference to the resources that this StoragePool is associated with and shall reference resources of type Drive. This property shall only contain references to Drive entities which are currently assigned as a dedicated spare and are able to support this StoragePool.",
+                    "readonly": true,
+                    "type": "array",
+                    "versionAdded": "v1_2_0"
+                },
+                "DedicatedSpareDrives@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                },
+                "DefaultClassOfService": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/ClassOfService.json#/definitions/ClassOfService",
+                    "deprecated": "Default ClassOfService moved from Links to NavigationProperty.",
+                    "description": "The default class of service for entities allocated from this storage pool.",
+                    "longDescription": "If present, this property shall reference the default class of service for entities allocated from this storage pool.  If the ClassesOfService collection is not empty, then the value of this property shall be one of its entries. If not present, the default class of service of the containing StorageService entity shall be used.",
+                    "readonly": false
+                },
+                "Oem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "description": "The OEM extension property.",
+                    "longDescription": "This property shall contain the OEM extensions.  All values for properties contained in this object shall conform to the Redfish Specification-described requirements."
+                },
+                "SpareResourceSets": {
+                    "description": "An array of references to SpareResourceSets.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/SpareResourceSet.json#/definitions/SpareResourceSet"
+                    },
+                    "longDescription": "Each referenced SpareResourceSet shall contain resources that may be utilized to replace the capacity provided by a failed resource having a compatible type.",
+                    "readonly": false,
+                    "type": "array",
+                    "versionAdded": "v1_2_0"
+                },
+                "SpareResourceSets@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                }
+            },
+            "type": "object"
+        },
+        "RemoveDrives": {
+            "additionalProperties": false,
+            "description": "This action is used to remove drive(s) from the capacity source for the StoragePool.",
+            "longDescription": "This action shall be used to remove a drive from the StoragePool. This action is targeted at a graceful drive removal process, such as initiating a drive cleanup and data reallocation before drive removal from the pool. The implementation may impose restrictions on the number of drives removed simultaneously.",
+            "parameters": {
+                "Drives": {
+                    "description": "The drive(s) to be removed.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/v1/Drive.json#/definitions/Drive"
+                    },
+                    "longDescription": "This parameter shall contain the Uri to the drive or drives to be removed from the underlying capacity source.",
+                    "requiredParameter": true,
+                    "type": "array"
+                }
+            },
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "target": {
+                    "description": "Link to invoke action",
+                    "format": "uri-reference",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "SetCompressionState": {
+            "additionalProperties": false,
+            "description": "This action is used to set the compression state of the pool.",
+            "longDescription": "This action shall be used to set the compression state of the storage pool. This may be both a highly impactful, as well as a long running operation.",
+            "parameters": {
+                "Enable": {
+                    "description": "This property indicates the desired compression state of the storage pool.",
+                    "longDescription": "This property shall indicate the desired compression state of the storage pool.",
+                    "requiredParameter": true,
+                    "type": "boolean"
+                }
+            },
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "target": {
+                    "description": "Link to invoke action",
+                    "format": "uri-reference",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "SetDeduplicationState": {
+            "additionalProperties": false,
+            "description": "This action is used to set the dedupe state of the pool.",
+            "longDescription": "This action shall be used to set the dedupe state of the storage pool. This may be both a highly impactful, as well as a long running operation.",
+            "parameters": {
+                "Enable": {
+                    "description": "This property indicates the desired deduplication state of the storage pool.",
+                    "longDescription": "This property shall indicate the desired deduplication state of the storage pool.",
+                    "requiredParameter": true,
+                    "type": "boolean"
+                }
+            },
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "target": {
+                    "description": "Link to invoke action",
+                    "format": "uri-reference",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "SetEncryptionState": {
+            "additionalProperties": false,
+            "description": "This action is used to set the encryption state of the pool.",
+            "longDescription": "This action shall be used to set the encryption state of the storage pool. This may be both a highly impactful, as well as a long running operation.",
+            "parameters": {
+                "Enable": {
+                    "description": "This property indicates the desired encryption state of the storage pool.",
+                    "longDescription": "This property shall indicate the desired encryption state of the storage pool.",
+                    "requiredParameter": true,
+                    "type": "boolean"
+                }
+            },
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "target": {
+                    "description": "Link to invoke action",
+                    "format": "uri-reference",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "StoragePool": {
+            "additionalProperties": false,
+            "description": "A container of data storage.",
+            "longDescription": "A container of data storage capable of providing capacity conforming to one of its supported classes of service. The storage pool does not support IO to its data storage.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "@odata.context": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/context"
+                },
+                "@odata.etag": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/etag"
+                },
+                "@odata.id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/id"
+                },
+                "@odata.type": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/type"
+                },
+                "AllocatedPools": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StoragePoolCollection.json#/definitions/StoragePoolCollection",
+                    "description": "A reference to the collection of storage pools allocated from this storage pool.",
+                    "longDescription": "The value of this property shall contain a reference to the collection of storage pools allocated from this storage pool.",
+                    "readonly": true
+                },
+                "AllocatedVolumes": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/VolumeCollection.json#/definitions/VolumeCollection",
+                    "description": "A reference to the collection of volumes allocated from this storage pool.",
+                    "longDescription": "The value of this property shall contain a reference to the collection of volumes allocated from this storage pool.",
+                    "readonly": true
+                },
+                "BlockSizeBytes": {
+                    "deprecated": "This property has been Deprecated in favor of StoragePool.v1_1_1.StoragePool.MaxBlockSizeBytes",
+                    "description": "Maximum Block size in bytes.",
+                    "longDescription": "Maximum size in bytes of the blocks which form this Volume. If the block size is variable, then the maximum block size in bytes should be specified. If the block size is unknown or if a block concept is not valid (for example, with Memory), enter a 1.",
+                    "minimum": 0,
+                    "readonly": true,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "By"
+                },
+                "Capacity": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Capacity.v1_0_0.json#/definitions/Capacity",
+                    "description": "Capacity utilization.",
+                    "longDescription": "The value of this property shall provide an information about the actual utilization of the capacity within this storage pool."
+                },
+                "CapacitySources": {
+                    "autoExpand": true,
+                    "description": "An array of space allocations to this store.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Capacity.json#/definitions/CapacitySource"
+                    },
+                    "longDescription": "Fully or partially consumed storage from a source resource. Each entry shall provide capacity allocation data from a named source resource.",
+                    "readonly": false,
+                    "type": "array"
+                },
+                "CapacitySources@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                },
+                "ClassesOfService": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/ClassOfServiceCollection.json#/definitions/ClassOfServiceCollection",
+                    "description": "The ClassesOfService supported by this storage pool.",
+                    "longDescription": "This property shall contain references to all classes of service supported by this storage pool. Capacity allocated from this storage pool shall conform to one of the referenced classes of service.",
+                    "readonly": false
+                },
+                "DefaultClassOfService": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/ClassOfService.json#/definitions/ClassOfService",
+                    "description": "The default class of service for entities allocated from this storage pool.",
+                    "longDescription": "If present, this property shall reference the default class of service for entities allocated from this storage pool.  If the ClassesOfService collection is not empty, then the value of this property shall be one of its entries. If not present, the default class of service of the containing StorageService entity shall be used.",
+                    "readonly": false,
+                    "versionAdded": "v1_2_0"
+                },
+                "Description": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Description"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "readonly": true
+                },
+                "IOStatistics": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOStatistics.json#/definitions/IOStatistics",
+                    "description": "Statistics for this StoragePool.",
+                    "longDescription": "The value shall represent IO statistics for this StoragePool.",
+                    "versionAdded": "v1_2_0"
+                },
+                "Id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Id",
+                    "readonly": true
+                },
+                "Identifier": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Identifier",
+                    "description": "The value identifies this resource.",
+                    "longDescription": "The value identifies this resource. The value shall be unique within the managed ecosystem."
+                },
+                "Links": {
+                    "$ref": "#/definitions/Links",
+                    "description": "The links object contains the links to other resources that are related to this resource.",
+                    "longDescription": "The Links property, as described by the Redfish Specification, shall contain references to resources that are related to, but not contained by (subordinate to), this resource."
+                },
+                "LowSpaceWarningThresholdPercents": {
+                    "description": "Low space warning threshold specified in percents.",
+                    "items": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "longDescription": "Each time the following value is less than one of the values in the array the LOW_SPACE_THRESHOLD_WARNING event shall be triggered: Across all CapacitySources entries, percent = (SUM(AllocatedBytes) - SUM(ConsumedBytes))/SUM(AllocatedBytes).",
+                    "maximum": 100,
+                    "minimum": 0,
+                    "readonly": false,
+                    "type": "array",
+                    "units": "%"
+                },
+                "MaxBlockSizeBytes": {
+                    "description": "Maximum Block size in bytes.",
+                    "longDescription": "If present, the value is the maximum block size of an allocated resource. If the block size is unknown or if a block concept is not valid (for example, with Memory), this property shall be NULL.",
+                    "minimum": 0,
+                    "readonly": true,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "By",
+                    "versionAdded": "v1_1_1"
+                },
+                "Name": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Name",
+                    "readonly": true
+                },
+                "Oem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "description": "The OEM extension property.",
+                    "longDescription": "This property shall contain the OEM extensions.  All values for properties that this object contains shall conform to the Redfish Specification-described requirements."
+                },
+                "RecoverableCapacitySourceCount": {
+                    "description": "Current number of capacity source resources that are available as replacements.",
+                    "longDescription": "The value is the number of available capacity source resources currently available in the event that an equivalent capacity source resource fails.",
+                    "readonly": false,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "versionAdded": "v1_2_0"
+                },
+                "RemainingCapacityPercent": {
+                    "description": "The percentage of the capacity remaining in the StoragePool.",
+                    "longDescription": "If present, this value shall return  {[(SUM(AllocatedBytes) - SUM(ConsumedBytes)]/SUM(AllocatedBytes)}*100 represented as an integer value.",
+                    "readonly": true,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "versionAdded": "v1_1_0"
+                },
+                "Status": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Status",
+                    "description": "The property contains the status of the StoragePool.",
+                    "longDescription": "The property shall contain the status of the StoragePool."
+                }
+            },
+            "required": [
+                "@odata.id",
+                "@odata.type",
+                "Id",
+                "Name"
+            ],
+            "type": "object"
+        }
+    },
+    "owningEntity": "SNIA",
+    "release": "1.0.7a",
+    "title": "#StoragePool.v1_2_2.StoragePool"
+}

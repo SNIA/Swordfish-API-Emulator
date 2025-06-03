@@ -59,7 +59,7 @@ class StorageService0CollectionAPI(Resource):
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'StorageServices', 'index.json')
+            path = create_path(self.root, 'StorageServices', 'index.json')
             return get_json_data(path)
         else:
             return msg, code

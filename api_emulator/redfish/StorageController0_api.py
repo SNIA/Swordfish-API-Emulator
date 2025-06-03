@@ -58,7 +58,7 @@ class StorageController0CollectionAPI(Resource):
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'Storage/{0}/Controllers', 'index.json').format(StorageId)
+            path = create_path(self.root, 'Storage/{0}/Controllers', 'index.json').format(StorageId)
             return get_json_data(path)
         else:
             return msg, code
@@ -79,6 +79,7 @@ class StorageController0CollectionAPI(Resource):
                 resp = 404
                 return resp
             path = create_path(self.root, 'Storage/{0}/Controllers').format(StorageId)
+            redfish_path = create_path('/redfish/v1/', 'Storage/{0}/Controllers').format(StorageId)
             parent_path = os.path.dirname(path)
             if not os.path.exists(path):
                 os.mkdir(path)
@@ -121,7 +122,8 @@ class StorageController0API(Resource):
 
         if code == 200:
             path = create_path(self.root, 'Storage/{0}/Controllers/{1}').format(StorageId, ControllerId)
-            collection_path = os.path.join(self.root, 'Storage/{0}/Controllers', 'index.json').format(StorageId)
+            redfish_path = create_path('/redfish/v1/', 'Storage/{0}/Controllers/{1}').format(StorageId, ControllerId)
+            collection_path = create_path(self.root, 'Storage/{0}/Controllers', 'index.json').format(StorageId)
 
             # Check if collection exists:
             if not os.path.exists(collection_path):
@@ -155,11 +157,72 @@ class StorageController0API(Resource):
 
     # HTTP PUT
     def put(self, StorageId, ControllerId):
+        # Read old version and compare with new data for event logic
+        old_version = None
+        try:
+            with open(path, 'r') as data_json:
+                old_version = json.load(data_json)
+        except Exception:
+            old_version = {}
+        health_changed_to = None
+        state_changed = False
+        new_state = None
+        if request.data:
+            request_data = json.loads(request.data)
+            old_health = old_version.get('State', {}).get('Health')
+            new_health = request_data.get('State', {}).get('Health', old_health)
+            if old_health != new_health:
+                health_changed_to = new_health
+            old_status = old_version.get('State', {}).get('Status')
+            new_status = request_data.get('State', {}).get('Status', old_status)
+            if old_status != new_status:
+                state_changed = True
+                new_state = new_status
+        send_event(
+            "ResourceChanged",
+            "ResourceEvent.1.4.2ResourceChanged",
+            "One or more resource properties have changed.",
+            "OK",
+            redfish_path
+        )
+        if health_changed_to == "OK":
+            send_event(
+                "ResourceStatusChangedOK",
+                "ResourceEvent.1.4.2.ResourceStatusChangedOK",
+                f"The health of resource '{redfish_path}' has changed to OK.",
+                "OK",
+                redfish_path
+            )
+        if health_changed_to == "Critical":
+            send_event(
+                "ResourceStatusChangedCritical",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Critical.",
+                "Critical",
+                redfish_path
+            )
+        if health_changed_to == "Warning":
+            send_event(
+                "ResourceStatusChangedWarning",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Warning.",
+                "Warning",
+                redfish_path
+            )
+        if state_changed:
+            send_event(
+                "ResourceStateChanged",
+                "ResourceEvent.1.4.2.ResourceStateChanged",
+                f"The state of resource '{redfish_path}' has changed to {new_state}.",
+                "OK",
+                redfish_path
+            )
         logging.info('StorageController0 put called')
         msg, code = check_authentication(self.auth)
 
         if code == 200:
             path = create_path(self.root, 'Storage/{0}/Controllers/{1}', 'index.json').format(StorageId, ControllerId)
+            redfish_path = create_path('/redfish/v1/', 'Storage/{0}/Controllers/{1}', 'index.json').format(StorageId, ControllerId)
             try:
                 with open(path, 'r') as f:
                     old_data = json.load(f)
@@ -168,54 +231,84 @@ class StorageController0API(Resource):
             put_object(path)
             new_data = get_json_data(path)
             resource_odata_id = new_data.get('@odata.id', f"/redfish/v1/Storage/{StorageId}/Controllers/{ControllerId}")
-            send_event(
-                "ResourceChanged",
-                "ResourceEvent.1.0.ResourceChanged",
-                "One or more resource properties have changed.",
-                "OK",
-                resource_odata_id
-            )
             old_health = old_data.get('Status', {}).get('Health') if old_data else None
             new_health = new_data.get('Status', {}).get('Health') if new_data else None
             if new_health and new_health != old_health:
                 if new_health == "OK":
-                    send_event(
-                        "ResourceStatusChangedOK",
-                        "ResourceEvent.1.0.ResourceStatusChangedOK",
-                        f"The health of resource '{resource_odata_id}' has changed to {new_health}.",
-                        "OK",
-                        resource_odata_id,
-                        extra={"ResourceName": resource_odata_id, "NewHealth": new_health}
-                    )
                 elif new_health == "Warning":
-                    send_event(
-                        "ResourceStatusChangedWarning",
-                        "ResourceEvent.1.0.ResourceStatusChangedWarning",
-                        f"The health of resource '{resource_odata_id}' has changed to {new_health}.",
-                        "Warning",
-                        resource_odata_id,
-                        extra={"ResourceName": resource_odata_id, "NewHealth": new_health}
-                    )
                 elif new_health == "Critical":
-                    send_event(
-                        "ResourceStatusChangedCritical",
-                        "ResourceEvent.1.0.ResourceStatusChangedCritical",
-                        f"The health of resource '{resource_odata_id}' has changed to {new_health}.",
-                        "Critical",
-                        resource_odata_id,
-                        extra={"ResourceName": resource_odata_id, "NewHealth": new_health}
-                    )
             return self.get(StorageId, ControllerId)
         else:
             return msg, code
 
     # HTTP PATCH
     def patch(self, StorageId, ControllerId):
+        # Read old version and compare with new data for event logic
+        old_version = None
+        try:
+            with open(path, 'r') as data_json:
+                old_version = json.load(data_json)
+        except Exception:
+            old_version = {}
+        health_changed_to = None
+        state_changed = False
+        new_state = None
+        if request.data:
+            request_data = json.loads(request.data)
+            old_health = old_version.get('State', {}).get('Health')
+            new_health = request_data.get('State', {}).get('Health', old_health)
+            if old_health != new_health:
+                health_changed_to = new_health
+            old_status = old_version.get('State', {}).get('Status')
+            new_status = request_data.get('State', {}).get('Status', old_status)
+            if old_status != new_status:
+                state_changed = True
+                new_state = new_status
+        send_event(
+            "ResourceChanged",
+            "ResourceEvent.1.4.2ResourceChanged",
+            "One or more resource properties have changed.",
+            "OK",
+            redfish_path
+        )
+        if health_changed_to == "OK":
+            send_event(
+                "ResourceStatusChangedOK",
+                "ResourceEvent.1.4.2.ResourceStatusChangedOK",
+                f"The health of resource '{redfish_path}' has changed to OK.",
+                "OK",
+                redfish_path
+            )
+        if health_changed_to == "Critical":
+            send_event(
+                "ResourceStatusChangedCritical",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Critical.",
+                "Critical",
+                redfish_path
+            )
+        if health_changed_to == "Warning":
+            send_event(
+                "ResourceStatusChangedWarning",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Warning.",
+                "Warning",
+                redfish_path
+            )
+        if state_changed:
+            send_event(
+                "ResourceStateChanged",
+                "ResourceEvent.1.4.2.ResourceStateChanged",
+                f"The state of resource '{redfish_path}' has changed to {new_state}.",
+                "OK",
+                redfish_path
+            )
         logging.info('StorageController0 patch called')
         msg, code = check_authentication(self.auth)
 
         if code == 200:
             path = create_path(self.root, 'Storage/{0}/Controllers/{1}', 'index.json').format(StorageId, ControllerId)
+            redfish_path = create_path('/redfish/v1/', 'Storage/{0}/Controllers/{1}', 'index.json').format(StorageId, ControllerId)
             try:
                 with open(path, 'r') as f:
                     old_data = json.load(f)
@@ -224,43 +317,12 @@ class StorageController0API(Resource):
             patch_object(path)
             new_data = get_json_data(path)
             resource_odata_id = new_data.get('@odata.id', f"/redfish/v1/Storage/{StorageId}/Controllers/{ControllerId}")
-            send_event(
-                "ResourceChanged",
-                "ResourceEvent.1.0.ResourceChanged",
-                "One or more resource properties have changed.",
-                "OK",
-                resource_odata_id
-            )
             old_health = old_data.get('Status', {}).get('Health') if old_data else None
             new_health = new_data.get('Status', {}).get('Health') if new_data else None
             if new_health and new_health != old_health:
                 if new_health == "OK":
-                    send_event(
-                        "ResourceStatusChangedOK",
-                        "ResourceEvent.1.0.ResourceStatusChangedOK",
-                        f"The health of resource '{resource_odata_id}' has changed to {new_health}.",
-                        "OK",
-                        resource_odata_id,
-                        extra={"ResourceName": resource_odata_id, "NewHealth": new_health}
-                    )
                 elif new_health == "Warning":
-                    send_event(
-                        "ResourceStatusChangedWarning",
-                        "ResourceEvent.1.0.ResourceStatusChangedWarning",
-                        f"The health of resource '{resource_odata_id}' has changed to {new_health}.",
-                        "Warning",
-                        resource_odata_id,
-                        extra={"ResourceName": resource_odata_id, "NewHealth": new_health}
-                    )
                 elif new_health == "Critical":
-                    send_event(
-                        "ResourceStatusChangedCritical",
-                        "ResourceEvent.1.0.ResourceStatusChangedCritical",
-                        f"The health of resource '{resource_odata_id}' has changed to {new_health}.",
-                        "Critical",
-                        resource_odata_id,
-                        extra={"ResourceName": resource_odata_id, "NewHealth": new_health}
-                    )
             return self.get(StorageId, ControllerId)
         else:
             return msg, code
@@ -272,15 +334,16 @@ class StorageController0API(Resource):
 
         if code == 200:
             path = create_path(self.root, 'Storage/{0}/Controllers/{1}').format(StorageId, ControllerId)
+            redfish_path = create_path('/redfish/v1/', 'Storage/{0}/Controllers/{1}').format(StorageId, ControllerId)
             base_path = create_path(self.root, 'Storage/{0}/Controllers').format(StorageId)
             resp = delete_object(path, base_path)
             resource_odata_id = f"/redfish/v1/Storage/{StorageId}/Controllers/{ControllerId}"
             send_event(
                 "ResourceRemoved",
-                "ResourceEvent.1.0.ResourceRemoved",
+                "ResourceEvent.1.4.2.ResourceRemoved",
                 "The resource was removed successfully.",
                 "OK",
-                resource_odata_id
+                redfish_path
             )
             return resp
         else:

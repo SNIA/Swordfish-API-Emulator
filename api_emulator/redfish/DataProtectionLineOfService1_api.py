@@ -59,7 +59,7 @@ class DataProtectionLineOfService1CollectionAPI(Resource):
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'StorageServices/{0}/ClassesOfService/{1}/DataProtectionLinesOfService', 'index.json').format(StorageServiceId, ClassOfServiceId)
+            path = create_path(self.root, 'StorageServices/{0}/ClassesOfService/{1}/DataProtectionLinesOfService', 'index.json').format(StorageServiceId, ClassOfServiceId)
             return get_json_data(path)
         else:
             return msg, code

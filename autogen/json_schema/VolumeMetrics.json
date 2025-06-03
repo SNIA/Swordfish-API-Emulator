@@ -1,0 +1,50 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/VolumeMetrics.json",
+    "$ref": "#/definitions/VolumeMetrics",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "VolumeMetrics": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/VolumeMetrics.v1_0_1.json#/definitions/VolumeMetrics"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/VolumeMetrics.v1_1_1.json#/definitions/VolumeMetrics"
+                }
+            ],
+            "deletable": false,
+            "description": "The usage and health statistics for a volume.",
+            "insertable": false,
+            "longDescription": "The VolumeMetrics schema shall contain the usage and health statistics for a volume in a Redfish implementation.",
+            "updatable": false,
+            "uris": [
+                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Volumes/{VolumeId}/Metrics",
+                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes/{VolumeId}/Metrics",
+                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Volumes/{VolumeId}/Metrics",
+                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes/{VolumeId}/Metrics",
+                "/redfish/v1/Storage/{StorageId}/ConsistencyGroups/{ConsistencyGroupId}/Volumes/{VolumeId}/Metrics",
+                "/redfish/v1/Storage/{StorageId}/FileSystems/{FileSystemId}/CapacitySources/{CapacitySourceId}/ProvidingVolumes/{VolumeId}/Metrics",
+                "/redfish/v1/Storage/{StorageId}/StoragePools/{StoragePoolId}/AllocatedVolumes/{VolumeId}/Metrics",
+                "/redfish/v1/Storage/{StorageId}/StoragePools/{StoragePoolId}/CapacitySources/{CapacitySourceId}/ProvidingVolumes/{VolumeId}/Metrics",
+                "/redfish/v1/Storage/{StorageId}/Volumes/{VolumeId}/Metrics",
+                "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/ConsistencyGroups/{ConsistencyGroupId}/Volumes/{VolumeId}/Metrics",
+                "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/FileSystems/{FileSystemId}/CapacitySources/{CapacitySourceId}/ProvidingVolumes/{VolumeId}/Metrics",
+                "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/StoragePools/{StoragePoolId}/AllocatedVolumes/{VolumeId}/Metrics",
+                "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/StoragePools/{StoragePoolId}/CapacitySources/{CapacitySourceId}/ProvidingVolumes/{VolumeId}/Metrics",
+                "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes/{VolumeId}/Metrics",
+                "/redfish/v1/StorageServices/{StorageServiceId}/ConsistencyGroups/{ConsistencyGroupId}/Volumes/{VolumeId}/Metrics",
+                "/redfish/v1/StorageServices/{StorageServiceId}/FileSystems/{FileSystemId}/CapacitySources/{CapacitySourceId}/ProvidingVolumes/{VolumeId}/Metrics",
+                "/redfish/v1/StorageServices/{StorageServiceId}/StoragePools/{StoragePoolId}/AllocatedVolumes/{VolumeId}/Metrics",
+                "/redfish/v1/StorageServices/{StorageServiceId}/StoragePools/{StoragePoolId}/CapacitySources/{CapacitySourceId}/ProvidingVolumes/{VolumeId}/Metrics",
+                "/redfish/v1/StorageServices/{StorageServiceId}/Volumes/{VolumeId}/Metrics",
+                "/redfish/v1/StorageServices/{StorageServiceId}/Volumes/{VolumeId}/CapacitySources/{CapacitySourceId}/ProvidingVolumes/{ProvidingVolumeId}/Metrics"
+            ]
+        }
+    },
+    "owningEntity": "SNIA",
+    "title": "#VolumeMetrics.VolumeMetrics"
+}

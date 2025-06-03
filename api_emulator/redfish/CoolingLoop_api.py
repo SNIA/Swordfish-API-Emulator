@@ -58,7 +58,7 @@ class CoolingLoopCollectionAPI(Resource):
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'ThermalEquipment/CoolingLoops', 'index.json')
+            path = create_path(self.root, 'ThermalEquipment/CoolingLoops', 'index.json')
             return get_json_data(path)
         else:
             return msg, code
@@ -122,7 +122,8 @@ class CoolingLoopAPI(Resource):
 
         if code == 200:
             path = create_path(self.root, 'ThermalEquipment/CoolingLoops/{0}').format(CoolingLoopId)
-            collection_path = os.path.join(self.root, 'ThermalEquipment/CoolingLoops', 'index.json')
+            redfish_path = create_path('/redfish/v1/', 'ThermalEquipment/CoolingLoops/{0}').format(CoolingLoopId)
+            collection_path = create_path(self.root, 'ThermalEquipment/CoolingLoops', 'index.json')
 
             # Check if collection exists:
             if not os.path.exists(collection_path):
@@ -156,11 +157,72 @@ class CoolingLoopAPI(Resource):
 
     # HTTP PUT
     def put(self, CoolingLoopId):
+        # Read old version and compare with new data for event logic
+        old_version = None
+        try:
+            with open(path, 'r') as data_json:
+                old_version = json.load(data_json)
+        except Exception:
+            old_version = {}
+        health_changed_to = None
+        state_changed = False
+        new_state = None
+        if request.data:
+            request_data = json.loads(request.data)
+            old_health = old_version.get('State', {}).get('Health')
+            new_health = request_data.get('State', {}).get('Health', old_health)
+            if old_health != new_health:
+                health_changed_to = new_health
+            old_status = old_version.get('State', {}).get('Status')
+            new_status = request_data.get('State', {}).get('Status', old_status)
+            if old_status != new_status:
+                state_changed = True
+                new_state = new_status
+        send_event(
+            "ResourceChanged",
+            "ResourceEvent.1.4.2ResourceChanged",
+            "One or more resource properties have changed.",
+            "OK",
+            redfish_path
+        )
+        if health_changed_to == "OK":
+            send_event(
+                "ResourceStatusChangedOK",
+                "ResourceEvent.1.4.2.ResourceStatusChangedOK",
+                f"The health of resource '{redfish_path}' has changed to OK.",
+                "OK",
+                redfish_path
+            )
+        if health_changed_to == "Critical":
+            send_event(
+                "ResourceStatusChangedCritical",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Critical.",
+                "Critical",
+                redfish_path
+            )
+        if health_changed_to == "Warning":
+            send_event(
+                "ResourceStatusChangedWarning",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Warning.",
+                "Warning",
+                redfish_path
+            )
+        if state_changed:
+            send_event(
+                "ResourceStateChanged",
+                "ResourceEvent.1.4.2.ResourceStateChanged",
+                f"The state of resource '{redfish_path}' has changed to {new_state}.",
+                "OK",
+                redfish_path
+            )
         logging.info('CoolingLoop put called')
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'ThermalEquipment/CoolingLoops/{0}', 'index.json').format(CoolingLoopId)
+            path = create_path(self.root, 'ThermalEquipment/CoolingLoops/{0}', 'index.json').format(CoolingLoopId)
+            redfish_path = create_path('/redfish/v1/', 'ThermalEquipment/CoolingLoops/{0}', 'index.json').format(CoolingLoopId)
             put_object(path)
             return self.get(CoolingLoopId)
         else:
@@ -168,11 +230,72 @@ class CoolingLoopAPI(Resource):
 
     # HTTP PATCH
     def patch(self, CoolingLoopId):
+        # Read old version and compare with new data for event logic
+        old_version = None
+        try:
+            with open(path, 'r') as data_json:
+                old_version = json.load(data_json)
+        except Exception:
+            old_version = {}
+        health_changed_to = None
+        state_changed = False
+        new_state = None
+        if request.data:
+            request_data = json.loads(request.data)
+            old_health = old_version.get('State', {}).get('Health')
+            new_health = request_data.get('State', {}).get('Health', old_health)
+            if old_health != new_health:
+                health_changed_to = new_health
+            old_status = old_version.get('State', {}).get('Status')
+            new_status = request_data.get('State', {}).get('Status', old_status)
+            if old_status != new_status:
+                state_changed = True
+                new_state = new_status
+        send_event(
+            "ResourceChanged",
+            "ResourceEvent.1.4.2ResourceChanged",
+            "One or more resource properties have changed.",
+            "OK",
+            redfish_path
+        )
+        if health_changed_to == "OK":
+            send_event(
+                "ResourceStatusChangedOK",
+                "ResourceEvent.1.4.2.ResourceStatusChangedOK",
+                f"The health of resource '{redfish_path}' has changed to OK.",
+                "OK",
+                redfish_path
+            )
+        if health_changed_to == "Critical":
+            send_event(
+                "ResourceStatusChangedCritical",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Critical.",
+                "Critical",
+                redfish_path
+            )
+        if health_changed_to == "Warning":
+            send_event(
+                "ResourceStatusChangedWarning",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Warning.",
+                "Warning",
+                redfish_path
+            )
+        if state_changed:
+            send_event(
+                "ResourceStateChanged",
+                "ResourceEvent.1.4.2.ResourceStateChanged",
+                f"The state of resource '{redfish_path}' has changed to {new_state}.",
+                "OK",
+                redfish_path
+            )
         logging.info('CoolingLoop patch called')
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'ThermalEquipment/CoolingLoops/{0}', 'index.json').format(CoolingLoopId)
+            path = create_path(self.root, 'ThermalEquipment/CoolingLoops/{0}', 'index.json').format(CoolingLoopId)
+            redfish_path = create_path('/redfish/v1/', 'ThermalEquipment/CoolingLoops/{0}', 'index.json').format(CoolingLoopId)
             patch_object(path)
             return self.get(CoolingLoopId)
         else:
@@ -185,7 +308,15 @@ class CoolingLoopAPI(Resource):
 
         if code == 200:
             path = create_path(self.root, 'ThermalEquipment/CoolingLoops/{0}').format(CoolingLoopId)
+            redfish_path = create_path('/redfish/v1/', 'ThermalEquipment/CoolingLoops/{0}').format(CoolingLoopId)
             base_path = create_path(self.root, 'ThermalEquipment/CoolingLoops')
+            send_event(
+                "ResourceRemoved",
+                "ResourceEvent.1.4.2.ResourceRemoved",
+                "The resource was removed successfully.",
+                "OK",
+                redfish_path
+            )
             return delete_object(path, base_path)
         else:
             return msg, code

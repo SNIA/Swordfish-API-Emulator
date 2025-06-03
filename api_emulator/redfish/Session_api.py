@@ -68,7 +68,7 @@ class SessionCollectionAPI(Resource):
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'SessionService/Sessions', 'index.json')
+            path = create_path(self.root, 'SessionService/Sessions', 'index.json')
             return get_json_data(path)
         else:
             return msg, code
@@ -145,13 +145,14 @@ class SessionAPI(Resource):
         if (SessionId == 'Members') or (SessionId == 'members'):
             SessionId = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
             
-        sessionService_path = os.path.join(self.root, 'SessionService', 'index.json')
+        sessionService_path = create_path(self.root, 'SessionService', 'index.json')
         json_data = open(sessionService_path)
         data = json.load(json_data)
         sessionTimeout = data['SessionTimeout']
 
         path = create_path(self.root, 'SessionService/Sessions/{0}').format(SessionId)
-        collection_path = os.path.join(self.root, 'SessionService/Sessions', 'index.json')
+        redfish_path = create_path('/redfish/v1/', 'SessionService/Sessions/{0}').format(SessionId)
+        collection_path = create_path(self.root, 'SessionService/Sessions', 'index.json')
 
         # Check if collection exists:
         if not os.path.exists(collection_path):
@@ -203,7 +204,7 @@ class SessionAPI(Resource):
             else:
                 # This will execute when POST is called for more than one time for a resource
                 return "A creation request could not be completed because of conflict, 409", 409
-            with open(os.path.join(path, "index.json"), "w") as fd:
+            with open(create_path(path, "index.json"), "w") as fd:
                 data = copy.deepcopy(config)
                 del data['Password']
                 fd.write(json.dumps(data, indent=4, sort_keys=True))
@@ -246,6 +247,7 @@ class SessionAPI(Resource):
                 print("Session Deleted")
 
             path = create_path(self.root, 'SessionService/Sessions/{0}').format(SessionId)
+            redfish_path = create_path('/redfish/v1/', 'SessionService/Sessions/{0}').format(SessionId)
             base_path = create_path(self.root, 'SessionService/Sessions')
             return delete_object(path, base_path)
         else:

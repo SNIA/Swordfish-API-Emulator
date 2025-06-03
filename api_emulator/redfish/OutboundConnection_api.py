@@ -58,7 +58,7 @@ class OutboundConnectionCollectionAPI(Resource):
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'AccountService/OutboundConnections', 'index.json')
+            path = create_path(self.root, 'AccountService/OutboundConnections', 'index.json')
             return get_json_data(path)
         else:
             return msg, code
@@ -122,7 +122,8 @@ class OutboundConnectionAPI(Resource):
 
         if code == 200:
             path = create_path(self.root, 'AccountService/OutboundConnections/{0}').format(OutboundConnectionId)
-            collection_path = os.path.join(self.root, 'AccountService/OutboundConnections', 'index.json')
+            redfish_path = create_path('/redfish/v1/', 'AccountService/OutboundConnections/{0}').format(OutboundConnectionId)
+            collection_path = create_path(self.root, 'AccountService/OutboundConnections', 'index.json')
 
             # Check if collection exists:
             if not os.path.exists(collection_path):
@@ -156,11 +157,72 @@ class OutboundConnectionAPI(Resource):
 
     # HTTP PUT
     def put(self, OutboundConnectionId):
+        # Read old version and compare with new data for event logic
+        old_version = None
+        try:
+            with open(path, 'r') as data_json:
+                old_version = json.load(data_json)
+        except Exception:
+            old_version = {}
+        health_changed_to = None
+        state_changed = False
+        new_state = None
+        if request.data:
+            request_data = json.loads(request.data)
+            old_health = old_version.get('State', {}).get('Health')
+            new_health = request_data.get('State', {}).get('Health', old_health)
+            if old_health != new_health:
+                health_changed_to = new_health
+            old_status = old_version.get('State', {}).get('Status')
+            new_status = request_data.get('State', {}).get('Status', old_status)
+            if old_status != new_status:
+                state_changed = True
+                new_state = new_status
+        send_event(
+            "ResourceChanged",
+            "ResourceEvent.1.4.2ResourceChanged",
+            "One or more resource properties have changed.",
+            "OK",
+            redfish_path
+        )
+        if health_changed_to == "OK":
+            send_event(
+                "ResourceStatusChangedOK",
+                "ResourceEvent.1.4.2.ResourceStatusChangedOK",
+                f"The health of resource '{redfish_path}' has changed to OK.",
+                "OK",
+                redfish_path
+            )
+        if health_changed_to == "Critical":
+            send_event(
+                "ResourceStatusChangedCritical",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Critical.",
+                "Critical",
+                redfish_path
+            )
+        if health_changed_to == "Warning":
+            send_event(
+                "ResourceStatusChangedWarning",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Warning.",
+                "Warning",
+                redfish_path
+            )
+        if state_changed:
+            send_event(
+                "ResourceStateChanged",
+                "ResourceEvent.1.4.2.ResourceStateChanged",
+                f"The state of resource '{redfish_path}' has changed to {new_state}.",
+                "OK",
+                redfish_path
+            )
         logging.info('OutboundConnection put called')
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'AccountService/OutboundConnections/{0}', 'index.json').format(OutboundConnectionId)
+            path = create_path(self.root, 'AccountService/OutboundConnections/{0}', 'index.json').format(OutboundConnectionId)
+            redfish_path = create_path('/redfish/v1/', 'AccountService/OutboundConnections/{0}', 'index.json').format(OutboundConnectionId)
             put_object(path)
             return self.get(OutboundConnectionId)
         else:
@@ -168,11 +230,72 @@ class OutboundConnectionAPI(Resource):
 
     # HTTP PATCH
     def patch(self, OutboundConnectionId):
+        # Read old version and compare with new data for event logic
+        old_version = None
+        try:
+            with open(path, 'r') as data_json:
+                old_version = json.load(data_json)
+        except Exception:
+            old_version = {}
+        health_changed_to = None
+        state_changed = False
+        new_state = None
+        if request.data:
+            request_data = json.loads(request.data)
+            old_health = old_version.get('State', {}).get('Health')
+            new_health = request_data.get('State', {}).get('Health', old_health)
+            if old_health != new_health:
+                health_changed_to = new_health
+            old_status = old_version.get('State', {}).get('Status')
+            new_status = request_data.get('State', {}).get('Status', old_status)
+            if old_status != new_status:
+                state_changed = True
+                new_state = new_status
+        send_event(
+            "ResourceChanged",
+            "ResourceEvent.1.4.2ResourceChanged",
+            "One or more resource properties have changed.",
+            "OK",
+            redfish_path
+        )
+        if health_changed_to == "OK":
+            send_event(
+                "ResourceStatusChangedOK",
+                "ResourceEvent.1.4.2.ResourceStatusChangedOK",
+                f"The health of resource '{redfish_path}' has changed to OK.",
+                "OK",
+                redfish_path
+            )
+        if health_changed_to == "Critical":
+            send_event(
+                "ResourceStatusChangedCritical",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Critical.",
+                "Critical",
+                redfish_path
+            )
+        if health_changed_to == "Warning":
+            send_event(
+                "ResourceStatusChangedWarning",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Warning.",
+                "Warning",
+                redfish_path
+            )
+        if state_changed:
+            send_event(
+                "ResourceStateChanged",
+                "ResourceEvent.1.4.2.ResourceStateChanged",
+                f"The state of resource '{redfish_path}' has changed to {new_state}.",
+                "OK",
+                redfish_path
+            )
         logging.info('OutboundConnection patch called')
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'AccountService/OutboundConnections/{0}', 'index.json').format(OutboundConnectionId)
+            path = create_path(self.root, 'AccountService/OutboundConnections/{0}', 'index.json').format(OutboundConnectionId)
+            redfish_path = create_path('/redfish/v1/', 'AccountService/OutboundConnections/{0}', 'index.json').format(OutboundConnectionId)
             patch_object(path)
             return self.get(OutboundConnectionId)
         else:
@@ -185,7 +308,15 @@ class OutboundConnectionAPI(Resource):
 
         if code == 200:
             path = create_path(self.root, 'AccountService/OutboundConnections/{0}').format(OutboundConnectionId)
+            redfish_path = create_path('/redfish/v1/', 'AccountService/OutboundConnections/{0}').format(OutboundConnectionId)
             base_path = create_path(self.root, 'AccountService/OutboundConnections')
+            send_event(
+                "ResourceRemoved",
+                "ResourceEvent.1.4.2.ResourceRemoved",
+                "The resource was removed successfully.",
+                "OK",
+                redfish_path
+            )
             return delete_object(path, base_path)
         else:
             return msg, code

@@ -1,0 +1,452 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageService.v1_7_0.json",
+    "$ref": "#/definitions/StorageService",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "Actions": {
+            "additionalProperties": false,
+            "description": "The available actions for this resource.",
+            "longDescription": "The Actions property shall contain the available actions for this resource.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "#StorageService.SetEncryptionKey": {
+                    "$ref": "#/definitions/SetEncryptionKey"
+                },
+                "Oem": {
+                    "$ref": "#/definitions/OemActions",
+                    "description": "This property contains the available OEM specific actions for this resource.",
+                    "longDescription": "This property shall contain any additional OEM actions for this resource."
+                }
+            },
+            "type": "object"
+        },
+        "Links": {
+            "additionalProperties": false,
+            "description": "Contains links to other resources that are related to this resource.",
+            "longDescription": "This property shall contain links to other resources related to this resource.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "DataProtectionLoSCapabilities": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataProtectionLoSCapabilities.json#/definitions/DataProtectionLoSCapabilities",
+                    "deprecated": "Moved up to StorageServices",
+                    "description": "The data protection capabilities of this service.",
+                    "longDescription": "The value shall reference the data protection capabilities of this service.",
+                    "readonly": false
+                },
+                "DataSecurityLoSCapabilities": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataSecurityLoSCapabilities.json#/definitions/DataSecurityLoSCapabilities",
+                    "deprecated": "Moved up to StorageServices",
+                    "description": "The data security capabilities of this service.",
+                    "longDescription": "The value shall reference the data security capabilities of this service.",
+                    "readonly": false
+                },
+                "DataStorageLoSCapabilities": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataStorageLoSCapabilities.json#/definitions/DataStorageLoSCapabilities",
+                    "deprecated": "Moved up to StorageServices",
+                    "description": "The data storage capabilities of this service.",
+                    "longDescription": "The value shall reference the data storage capabilities of this service.",
+                    "readonly": false
+                },
+                "DefaultClassOfService": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/ClassOfService.json#/definitions/ClassOfService",
+                    "deprecated": "DefaultClassOfService moved outside of Links complex type.",
+                    "description": "The default class of service for entities allocated by this storage service.",
+                    "longDescription": "If present, this property shall reference the default class of service for entities allocated by this storage service. This default may be overridden by the DefaultClassOfService property values within contained StoragePools.",
+                    "readonly": false
+                },
+                "HostingSystem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Resource",
+                    "description": "The hosting system or storage controller hosting this storage service.",
+                    "longDescription": "The value shall reference the ComputerSystem or StorageController that hosts this service."
+                },
+                "IOConnectivityLoSCapabilities": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOConnectivityLoSCapabilities.json#/definitions/IOConnectivityLoSCapabilities",
+                    "deprecated": "Moved up to StorageServices",
+                    "description": "The IO connectivity capabilities of this service.",
+                    "longDescription": "The value shall reference the IO connectivity capabilities of this service.",
+                    "readonly": false
+                },
+                "IOPerformanceLoSCapabilities": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOPerformanceLoSCapabilities.json#/definitions/IOPerformanceLoSCapabilities",
+                    "deprecated": "Moved up to StorageServices",
+                    "description": "The IO performance capabilities of this service.",
+                    "longDescription": "The value shall reference the IO performance capabilities of this service.",
+                    "readonly": false
+                },
+                "Oem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "description": "The OEM extension property.",
+                    "longDescription": "This property shall contain the OEM extensions.  All values for properties contained in this object shall conform to the Redfish Specification-described requirements."
+                }
+            },
+            "type": "object"
+        },
+        "OemActions": {
+            "additionalProperties": true,
+            "description": "The available OEM specific actions for this resource.",
+            "longDescription": "This type shall contain any additional OEM actions for this resource.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {},
+            "type": "object"
+        },
+        "SetEncryptionKey": {
+            "additionalProperties": false,
+            "description": "This action is used to set the encryption key for the storage subsystem.",
+            "longDescription": "This defines the name of the custom action supported on this resource.",
+            "parameters": {
+                "EncryptionKey": {
+                    "description": "The encryption key to set on the storage subsystem.",
+                    "longDescription": "This defines the property name for the action.",
+                    "type": "string"
+                }
+            },
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "target": {
+                    "description": "Link to invoke action",
+                    "format": "uri-reference",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "StorageService": {
+            "additionalProperties": false,
+            "description": "Collection of resources that are managed and exposed to hosts as a group.",
+            "longDescription": "Collection of resources that the system can make available to one or more host systems.  The collection can contain: block, file, or object storage; local system access points through which the collection is made available; hosts, or host access points to which the collection is made available.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "@odata.context": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/context"
+                },
+                "@odata.etag": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/etag"
+                },
+                "@odata.id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/id"
+                },
+                "@odata.type": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/type"
+                },
+                "Actions": {
+                    "$ref": "#/definitions/Actions",
+                    "description": "The available actions for this resource.",
+                    "longDescription": "The Actions property shall contain the available actions for this resource."
+                },
+                "ClassesOfService": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/ClassOfServiceCollection.json#/definitions/ClassOfServiceCollection",
+                    "description": "The ClassesOfService that all storage in this StorageService can support.",
+                    "longDescription": "The value of each entry in the array shall reference a ClassOfService supported by this service.",
+                    "readonly": false
+                },
+                "ClientEndpointGroups": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/EndpointGroupCollection.json#/definitions/EndpointGroupCollection",
+                    "deprecated": "Deprecated in favor of EndpointGroups. The GroupType property of EndpointGroup already distinguishes between use for Server or Client.",
+                    "description": "Client endpoint groups.",
+                    "longDescription": "The value of each entry in the array shall reference an EndpointGroup.",
+                    "readonly": false
+                },
+                "Connections": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ConnectionCollection.json#/definitions/ConnectionCollection",
+                    "description": "An array of references to Connections that includes this volume.",
+                    "longDescription": "The value of this property shall contain references to all Connections that include this volume.",
+                    "readonly": true,
+                    "versionAdded": "v1_6_0"
+                },
+                "ConsistencyGroups": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/ConsistencyGroupCollection.json#/definitions/ConsistencyGroupCollection",
+                    "description": "ConsistencyGroups.",
+                    "longDescription": "The value of each entry in the array shall reference a ConsistencyGroup.",
+                    "readonly": false,
+                    "versionAdded": "v1_3_0"
+                },
+                "DataProtectionLoSCapabilities": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataProtectionLoSCapabilities.json#/definitions/DataProtectionLoSCapabilities",
+                    "description": "The data protection capabilities of this service.",
+                    "longDescription": "The value shall reference the data protection capabilities of this service.",
+                    "readonly": false,
+                    "versionAdded": "v1_2_0"
+                },
+                "DataSecurityLoSCapabilities": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataSecurityLoSCapabilities.json#/definitions/DataSecurityLoSCapabilities",
+                    "description": "The data security capabilities of this service.",
+                    "longDescription": "The value shall reference the data security capabilities of this service.",
+                    "readonly": false,
+                    "versionAdded": "v1_2_0"
+                },
+                "DataStorageLoSCapabilities": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataStorageLoSCapabilities.json#/definitions/DataStorageLoSCapabilities",
+                    "description": "The data storage capabilities of this service.",
+                    "longDescription": "The value shall reference the data storage capabilities of this service.",
+                    "readonly": false,
+                    "versionAdded": "v1_2_0"
+                },
+                "DefaultClassOfService": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/ClassOfService.json#/definitions/ClassOfService",
+                    "description": "The default class of service for entities allocated by this storage service.",
+                    "longDescription": "If present, this property shall reference the default class of service for entities allocated by this storage service. This default may be overridden by the DefaultClassOfService property values within contained StoragePools.",
+                    "readonly": false,
+                    "versionAdded": "v1_2_0"
+                },
+                "Description": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Description"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "readonly": true
+                },
+                "Drives": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/DriveCollection.json#/definitions/DriveCollection",
+                    "description": "The set of drives managed by this storage service.",
+                    "longDescription": "A collection that indicates all the drives managed by this storage service.",
+                    "readonly": true
+                },
+                "EndpointGroups": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/EndpointGroupCollection.json#/definitions/EndpointGroupCollection",
+                    "description": "Client and Server endpoint groups.",
+                    "longDescription": "The value of each entry in the array shall reference an EndpointGroup.",
+                    "readonly": false
+                },
+                "Endpoints": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/EndpointCollection.json#/definitions/EndpointCollection",
+                    "description": "Endpoints.",
+                    "longDescription": "The value of each entry in the array shall reference an Endpoint managed by this service.",
+                    "readonly": true
+                },
+                "FileSystems": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/FileSystemCollection.json#/definitions/FileSystemCollection",
+                    "description": "FileSystems.",
+                    "longDescription": "An array of references to FileSystems managed by this storage service.",
+                    "readonly": false
+                },
+                "IOConnectivityLoSCapabilities": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOConnectivityLoSCapabilities.json#/definitions/IOConnectivityLoSCapabilities",
+                    "description": "The IO connectivity capabilities of this service.",
+                    "longDescription": "The value shall reference the IO connectivity capabilities of this service.",
+                    "readonly": false,
+                    "versionAdded": "v1_2_0"
+                },
+                "IOPerformanceLoSCapabilities": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOPerformanceLoSCapabilities.json#/definitions/IOPerformanceLoSCapabilities",
+                    "description": "The IO performance capabilities of this service.",
+                    "longDescription": "The value shall reference the IO performance capabilities of this service.",
+                    "readonly": false,
+                    "versionAdded": "v1_2_0"
+                },
+                "IOStatistics": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOStatistics.json#/definitions/IOStatistics",
+                    "deprecated": "This property is deprecated in favor of the IOStatistics property in StorageServiceMetrics.",
+                    "description": "Statistics for this StorageService.",
+                    "longDescription": "The value shall represent IO statistics for this StorageService.",
+                    "versionAdded": "v1_2_0",
+                    "versionDeprecated": "v1_7_0"
+                },
+                "Id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Id",
+                    "readonly": true
+                },
+                "Identifier": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Identifier",
+                    "description": "The value identifies this resource.",
+                    "longDescription": "The value identifies this resource.  The value shall be unique within the managed ecosystem."
+                },
+                "LinesOfService": {
+                    "description": "The LinesOService defined for this StorageService.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/LineOfServiceCollection.json#/definitions/LineOfServiceCollection"
+                    },
+                    "longDescription": "The value of each entry shall reference a LineOfService collection defined for this service.",
+                    "readonly": false,
+                    "type": "array",
+                    "versionAdded": "v1_4_0"
+                },
+                "LinesOfService@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                },
+                "Links": {
+                    "$ref": "#/definitions/Links",
+                    "description": "Contains links to other resources that are related to this resource.",
+                    "longDescription": "This property shall contain links to other resources that are related to this resource."
+                },
+                "Metrics": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageServiceMetrics.json#/definitions/StorageServiceMetrics"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "The link to the metrics for this storage service.",
+                    "longDescription": "This property shall contain a link to a resource of type StorageServiceMetrics that specifies the metrics for this storage service. IO metrics are reported in the IOStatistics property.",
+                    "readonly": true,
+                    "versionAdded": "v1_7_0"
+                },
+                "Name": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Name",
+                    "readonly": true
+                },
+                "Oem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "description": "The OEM extension property.",
+                    "longDescription": "This property shall contain the OEM extensions.  All values for properties that this object contains shall conform to the Redfish Specification-described requirements."
+                },
+                "Redundancy": {
+                    "autoExpand": true,
+                    "description": "Redundancy information for the storage subsystem.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/v1/Redundancy.json#/definitions/Redundancy"
+                    },
+                    "longDescription": "This collection shall contain the redundancy information for the storage subsystem.",
+                    "readonly": true,
+                    "type": "array"
+                },
+                "Redundancy@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                },
+                "ServerEndpointGroups": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/EndpointGroupCollection.json#/definitions/EndpointGroupCollection",
+                    "deprecated": "Deprecated in favor of EndpointGroups. The GroupType property of EndpointGroup already distinguishes between use for Server or Client.",
+                    "description": "Server endpoint groups.",
+                    "longDescription": "The value of each entry in the array shall reference a EndpointGroup.",
+                    "readonly": false
+                },
+                "SpareResourceSets": {
+                    "description": "An array of SpareResourceSets.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/SpareResourceSet.json#/definitions/SpareResourceSet"
+                    },
+                    "longDescription": "Each contained SpareResourceSet shall contain resources that may be utilized to replace the capacity provided by a failed resource having a compatible type.",
+                    "readonly": false,
+                    "type": "array",
+                    "versionAdded": "v1_2_0"
+                },
+                "SpareResourceSets@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                },
+                "Status": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Status",
+                    "description": "The property contains the status of the StorageService.",
+                    "longDescription": "The property shall contain the status of the StorageService."
+                },
+                "StorageGroups": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageGroupCollection.json#/definitions/StorageGroupCollection",
+                    "deprecated": "This property is deprecated in favor of the Connections property.",
+                    "description": "StorageGroups.",
+                    "longDescription": "The value of each entry in the array shall reference a StorageGroup.",
+                    "readonly": true,
+                    "versionDeprecated": "v1_6_0"
+                },
+                "StoragePools": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StoragePoolCollection.json#/definitions/StoragePoolCollection",
+                    "description": "StoragePools.",
+                    "longDescription": "An array of references to StoragePools.",
+                    "readonly": true
+                },
+                "StorageSubsystems": {
+                    "description": "A reference to storage subsystems managed by this storage service.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/v1/Storage.json#/definitions/Storage"
+                    },
+                    "longDescription": "The value shall be a link to a collection of type StorageCollection having members that represent storage subsystems managed by this storage service.",
+                    "readonly": true,
+                    "type": "array",
+                    "versionAdded": "v1_0_1"
+                },
+                "StorageSubsystems@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                },
+                "Volumes": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/VolumeCollection.json#/definitions/VolumeCollection",
+                    "description": "Volumes.",
+                    "longDescription": "An array of references to Volumes managed by this storage service.",
+                    "readonly": false
+                }
+            },
+            "required": [
+                "@odata.id",
+                "@odata.type",
+                "Id",
+                "Name"
+            ],
+            "type": "object"
+        }
+    },
+    "owningEntity": "SNIA",
+    "release": "1.2.6",
+    "title": "#StorageService.v1_7_0.StorageService"
+}

@@ -58,7 +58,7 @@ class Certificate51CollectionAPI(Resource):
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates', 'index.json').format(ResourceBlockId, StorageId, DriveId)
+            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates', 'index.json').format(ResourceBlockId, StorageId, DriveId)
             return get_json_data(path)
         else:
             return msg, code
@@ -79,6 +79,7 @@ class Certificate51CollectionAPI(Resource):
                 resp = 404
                 return resp
             path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates').format(ResourceBlockId, StorageId, DriveId)
+            redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates').format(ResourceBlockId, StorageId, DriveId)
             parent_path = os.path.dirname(path)
             if not os.path.exists(path):
                 os.mkdir(path)
@@ -125,7 +126,8 @@ class Certificate51API(Resource):
 
         if code == 200:
             path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates/{3}').format(ResourceBlockId, StorageId, DriveId, CertificateId)
-            collection_path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates', 'index.json').format(ResourceBlockId, StorageId, DriveId)
+            redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates/{3}').format(ResourceBlockId, StorageId, DriveId, CertificateId)
+            collection_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates', 'index.json').format(ResourceBlockId, StorageId, DriveId)
 
             # Check if collection exists:
             if not os.path.exists(collection_path):
@@ -159,11 +161,72 @@ class Certificate51API(Resource):
 
     # HTTP PUT
     def put(self, ResourceBlockId, StorageId, DriveId, CertificateId):
+        # Read old version and compare with new data for event logic
+        old_version = None
+        try:
+            with open(path, 'r') as data_json:
+                old_version = json.load(data_json)
+        except Exception:
+            old_version = {}
+        health_changed_to = None
+        state_changed = False
+        new_state = None
+        if request.data:
+            request_data = json.loads(request.data)
+            old_health = old_version.get('State', {}).get('Health')
+            new_health = request_data.get('State', {}).get('Health', old_health)
+            if old_health != new_health:
+                health_changed_to = new_health
+            old_status = old_version.get('State', {}).get('Status')
+            new_status = request_data.get('State', {}).get('Status', old_status)
+            if old_status != new_status:
+                state_changed = True
+                new_state = new_status
+        send_event(
+            "ResourceChanged",
+            "ResourceEvent.1.4.2ResourceChanged",
+            "One or more resource properties have changed.",
+            "OK",
+            redfish_path
+        )
+        if health_changed_to == "OK":
+            send_event(
+                "ResourceStatusChangedOK",
+                "ResourceEvent.1.4.2.ResourceStatusChangedOK",
+                f"The health of resource '{redfish_path}' has changed to OK.",
+                "OK",
+                redfish_path
+            )
+        if health_changed_to == "Critical":
+            send_event(
+                "ResourceStatusChangedCritical",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Critical.",
+                "Critical",
+                redfish_path
+            )
+        if health_changed_to == "Warning":
+            send_event(
+                "ResourceStatusChangedWarning",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Warning.",
+                "Warning",
+                redfish_path
+            )
+        if state_changed:
+            send_event(
+                "ResourceStateChanged",
+                "ResourceEvent.1.4.2.ResourceStateChanged",
+                f"The state of resource '{redfish_path}' has changed to {new_state}.",
+                "OK",
+                redfish_path
+            )
         logging.info('Certificate51 put called')
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, StorageId, DriveId, CertificateId)
+            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, StorageId, DriveId, CertificateId)
+            redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, StorageId, DriveId, CertificateId)
             put_object(path)
             return self.get(ResourceBlockId, StorageId, DriveId, CertificateId)
         else:
@@ -171,11 +234,72 @@ class Certificate51API(Resource):
 
     # HTTP PATCH
     def patch(self, ResourceBlockId, StorageId, DriveId, CertificateId):
+        # Read old version and compare with new data for event logic
+        old_version = None
+        try:
+            with open(path, 'r') as data_json:
+                old_version = json.load(data_json)
+        except Exception:
+            old_version = {}
+        health_changed_to = None
+        state_changed = False
+        new_state = None
+        if request.data:
+            request_data = json.loads(request.data)
+            old_health = old_version.get('State', {}).get('Health')
+            new_health = request_data.get('State', {}).get('Health', old_health)
+            if old_health != new_health:
+                health_changed_to = new_health
+            old_status = old_version.get('State', {}).get('Status')
+            new_status = request_data.get('State', {}).get('Status', old_status)
+            if old_status != new_status:
+                state_changed = True
+                new_state = new_status
+        send_event(
+            "ResourceChanged",
+            "ResourceEvent.1.4.2ResourceChanged",
+            "One or more resource properties have changed.",
+            "OK",
+            redfish_path
+        )
+        if health_changed_to == "OK":
+            send_event(
+                "ResourceStatusChangedOK",
+                "ResourceEvent.1.4.2.ResourceStatusChangedOK",
+                f"The health of resource '{redfish_path}' has changed to OK.",
+                "OK",
+                redfish_path
+            )
+        if health_changed_to == "Critical":
+            send_event(
+                "ResourceStatusChangedCritical",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Critical.",
+                "Critical",
+                redfish_path
+            )
+        if health_changed_to == "Warning":
+            send_event(
+                "ResourceStatusChangedWarning",
+                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
+                f"The health of resource '{redfish_path}' has changed to Warning.",
+                "Warning",
+                redfish_path
+            )
+        if state_changed:
+            send_event(
+                "ResourceStateChanged",
+                "ResourceEvent.1.4.2.ResourceStateChanged",
+                f"The state of resource '{redfish_path}' has changed to {new_state}.",
+                "OK",
+                redfish_path
+            )
         logging.info('Certificate51 patch called')
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, StorageId, DriveId, CertificateId)
+            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, StorageId, DriveId, CertificateId)
+            redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, StorageId, DriveId, CertificateId)
             patch_object(path)
             return self.get(ResourceBlockId, StorageId, DriveId, CertificateId)
         else:
@@ -188,7 +312,15 @@ class Certificate51API(Resource):
 
         if code == 200:
             path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates/{3}').format(ResourceBlockId, StorageId, DriveId, CertificateId)
+            redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates/{3}').format(ResourceBlockId, StorageId, DriveId, CertificateId)
             base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates').format(ResourceBlockId, StorageId, DriveId)
+            send_event(
+                "ResourceRemoved",
+                "ResourceEvent.1.4.2.ResourceRemoved",
+                "The resource was removed successfully.",
+                "OK",
+                redfish_path
+            )
             return delete_object(path, base_path)
         else:
             return msg, code

@@ -1,0 +1,62 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/ConsistencyGroup.json",
+    "$ref": "#/definitions/ConsistencyGroup",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "ApplicationConsistencyMethod": {
+            "enum": [
+                "HotStandby",
+                "VASA",
+                "VDI",
+                "VSS",
+                "Other"
+            ],
+            "enumDescriptions": {
+                "HotStandby": "Supports consistency method commonly orchestrated using application-specific code.",
+                "Other": "Supports consistency method orchestrated using vendor-specific code.",
+                "VASA": "Supports VMware consistency requirements, such as for VASA and VVOLs.",
+                "VDI": "Supports Microsoft virtual backup device interface (VDI).",
+                "VSS": "Supports Microsoft VSS."
+            },
+            "type": "string"
+        },
+        "ConsistencyGroup": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/ConsistencyGroup.v1_0_1.json#/definitions/ConsistencyGroup"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/ConsistencyGroup.v1_1_1.json#/definitions/ConsistencyGroup"
+                }
+            ],
+            "deletable": true,
+            "description": "A collection of volumes grouped together to ensure write order consistency across all those volumes.",
+            "insertable": false,
+            "longDescription": "A collection of volumes grouped together to ensure write order consistency across all those volumes. A management operation on a consistency group, such as configuring replication properties, applies to all the volumes within the consistency group.",
+            "updatable": true,
+            "uris": [
+                "/redfish/v1/Storage/{StorageId}/ConsistencyGroups/{ConsistencyGroupId}",
+                "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/ConsistencyGroups/{ConsistencyGroupId}",
+                "/redfish/v1/StorageServices/{StorageServiceId}/ConsistencyGroups/{ConsistencyGroupId}",
+                "/redfish/v1/StorageServices/{StorageServiceId}/Volumes/{VolumeId}/ConsistencyGroups/{ConsistencyGroupId}"
+            ]
+        },
+        "ConsistencyType": {
+            "enum": [
+                "CrashConsistent",
+                "ApplicationConsistent"
+            ],
+            "enumDescriptions": {
+                "ApplicationConsistent": "Orchestration exists to either flush or halt pending IO to ensure operations occur in a transactionally consistent manner.",
+                "CrashConsistent": "Requested operations are either triggered or instituted without regard to pending IO."
+            },
+            "type": "string"
+        }
+    },
+    "owningEntity": "SNIA",
+    "title": "#ConsistencyGroup.ConsistencyGroup"
+}

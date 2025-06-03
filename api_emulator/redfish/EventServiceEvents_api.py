@@ -126,7 +126,8 @@ class EventServiceEventsAPI(Resource):
         msg, code = check_authentication(self.auth)
         if code == 200:
             path = create_path(self.root, 'EventService/Events/{0}').format(EventId)
-            collection_path = os.path.join(self.root, 'EventService/Events', 'index.json')
+            redfish_path = create_path('/redfish/v1/', 'EventService/Events/{0}').format(EventId)
+            collection_path = create_path(self.root, 'EventService/Events', 'index.json')
             # Check if collection exists:
             if not os.path.exists(collection_path):
                 EventServiceEventsCollectionAPI.post(self)

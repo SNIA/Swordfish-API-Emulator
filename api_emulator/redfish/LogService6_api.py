@@ -62,7 +62,7 @@ class LogService6API(Resource):
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'TelemetryService/LogService', 'index.json')
+            path = create_path(self.root, 'TelemetryService/LogService', 'index.json')
             return get_json_data (path)
         else:
             return msg, code

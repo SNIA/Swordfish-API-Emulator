@@ -58,7 +58,7 @@ class Storage1CollectionAPI(Resource):
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'Systems/{0}/Storage', 'index.json').format(ComputerSystemId)
+            path = create_path(self.root, 'Systems/{0}/Storage', 'index.json').format(ComputerSystemId)
             return get_json_data(path)
         else:
             return msg, code
@@ -79,6 +79,7 @@ class Storage1CollectionAPI(Resource):
                 resp = 404
                 return resp
             path = create_path(self.root, 'Systems/{0}/Storage').format(ComputerSystemId)
+            redfish_path = create_path('/redfish/v1/', 'Systems/{0}/Storage').format(ComputerSystemId)
             parent_path = os.path.dirname(path)
             if not os.path.exists(path):
                 os.mkdir(path)
@@ -125,7 +126,8 @@ class Storage1API(Resource):
 
         if code == 200:
             path = create_path(self.root, 'Systems/{0}/Storage/{1}').format(ComputerSystemId, StorageId)
-            collection_path = os.path.join(self.root, 'Systems/{0}/Storage', 'index.json').format(ComputerSystemId)
+            redfish_path = create_path('/redfish/v1/', 'Systems/{0}/Storage/{1}').format(ComputerSystemId, StorageId)
+            collection_path = create_path(self.root, 'Systems/{0}/Storage', 'index.json').format(ComputerSystemId)
 
             # Check if collection exists:
             if not os.path.exists(collection_path):
@@ -156,6 +158,7 @@ class Storage1API(Resource):
 
         if code == 200:
             path = create_path(self.root, 'Systems/{0}/Storage/{1}', 'index.json').format(ComputerSystemId, StorageId)
+            redfish_path = create_path('/redfish/v1/', 'Systems/{0}/Storage/{1}', 'index.json').format(ComputerSystemId, StorageId)
             put_object(path)
             send_event('Storage', 'UPDATE', ComputerSystemId, StorageId)
             return self.get(ComputerSystemId, StorageId)
@@ -169,6 +172,7 @@ class Storage1API(Resource):
 
         if code == 200:
             path = create_path(self.root, 'Systems/{0}/Storage/{1}', 'index.json').format(ComputerSystemId, StorageId)
+            redfish_path = create_path('/redfish/v1/', 'Systems/{0}/Storage/{1}', 'index.json').format(ComputerSystemId, StorageId)
             patch_object(path)
             send_event('Storage', 'UPDATE', ComputerSystemId, StorageId)
             return self.get(ComputerSystemId, StorageId)
@@ -182,6 +186,7 @@ class Storage1API(Resource):
 
         if code == 200:
             path = create_path(self.root, 'Systems/{0}/Storage/{1}').format(ComputerSystemId, StorageId)
+            redfish_path = create_path('/redfish/v1/', 'Systems/{0}/Storage/{1}').format(ComputerSystemId, StorageId)
             base_path = create_path(self.root, 'Systems/{0}/Storage').format(ComputerSystemId)
             send_event('Storage', 'DELETE', ComputerSystemId, StorageId)
             return delete_object(path, base_path)

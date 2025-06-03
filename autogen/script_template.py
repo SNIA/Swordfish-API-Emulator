@@ -89,11 +89,11 @@ if __name__=='__main__':
         json_directory_path = os.path.abspath(sys.argv[2])
     
     if not os.path.exists(xml_directory_path):
-        print("XML directory does not exists")
+        print("XML directory does not exist.")
         exit()
     
     if not os.path.exists(json_directory_path):
-        print("JSON directory does not exists")
+        print("JSON directory does not exist.")
         exit()
         
     new_path = create_folder_under_current_directory("Templates")
@@ -138,10 +138,6 @@ if __name__=='__main__':
                     with open(program_name, 'w') as outfile:
                         write_program(outfile, resource_num, resource_paths, json_content)
                         print ('Created program {0}'.format(program_name))
-                    
-
- 
-                
 
             elif(type(resource_paths) is list):
                 for path in resource_paths:

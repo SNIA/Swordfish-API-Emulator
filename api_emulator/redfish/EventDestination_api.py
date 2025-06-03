@@ -45,7 +45,7 @@ member_ids = []
 INTERNAL_ERROR = 500
 
 # Persistent storage for event subscriptions
-SUBSCRIPTIONS_FILE = os.path.join(PATHS['Root'], 'EventService/Subscriptions', 'index.json')
+SUBSCRIPTIONS_FILE = create_path(PATHS['Root'], 'EventService/Subscriptions', 'index.json')
 
 def load_subscriptions():
     if os.path.exists(SUBSCRIPTIONS_FILE):
@@ -70,7 +70,7 @@ class EventDestinationCollectionAPI(Resource):
         logging.info('EventDestination Collection get called')
         msg, code = check_authentication(self.auth)
         if code == 200:
-            path = os.path.join(self.root, 'EventService/Subscriptions', 'index.json')
+            path = create_path(self.root, 'EventService/Subscriptions', 'index.json')
             return get_json_data(path)
         else:
             return msg, code
@@ -121,7 +121,8 @@ class EventDestinationAPI(Resource):
         msg, code = check_authentication(self.auth)
         if code == 200:
             path = create_path(self.root, 'EventService/Subscriptions/{0}').format(EventDestinationId)
-            collection_path = os.path.join(self.root, 'EventService/Subscriptions', 'index.json')
+            redfish_path = create_path('/redfish/v1/', 'EventService/Subscriptions/{0}').format(EventDestinationId)
+            collection_path = create_path(self.root, 'EventService/Subscriptions', 'index.json')
             
             # Check if collection exists:
             if not os.path.exists(collection_path):
@@ -147,7 +148,8 @@ class EventDestinationAPI(Resource):
         logging.info('EventDestination put called')
         msg, code = check_authentication(self.auth)
         if code == 200:
-            path = os.path.join(self.root, 'EventService/Subscriptions/{0}', 'index.json').format(EventDestinationId)
+            path = create_path(self.root, 'EventService/Subscriptions/{0}', 'index.json').format(EventDestinationId)
+            redfish_path = create_path('/redfish/v1/', 'EventService/Subscriptions/{0}', 'index.json').format(EventDestinationId)
             put_object(path)
             # Update subscription
             subs = load_subscriptions()
@@ -172,7 +174,8 @@ class EventDestinationAPI(Resource):
         logging.info('EventDestination patch called')
         msg, code = check_authentication(self.auth)
         if code == 200:
-            path = os.path.join(self.root, 'EventService/Subscriptions/{0}', 'index.json').format(EventDestinationId)
+            path = create_path(self.root, 'EventService/Subscriptions/{0}', 'index.json').format(EventDestinationId)
+            redfish_path = create_path('/redfish/v1/', 'EventService/Subscriptions/{0}', 'index.json').format(EventDestinationId)
             patch_object(path)
             # Update subscription
             subs = load_subscriptions()
@@ -198,6 +201,7 @@ class EventDestinationAPI(Resource):
         msg, code = check_authentication(self.auth)
         if code == 200:
             path = create_path(self.root, 'EventService/Subscriptions/{0}').format(EventDestinationId)
+            redfish_path = create_path('/redfish/v1/', 'EventService/Subscriptions/{0}').format(EventDestinationId)
             base_path = create_path(self.root, 'EventService/Subscriptions')
             # Remove subscription
             subs = load_subscriptions()

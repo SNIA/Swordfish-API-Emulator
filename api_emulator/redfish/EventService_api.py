@@ -62,10 +62,10 @@ class EventServiceAPI(Resource):
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = os.path.join(self.root, 'EventService', 'index.json')
+            path = create_path(self.root, 'EventService', 'index.json')
             if not os.path.exists(path):
                 # fallback to old path for compatibility
-                path = os.path.join(self.root, 'index.json')
+                path = create_path(self.root, 'index.json')
             data = get_json_data(path)
             # Ensure Subscriptions property is present and correct
             if "Subscriptions" not in data or not isinstance(data["Subscriptions"], dict):

@@ -33,17 +33,15 @@
 import g
 import json, os
 import traceback
-import logging, random, requests, string, jwt
+import logging
 
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
-members = []
-member_ids = []
 INTERNAL_ERROR = 500
 
 # Assembly4 does not have a Collection API
@@ -51,40 +49,40 @@ INTERNAL_ERROR = 500
 
 # Assembly4 API
 class Assembly4API(Resource):
-    def __init__(self, **kwargs):
-        logging.info('Assembly4 init called')
-        self.root = PATHS['Root']
-        self.auth = kwargs['auth']
+	def __init__(self, **kwargs):
+		logging.info('Assembly4 init called')
+		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
-    # HTTP GET
-    def get(self, ResourceBlockId, DriveId):
-        logging.info('Assembly4 get called')
-        msg, code = check_authentication(self.auth)
+	# HTTP GET
+	def get(self, ResourceBlockId, DriveId):
+		logging.info('Assembly4 get called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Drives/{1}/Assembly', 'index.json').format(ResourceBlockId, DriveId)
-            return get_json_data (path)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Drives/{1}/Assembly', 'index.json').format(ResourceBlockId, DriveId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
-    # HTTP POST
-    def post(self, ResourceBlockId, DriveId):
-        logging.info('Assembly4 post called')
-        return 'POST is not a supported command for Assembly4API', 405
+	# HTTP POST
+	def post(self, ResourceBlockId, DriveId):
+		logging.info('Assembly4 post called')
+		return 'POST is not a supported command for Assembly4API', 405
 
-    # HTTP PUT
-    def put(self, ResourceBlockId, DriveId):
-        logging.info('Assembly4 put called')
-        return 'PUT is not a supported command for Assembly4API', 405
+	# HTTP PUT
+	def put(self, ResourceBlockId, DriveId):
+		logging.info('Assembly4 put called')
+		return 'PUT is not a supported command for Assembly4API', 405
 
-    # HTTP PATCH
-    def patch(self, ResourceBlockId, DriveId):
-        logging.info('Assembly4 patch called')
-        return 'PATCH is not a supported command for Assembly4API', 405
+	# HTTP PATCH
+	def patch(self, ResourceBlockId, DriveId):
+		logging.info('Assembly4 patch called')
+		return 'PATCH is not a supported command for Assembly4API', 405
 
-    # HTTP DELETE
-    def delete(self, ResourceBlockId, DriveId):
-        logging.info('Assembly4 delete called')
-        return 'DELETE is not a supported command for Assembly4API', 405
+	# HTTP DELETE
+	def delete(self, ResourceBlockId, DriveId):
+		logging.info('Assembly4 delete called')
+		return 'DELETE is not a supported command for Assembly4API', 405
 
 

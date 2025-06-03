@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2024, The Storage Networking Industry Association.
+# Copyright (c) 2017-2025, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -47,281 +47,211 @@ INTERNAL_ERROR = 500
 
 # AllowDeny3 Collection API
 class AllowDeny3CollectionAPI(Resource):
-    def __init__(self, **kwargs):
-        logging.info('AllowDeny3 Collection init called')
-        self.root = PATHS['Root']
-        self.auth = kwargs['auth']
+	def __init__(self, **kwargs):
+		logging.info('AllowDeny3 Collection init called')
+		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
-    # HTTP GET
-    def get(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId):
-        logging.info('AllowDeny3 Collection get called')
-        msg, code = check_authentication(self.auth)
+	# HTTP GET
+	def get(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId):
+		logging.info('AllowDeny3 Collection get called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny', 'index.json').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId)
-            return get_json_data(path)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny', 'index.json').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
-    # HTTP POST Collection
-    def post(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId):
-        logging.info('AllowDeny3 Collection post called')
-        msg, code = check_authentication(self.auth)
+	# HTTP POST Collection
+	def post(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId):
+		logging.info('AllowDeny3 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            if request.data:
-                config = json.loads(request.data)
-                if "@odata.type" in config:
-                    if "Collection" in config["@odata.type"]:
-                        return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-            if NetworkDeviceFunctionId in members:
-                resp = 404
-                return resp
-            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId)
-            redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId)
-            parent_path = os.path.dirname(path)
-            if not os.path.exists(path):
-                os.mkdir(path)
-                create_collection (path, 'AllowDeny', parent_path)
+			if NetworkDeviceFunctionId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'AllowDeny', parent_path)
 
-            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-            if request.data:
-                config = json.loads(request.data)
-                if "@odata.id" in config:
-                    return AllowDeny3API.post(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, os.path.basename(config['@odata.id']))
-                else:
-                    return AllowDeny3API.post(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, str(res))
-            else:
-                return AllowDeny3API.post(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, str(res))
-        else:
-            return msg, code
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return AllowDeny3API.post(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, os.path.basename(config['@odata.id']))
+				else:
+					return AllowDeny3API.post(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, str(res))
+			else:
+				return AllowDeny3API.post(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, str(res))
+		else:
+			return msg, code
 
 # AllowDeny3 API
 class AllowDeny3API(Resource):
-    def __init__(self, **kwargs):
-        logging.info('AllowDeny3 init called')
-        self.root = PATHS['Root']
-        self.auth = kwargs['auth']
+	def __init__(self, **kwargs):
+		logging.info('AllowDeny3 init called')
+		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
-    # HTTP GET
-    def get(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId):
-        logging.info('AllowDeny3 get called')
-        msg, code = check_authentication(self.auth)
+	# HTTP GET
+	def get(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId):
+		logging.info('AllowDeny3 get called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
-            return get_json_data (path)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
-    # HTTP POST
-    # - Create the resource (since URI variables are available)
-    # - Update the members and members.id lists
-    # - Attach the APIs of subordinate resources (do this only once)
-    # - Finally, create an instance of the subordinate resources
-    def post(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId):
-        logging.info('AllowDeny3 post called')
-        msg, code = check_authentication(self.auth)
+	# HTTP POST
+	# - Create the resource (since URI variables are available)
+	# - Update the members and members.id lists
+	# - Attach the APIs of subordinate resources (do this only once)
+	# - Finally, create an instance of the subordiante resources
+	def post(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId):
+		logging.info('AllowDeny3 post called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny/{4}').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
-            redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny/{4}').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
-            collection_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny', 'index.json').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId)
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny/{4}').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
+			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny/{4}').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
+			collection_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny', 'index.json').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId)
 
-            # Check if collection exists:
-            if not os.path.exists(collection_path):
-                AllowDeny3CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId)
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				AllowDeny3CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId)
 
-            if AllowDenyId in members:
-                resp = 404
-                return resp
-            try:
-                global config
-                wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'NetworkInterfaceId':NetworkInterfaceId, 'NetworkDeviceFunctionId':NetworkDeviceFunctionId, 'AllowDenyId':AllowDenyId, 'rb':g.rest_base}
-                config=get_AllowDeny3_instance(wildcards)
-                config = create_and_patch_object (config, members, member_ids, path, collection_path)
-                resp = config, 200
-                send_event(
-                    "ResourceCreated",
-                    "ResourceEvent.1.4.2.ResourceCreated",
-                    "The resource was created successfully.",
-                    "OK",
-                    path,
-                    None
-                )
+			if AllowDenyId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'NetworkInterfaceId':NetworkInterfaceId, 'NetworkDeviceFunctionId':NetworkDeviceFunctionId, 'AllowDenyId':AllowDenyId, 'rb':g.rest_base}
+				config=get_AllowDeny3_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
 
-            except Exception:
-                traceback.print_exc()
-                resp = INTERNAL_ERROR
-            logging.info('AllowDeny3API POST exit')
-            return resp
-        else:
-            return msg, code
+				# Send ResourceCreated event with payload
+				send_event("ResourceCreated","ResourceEvent.1.4.2.ResourceCreated", "The resource was created successfully.", "OK", redfish_path)
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('AllowDeny3API POST exit')
+			return resp
+		else:
+			return msg, code
 
-    # HTTP PUT
-    def put(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId):
-        # Read old version and compare with new data for event logic
-        old_version = None
-        try:
-            with open(path, 'r') as data_json:
-                old_version = json.load(data_json)
-        except Exception:
-            old_version = {}
-        health_changed_to = None
-        state_changed = False
-        new_state = None
-        if request.data:
-            request_data = json.loads(request.data)
-            old_health = old_version.get('State', {}).get('Health')
-            new_health = request_data.get('State', {}).get('Health', old_health)
-            if old_health != new_health:
-                health_changed_to = new_health
-            old_status = old_version.get('State', {}).get('Status')
-            new_status = request_data.get('State', {}).get('Status', old_status)
-            if old_status != new_status:
-                state_changed = True
-                new_state = new_status
-        send_event(
-            "ResourceChanged",
-            "ResourceEvent.1.4.2ResourceChanged",
-            "One or more resource properties have changed.",
-            "OK",
-            redfish_path
-        )
-        if health_changed_to == "OK":
-            send_event(
-                "ResourceStatusChangedOK",
-                "ResourceEvent.1.4.2.ResourceStatusChangedOK",
-                f"The health of resource '{redfish_path}' has changed to OK.",
-                "OK",
-                redfish_path
-            )
-        if health_changed_to == "Critical":
-            send_event(
-                "ResourceStatusChangedCritical",
-                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
-                f"The health of resource '{redfish_path}' has changed to Critical.",
-                "Critical",
-                redfish_path
-            )
-        if health_changed_to == "Warning":
-            send_event(
-                "ResourceStatusChangedWarning",
-                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
-                f"The health of resource '{redfish_path}' has changed to Warning.",
-                "Warning",
-                redfish_path
-            )
-        if state_changed:
-            send_event(
-                "ResourceStateChanged",
-                "ResourceEvent.1.4.2.ResourceStateChanged",
-                f"The state of resource '{redfish_path}' has changed to {new_state}.",
-                "OK",
-                redfish_path
-            )
-        logging.info('AllowDeny3 put called')
-        msg, code = check_authentication(self.auth)
+	# HTTP PUT
+	def put(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId):
+		logging.info('AllowDeny3 put called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
-            redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
-            put_object(path)
-            return self.get(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
+			redfish_path = create_path('/redfish/v1', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
+			# Event logic for PUT
+			old_version = None
+			try:
+				with open(path, 'r') as data_json:
+					old_version = json.load(data_json)
+			except Exception:
+				old_version = {}
+			health_changed_to = None
+			state_changed = False
+			new_state = None
+			if request.data:
+				new_version = json.loads(request.data)
+				old_health = old_health = old_version['Status']['Health']
+				new_health = new_version['Status']['Health']
+				if old_health != new_health:
+					health_changed_to = new_health
+				old_state = old_version['Status']['State']
+				new_state = new_version['Status']['State']
+				if old_state != new_state:
+					state_changed = True
+			if old_version != new_version:
+				send_event("ResourceChanged", "ResourceEvent.1.4.2.ResourceChanged", "One or more resource properties have changed.", "OK", redfish_path)
+			if health_changed_to == 'OK':
+				send_event("ResourceStatusChangedOK", "ResourceEvent.1.4.2.ResourceStatusChangedOK", f"The health of resource '{redfish_path}' has changed to OK.", "OK", redfish_path)
+			if health_changed_to == 'Critical':
+				send_event("ResourceStatusChangedCritical", "ResourceEvent.1.4.2.ResourceStatusChangedCritical", f"The health of resource '{redfish_path}' has changed to Critical.", "Critical", redfish_path)
+			if health_changed_to == 'Warning':
+				send_event("ResourceStatusChangedWarning", "ResourceEvent.1.4.2.ResourceStatusChangedWarning", f"The health of resource '{redfish_path}' has changed to Warning.", "Warning", redfish_path)
+			if state_changed:
+				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
+			put_object(path)
+			return self.get(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
+		else:
+			return msg, code
 
-    # HTTP PATCH
-    def patch(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId):
-        # Read old version and compare with new data for event logic
-        old_version = None
-        try:
-            with open(path, 'r') as data_json:
-                old_version = json.load(data_json)
-        except Exception:
-            old_version = {}
-        health_changed_to = None
-        state_changed = False
-        new_state = None
-        if request.data:
-            request_data = json.loads(request.data)
-            old_health = old_version.get('State', {}).get('Health')
-            new_health = request_data.get('State', {}).get('Health', old_health)
-            if old_health != new_health:
-                health_changed_to = new_health
-            old_status = old_version.get('State', {}).get('Status')
-            new_status = request_data.get('State', {}).get('Status', old_status)
-            if old_status != new_status:
-                state_changed = True
-                new_state = new_status
-        send_event(
-            "ResourceChanged",
-            "ResourceEvent.1.4.2ResourceChanged",
-            "One or more resource properties have changed.",
-            "OK",
-            redfish_path
-        )
-        if health_changed_to == "OK":
-            send_event(
-                "ResourceStatusChangedOK",
-                "ResourceEvent.1.4.2.ResourceStatusChangedOK",
-                f"The health of resource '{redfish_path}' has changed to OK.",
-                "OK",
-                redfish_path
-            )
-        if health_changed_to == "Critical":
-            send_event(
-                "ResourceStatusChangedCritical",
-                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
-                f"The health of resource '{redfish_path}' has changed to Critical.",
-                "Critical",
-                redfish_path
-            )
-        if health_changed_to == "Warning":
-            send_event(
-                "ResourceStatusChangedWarning",
-                "ResourceEvent.1.4.2.ResourceStatusChangedCritical",
-                f"The health of resource '{redfish_path}' has changed to Warning.",
-                "Warning",
-                redfish_path
-            )
-        if state_changed:
-            send_event(
-                "ResourceStateChanged",
-                "ResourceEvent.1.4.2.ResourceStateChanged",
-                f"The state of resource '{redfish_path}' has changed to {new_state}.",
-                "OK",
-                redfish_path
-            )
-        logging.info('AllowDeny3 patch called')
-        msg, code = check_authentication(self.auth)
+	# HTTP PATCH
+	def patch(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId):
+		logging.info('AllowDeny3 patch called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
-            redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
-            patch_object(path)
-            return self.get(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
+			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
+			# Event logic for PATCH
+			if request.data:
+				old_version = None
+				try:
+					with open(path, 'r') as data_json:
+						old_version = json.load(data_json)
+				except Exception:
+					old_version = {}
+				health_changed_to = None
+				state_changed = False
+				new_state = None
+				new_version = json.loads(request.data)
+				old_health = old_version['Status']['Health']
+				new_health = new_version['Status']['Health']
+				old_state = old_version['Status']['State']
+				new_state = new_version['Status']['State']
+				if old_version != new_version:
+					send_event("ResourceChanged", "ResourceEvent.1.4.2.ResourceChanged", "One or more resource properties have changed.", "OK", redfish_path)
+				if old_health != new_health:
+					health_changed_to = new_health
+				if old_state != new_state:
+					state_changed = True
+				if health_changed_to == 'OK':
+					send_event("ResourceStatusChangedOK", "ResourceEvent.1.4.2.ResourceStatusChangedOK", f"The health of resource '{redfish_path}' has changed to OK.", "OK", redfish_path)
+				if health_changed_to == 'Critical':
+					send_event("ResourceStatusChangedCritical", "ResourceEvent.1.4.2.ResourceStatusChangedCritical", f"The health of resource '{redfish_path}' has changed to Critical.", "Critical", redfish_path)
+				if health_changed_to == 'Warning':
+					send_event("ResourceStatusChangedWarning", "ResourceEvent.1.4.2.ResourceStatusChangedWarning", f"The health of resource '{redfish_path}' has changed to Warning.", "Warning", redfish_path)
+				if state_changed:
+					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
+			patch_object(path)
+			return self.get(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
+		else:
+			return msg, code
 
-    # HTTP DELETE
-    def delete(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId):
-        logging.info('AllowDeny3 delete called')
-        msg, code = check_authentication(self.auth)
+	# HTTP DELETE
+	def delete(self, ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId):
+		logging.info('AllowDeny3 delete called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny/{4}').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
-            redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny/{4}').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
-            base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId)
-            send_event(
-                "ResourceRemoved",
-                "ResourceEvent.1.4.2.ResourceRemoved",
-                "The resource was removed successfully.",
-                "OK",
-                redfish_path
-            )
-            return delete_object(path, base_path)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny/{4}').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
+			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny/{4}').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId, AllowDenyId)
+			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/NetworkInterfaces/{2}/NetworkDeviceFunctions/{3}/AllowDeny').format(ResourceBlockId, ComputerSystemId, NetworkInterfaceId, NetworkDeviceFunctionId)
+			# Event logic for DELETE
+			obj = get_json_data(path)
+			delete_object(path, base_path)
+			send_event("ResourceRemoved", "ResourceEvent.1.4.2.ResourceRemoved", "The resource was removed successfully.", "OK", redfish_path)
+			return '', 204
+		else:
+			return msg, code
 

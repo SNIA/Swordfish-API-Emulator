@@ -33,94 +33,92 @@
 import g
 import json, os
 import traceback
-import logging, random, requests, string, jwt
+import logging
 
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
-members = []
-member_ids = []
 INTERNAL_ERROR = 500
 
 # StorageService0 Collection API
 class StorageService0CollectionAPI(Resource):
-    def __init__(self, **kwargs):
-        logging.info('StorageService0 Collection init called')
-        self.root = PATHS['Root']
-        self.auth = kwargs['auth']
+	def __init__(self, **kwargs):
+		logging.info('StorageService0 Collection init called')
+		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
-    # HTTP GET
-    def get(self):
-        logging.info('StorageService0 Collection get called')
-        msg, code = check_authentication(self.auth)
+	# HTTP GET
+	def get(self):
+		logging.info('StorageService0 Collection get called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'StorageServices', 'index.json')
-            return get_json_data(path)
-        else:
-            return msg, code
+		if code == 200:
+			path = os.path.join(self.root, 'StorageServices', 'index.json')
+			return get_json_data (path)
+		else:
+			return msg, code
 
-    # HTTP POST
-    def post(self):
-        logging.info('StorageService0 Collection post called')
-        return 'POST is not a supported command for StorageService0CollectionAPI', 405
+	# HTTP POST
+	def post(self):
+		logging.info('StorageService0 Collection post called')
+		return 'POST is not a supported command for StorageService0CollectionAPI', 405
 
-    # HTTP PUT
-    def put(self):
-        logging.info('StorageService0 Collection put called')
-        return 'PUT is not a supported command for StorageService0CollectionAPI', 405
+	# HTTP PUT
+	def put(self):
+		logging.info('StorageService0 Collection put called')
+		return 'PUT is not a supported command for StorageService0CollectionAPI', 405
 
-    # HTTP PATCH
-    def patch(self):
-        logging.info('StorageService0 Collection patch called')
-        return 'PATCH is not a supported command for StorageService0CollectionAPI', 405
+	# HTTP PATCH
+	def patch(self):
+		logging.info('StorageService0 Collection patch called')
+		return 'PATCH is not a supported command for StorageService0CollectionAPI', 405
 
-    # HTTP DELETE
-    def delete(self):
-        logging.info('StorageService0 Collection delete called')
-        return 'DELETE is not a supported command for StorageService0CollectionAPI', 405
+	# HTTP DELETE
+	def delete(self):
+		logging.info('StorageService0 Collection delete called')
+		return 'DELETE is not a supported command for StorageService0CollectionAPI', 405
 
 
 # StorageService0 API
 class StorageService0API(Resource):
-    def __init__(self, **kwargs):
-        logging.info('StorageService0 init called')
-        self.root = PATHS['Root']
-        self.auth = kwargs['auth']
+	def __init__(self, **kwargs):
+		logging.info('StorageService0 init called')
+		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
-    # HTTP GET
-    def get(self, StorageServiceId):
-        logging.info('StorageService0 get called')
-        msg, code = check_authentication(self.auth)
+	# HTTP GET
+	def get(self, StorageServiceId):
+		logging.info('StorageService0 get called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'StorageServices/{0}', 'index.json').format(StorageServiceId)
-            return get_json_data (path)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'StorageServices/{0}', 'index.json').format(StorageServiceId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
-    # HTTP POST
-    def post(self, StorageServiceId):
-        logging.info('StorageService0 post called')
-        return 'POST is not a supported command for StorageService0API', 405
+	# HTTP POST
+	def post(self, StorageServiceId):
+		logging.info('StorageService0 post called')
+		return 'POST is not a supported command for StorageService0API', 405
 
-    # HTTP PUT
-    def put(self, StorageServiceId):
-        logging.info('StorageService0 put called')
-        return 'PUT is not a supported command for StorageService0API', 405
+	# HTTP PUT
+	def put(self, StorageServiceId):
+		logging.info('StorageService0 put called')
+		return 'PUT is not a supported command for StorageService0API', 405
 
-    # HTTP PATCH
-    def patch(self, StorageServiceId):
-        logging.info('StorageService0 patch called')
-        return 'PATCH is not a supported command for StorageService0API', 405
+	# HTTP PATCH
+	def patch(self, StorageServiceId):
+		logging.info('StorageService0 patch called')
+		return 'PATCH is not a supported command for StorageService0API', 405
 
-    # HTTP DELETE
-    def delete(self, StorageServiceId):
-        logging.info('StorageService0 delete called')
-        return 'DELETE is not a supported command for StorageService0API', 405
+	# HTTP DELETE
+	def delete(self, StorageServiceId):
+		logging.info('StorageService0 delete called')
+		return 'DELETE is not a supported command for StorageService0API', 405
 
 

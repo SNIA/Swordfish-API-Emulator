@@ -33,17 +33,15 @@
 import g
 import json, os
 import traceback
-import logging, random, requests, string, jwt
+import logging
 
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
-members = []
-member_ids = []
 INTERNAL_ERROR = 500
 
 # ProcessorMetrics19 does not have a Collection API
@@ -51,40 +49,40 @@ INTERNAL_ERROR = 500
 
 # ProcessorMetrics19 API
 class ProcessorMetrics19API(Resource):
-    def __init__(self, **kwargs):
-        logging.info('ProcessorMetrics19 init called')
-        self.root = PATHS['Root']
-        self.auth = kwargs['auth']
+	def __init__(self, **kwargs):
+		logging.info('ProcessorMetrics19 init called')
+		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
-    # HTTP GET
-    def get(self, ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2):
-        logging.info('ProcessorMetrics19 get called')
-        msg, code = check_authentication(self.auth)
+	# HTTP GET
+	def get(self, ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2):
+		logging.info('ProcessorMetrics19 get called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Processors/{2}/SubProcessors/{22}/ProcessorMetrics', 'index.json').format(ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2)
-            return get_json_data (path)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Processors/{2}/SubProcessors/{22}/ProcessorMetrics', 'index.json').format(ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2)
+			return get_json_data (path)
+		else:
+			return msg, code
 
-    # HTTP POST
-    def post(self, ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2):
-        logging.info('ProcessorMetrics19 post called')
-        return 'POST is not a supported command for ProcessorMetrics19API', 405
+	# HTTP POST
+	def post(self, ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2):
+		logging.info('ProcessorMetrics19 post called')
+		return 'POST is not a supported command for ProcessorMetrics19API', 405
 
-    # HTTP PUT
-    def put(self, ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2):
-        logging.info('ProcessorMetrics19 put called')
-        return 'PUT is not a supported command for ProcessorMetrics19API', 405
+	# HTTP PUT
+	def put(self, ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2):
+		logging.info('ProcessorMetrics19 put called')
+		return 'PUT is not a supported command for ProcessorMetrics19API', 405
 
-    # HTTP PATCH
-    def patch(self, ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2):
-        logging.info('ProcessorMetrics19 patch called')
-        return 'PATCH is not a supported command for ProcessorMetrics19API', 405
+	# HTTP PATCH
+	def patch(self, ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2):
+		logging.info('ProcessorMetrics19 patch called')
+		return 'PATCH is not a supported command for ProcessorMetrics19API', 405
 
-    # HTTP DELETE
-    def delete(self, ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2):
-        logging.info('ProcessorMetrics19 delete called')
-        return 'DELETE is not a supported command for ProcessorMetrics19API', 405
+	# HTTP DELETE
+	def delete(self, ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2):
+		logging.info('ProcessorMetrics19 delete called')
+		return 'DELETE is not a supported command for ProcessorMetrics19API', 405
 
 

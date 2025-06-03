@@ -33,17 +33,15 @@
 import g
 import json, os
 import traceback
-import logging, random, requests, string, jwt
+import logging
 
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
-members = []
-member_ids = []
 INTERNAL_ERROR = 500
 
 # KeyService does not have a Collection API
@@ -51,40 +49,40 @@ INTERNAL_ERROR = 500
 
 # KeyService API
 class KeyServiceAPI(Resource):
-    def __init__(self, **kwargs):
-        logging.info('KeyService init called')
-        self.root = PATHS['Root']
-        self.auth = kwargs['auth']
+	def __init__(self, **kwargs):
+		logging.info('KeyService init called')
+		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
-    # HTTP GET
-    def get(self):
-        logging.info('KeyService get called')
-        msg, code = check_authentication(self.auth)
+	# HTTP GET
+	def get(self):
+		logging.info('KeyService get called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'index.json')
-            return get_json_data (path)
-        else:
-            return msg, code
+		if code == 200:
+			path = os.path.join(self.root, 'index.json')
+			return get_json_data (path)
+		else:
+			return msg, code
 
-    # HTTP POST
-    def post(self):
-        logging.info('KeyService post called')
-        return 'POST is not a supported command for KeyServiceAPI', 405
+	# HTTP POST
+	def post(self):
+		logging.info('KeyService post called')
+		return 'POST is not a supported command for KeyServiceAPI', 405
 
-    # HTTP PUT
-    def put(self):
-        logging.info('KeyService put called')
-        return 'PUT is not a supported command for KeyServiceAPI', 405
+	# HTTP PUT
+	def put(self):
+		logging.info('KeyService put called')
+		return 'PUT is not a supported command for KeyServiceAPI', 405
 
-    # HTTP PATCH
-    def patch(self):
-        logging.info('KeyService patch called')
-        return 'PATCH is not a supported command for KeyServiceAPI', 405
+	# HTTP PATCH
+	def patch(self):
+		logging.info('KeyService patch called')
+		return 'PATCH is not a supported command for KeyServiceAPI', 405
 
-    # HTTP DELETE
-    def delete(self):
-        logging.info('KeyService delete called')
-        return 'DELETE is not a supported command for KeyServiceAPI', 405
+	# HTTP DELETE
+	def delete(self):
+		logging.info('KeyService delete called')
+		return 'DELETE is not a supported command for KeyServiceAPI', 405
 
 

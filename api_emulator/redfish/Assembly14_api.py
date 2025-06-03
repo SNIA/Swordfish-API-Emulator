@@ -33,17 +33,15 @@
 import g
 import json, os
 import traceback
-import logging, random, requests, string, jwt
+import logging
 
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
-members = []
-member_ids = []
 INTERNAL_ERROR = 500
 
 # Assembly14 does not have a Collection API
@@ -51,40 +49,40 @@ INTERNAL_ERROR = 500
 
 # Assembly14 API
 class Assembly14API(Resource):
-    def __init__(self, **kwargs):
-        logging.info('Assembly14 init called')
-        self.root = PATHS['Root']
-        self.auth = kwargs['auth']
+	def __init__(self, **kwargs):
+		logging.info('Assembly14 init called')
+		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
-    # HTTP GET
-    def get(self, ChassisId, NetworkAdapterId):
-        logging.info('Assembly14 get called')
-        msg, code = check_authentication(self.auth)
+	# HTTP GET
+	def get(self, ChassisId, NetworkAdapterId):
+		logging.info('Assembly14 get called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Assembly', 'index.json').format(ChassisId, NetworkAdapterId)
-            return get_json_data (path)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Assembly', 'index.json').format(ChassisId, NetworkAdapterId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
-    # HTTP POST
-    def post(self, ChassisId, NetworkAdapterId):
-        logging.info('Assembly14 post called')
-        return 'POST is not a supported command for Assembly14API', 405
+	# HTTP POST
+	def post(self, ChassisId, NetworkAdapterId):
+		logging.info('Assembly14 post called')
+		return 'POST is not a supported command for Assembly14API', 405
 
-    # HTTP PUT
-    def put(self, ChassisId, NetworkAdapterId):
-        logging.info('Assembly14 put called')
-        return 'PUT is not a supported command for Assembly14API', 405
+	# HTTP PUT
+	def put(self, ChassisId, NetworkAdapterId):
+		logging.info('Assembly14 put called')
+		return 'PUT is not a supported command for Assembly14API', 405
 
-    # HTTP PATCH
-    def patch(self, ChassisId, NetworkAdapterId):
-        logging.info('Assembly14 patch called')
-        return 'PATCH is not a supported command for Assembly14API', 405
+	# HTTP PATCH
+	def patch(self, ChassisId, NetworkAdapterId):
+		logging.info('Assembly14 patch called')
+		return 'PATCH is not a supported command for Assembly14API', 405
 
-    # HTTP DELETE
-    def delete(self, ChassisId, NetworkAdapterId):
-        logging.info('Assembly14 delete called')
-        return 'DELETE is not a supported command for Assembly14API', 405
+	# HTTP DELETE
+	def delete(self, ChassisId, NetworkAdapterId):
+		logging.info('Assembly14 delete called')
+		return 'DELETE is not a supported command for Assembly14API', 405
 
 

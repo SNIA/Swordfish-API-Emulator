@@ -33,17 +33,15 @@
 import g
 import json, os
 import traceback
-import logging, random, requests, string, jwt
+import logging
 
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
-members = []
-member_ids = []
 INTERNAL_ERROR = 500
 
 # PortMetrics21 does not have a Collection API
@@ -51,40 +49,40 @@ INTERNAL_ERROR = 500
 
 # PortMetrics21 API
 class PortMetrics21API(Resource):
-    def __init__(self, **kwargs):
-        logging.info('PortMetrics21 init called')
-        self.root = PATHS['Root']
-        self.auth = kwargs['auth']
+	def __init__(self, **kwargs):
+		logging.info('PortMetrics21 init called')
+		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
-    # HTTP GET
-    def get(self, ResourceBlockId, ProcessorId, PortId):
-        logging.info('PortMetrics21 get called')
-        msg, code = check_authentication(self.auth)
+	# HTTP GET
+	def get(self, ResourceBlockId, ProcessorId, PortId):
+		logging.info('PortMetrics21 get called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'ResourceBlocks/{0}/Processors/{1}/Ports/{2}/Metrics', 'index.json').format(ResourceBlockId, ProcessorId, PortId)
-            return get_json_data (path)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'ResourceBlocks/{0}/Processors/{1}/Ports/{2}/Metrics', 'index.json').format(ResourceBlockId, ProcessorId, PortId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
-    # HTTP POST
-    def post(self, ResourceBlockId, ProcessorId, PortId):
-        logging.info('PortMetrics21 post called')
-        return 'POST is not a supported command for PortMetrics21API', 405
+	# HTTP POST
+	def post(self, ResourceBlockId, ProcessorId, PortId):
+		logging.info('PortMetrics21 post called')
+		return 'POST is not a supported command for PortMetrics21API', 405
 
-    # HTTP PUT
-    def put(self, ResourceBlockId, ProcessorId, PortId):
-        logging.info('PortMetrics21 put called')
-        return 'PUT is not a supported command for PortMetrics21API', 405
+	# HTTP PUT
+	def put(self, ResourceBlockId, ProcessorId, PortId):
+		logging.info('PortMetrics21 put called')
+		return 'PUT is not a supported command for PortMetrics21API', 405
 
-    # HTTP PATCH
-    def patch(self, ResourceBlockId, ProcessorId, PortId):
-        logging.info('PortMetrics21 patch called')
-        return 'PATCH is not a supported command for PortMetrics21API', 405
+	# HTTP PATCH
+	def patch(self, ResourceBlockId, ProcessorId, PortId):
+		logging.info('PortMetrics21 patch called')
+		return 'PATCH is not a supported command for PortMetrics21API', 405
 
-    # HTTP DELETE
-    def delete(self, ResourceBlockId, ProcessorId, PortId):
-        logging.info('PortMetrics21 delete called')
-        return 'DELETE is not a supported command for PortMetrics21API', 405
+	# HTTP DELETE
+	def delete(self, ResourceBlockId, ProcessorId, PortId):
+		logging.info('PortMetrics21 delete called')
+		return 'DELETE is not a supported command for PortMetrics21API', 405
 
 

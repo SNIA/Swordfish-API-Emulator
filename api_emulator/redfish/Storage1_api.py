@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2024, The Storage Networking Industry Association.
+# Copyright (c) 2017-2025, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -47,149 +47,211 @@ INTERNAL_ERROR = 500
 
 # Storage1 Collection API
 class Storage1CollectionAPI(Resource):
-    def __init__(self, **kwargs):
-        logging.info('Storage1 Collection init called')
-        self.root = PATHS['Root']
-        self.auth = kwargs['auth']
+	def __init__(self, **kwargs):
+		logging.info('Storage1 Collection init called')
+		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
-    # HTTP GET
-    def get(self, ComputerSystemId):
-        logging.info('Storage1 Collection get called')
-        msg, code = check_authentication(self.auth)
+	# HTTP GET
+	def get(self, ComputerSystemId):
+		logging.info('Storage1 Collection get called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'Systems/{0}/Storage', 'index.json').format(ComputerSystemId)
-            return get_json_data(path)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'Systems/{0}/Storage', 'index.json').format(ComputerSystemId)
+			return get_json_data(path)
+		else:
+			return msg, code
 
-    # HTTP POST Collection
-    def post(self, ComputerSystemId):
-        logging.info('Storage1 Collection post called')
-        msg, code = check_authentication(self.auth)
+	# HTTP POST Collection
+	def post(self, ComputerSystemId):
+		logging.info('Storage1 Collection post called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            if request.data:
-                config = json.loads(request.data)
-                if "@odata.type" in config:
-                    if "Collection" in config["@odata.type"]:
-                        return "Invalid data in POST body", 400
+		if code == 200:
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.type" in config:
+					if "Collection" in config["@odata.type"]:
+						return "Invalid data in POST body", 400
 
-            if ComputerSystemId in members:
-                resp = 404
-                return resp
-            path = create_path(self.root, 'Systems/{0}/Storage').format(ComputerSystemId)
-            redfish_path = create_path('/redfish/v1/', 'Systems/{0}/Storage').format(ComputerSystemId)
-            parent_path = os.path.dirname(path)
-            if not os.path.exists(path):
-                os.mkdir(path)
-                create_collection (path, 'Storage', parent_path)
+			if ComputerSystemId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'Systems/{0}/Storage').format(ComputerSystemId)
+			parent_path = os.path.dirname(path)
+			if not os.path.exists(path):
+				os.mkdir(path)
+				create_collection (path, 'Storage', parent_path)
 
-            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-            if request.data:
-                config = json.loads(request.data)
-                if "@odata.id" in config:
-                    return Storage1API.post(self, ComputerSystemId, os.path.basename(config['@odata.id']))
-                else:
-                    return Storage1API.post(self, ComputerSystemId, str(res))
-            else:
-                return Storage1API.post(self, ComputerSystemId, str(res))
-        else:
-            return msg, code
+			res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+			if request.data:
+				config = json.loads(request.data)
+				if "@odata.id" in config:
+					return Storage1API.post(self, ComputerSystemId, os.path.basename(config['@odata.id']))
+				else:
+					return Storage1API.post(self, ComputerSystemId, str(res))
+			else:
+				return Storage1API.post(self, ComputerSystemId, str(res))
+		else:
+			return msg, code
 
 # Storage1 API
 class Storage1API(Resource):
-    def __init__(self, **kwargs):
-        logging.info('Storage1 init called')
-        self.root = PATHS['Root']
-        self.auth = kwargs['auth']
+	def __init__(self, **kwargs):
+		logging.info('Storage1 init called')
+		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
-    # HTTP GET
-    def get(self, ComputerSystemId, StorageId):
-        logging.info('Storage1 get called')
-        msg, code = check_authentication(self.auth)
+	# HTTP GET
+	def get(self, ComputerSystemId, StorageId):
+		logging.info('Storage1 get called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'Systems/{0}/Storage/{1}', 'index.json').format(ComputerSystemId, StorageId)
-            return get_json_data (path)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}', 'index.json').format(ComputerSystemId, StorageId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
-    # HTTP POST
-    # - Create the resource (since URI variables are available)
-    # - Update the members and members.id lists
-    # - Attach the APIs of subordinate resources (do this only once)
-    # - Finally, create an instance of the subordinate resources
-    def post(self, ComputerSystemId, StorageId):
-        logging.info('Storage1 post called')
-        msg, code = check_authentication(self.auth)
+	# HTTP POST
+	# - Create the resource (since URI variables are available)
+	# - Update the members and members.id lists
+	# - Attach the APIs of subordinate resources (do this only once)
+	# - Finally, create an instance of the subordiante resources
+	def post(self, ComputerSystemId, StorageId):
+		logging.info('Storage1 post called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'Systems/{0}/Storage/{1}').format(ComputerSystemId, StorageId)
-            redfish_path = create_path('/redfish/v1/', 'Systems/{0}/Storage/{1}').format(ComputerSystemId, StorageId)
-            collection_path = create_path(self.root, 'Systems/{0}/Storage', 'index.json').format(ComputerSystemId)
+		if code == 200:
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}').format(ComputerSystemId, StorageId)
+			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/Storage/{1}').format(ComputerSystemId, StorageId)
+			collection_path = create_path(self.root, 'Systems/{0}/Storage', 'index.json').format(ComputerSystemId)
 
-            # Check if collection exists:
-            if not os.path.exists(collection_path):
-                Storage1CollectionAPI.post(self, ComputerSystemId)
+			# Check if collection exists:
+			if not os.path.exists(collection_path):
+				Storage1CollectionAPI.post(self, ComputerSystemId)
 
-            if StorageId in members:
-                resp = 404
-                return resp
-            try:
-                global config
-                wildcards = {'ComputerSystemId':ComputerSystemId, 'StorageId':StorageId, 'rb':g.rest_base}
-                config=get_Storage1_instance(wildcards)
-                config = create_and_patch_object (config, members, member_ids, path, collection_path)
-                resp = config, 200
+			if StorageId in members:
+				resp = 404
+				return resp
+			try:
+				global config
+				wildcards = {'ComputerSystemId':ComputerSystemId, 'StorageId':StorageId, 'rb':g.rest_base}
+				config=get_Storage1_instance(wildcards)
+				config = create_and_patch_object (config, members, member_ids, path, collection_path)
+				resp = config, 200
 
-            except Exception:
-                traceback.print_exc()
-                resp = INTERNAL_ERROR
-            logging.info('Storage1API POST exit')
-            return resp
-        else:
-            return msg, code
+				# Send ResourceCreated event with payload
+				send_event("ResourceCreated","ResourceEvent.1.4.2.ResourceCreated", "The resource was created successfully.", "OK", redfish_path)
+			except Exception:
+				traceback.print_exc()
+				resp = INTERNAL_ERROR
+			logging.info('Storage1API POST exit')
+			return resp
+		else:
+			return msg, code
 
-    # HTTP PUT
-    def put(self, ComputerSystemId, StorageId):
-        logging.info('Storage1 put called')
-        msg, code = check_authentication(self.auth)
+	# HTTP PUT
+	def put(self, ComputerSystemId, StorageId):
+		logging.info('Storage1 put called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'Systems/{0}/Storage/{1}', 'index.json').format(ComputerSystemId, StorageId)
-            redfish_path = create_path('/redfish/v1/', 'Systems/{0}/Storage/{1}', 'index.json').format(ComputerSystemId, StorageId)
-            put_object(path)
-            send_event('Storage', 'UPDATE', ComputerSystemId, StorageId)
-            return self.get(ComputerSystemId, StorageId)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}', 'index.json').format(ComputerSystemId, StorageId)
+			redfish_path = create_path('/redfish/v1', 'Systems/{0}/Storage/{1}', 'index.json').format(ComputerSystemId, StorageId)
+			# Event logic for PUT
+			old_version = None
+			try:
+				with open(path, 'r') as data_json:
+					old_version = json.load(data_json)
+			except Exception:
+				old_version = {}
+			health_changed_to = None
+			state_changed = False
+			new_state = None
+			if request.data:
+				new_version = json.loads(request.data)
+				old_health = old_health = old_version['Status']['Health']
+				new_health = new_version['Status']['Health']
+				if old_health != new_health:
+					health_changed_to = new_health
+				old_state = old_version['Status']['State']
+				new_state = new_version['Status']['State']
+				if old_state != new_state:
+					state_changed = True
+			if old_version != new_version:
+				send_event("ResourceChanged", "ResourceEvent.1.4.2.ResourceChanged", "One or more resource properties have changed.", "OK", redfish_path)
+			if health_changed_to == 'OK':
+				send_event("ResourceStatusChangedOK", "ResourceEvent.1.4.2.ResourceStatusChangedOK", f"The health of resource '{redfish_path}' has changed to OK.", "OK", redfish_path)
+			if health_changed_to == 'Critical':
+				send_event("ResourceStatusChangedCritical", "ResourceEvent.1.4.2.ResourceStatusChangedCritical", f"The health of resource '{redfish_path}' has changed to Critical.", "Critical", redfish_path)
+			if health_changed_to == 'Warning':
+				send_event("ResourceStatusChangedWarning", "ResourceEvent.1.4.2.ResourceStatusChangedWarning", f"The health of resource '{redfish_path}' has changed to Warning.", "Warning", redfish_path)
+			if state_changed:
+				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
+			put_object(path)
+			return self.get(ComputerSystemId, StorageId)
+		else:
+			return msg, code
 
-    # HTTP PATCH
-    def patch(self, ComputerSystemId, StorageId):
-        logging.info('Storage1 patch called')
-        msg, code = check_authentication(self.auth)
+	# HTTP PATCH
+	def patch(self, ComputerSystemId, StorageId):
+		logging.info('Storage1 patch called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'Systems/{0}/Storage/{1}', 'index.json').format(ComputerSystemId, StorageId)
-            redfish_path = create_path('/redfish/v1/', 'Systems/{0}/Storage/{1}', 'index.json').format(ComputerSystemId, StorageId)
-            patch_object(path)
-            send_event('Storage', 'UPDATE', ComputerSystemId, StorageId)
-            return self.get(ComputerSystemId, StorageId)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}', 'index.json').format(ComputerSystemId, StorageId)
+			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/Storage/{1}', 'index.json').format(ComputerSystemId, StorageId)
+			# Event logic for PATCH
+			if request.data:
+				old_version = None
+				try:
+					with open(path, 'r') as data_json:
+						old_version = json.load(data_json)
+				except Exception:
+					old_version = {}
+				health_changed_to = None
+				state_changed = False
+				new_state = None
+				new_version = json.loads(request.data)
+				old_health = old_version['Status']['Health']
+				new_health = new_version['Status']['Health']
+				old_state = old_version['Status']['State']
+				new_state = new_version['Status']['State']
+				if old_version != new_version:
+					send_event("ResourceChanged", "ResourceEvent.1.4.2.ResourceChanged", "One or more resource properties have changed.", "OK", redfish_path)
+				if old_health != new_health:
+					health_changed_to = new_health
+				if old_state != new_state:
+					state_changed = True
+				if health_changed_to == 'OK':
+					send_event("ResourceStatusChangedOK", "ResourceEvent.1.4.2.ResourceStatusChangedOK", f"The health of resource '{redfish_path}' has changed to OK.", "OK", redfish_path)
+				if health_changed_to == 'Critical':
+					send_event("ResourceStatusChangedCritical", "ResourceEvent.1.4.2.ResourceStatusChangedCritical", f"The health of resource '{redfish_path}' has changed to Critical.", "Critical", redfish_path)
+				if health_changed_to == 'Warning':
+					send_event("ResourceStatusChangedWarning", "ResourceEvent.1.4.2.ResourceStatusChangedWarning", f"The health of resource '{redfish_path}' has changed to Warning.", "Warning", redfish_path)
+				if state_changed:
+					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
+			patch_object(path)
+			return self.get(ComputerSystemId, StorageId)
+		else:
+			return msg, code
 
-    # HTTP DELETE
-    def delete(self, ComputerSystemId, StorageId):
-        logging.info('Storage1 delete called')
-        msg, code = check_authentication(self.auth)
+	# HTTP DELETE
+	def delete(self, ComputerSystemId, StorageId):
+		logging.info('Storage1 delete called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'Systems/{0}/Storage/{1}').format(ComputerSystemId, StorageId)
-            redfish_path = create_path('/redfish/v1/', 'Systems/{0}/Storage/{1}').format(ComputerSystemId, StorageId)
-            base_path = create_path(self.root, 'Systems/{0}/Storage').format(ComputerSystemId)
-            send_event('Storage', 'DELETE', ComputerSystemId, StorageId)
-            return delete_object(path, base_path)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}').format(ComputerSystemId, StorageId)
+			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/Storage/{1}').format(ComputerSystemId, StorageId)
+			base_path = create_path(self.root, 'Systems/{0}/Storage').format(ComputerSystemId)
+			# Event logic for DELETE
+			obj = get_json_data(path)
+			delete_object(path, base_path)
+			send_event("ResourceRemoved", "ResourceEvent.1.4.2.ResourceRemoved", "The resource was removed successfully.", "OK", redfish_path)
+			return '', 204
+		else:
+			return msg, code
 

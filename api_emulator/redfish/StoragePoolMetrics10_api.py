@@ -33,17 +33,15 @@
 import g
 import json, os
 import traceback
-import logging, random, requests, string, jwt
+import logging
 
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
-members = []
-member_ids = []
 INTERNAL_ERROR = 500
 
 # StoragePoolMetrics10 does not have a Collection API
@@ -51,40 +49,40 @@ INTERNAL_ERROR = 500
 
 # StoragePoolMetrics10 API
 class StoragePoolMetrics10API(Resource):
-    def __init__(self, **kwargs):
-        logging.info('StoragePoolMetrics10 init called')
-        self.root = PATHS['Root']
-        self.auth = kwargs['auth']
+	def __init__(self, **kwargs):
+		logging.info('StoragePoolMetrics10 init called')
+		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
-    # HTTP GET
-    def get(self, StorageId, VolumeId, StoragePoolId):
-        logging.info('StoragePoolMetrics10 get called')
-        msg, code = check_authentication(self.auth)
+	# HTTP GET
+	def get(self, StorageId, VolumeId, StoragePoolId):
+		logging.info('StoragePoolMetrics10 get called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'Storage/{0}/Volumes/{1}/AllocatedPools/{2}/Metrics', 'index.json').format(StorageId, VolumeId, StoragePoolId)
-            return get_json_data (path)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'Storage/{0}/Volumes/{1}/AllocatedPools/{2}/Metrics', 'index.json').format(StorageId, VolumeId, StoragePoolId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
-    # HTTP POST
-    def post(self, StorageId, VolumeId, StoragePoolId):
-        logging.info('StoragePoolMetrics10 post called')
-        return 'POST is not a supported command for StoragePoolMetrics10API', 405
+	# HTTP POST
+	def post(self, StorageId, VolumeId, StoragePoolId):
+		logging.info('StoragePoolMetrics10 post called')
+		return 'POST is not a supported command for StoragePoolMetrics10API', 405
 
-    # HTTP PUT
-    def put(self, StorageId, VolumeId, StoragePoolId):
-        logging.info('StoragePoolMetrics10 put called')
-        return 'PUT is not a supported command for StoragePoolMetrics10API', 405
+	# HTTP PUT
+	def put(self, StorageId, VolumeId, StoragePoolId):
+		logging.info('StoragePoolMetrics10 put called')
+		return 'PUT is not a supported command for StoragePoolMetrics10API', 405
 
-    # HTTP PATCH
-    def patch(self, StorageId, VolumeId, StoragePoolId):
-        logging.info('StoragePoolMetrics10 patch called')
-        return 'PATCH is not a supported command for StoragePoolMetrics10API', 405
+	# HTTP PATCH
+	def patch(self, StorageId, VolumeId, StoragePoolId):
+		logging.info('StoragePoolMetrics10 patch called')
+		return 'PATCH is not a supported command for StoragePoolMetrics10API', 405
 
-    # HTTP DELETE
-    def delete(self, StorageId, VolumeId, StoragePoolId):
-        logging.info('StoragePoolMetrics10 delete called')
-        return 'DELETE is not a supported command for StoragePoolMetrics10API', 405
+	# HTTP DELETE
+	def delete(self, StorageId, VolumeId, StoragePoolId):
+		logging.info('StoragePoolMetrics10 delete called')
+		return 'DELETE is not a supported command for StoragePoolMetrics10API', 405
 
 

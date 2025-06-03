@@ -33,17 +33,15 @@
 import g
 import json, os
 import traceback
-import logging, random, requests, string, jwt
+import logging
 
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
-members = []
-member_ids = []
 INTERNAL_ERROR = 500
 
 # BatteryMetrics does not have a Collection API
@@ -51,40 +49,40 @@ INTERNAL_ERROR = 500
 
 # BatteryMetrics API
 class BatteryMetricsAPI(Resource):
-    def __init__(self, **kwargs):
-        logging.info('BatteryMetrics init called')
-        self.root = PATHS['Root']
-        self.auth = kwargs['auth']
+	def __init__(self, **kwargs):
+		logging.info('BatteryMetrics init called')
+		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
-    # HTTP GET
-    def get(self, ChassisId, BatteryId):
-        logging.info('BatteryMetrics get called')
-        msg, code = check_authentication(self.auth)
+	# HTTP GET
+	def get(self, ChassisId, BatteryId):
+		logging.info('BatteryMetrics get called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'Chassis/{0}/PowerSubsystem/Batteries/{1}/Metrics', 'index.json').format(ChassisId, BatteryId)
-            return get_json_data (path)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'Chassis/{0}/PowerSubsystem/Batteries/{1}/Metrics', 'index.json').format(ChassisId, BatteryId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
-    # HTTP POST
-    def post(self, ChassisId, BatteryId):
-        logging.info('BatteryMetrics post called')
-        return 'POST is not a supported command for BatteryMetricsAPI', 405
+	# HTTP POST
+	def post(self, ChassisId, BatteryId):
+		logging.info('BatteryMetrics post called')
+		return 'POST is not a supported command for BatteryMetricsAPI', 405
 
-    # HTTP PUT
-    def put(self, ChassisId, BatteryId):
-        logging.info('BatteryMetrics put called')
-        return 'PUT is not a supported command for BatteryMetricsAPI', 405
+	# HTTP PUT
+	def put(self, ChassisId, BatteryId):
+		logging.info('BatteryMetrics put called')
+		return 'PUT is not a supported command for BatteryMetricsAPI', 405
 
-    # HTTP PATCH
-    def patch(self, ChassisId, BatteryId):
-        logging.info('BatteryMetrics patch called')
-        return 'PATCH is not a supported command for BatteryMetricsAPI', 405
+	# HTTP PATCH
+	def patch(self, ChassisId, BatteryId):
+		logging.info('BatteryMetrics patch called')
+		return 'PATCH is not a supported command for BatteryMetricsAPI', 405
 
-    # HTTP DELETE
-    def delete(self, ChassisId, BatteryId):
-        logging.info('BatteryMetrics delete called')
-        return 'DELETE is not a supported command for BatteryMetricsAPI', 405
+	# HTTP DELETE
+	def delete(self, ChassisId, BatteryId):
+		logging.info('BatteryMetrics delete called')
+		return 'DELETE is not a supported command for BatteryMetricsAPI', 405
 
 

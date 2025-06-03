@@ -33,17 +33,15 @@
 import g
 import json, os
 import traceback
-import logging, random, requests, string, jwt
+import logging
 
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
-members = []
-member_ids = []
 INTERNAL_ERROR = 500
 
 # PowerDistributionMetrics3 does not have a Collection API
@@ -51,40 +49,40 @@ INTERNAL_ERROR = 500
 
 # PowerDistributionMetrics3 API
 class PowerDistributionMetrics3API(Resource):
-    def __init__(self, **kwargs):
-        logging.info('PowerDistributionMetrics3 init called')
-        self.root = PATHS['Root']
-        self.auth = kwargs['auth']
+	def __init__(self, **kwargs):
+		logging.info('PowerDistributionMetrics3 init called')
+		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
-    # HTTP GET
-    def get(self, PowerDistributionId):
-        logging.info('PowerDistributionMetrics3 get called')
-        msg, code = check_authentication(self.auth)
+	# HTTP GET
+	def get(self, PowerDistributionId):
+		logging.info('PowerDistributionMetrics3 get called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'PowerEquipment/PowerShelves/{0}/Metrics', 'index.json').format(PowerDistributionId)
-            return get_json_data (path)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'PowerEquipment/PowerShelves/{0}/Metrics', 'index.json').format(PowerDistributionId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
-    # HTTP POST
-    def post(self, PowerDistributionId):
-        logging.info('PowerDistributionMetrics3 post called')
-        return 'POST is not a supported command for PowerDistributionMetrics3API', 405
+	# HTTP POST
+	def post(self, PowerDistributionId):
+		logging.info('PowerDistributionMetrics3 post called')
+		return 'POST is not a supported command for PowerDistributionMetrics3API', 405
 
-    # HTTP PUT
-    def put(self, PowerDistributionId):
-        logging.info('PowerDistributionMetrics3 put called')
-        return 'PUT is not a supported command for PowerDistributionMetrics3API', 405
+	# HTTP PUT
+	def put(self, PowerDistributionId):
+		logging.info('PowerDistributionMetrics3 put called')
+		return 'PUT is not a supported command for PowerDistributionMetrics3API', 405
 
-    # HTTP PATCH
-    def patch(self, PowerDistributionId):
-        logging.info('PowerDistributionMetrics3 patch called')
-        return 'PATCH is not a supported command for PowerDistributionMetrics3API', 405
+	# HTTP PATCH
+	def patch(self, PowerDistributionId):
+		logging.info('PowerDistributionMetrics3 patch called')
+		return 'PATCH is not a supported command for PowerDistributionMetrics3API', 405
 
-    # HTTP DELETE
-    def delete(self, PowerDistributionId):
-        logging.info('PowerDistributionMetrics3 delete called')
-        return 'DELETE is not a supported command for PowerDistributionMetrics3API', 405
+	# HTTP DELETE
+	def delete(self, PowerDistributionId):
+		logging.info('PowerDistributionMetrics3 delete called')
+		return 'DELETE is not a supported command for PowerDistributionMetrics3API', 405
 
 

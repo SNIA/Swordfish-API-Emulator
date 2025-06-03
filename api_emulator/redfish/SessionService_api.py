@@ -31,7 +31,8 @@
 # Program name - SessionService_api.py
 
 import g
-import json, os
+import json
+import os
 import traceback
 import logging
 
@@ -44,11 +45,9 @@ config = {}
 
 INTERNAL_ERROR = 500
 
-# SessionService does not have a Collection API
-
-
-# SessionService API
+# SessionService does not have a Collection API# SessionService API
 class SessionServiceAPI(Resource):
+
     def __init__(self, **kwargs):
         logging.info('SessionService init called')
         self.root = PATHS['Root']
@@ -61,7 +60,7 @@ class SessionServiceAPI(Resource):
 
         if code == 200:
             path = create_path(self.root, 'SessionService', 'index.json')
-            return get_json_data (path)
+            return get_json_data(path)
         else:
             return msg, code
 
@@ -84,5 +83,3 @@ class SessionServiceAPI(Resource):
     def delete(self):
         logging.info('SessionService delete called')
         return 'DELETE is not a supported command for SessionServiceAPI', 405
-
-

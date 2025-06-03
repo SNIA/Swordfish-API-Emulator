@@ -52,8 +52,6 @@ _TEMPLATE = \
 		}
 	]
 }
-
-
 def get_Event_instance(wildcards):
     """
     Instantiates and formats the template

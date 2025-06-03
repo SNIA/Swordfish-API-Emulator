@@ -27,23 +27,21 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Memory/{MemoryId}/MemoryMetrics
+# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/MemorySummary/MemoryMetrics
 # Program name - MemoryMetrics3_api.py
 
 import g
 import json, os
 import traceback
-import logging, random, requests, string, jwt
+import logging
 
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
-members = []
-member_ids = []
 INTERNAL_ERROR = 500
 
 # MemoryMetrics3 does not have a Collection API
@@ -51,40 +49,40 @@ INTERNAL_ERROR = 500
 
 # MemoryMetrics3 API
 class MemoryMetrics3API(Resource):
-    def __init__(self, **kwargs):
-        logging.info('MemoryMetrics3 init called')
-        self.root = PATHS['Root']
-        self.auth = kwargs['auth']
+	def __init__(self, **kwargs):
+		logging.info('MemoryMetrics3 init called')
+		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
-    # HTTP GET
-    def get(self, ResourceBlockId, MemoryId):
-        logging.info('MemoryMetrics3 get called')
-        msg, code = check_authentication(self.auth)
+	# HTTP GET
+	def get(self, ComputerSystemId, ProcessorId):
+		logging.info('MemoryMetrics3 get called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Memory/{1}/MemoryMetrics', 'index.json').format(ResourceBlockId, MemoryId)
-            return get_json_data (path)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'Systems/{0}/Processors/{1}/MemorySummary/MemoryMetrics', 'index.json').format(ComputerSystemId, ProcessorId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
-    # HTTP POST
-    def post(self, ResourceBlockId, MemoryId):
-        logging.info('MemoryMetrics3 post called')
-        return 'POST is not a supported command for MemoryMetrics3API', 405
+	# HTTP POST
+	def post(self, ComputerSystemId, ProcessorId):
+		logging.info('MemoryMetrics3 post called')
+		return 'POST is not a supported command for MemoryMetrics3API', 405
 
-    # HTTP PUT
-    def put(self, ResourceBlockId, MemoryId):
-        logging.info('MemoryMetrics3 put called')
-        return 'PUT is not a supported command for MemoryMetrics3API', 405
+	# HTTP PUT
+	def put(self, ComputerSystemId, ProcessorId):
+		logging.info('MemoryMetrics3 put called')
+		return 'PUT is not a supported command for MemoryMetrics3API', 405
 
-    # HTTP PATCH
-    def patch(self, ResourceBlockId, MemoryId):
-        logging.info('MemoryMetrics3 patch called')
-        return 'PATCH is not a supported command for MemoryMetrics3API', 405
+	# HTTP PATCH
+	def patch(self, ComputerSystemId, ProcessorId):
+		logging.info('MemoryMetrics3 patch called')
+		return 'PATCH is not a supported command for MemoryMetrics3API', 405
 
-    # HTTP DELETE
-    def delete(self, ResourceBlockId, MemoryId):
-        logging.info('MemoryMetrics3 delete called')
-        return 'DELETE is not a supported command for MemoryMetrics3API', 405
+	# HTTP DELETE
+	def delete(self, ComputerSystemId, ProcessorId):
+		logging.info('MemoryMetrics3 delete called')
+		return 'DELETE is not a supported command for MemoryMetrics3API', 405
 
 

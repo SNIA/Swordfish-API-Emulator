@@ -115,10 +115,7 @@ class SessionCollectionAPI(Resource):
     # HTTP DELETE
     def delete(self):
         logging.info('Session Collection delete called')
-        return 'DELETE is not a supported command for SessionCollectionAPI', 405
-
-
-# Session API
+        return 'DELETE is not a supported command for SessionCollectionAPI', 405# Session API
 class SessionAPI(Resource):
     def __init__(self, **kwargs):
         logging.info('Session init called')
@@ -134,10 +131,7 @@ class SessionAPI(Resource):
             path = create_path(self.root, 'SessionService/Sessions/{0}', 'index.json').format(SessionId)
             return get_json_data(path)
         else:
-            return msg, code
-
-
-    # HTTP POST
+            return msg, code    # HTTP POST
     def post(self, SessionId):
         logging.info('Session post called')
         
@@ -163,7 +157,7 @@ class SessionAPI(Resource):
             create_collection (c_path, 'Session', parent_path)
 
         if SessionId in members:
-            resp = 404
+            resp = 404 
             return resp
         try:
             global config

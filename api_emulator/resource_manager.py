@@ -917,7 +917,9 @@ from api_emulator.redfish.VolumeMetrics16_api import *
 from api_emulator.redfish.VolumeMetrics17_api import *
 from api_emulator.redfish.VolumeMetrics18_api import *
 from api_emulator.redfish.VolumeMetrics19_api import *
-
+from api_emulator.redfish.Memory6_api import *
+from api_emulator.redfish.Certificate79_api import *
+from api_emulator.redfish.LeakDetector4_api import *
 
 from . import utils
 import os

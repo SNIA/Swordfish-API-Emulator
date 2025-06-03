@@ -33,17 +33,15 @@
 import g
 import json, os
 import traceback
-import logging, random, requests, string, jwt
+import logging
 
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
-members = []
-member_ids = []
 INTERNAL_ERROR = 500
 
 # LogService7 does not have a Collection API
@@ -51,40 +49,40 @@ INTERNAL_ERROR = 500
 
 # LogService7 API
 class LogService7API(Resource):
-    def __init__(self, **kwargs):
-        logging.info('LogService7 init called')
-        self.root = PATHS['Root']
-        self.auth = kwargs['auth']
+	def __init__(self, **kwargs):
+		logging.info('LogService7 init called')
+		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
-    # HTTP GET
-    def get(self, ComputerSystemId, MemoryId):
-        logging.info('LogService7 get called')
-        msg, code = check_authentication(self.auth)
+	# HTTP GET
+	def get(self, ComputerSystemId, MemoryId):
+		logging.info('LogService7 get called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'Systems/{0}/Memory/{1}/DeviceLog', 'index.json').format(ComputerSystemId, MemoryId)
-            return get_json_data (path)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'Systems/{0}/Memory/{1}/DeviceLog', 'index.json').format(ComputerSystemId, MemoryId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
-    # HTTP POST
-    def post(self, ComputerSystemId, MemoryId):
-        logging.info('LogService7 post called')
-        return 'POST is not a supported command for LogService7API', 405
+	# HTTP POST
+	def post(self, ComputerSystemId, MemoryId):
+		logging.info('LogService7 post called')
+		return 'POST is not a supported command for LogService7API', 405
 
-    # HTTP PUT
-    def put(self, ComputerSystemId, MemoryId):
-        logging.info('LogService7 put called')
-        return 'PUT is not a supported command for LogService7API', 405
+	# HTTP PUT
+	def put(self, ComputerSystemId, MemoryId):
+		logging.info('LogService7 put called')
+		return 'PUT is not a supported command for LogService7API', 405
 
-    # HTTP PATCH
-    def patch(self, ComputerSystemId, MemoryId):
-        logging.info('LogService7 patch called')
-        return 'PATCH is not a supported command for LogService7API', 405
+	# HTTP PATCH
+	def patch(self, ComputerSystemId, MemoryId):
+		logging.info('LogService7 patch called')
+		return 'PATCH is not a supported command for LogService7API', 405
 
-    # HTTP DELETE
-    def delete(self, ComputerSystemId, MemoryId):
-        logging.info('LogService7 delete called')
-        return 'DELETE is not a supported command for LogService7API', 405
+	# HTTP DELETE
+	def delete(self, ComputerSystemId, MemoryId):
+		logging.info('LogService7 delete called')
+		return 'DELETE is not a supported command for LogService7API', 405
 
 

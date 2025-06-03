@@ -31,7 +31,10 @@
 # Program name - EventDestination_api.py
 
 import g
-import json, os, random, string
+import json
+import os
+import random
+import string
 import traceback
 import logging
 from flask import request
@@ -45,21 +48,19 @@ member_ids = []
 INTERNAL_ERROR = 500
 
 # Persistent storage for event subscriptions
-SUBSCRIPTIONS_FILE = create_path(PATHS['Root'], 'EventService/Subscriptions', 'index.json')
-
+SUBSCRIPTIONS_FILE = create_path(PATHS['Root'], 'EventService/Subscriptions',
+                                 'index.json')
 def load_subscriptions():
     if os.path.exists(SUBSCRIPTIONS_FILE):
         with open(SUBSCRIPTIONS_FILE, 'r') as f:
             return json.load(f)
     return {}
-
 def save_subscriptions(subs):
     os.makedirs(os.path.dirname(SUBSCRIPTIONS_FILE), exist_ok=True)
     with open(SUBSCRIPTIONS_FILE, 'w') as f:
-        json.dump(subs, f, indent=2)
-
-# EventDestination Collection API
+        json.dump(subs, f, indent=2)# EventDestination Collection API
 class EventDestinationCollectionAPI(Resource):
+
     def __init__(self, **kwargs):
         logging.info('EventDestination Collection init called')
         self.root = PATHS['Root']
@@ -70,7 +71,8 @@ class EventDestinationCollectionAPI(Resource):
         logging.info('EventDestination Collection get called')
         msg, code = check_authentication(self.auth)
         if code == 200:
-            path = create_path(self.root, 'EventService/Subscriptions', 'index.json')
+            path = create_path(self.root, 'EventService/Subscriptions',
+                               'index.json')
             return get_json_data(path)
         else:
             return msg, code
@@ -79,23 +81,35 @@ class EventDestinationCollectionAPI(Resource):
     def post(self):
         logging.info('EventDestination Collection post called')
         msg, code = check_authentication(self.auth)
+
         if code == 200:
-            config = json.loads(request.data) if request.data else {}
-            if "@odata.type" in config and "Collection" in config["@odata.type"]:
-                return "Invalid data in POST body", 400
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.type" in config:
+                    if "Collection" in config["@odata.type"]:
+                        return "Invalid data in POST body", 400
             path = create_path(self.root, 'EventService/Subscriptions')
             parent_path = os.path.dirname(path)
             if not os.path.exists(path):
                 os.mkdir(path)
                 create_collection(path, 'EventDestination', parent_path)
-            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-            sub_id = os.path.basename(config.get('@odata.id', res))
-            return EventDestinationAPI(auth=self.auth).post(sub_id)
+            res = ''.join(
+                random.choices(string.ascii_uppercase + string.digits, k=5))
+
+            if request.data:
+                config = json.loads(request.data)
+                if "@odata.id" in config:
+                    return EventDestinationAPI.post(self, os.path.basename(config['@odata.id']))
+                else:
+                    return EventDestinationAPI.post(self, str(res))
+            else:
+                return EventDestinationAPI.post(self, str(res))
         else:
             return msg, code
-
+        
 # EventDestination API
 class EventDestinationAPI(Resource):
+
     def __init__(self, **kwargs):
         logging.info('EventDestination init called')
         self.root = PATHS['Root']
@@ -106,7 +120,8 @@ class EventDestinationAPI(Resource):
         logging.info('EventDestination get called')
         msg, code = check_authentication(self.auth)
         if code == 200:
-            path = create_path(self.root, 'EventService/Subscriptions/{0}', 'index.json').format(EventDestinationId)
+            path = create_path(self.root, 'EventService/Subscriptions/{0}',
+                               'index.json').format(EventDestinationId)
             return get_json_data(path)
         else:
             return msg, code
@@ -119,20 +134,32 @@ class EventDestinationAPI(Resource):
     def post(self, EventDestinationId):
         logging.info('EventDestination post called')
         msg, code = check_authentication(self.auth)
+
         if code == 200:
-            path = create_path(self.root, 'EventService/Subscriptions/{0}').format(EventDestinationId)
-            redfish_path = create_path('/redfish/v1/', 'EventService/Subscriptions/{0}').format(EventDestinationId)
-            collection_path = create_path(self.root, 'EventService/Subscriptions', 'index.json')
-            
+            path = create_path(
+                self.root,
+                'EventService/Subscriptions/{0}').format(EventDestinationId)
+            redfish_path = create_path(
+                '/redfish/v1/',
+                'EventService/Subscriptions/{0}').format(EventDestinationId)
+            collection_path = create_path(self.root,
+                                          'EventService/Subscriptions',
+                                          'index.json')
+
             # Check if collection exists:
             if not os.path.exists(collection_path):
                 EventDestinationCollectionAPI().post(self)
+
             if EventDestinationId in members:
                 return 404
             try:
                 global config
-                wildcards = {'EventDestinationId': EventDestinationId, 'rb': g.rest_base}
+                wildcards = {
+                    'EventDestinationId': EventDestinationId,
+                    'rb': g.rest_base
+                }
                 config = get_EventDestination_instance(wildcards)
+                logging.info ('Calling create and patch with config: %s', config)
                 config = create_and_patch_object(config, members, member_ids, path, collection_path)
                 resp = config, 200
             except Exception:
@@ -148,8 +175,11 @@ class EventDestinationAPI(Resource):
         logging.info('EventDestination put called')
         msg, code = check_authentication(self.auth)
         if code == 200:
-            path = create_path(self.root, 'EventService/Subscriptions/{0}', 'index.json').format(EventDestinationId)
-            redfish_path = create_path('/redfish/v1/', 'EventService/Subscriptions/{0}', 'index.json').format(EventDestinationId)
+            path = create_path(self.root, 'EventService/Subscriptions/{0}',
+                               'index.json').format(EventDestinationId)
+            redfish_path = create_path('/redfish/v1/',
+                                       'EventService/Subscriptions/{0}',
+                                       'index.json').format(EventDestinationId)
             put_object(path)
             # Update subscription
             subs = load_subscriptions()
@@ -158,13 +188,9 @@ class EventDestinationAPI(Resource):
                 save_subscriptions(subs)
             # Redfish Event: ResourceChanged
             send_event(
-                "ResourceChanged",
-                "ResourceChanged",
-                f"EventDestination {EventDestinationId} changed",
-                "OK",
-                path,
-                subs[EventDestinationId] if EventDestinationId in subs else None
-            )
+                "ResourceChanged", "ResourceChanged",
+                f"EventDestination {EventDestinationId} changed", "OK", redfish_path
+                if EventDestinationId in subs else None)
             return self.get(EventDestinationId)
         else:
             return msg, code
@@ -174,8 +200,11 @@ class EventDestinationAPI(Resource):
         logging.info('EventDestination patch called')
         msg, code = check_authentication(self.auth)
         if code == 200:
-            path = create_path(self.root, 'EventService/Subscriptions/{0}', 'index.json').format(EventDestinationId)
-            redfish_path = create_path('/redfish/v1/', 'EventService/Subscriptions/{0}', 'index.json').format(EventDestinationId)
+            path = create_path(self.root, 'EventService/Subscriptions/{0}',
+                               'index.json').format(EventDestinationId)
+            redfish_path = create_path('/redfish/v1/',
+                                       'EventService/Subscriptions/{0}',
+                                       'index.json').format(EventDestinationId)
             patch_object(path)
             # Update subscription
             subs = load_subscriptions()
@@ -184,13 +213,9 @@ class EventDestinationAPI(Resource):
                 save_subscriptions(subs)
             # Redfish Event: ResourceChanged
             send_event(
-                "ResourceChanged",
-                "ResourceChanged",
-                f"EventDestination {EventDestinationId} changed",
-                "OK",
-                path,
-                subs[EventDestinationId] if EventDestinationId in subs else None
-            )
+                "ResourceChanged", "ResourceChanged",
+                f"EventDestination {EventDestinationId} changed", "OK", redfish_path
+                if EventDestinationId in subs else None)
             return self.get(EventDestinationId)
         else:
             return msg, code
@@ -200,8 +225,12 @@ class EventDestinationAPI(Resource):
         logging.info('EventDestination delete called')
         msg, code = check_authentication(self.auth)
         if code == 200:
-            path = create_path(self.root, 'EventService/Subscriptions/{0}').format(EventDestinationId)
-            redfish_path = create_path('/redfish/v1/', 'EventService/Subscriptions/{0}').format(EventDestinationId)
+            path = create_path(
+                self.root,
+                'EventService/Subscriptions/{0}').format(EventDestinationId)
+            redfish_path = create_path(
+                '/redfish/v1/',
+                'EventService/Subscriptions/{0}').format(EventDestinationId)
             base_path = create_path(self.root, 'EventService/Subscriptions')
             # Remove subscription
             subs = load_subscriptions()
@@ -209,26 +238,30 @@ class EventDestinationAPI(Resource):
                 del subs[EventDestinationId]
                 save_subscriptions(subs)
             # Redfish Event: ResourceRemoved
-            send_event(
-                "ResourceRemoved",
-                "ResourceRemoved",
-                f"EventDestination {EventDestinationId} removed",
-                "OK",
-                path,
-                None
-            )
+            send_event("ResourceRemoved", "ResourceRemoved",
+                       f"EventDestination {EventDestinationId} removed", "OK",
+                       redfish_path, None)
             return delete_object(path, base_path)
         else:
-            return msg, code
+            return msg, code# Helper for event delivery (simulate POST to subscriber destinations)def deliver_event_to_subscribers(event):
+        subs = load_subscriptions()
+        for sub_id, sub in subs.items():
+            logging.info(f"Processing subscription {sub_id}")
+            
+            if isinstance(sub, dict) and 'Destination' in sub:
+                dest = sub['Destination']
 
-# Helper for event delivery (simulate POST to subscriber destinations)
-def deliver_event_to_subscribers(event):
-    subs = load_subscriptions()
-    for sub_id, sub in subs.items():
-        dest = sub.get('Destination')
-        if dest:
-            # Here you would POST the event to the destination URL
-            logging.info(f"Delivering event to {dest}: {event}")
-            # Example: requests.post(dest, json=event)
-            pass
-
+            if dest:
+                # Here you would POST the event to the destination URL
+                logging.info(f"Delivering event to {dest}: {event}")
+                # Example: request.post(dest, json=event)
+                try:
+                    resp = request.post(dest, json=event, timeout=5, verify=False)
+                    if resp.status_code >= 200 and resp.status_code < 300:
+                        logging.info(f"Event sent to {dest} successfully.")
+                    else:
+                        logging.warning(
+                            f"Failed to send event to {dest}: {resp.status_code} {resp.text}"
+                        )
+                except Exception as e:
+                    logging.warning(f"Exception sending event to {dest}: {e}")

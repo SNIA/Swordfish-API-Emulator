@@ -33,94 +33,92 @@
 import g
 import json, os
 import traceback
-import logging, random, requests, string, jwt
+import logging
 
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
-members = []
-member_ids = []
 INTERNAL_ERROR = 500
 
 # IOConnectivityLineOfService0 Collection API
 class IOConnectivityLineOfService0CollectionAPI(Resource):
-    def __init__(self, **kwargs):
-        logging.info('IOConnectivityLineOfService0 Collection init called')
-        self.root = PATHS['Root']
-        self.auth = kwargs['auth']
+	def __init__(self, **kwargs):
+		logging.info('IOConnectivityLineOfService0 Collection init called')
+		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
-    # HTTP GET
-    def get(self, StorageServiceId):
-        logging.info('IOConnectivityLineOfService0 Collection get called')
-        msg, code = check_authentication(self.auth)
+	# HTTP GET
+	def get(self, StorageServiceId):
+		logging.info('IOConnectivityLineOfService0 Collection get called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'StorageServices/{0}/LinesOfService/IOConnectivityLinesOfService', 'index.json').format(StorageServiceId)
-            return get_json_data(path)
-        else:
-            return msg, code
+		if code == 200:
+			path = os.path.join(self.root, 'StorageServices/{0}/LinesOfService/IOConnectivityLinesOfService', 'index.json').format(StorageServiceId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
-    # HTTP POST
-    def post(self, StorageServiceId):
-        logging.info('IOConnectivityLineOfService0 Collection post called')
-        return 'POST is not a supported command for IOConnectivityLineOfService0CollectionAPI', 405
+	# HTTP POST
+	def post(self, StorageServiceId):
+		logging.info('IOConnectivityLineOfService0 Collection post called')
+		return 'POST is not a supported command for IOConnectivityLineOfService0CollectionAPI', 405
 
-    # HTTP PUT
-    def put(self, StorageServiceId):
-        logging.info('IOConnectivityLineOfService0 Collection put called')
-        return 'PUT is not a supported command for IOConnectivityLineOfService0CollectionAPI', 405
+	# HTTP PUT
+	def put(self, StorageServiceId):
+		logging.info('IOConnectivityLineOfService0 Collection put called')
+		return 'PUT is not a supported command for IOConnectivityLineOfService0CollectionAPI', 405
 
-    # HTTP PATCH
-    def patch(self, StorageServiceId):
-        logging.info('IOConnectivityLineOfService0 Collection patch called')
-        return 'PATCH is not a supported command for IOConnectivityLineOfService0CollectionAPI', 405
+	# HTTP PATCH
+	def patch(self, StorageServiceId):
+		logging.info('IOConnectivityLineOfService0 Collection patch called')
+		return 'PATCH is not a supported command for IOConnectivityLineOfService0CollectionAPI', 405
 
-    # HTTP DELETE
-    def delete(self, StorageServiceId):
-        logging.info('IOConnectivityLineOfService0 Collection delete called')
-        return 'DELETE is not a supported command for IOConnectivityLineOfService0CollectionAPI', 405
+	# HTTP DELETE
+	def delete(self, StorageServiceId):
+		logging.info('IOConnectivityLineOfService0 Collection delete called')
+		return 'DELETE is not a supported command for IOConnectivityLineOfService0CollectionAPI', 405
 
 
 # IOConnectivityLineOfService0 API
 class IOConnectivityLineOfService0API(Resource):
-    def __init__(self, **kwargs):
-        logging.info('IOConnectivityLineOfService0 init called')
-        self.root = PATHS['Root']
-        self.auth = kwargs['auth']
+	def __init__(self, **kwargs):
+		logging.info('IOConnectivityLineOfService0 init called')
+		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
-    # HTTP GET
-    def get(self, StorageServiceId, IOConnectivityLineOfServiceId):
-        logging.info('IOConnectivityLineOfService0 get called')
-        msg, code = check_authentication(self.auth)
+	# HTTP GET
+	def get(self, StorageServiceId, IOConnectivityLineOfServiceId):
+		logging.info('IOConnectivityLineOfService0 get called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'StorageServices/{0}/LinesOfService/IOConnectivityLinesOfService/{1}', 'index.json').format(StorageServiceId, IOConnectivityLineOfServiceId)
-            return get_json_data (path)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'StorageServices/{0}/LinesOfService/IOConnectivityLinesOfService/{1}', 'index.json').format(StorageServiceId, IOConnectivityLineOfServiceId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
-    # HTTP POST
-    def post(self, StorageServiceId, IOConnectivityLineOfServiceId):
-        logging.info('IOConnectivityLineOfService0 post called')
-        return 'POST is not a supported command for IOConnectivityLineOfService0API', 405
+	# HTTP POST
+	def post(self, StorageServiceId, IOConnectivityLineOfServiceId):
+		logging.info('IOConnectivityLineOfService0 post called')
+		return 'POST is not a supported command for IOConnectivityLineOfService0API', 405
 
-    # HTTP PUT
-    def put(self, StorageServiceId, IOConnectivityLineOfServiceId):
-        logging.info('IOConnectivityLineOfService0 put called')
-        return 'PUT is not a supported command for IOConnectivityLineOfService0API', 405
+	# HTTP PUT
+	def put(self, StorageServiceId, IOConnectivityLineOfServiceId):
+		logging.info('IOConnectivityLineOfService0 put called')
+		return 'PUT is not a supported command for IOConnectivityLineOfService0API', 405
 
-    # HTTP PATCH
-    def patch(self, StorageServiceId, IOConnectivityLineOfServiceId):
-        logging.info('IOConnectivityLineOfService0 patch called')
-        return 'PATCH is not a supported command for IOConnectivityLineOfService0API', 405
+	# HTTP PATCH
+	def patch(self, StorageServiceId, IOConnectivityLineOfServiceId):
+		logging.info('IOConnectivityLineOfService0 patch called')
+		return 'PATCH is not a supported command for IOConnectivityLineOfService0API', 405
 
-    # HTTP DELETE
-    def delete(self, StorageServiceId, IOConnectivityLineOfServiceId):
-        logging.info('IOConnectivityLineOfService0 delete called')
-        return 'DELETE is not a supported command for IOConnectivityLineOfService0API', 405
+	# HTTP DELETE
+	def delete(self, StorageServiceId, IOConnectivityLineOfServiceId):
+		logging.info('IOConnectivityLineOfService0 delete called')
+		return 'DELETE is not a supported command for IOConnectivityLineOfService0API', 405
 
 

@@ -1,9 +1,13 @@
 # EventService Events API implementation
 import g
-import json, os, random, string
+import json
+import os
+import random
+import string
 import traceback
 import logging
-import uuid, datetime
+import uuid
+import datetime
 
 from flask import request
 from flask_restful import Resource
@@ -46,13 +50,15 @@ def create_event(event_type, message_id, message, severity, origin, extra=None):
     if extra:
         event.update(extra)
 
-    # Post to the EventServiceEvents collection
-    new_event_api = EventServiceEventsAPI(auth=None)  # No authentication needed for posting events
-    new_event_api.post(event_id, event)
     # Send the event to any subscribers
     send_event_to_subscribers(event)
+    # Post to the EventServiceEvents collection
+    # No authentication needed for posting events
+    new_event_api = EventServiceEventsAPI(auth=None)
+    new_event_api.post(event_id, event)
+    
     return event
-
+    
 def send_event_to_subscribers(event):
     """
     Send the event to all subscribers in the EventDestination collection at /redfish/v1/EventService/Subscriptions.
@@ -62,21 +68,25 @@ def send_event_to_subscribers(event):
     import requests
 
     # Load subscriptions from the Redfish collection file
-    subs_path = create_path(PATHS['Root'], 'EventService/Subscriptions/index.json')
+    subs_path = create_path(PATHS['Root'],
+                            'EventService/Subscriptions/index.json')
     if not os.path.exists(subs_path):
-        logging.info('No EventService subscriptions found.')
+        logging.info('No EventService Subscriptions collection found.')
         return
     with open(subs_path) as f:
         data = json.load(f)
         subscriptions = data.get('Members', [])
-        logging.info(f"Found {len(subscriptions)} subscriptions in EventService.")
+        subCount = data.get('members@odata.count')
+        logging.info(
+            f"Found {subCount} subscriptions in EventService.")
 
     for sub in subscriptions:
         # Extract the subscription ID from the @odata.id field
         odata_id = sub.get('@odata.id')
         if odata_id:
             sub_id = odata_id.rstrip('/').split('/')[-1]
-            path = create_path(PATHS['Root'], 'EventService/Subscriptions', sub_id, 'index.json')
+            path = create_path(PATHS['Root'], 'EventService/Subscriptions',
+                               sub_id, 'index.json')
             logging.info(f"Processing subscription: {path}")
             jsondata = get_json_data(path)
         else:
@@ -89,20 +99,26 @@ def send_event_to_subscribers(event):
             dest_url = None
         logging.info('Destination URL: ' + str(dest_url))
         if not dest_url:
-            logging.warning(f"Subscription {odata_id} missing Destination field.")
+            logging.warning(
+                f"Subscription {odata_id} missing Destination field.")
             continue
         try:
             # Send the event as JSON to the subscriber's destination
             resp = requests.post(dest_url, json=event, timeout=5, verify=False)
             if resp.status_code >= 200 and resp.status_code < 300:
-                logging.info(f"Event sent to subscriber {dest_url} successfully.")
+                logging.info(
+                    f"Event sent to subscriber {dest_url} successfully.")
             else:
-                logging.warning(f"Failed to send event to {dest_url}: {resp.status_code} {resp.text}")
+                logging.warning(
+                    f"Failed to send event to {dest_url}: {resp.status_code} {resp.text}"
+                )
         except Exception as e:
             logging.warning(f"Exception sending event to {dest_url}: {e}")
 
-
+ #  EventServiceEventsAPI class is to manage individual events stored in EventService/Events.
+ #           
 class EventServiceEventsAPI(Resource):
+
     def __init__(self, **kwargs):
         logging.info('EventServiceEvents init called')
         self.root = PATHS['Root']
@@ -114,20 +130,27 @@ class EventServiceEventsAPI(Resource):
         msg, code = check_authentication(self.auth)
 
         if code == 200:
-            path = create_path(self.root, 'EventService/Events/{0}', 'index.json').format(EventId)
-            return get_json_data (path)
+            path = create_path(self.root, 'EventService/Events/{0}',
+                               'index.json').format(EventId)
+            return get_json_data(path)
         else:
             return msg, code
 
-    # HTTP POST 
+    # HTTP POST
     def post(self, EventId, event_data=None):
         global config
         logging.info('EventServiceEvents post called')
         msg, code = check_authentication(self.auth)
+        logging.info('EventServiceEvents POST called with EventId: ' + str(EventId))
+        logging.info('EventServiceEvents POST called with event_data: ' + str(event_data))
+        
         if code == 200:
-            path = create_path(self.root, 'EventService/Events/{0}').format(EventId)
-            redfish_path = create_path('/redfish/v1/', 'EventService/Events/{0}').format(EventId)
-            collection_path = create_path(self.root, 'EventService/Events', 'index.json')
+            path = create_path(self.root,
+                               'EventService/Events/{0}').format(EventId)
+            redfish_path = create_path(
+                '/redfish/v1/', 'EventService/Events/{0}').format(EventId)
+            collection_path = create_path(self.root, 'EventService/Events',
+                                          'index.json')
             # Check if collection exists:
             if not os.path.exists(collection_path):
                 EventServiceEventsCollectionAPI.post(self)
@@ -136,16 +159,13 @@ class EventServiceEventsAPI(Resource):
                 resp = 404
                 return resp
             try:
-                
-                # If event_data is provided, use it; otherwise, use global config
+                # Only format and send event if event_data exists
                 if (event_data):
                     config = event_data
-                    logging.info(f"Creating event with provided data: {event_data}")
-                else:
                     wildcards = {'EventId': EventId, 'rb': g.rest_base}
                     config = get_Event_instance(wildcards)
-                config = write_event(event_data, members, member_ids)
-                resp = config, 200
+                    config = write_event(event_data, members, member_ids)
+                    resp = config, 200
 
             except Exception:
                 traceback.print_exc()
@@ -154,8 +174,9 @@ class EventServiceEventsAPI(Resource):
             return resp
         else:
             return msg, code
-
+            
 class EventServiceEventsCollectionAPI(Resource):
+
     def __init__(self, **kwargs):
         logging.info('EventService Events Collection init called')
         self.root = PATHS['Root']
@@ -166,11 +187,12 @@ class EventServiceEventsCollectionAPI(Resource):
         logging.info('EventServiceEvents collection get called')
         msg, code = check_authentication(self.auth)
         if code == 200:
-            path = create_path(self.root, 'EventService/Events/{0}', 'index.json').format(EventId)
+            path = create_path(self.root, 'EventService/Events/{0}',
+                               'index.json').format(EventId)
             return get_json_data(path)
         else:
             return msg, code
-        
+
     # HTTP POST Collection
     def post(self):
         logging.info('EventService Events Collection post called')
@@ -187,13 +209,17 @@ class EventServiceEventsCollectionAPI(Resource):
             parent_path = os.path.dirname(path)
             if not os.path.exists(path):
                 os.mkdir(path)
-                create_collection (path, 'EventService/Events', parent_path)
+                create_collection(path, 'EventService/Events', parent_path)
 
-            res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            res = ''.join(
+                random.choices(string.ascii_uppercase + string.digits, k=5))
             if request.data:
                 config = json.loads(request.data)
+                logging.info(
+                    f"POST: Creating event with provided data: {config}")
                 if "@odata.id" in config:
-                    return EventServiceEventsAPI.post(self, os.path.basename(config['@odata.id']))
+                    return EventServiceEventsAPI.post(
+                        self, os.path.basename(config['@odata.id']))
                 else:
                     return EventServiceEventsAPI.post(self, str(res))
             else:

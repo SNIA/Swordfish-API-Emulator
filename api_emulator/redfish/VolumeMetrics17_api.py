@@ -33,17 +33,15 @@
 import g
 import json, os
 import traceback
-import logging, random, requests, string, jwt
+import logging
 
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection, send_event
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
-members = []
-member_ids = []
 INTERNAL_ERROR = 500
 
 # VolumeMetrics17 does not have a Collection API
@@ -51,40 +49,40 @@ INTERNAL_ERROR = 500
 
 # VolumeMetrics17 API
 class VolumeMetrics17API(Resource):
-    def __init__(self, **kwargs):
-        logging.info('VolumeMetrics17 init called')
-        self.root = PATHS['Root']
-        self.auth = kwargs['auth']
+	def __init__(self, **kwargs):
+		logging.info('VolumeMetrics17 init called')
+		self.root = PATHS['Root']
+		self.auth = kwargs['auth']
 
-    # HTTP GET
-    def get(self, StorageServiceId, StoragePoolId, CapacitySourceId, VolumeId):
-        logging.info('VolumeMetrics17 get called')
-        msg, code = check_authentication(self.auth)
+	# HTTP GET
+	def get(self, StorageServiceId, StoragePoolId, CapacitySourceId, VolumeId):
+		logging.info('VolumeMetrics17 get called')
+		msg, code = check_authentication(self.auth)
 
-        if code == 200:
-            path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingVolumes/{3}/Metrics', 'index.json').format(StorageServiceId, StoragePoolId, CapacitySourceId, VolumeId)
-            return get_json_data (path)
-        else:
-            return msg, code
+		if code == 200:
+			path = create_path(self.root, 'StorageServices/{0}/StoragePools/{1}/CapacitySources/{2}/ProvidingVolumes/{3}/Metrics', 'index.json').format(StorageServiceId, StoragePoolId, CapacitySourceId, VolumeId)
+			return get_json_data (path)
+		else:
+			return msg, code
 
-    # HTTP POST
-    def post(self, StorageServiceId, StoragePoolId, CapacitySourceId, VolumeId):
-        logging.info('VolumeMetrics17 post called')
-        return 'POST is not a supported command for VolumeMetrics17API', 405
+	# HTTP POST
+	def post(self, StorageServiceId, StoragePoolId, CapacitySourceId, VolumeId):
+		logging.info('VolumeMetrics17 post called')
+		return 'POST is not a supported command for VolumeMetrics17API', 405
 
-    # HTTP PUT
-    def put(self, StorageServiceId, StoragePoolId, CapacitySourceId, VolumeId):
-        logging.info('VolumeMetrics17 put called')
-        return 'PUT is not a supported command for VolumeMetrics17API', 405
+	# HTTP PUT
+	def put(self, StorageServiceId, StoragePoolId, CapacitySourceId, VolumeId):
+		logging.info('VolumeMetrics17 put called')
+		return 'PUT is not a supported command for VolumeMetrics17API', 405
 
-    # HTTP PATCH
-    def patch(self, StorageServiceId, StoragePoolId, CapacitySourceId, VolumeId):
-        logging.info('VolumeMetrics17 patch called')
-        return 'PATCH is not a supported command for VolumeMetrics17API', 405
+	# HTTP PATCH
+	def patch(self, StorageServiceId, StoragePoolId, CapacitySourceId, VolumeId):
+		logging.info('VolumeMetrics17 patch called')
+		return 'PATCH is not a supported command for VolumeMetrics17API', 405
 
-    # HTTP DELETE
-    def delete(self, StorageServiceId, StoragePoolId, CapacitySourceId, VolumeId):
-        logging.info('VolumeMetrics17 delete called')
-        return 'DELETE is not a supported command for VolumeMetrics17API', 405
+	# HTTP DELETE
+	def delete(self, StorageServiceId, StoragePoolId, CapacitySourceId, VolumeId):
+		logging.info('VolumeMetrics17 delete called')
+		return 'DELETE is not a supported command for VolumeMetrics17API', 405
 
 

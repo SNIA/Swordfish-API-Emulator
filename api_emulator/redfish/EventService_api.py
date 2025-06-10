@@ -33,17 +33,15 @@
 import g
 import json, os
 import traceback
-import logging, random, requests, string, jwt
+import logging
 
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
 from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
-members = []
-member_ids = []
 INTERNAL_ERROR = 500
 
 # EventService does not have a Collection API
@@ -56,14 +54,24 @@ class EventServiceAPI(Resource):
 		self.root = PATHS['Root']
 		self.auth = kwargs['auth']
 
-	# HTTP GET
+    # HTTP GET
 	def get(self):
 		logging.info('EventService get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'index.json')
-			return get_json_data (path)
+			path = create_path(self.root, 'EventService', 'index.json')
+			if not os.path.exists(path):
+				# fallback to old path for compatibility
+				path = create_path(self.root, 'index.json')
+			data = get_json_data(path)
+			# Ensure Subscriptions property is present and correct
+			if "Subscriptions" not in data or not isinstance(
+					data["Subscriptions"], dict):
+				data["Subscriptions"] = {
+					"@odata.id": "/redfish/v1/EventService/Subscriptions"
+				}
+			return data
 		else:
 			return msg, code
 

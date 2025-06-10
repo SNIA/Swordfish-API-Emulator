@@ -63,6 +63,9 @@ from api_emulator.static_resource_manager import StaticResourceManager
 from api_emulator.exceptions import CreatePooledNodeError, ConfigurationError, RemovePooledNodeError
 from api_emulator.resource_dictionary import ResourceDictionary
 from api_emulator.redfish.ServiceRoot1_api import *
+from api_emulator.redfish.EventService_api import EventServiceAPI
+from api_emulator.redfish.EventDestination_api import EventDestinationAPI
+from api_emulator.redfish.EventServiceEvents_api import EventServiceEventsAPI
 from api_emulator.utils import *
 
 # from infragen.populate import populate

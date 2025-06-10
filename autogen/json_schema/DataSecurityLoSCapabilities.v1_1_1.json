@@ -1,0 +1,272 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/DataSecurityLoSCapabilities.v1_1_1.json",
+    "$ref": "#/definitions/DataSecurityLoSCapabilities",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "Actions": {
+            "additionalProperties": false,
+            "description": "The available actions for this resource.",
+            "longDescription": "This type shall contain the available actions for this resource.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "Oem": {
+                    "$ref": "#/definitions/OemActions",
+                    "description": "This property contains the available OEM specific actions for this resource.",
+                    "longDescription": "This property shall contain any additional OEM actions for this resource.",
+                    "versionAdded": "v1_1_0"
+                }
+            },
+            "type": "object"
+        },
+        "DataSecurityLoSCapabilities": {
+            "additionalProperties": false,
+            "description": "Describe data security capabilities.",
+            "longDescription": "This resource may be used to describe data security capabilities.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "@odata.context": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/context"
+                },
+                "@odata.etag": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/etag"
+                },
+                "@odata.id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/id"
+                },
+                "@odata.type": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/type"
+                },
+                "Actions": {
+                    "$ref": "#/definitions/Actions",
+                    "description": "The available actions for this resource.",
+                    "longDescription": "The Actions property shall contain the available actions for this resource.",
+                    "versionAdded": "v1_1_0"
+                },
+                "Description": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Description"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "readonly": true
+                },
+                "Id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Id",
+                    "readonly": true
+                },
+                "Identifier": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Identifier",
+                    "description": "The value identifies this resource.",
+                    "longDescription": "The value identifies this resource.  The value shall be unique within the managed ecosystem."
+                },
+                "Name": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Name",
+                    "readonly": true
+                },
+                "Oem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "description": "The OEM extension property.",
+                    "longDescription": "This property shall contain the OEM extensions.  All values for properties that this object contains shall conform to the Redfish Specification-described requirements."
+                },
+                "SupportedAntivirusEngineProviders": {
+                    "description": "Supported AntiVirus providers.",
+                    "items": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "longDescription": "The entry values shall specify supported AntiVirus providers.",
+                    "readonly": false,
+                    "type": "array"
+                },
+                "SupportedAntivirusScanPolicies": {
+                    "description": "Supported policies that trigger an AntiVirus scan.",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataSecurityLoSCapabilities.json#/definitions/AntiVirusScanTrigger"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "longDescription": "The enumeration literal shall specify supported policies that trigger an AntiVirus scan.",
+                    "readonly": false,
+                    "type": "array"
+                },
+                "SupportedChannelEncryptionStrengths": {
+                    "description": "Supported key sizes for transport channel encryption.",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataSecurityLoSCapabilities.json#/definitions/KeySize"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "longDescription": "The enumeration literal shall specify supported key sizes in a symmetric encryption algorithm (AES) for transport channel encryption.",
+                    "readonly": false,
+                    "type": "array"
+                },
+                "SupportedDataSanitizationPolicies": {
+                    "description": "Supported data sanitization policies.",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataSecurityLoSCapabilities.json#/definitions/DataSanitizationPolicy"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "longDescription": "The enumeration literal shall specify supported data sanitization policies.",
+                    "readonly": false,
+                    "type": "array"
+                },
+                "SupportedHostAuthenticationTypes": {
+                    "description": "Supported authentication types for hosts (servers) or initiator endpoints.",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataSecurityLoSCapabilities.json#/definitions/AuthenticationType"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "longDescription": "The enumeration literal shall specify supported authentication types for hosts (servers) or initiator endpoints.",
+                    "readonly": false,
+                    "type": "array"
+                },
+                "SupportedLinesOfService": {
+                    "autoExpand": true,
+                    "description": "Collection of known and supported DataSecurityLinesOfService.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataSecurityLineOfService.json#/definitions/DataSecurityLineOfService"
+                    },
+                    "longDescription": "The collection shall contain supported DataSecurity service options.",
+                    "readonly": false,
+                    "type": "array"
+                },
+                "SupportedLinesOfService@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                },
+                "SupportedMediaEncryptionStrengths": {
+                    "description": "Supported key sizes for media encryption.",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataSecurityLoSCapabilities.json#/definitions/KeySize"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "longDescription": "The enumeration literal shall specify supported key sizes in a symmetric encryption algorithm (AES) for media encryption.",
+                    "readonly": false,
+                    "type": "array"
+                },
+                "SupportedSecureChannelProtocols": {
+                    "description": "Supported protocols that provide encrypted communication.",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataSecurityLoSCapabilities.json#/definitions/SecureChannelProtocol"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "longDescription": "The enumeration literal shall specify supported protocols that provide encrypted communication.",
+                    "readonly": false,
+                    "type": "array"
+                },
+                "SupportedUserAuthenticationTypes": {
+                    "description": "Supported authentication types for users (or programs).",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataSecurityLoSCapabilities.json#/definitions/AuthenticationType"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "longDescription": "The enumeration literal shall specify supported authentication types for users (or programs).",
+                    "readonly": false,
+                    "type": "array"
+                }
+            },
+            "required": [
+                "@odata.id",
+                "@odata.type",
+                "Id",
+                "Name"
+            ],
+            "type": "object"
+        },
+        "OemActions": {
+            "additionalProperties": true,
+            "description": "The available OEM specific actions for this resource.",
+            "longDescription": "This type shall contain any additional OEM actions for this resource.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {},
+            "type": "object"
+        }
+    },
+    "owningEntity": "SNIA",
+    "release": "1.0.5",
+    "title": "#DataSecurityLoSCapabilities.v1_1_1.DataSecurityLoSCapabilities"
+}

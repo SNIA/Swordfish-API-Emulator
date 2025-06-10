@@ -1,0 +1,121 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageReplicaInfo.json",
+    "$ref": "#/definitions/StorageReplicaInfo",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "ReplicaFaultDomain": {
+            "description": "Values of ReplicaFaultDomain describe the fault domain for the replication relationship.",
+            "enum": [
+                "Local",
+                "Remote"
+            ],
+            "enumDescriptions": {
+                "Local": "Local indicates that the source and target replicas are contained within a single fault domain.",
+                "Remote": "Remote indicates that the source and target replicas are in separate fault domains."
+            },
+            "enumLongDescriptions": {
+                "Local": "This enumeration literal shall indicate that the source and target replicas are contained within a single fault domain.",
+                "Remote": "This enumeration literal shall indicate that the source and target replicas are in separate fault domains."
+            },
+            "longDescription": "The enumeration literals may be used to specify the fault domain for the replication relationship.",
+            "type": "string"
+        },
+        "ReplicaInfo": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageReplicaInfo.v1_0_2.json#/definitions/ReplicaInfo"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageReplicaInfo.v1_1_2.json#/definitions/ReplicaInfo"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageReplicaInfo.v1_2_0.json#/definitions/ReplicaInfo"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageReplicaInfo.v1_3_0.json#/definitions/ReplicaInfo"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageReplicaInfo.v1_4_0.json#/definitions/ReplicaInfo"
+                }
+            ],
+            "description": "Defines the characteristics of a replica of a source.",
+            "longDescription": "The value shall define the characteristics of a replica of a source."
+        },
+        "ReplicaType": {
+            "description": "Values of ReplicaType describe the intended outcome of the replication.",
+            "enum": [
+                "Mirror",
+                "Snapshot",
+                "Clone",
+                "TokenizedClone"
+            ],
+            "enumDescriptions": {
+                "Clone": "Create a point in time, full copy the source.",
+                "Mirror": "Create and maintain a copy of the source.",
+                "Snapshot": "Create a point in time, virtual copy of the source.",
+                "TokenizedClone": "Create a token based clone."
+            },
+            "enumLongDescriptions": {
+                "Clone": "This enumeration literal shall indicate that replication shall create a point in time, full copy the source.",
+                "Mirror": "This enumeration literal shall indicate that replication shall create and maintain a copy of the source.",
+                "Snapshot": "This enumeration literal shall indicate that replication shall create a point in time, virtual copy of the source.",
+                "TokenizedClone": "This enumeration literal shall indicate that replication shall create a token based clone."
+            },
+            "longDescription": "The enumeration literals may be used to specify the intended outcome of the replication.",
+            "type": "string"
+        },
+        "ReplicaUpdateMode": {
+            "description": "Values of ReplicaUpdateMode describe whether the target elements will be updated synchronously or asynchronously.",
+            "enum": [
+                "Active",
+                "Synchronous",
+                "Asynchronous",
+                "Adaptive"
+            ],
+            "enumDescriptions": {
+                "Active": "Active-Active (i.e. bidirectional) synchronous updates.",
+                "Adaptive": "Allows implementation to switch between synchronous and asynchronous modes.",
+                "Asynchronous": "Asynchronous updates.",
+                "Synchronous": "Synchronous updates."
+            },
+            "enumLongDescriptions": {
+                "Active": "This enumeration literal shall indicate Active-Active (i.e. bidirectional) synchronous updates.",
+                "Adaptive": "This enumeration literal shall indicate that an implementation may switch between synchronous and asynchronous modes.",
+                "Asynchronous": "This enumeration literal shall indicate Asynchronous updates.",
+                "Synchronous": "This enumeration literal shall indicate Synchronous updates."
+            },
+            "longDescription": "The enumeration literals may be used to specify whether the target elements will be updated synchronously or asynchronously.",
+            "type": "string"
+        },
+        "StorageReplicaInfo": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageReplicaInfo.v1_0_2.json#/definitions/StorageReplicaInfo"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageReplicaInfo.v1_1_2.json#/definitions/StorageReplicaInfo"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageReplicaInfo.v1_2_0.json#/definitions/StorageReplicaInfo"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageReplicaInfo.v1_3_0.json#/definitions/StorageReplicaInfo"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageReplicaInfo.v1_4_0.json#/definitions/StorageReplicaInfo"
+                }
+            ],
+            "deletable": true,
+            "description": "Defines the characteristics of a Storage Replica.",
+            "insertable": false,
+            "longDescription": "This entity shall define the characteristics of a replica.",
+            "updatable": true
+        }
+    },
+    "owningEntity": "SNIA",
+    "title": "#StorageReplicaInfo.StorageReplicaInfo"
+}

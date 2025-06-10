@@ -525,3 +525,6 @@ from api_emulator.redfish.Volume18_api import *
 from api_emulator.redfish.Volume19_api import *
 from api_emulator.redfish.Zone0_api import *
 from api_emulator.redfish.Zone1_api import *
+from api_emulator.redfish.Memory6_api import *
+from api_emulator.redfish.Certificate79_api import *
+from api_emulator.redfish.LeakDetector4_api import *

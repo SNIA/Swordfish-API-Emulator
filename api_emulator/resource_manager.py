@@ -917,7 +917,9 @@ from api_emulator.redfish.VolumeMetrics16_api import *
 from api_emulator.redfish.VolumeMetrics17_api import *
 from api_emulator.redfish.VolumeMetrics18_api import *
 from api_emulator.redfish.VolumeMetrics19_api import *
-
+from api_emulator.redfish.Memory6_api import *
+from api_emulator.redfish.Certificate79_api import *
+from api_emulator.redfish.LeakDetector4_api import *
 
 from . import utils
 import os
@@ -1240,6 +1242,7 @@ class ResourceManager(object):
         g.api.add_resource(Certificate37API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Certificates/<string:CertificateId>', resource_class_kwargs={'auth': auth})
 
         g.api.add_resource(Certificate38CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Certificates', resource_class_kwargs={'auth': auth})
+
         g.api.add_resource(Certificate38API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Certificates/<string:CertificateId>', resource_class_kwargs={'auth': auth})
 
         g.api.add_resource(Certificate39CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/StorageControllers/<string:StorageControllerId>/Certificates', resource_class_kwargs={'auth': auth})
@@ -3459,38 +3462,6 @@ class ResourceManager(object):
         obj = self.resource_dictionary.get_resource(path)
         return obj
 
-
-'''
-    def remove_pooled_node(self, cs_puid):
-        """
-        Delete the specified pooled node and free its resources.
-
-        Throws a RemovePooledNodeError Exception if a problem is encountered.
-
-        Arguments:
-            cs_puid - CS_PUID of the pooed node to remove
-        """
-        self.remove_method(cs_puid)
-
-    def update_cs(self,cs_puid,rs):
-        """
-            Updates the power metrics of Systems/1
-        """
-        cs=self.Systems[cs_puid]
-        cs.reboot(rs)
-        return cs.configuration
-
-    def update_system(self,rs,c_id):
-        """
-            Updates selected System
-        """
-        self.Systems[c_id].update_config(rs)
-
-        event = Event(eventType='ResourceUpdated', severity='Notification', message='System updated',
-                      messageID='ResourceUpdated.1.0.System', originOfCondition='/redfish/v1/System/{0}'.format(c_id))
-        self.push_event(event, 'ResourceUpdated')
-        return self.Systems[c_id].configuration
-
     def add_event_subscription(self, rs):
         destination = rs['Destination']
         types = rs['Types']
@@ -3554,4 +3525,4 @@ class EventWorker(Thread):
             urllib2.urlopen(request, json.dumps(self.event.configuration), 15)
         except Exception:
             pass
-'''
+

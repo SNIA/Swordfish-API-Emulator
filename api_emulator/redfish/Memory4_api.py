@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2024, The Storage Networking Industry Association.
+# Copyright (c) 2017-2025, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Memory/{MemoryId}
+# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Memory/{MemoryId}
 # Program name - Memory4_api.py
 
 import g
@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.Memory4 import get_Memory4_instance
 
 members = []
@@ -53,18 +53,18 @@ class Memory4CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId):
+	def get(self, ResourceBlockId, ComputerSystemId):
 		logging.info('Memory4 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'ResourceBlocks/{0}/Memory', 'index.json').format(ResourceBlockId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory', 'index.json').format(ResourceBlockId, ComputerSystemId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ResourceBlockId):
+	def post(self, ResourceBlockId, ComputerSystemId):
 		logging.info('Memory4 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Memory4CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if ResourceBlockId in members:
+			if ComputerSystemId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'ResourceBlocks/{0}/Memory').format(ResourceBlockId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory').format(ResourceBlockId, ComputerSystemId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Memory4CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Memory4API.post(self, ResourceBlockId, os.path.basename(config['@odata.id']))
+					return Memory4API.post(self, ResourceBlockId, ComputerSystemId, os.path.basename(config['@odata.id']))
 				else:
-					return Memory4API.post(self, ResourceBlockId, str(res))
+					return Memory4API.post(self, ResourceBlockId, ComputerSystemId, str(res))
 			else:
-				return Memory4API.post(self, ResourceBlockId, str(res))
+				return Memory4API.post(self, ResourceBlockId, ComputerSystemId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Memory4API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, MemoryId):
+	def get(self, ResourceBlockId, ComputerSystemId, MemoryId):
 		logging.info('Memory4 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Memory/{1}', 'index.json').format(ResourceBlockId, MemoryId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, MemoryId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,28 +119,31 @@ class Memory4API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ResourceBlockId, MemoryId):
+	def post(self, ResourceBlockId, ComputerSystemId, MemoryId):
 		logging.info('Memory4 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Memory/{1}').format(ResourceBlockId, MemoryId)
-			collection_path = os.path.join(self.root, 'ResourceBlocks/{0}/Memory', 'index.json').format(ResourceBlockId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}').format(ResourceBlockId, ComputerSystemId, MemoryId)
+			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}').format(ResourceBlockId, ComputerSystemId, MemoryId)
+			collection_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory', 'index.json').format(ResourceBlockId, ComputerSystemId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Memory4CollectionAPI.post(self, ResourceBlockId)
+				Memory4CollectionAPI.post(self, ResourceBlockId, ComputerSystemId)
 
 			if MemoryId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ResourceBlockId':ResourceBlockId, 'MemoryId':MemoryId, 'rb':g.rest_base}
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'MemoryId':MemoryId, 'rb':g.rest_base}
 				config=get_Memory4_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
 
+				# Send ResourceCreated event with payload
+				send_event("ResourceCreated","ResourceEvent.1.4.2.ResourceCreated", "The resource was created successfully.", "OK", redfish_path)
 			except Exception:
 				traceback.print_exc()
 				resp = INTERNAL_ERROR
@@ -150,38 +153,105 @@ class Memory4API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, MemoryId):
+	def put(self, ResourceBlockId, ComputerSystemId, MemoryId):
 		logging.info('Memory4 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Memory/{1}', 'index.json').format(ResourceBlockId, MemoryId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, MemoryId)
+			redfish_path = create_path('/redfish/v1', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, MemoryId)
+			# Event logic for PUT
+			old_version = None
+			try:
+				with open(path, 'r') as data_json:
+					old_version = json.load(data_json)
+			except Exception:
+				old_version = {}
+			health_changed_to = None
+			state_changed = False
+			new_state = None
+			if request.data:
+				new_version = json.loads(request.data)
+				old_health = old_health = old_version['Status']['Health']
+				new_health = new_version['Status']['Health']
+				if old_health != new_health:
+					health_changed_to = new_health
+				old_state = old_version['Status']['State']
+				new_state = new_version['Status']['State']
+				if old_state != new_state:
+					state_changed = True
+			if old_version != new_version:
+				send_event("ResourceChanged", "ResourceEvent.1.4.2.ResourceChanged", "One or more resource properties have changed.", "OK", redfish_path)
+			if health_changed_to == 'OK':
+				send_event("ResourceStatusChangedOK", "ResourceEvent.1.4.2.ResourceStatusChangedOK", f"The health of resource '{redfish_path}' has changed to OK.", "OK", redfish_path)
+			if health_changed_to == 'Critical':
+				send_event("ResourceStatusChangedCritical", "ResourceEvent.1.4.2.ResourceStatusChangedCritical", f"The health of resource '{redfish_path}' has changed to Critical.", "Critical", redfish_path)
+			if health_changed_to == 'Warning':
+				send_event("ResourceStatusChangedWarning", "ResourceEvent.1.4.2.ResourceStatusChangedWarning", f"The health of resource '{redfish_path}' has changed to Warning.", "Warning", redfish_path)
+			if state_changed:
+				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
 			put_object(path)
-			return self.get(ResourceBlockId, MemoryId)
+			return self.get(ResourceBlockId, ComputerSystemId, MemoryId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, MemoryId):
+	def patch(self, ResourceBlockId, ComputerSystemId, MemoryId):
 		logging.info('Memory4 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Memory/{1}', 'index.json').format(ResourceBlockId, MemoryId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, MemoryId)
+			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, MemoryId)
+			# Event logic for PATCH
+			if request.data:
+				old_version = None
+				try:
+					with open(path, 'r') as data_json:
+						old_version = json.load(data_json)
+				except Exception:
+					old_version = {}
+				health_changed_to = None
+				state_changed = False
+				new_state = None
+				new_version = json.loads(request.data)
+				old_health = old_version['Status']['Health']
+				new_health = new_version['Status']['Health']
+				old_state = old_version['Status']['State']
+				new_state = new_version['Status']['State']
+				if old_version != new_version:
+					send_event("ResourceChanged", "ResourceEvent.1.4.2.ResourceChanged", "One or more resource properties have changed.", "OK", redfish_path)
+				if old_health != new_health:
+					health_changed_to = new_health
+				if old_state != new_state:
+					state_changed = True
+				if health_changed_to == 'OK':
+					send_event("ResourceStatusChangedOK", "ResourceEvent.1.4.2.ResourceStatusChangedOK", f"The health of resource '{redfish_path}' has changed to OK.", "OK", redfish_path)
+				if health_changed_to == 'Critical':
+					send_event("ResourceStatusChangedCritical", "ResourceEvent.1.4.2.ResourceStatusChangedCritical", f"The health of resource '{redfish_path}' has changed to Critical.", "Critical", redfish_path)
+				if health_changed_to == 'Warning':
+					send_event("ResourceStatusChangedWarning", "ResourceEvent.1.4.2.ResourceStatusChangedWarning", f"The health of resource '{redfish_path}' has changed to Warning.", "Warning", redfish_path)
+				if state_changed:
+					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
 			patch_object(path)
-			return self.get(ResourceBlockId, MemoryId)
+			return self.get(ResourceBlockId, ComputerSystemId, MemoryId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, MemoryId):
+	def delete(self, ResourceBlockId, ComputerSystemId, MemoryId):
 		logging.info('Memory4 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Memory/{1}').format(ResourceBlockId, MemoryId)
-			base_path = create_path(self.root, 'ResourceBlocks/{0}/Memory').format(ResourceBlockId)
-			return delete_object(path, base_path)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}').format(ResourceBlockId, ComputerSystemId, MemoryId)
+			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory/{2}').format(ResourceBlockId, ComputerSystemId, MemoryId)
+			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Memory').format(ResourceBlockId, ComputerSystemId)
+			# Event logic for DELETE
+			obj = get_json_data(path)
+			delete_object(path, base_path)
+			send_event("ResourceRemoved", "ResourceEvent.1.4.2.ResourceRemoved", "The resource was removed successfully.", "OK", redfish_path)
+			return '', 204
 		else:
 			return msg, code
 

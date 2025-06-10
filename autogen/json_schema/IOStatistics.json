@@ -1,0 +1,18 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/IOStatistics.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "IOStatistics": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOStatistics.v1_0_4.json#/definitions/IOStatistics"
+                }
+            ],
+            "description": "The properties of this type represent IO statistics.",
+            "longDescription": "The properties of this type shall be used to represent the IO statistics of the requested object."
+        }
+    },
+    "owningEntity": "SNIA",
+    "title": "#IOStatistics"
+}

@@ -1,0 +1,178 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/DataSecurityLineOfService.v1_0_2.json",
+    "$ref": "#/definitions/DataSecurityLineOfService",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "DataSecurityLineOfService": {
+            "additionalProperties": false,
+            "description": "Describes data security service level requirements.",
+            "longDescription": "This structure shall be used to describe data security service level requirements.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "@odata.context": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/context"
+                },
+                "@odata.etag": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/etag"
+                },
+                "@odata.id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/id"
+                },
+                "@odata.type": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/type"
+                },
+                "AntivirusEngineProvider": {
+                    "description": "AntiVirus provider.",
+                    "longDescription": "The value shall specify an AntiVirus provider.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "AntivirusScanPolicies": {
+                    "description": "Policy for triggering an AntiVirus scan.",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataSecurityLoSCapabilities.json#/definitions/AntiVirusScanTrigger"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "longDescription": "The enumeration literal shall specify the policy for triggering an AntiVirus scan.",
+                    "readonly": false,
+                    "type": "array"
+                },
+                "ChannelEncryptionStrength": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataSecurityLoSCapabilities.json#/definitions/KeySize"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "Key size for transport channel encryption.",
+                    "longDescription": "The enumeration literal shall specify a key size in a symmetric encryption algorithm for transport channel encryption.",
+                    "readonly": false
+                },
+                "DataSanitizationPolicy": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataSecurityLoSCapabilities.json#/definitions/DataSanitizationPolicy"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "Data sanitization policy.",
+                    "longDescription": "The enumeration literal shall specify the data sanitization policy.",
+                    "readonly": false
+                },
+                "Description": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Description"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "readonly": true
+                },
+                "HostAuthenticationType": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataSecurityLoSCapabilities.json#/definitions/AuthenticationType"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "Authentication type for hosts (servers) or initiator endpoints.",
+                    "longDescription": "The enumeration literal shall specify the authentication type for hosts (servers) or initiator endpoints.",
+                    "readonly": false
+                },
+                "Id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Id",
+                    "readonly": true
+                },
+                "MediaEncryptionStrength": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataSecurityLoSCapabilities.json#/definitions/KeySize"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "Key size for media encryption.",
+                    "longDescription": "The enumeration literal shall specify a key size in a symmetric encryption algorithm for media encryption.",
+                    "readonly": false
+                },
+                "Name": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Name",
+                    "readonly": true
+                },
+                "Oem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "description": "The OEM extension property.",
+                    "longDescription": "This property shall contain the OEM extensions.  All values for properties that this object contains shall conform to the Redfish Specification-described requirements."
+                },
+                "SecureChannelProtocol": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataSecurityLoSCapabilities.json#/definitions/SecureChannelProtocol"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "Protocol that provide encrypted communication.",
+                    "longDescription": "The enumeration literal shall specify the protocol that provide encrypted communication.",
+                    "readonly": false
+                },
+                "UserAuthenticationType": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataSecurityLoSCapabilities.json#/definitions/AuthenticationType"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "Authentication type for users (or programs).",
+                    "longDescription": "The enumeration literal shall specify the authentication type for users (or programs).",
+                    "readonly": false
+                }
+            },
+            "required": [
+                "@odata.id",
+                "@odata.type",
+                "Id",
+                "Name"
+            ],
+            "type": "object"
+        }
+    },
+    "owningEntity": "SNIA",
+    "release": "1.0.6",
+    "title": "#DataSecurityLineOfService.v1_0_2.DataSecurityLineOfService"
+}

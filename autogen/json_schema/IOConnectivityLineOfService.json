@@ -1,0 +1,35 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/IOConnectivityLineOfService.json",
+    "$ref": "#/definitions/IOConnectivityLineOfService",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "IOConnectivityLineOfService": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOConnectivityLineOfService.v1_0_3.json#/definitions/IOConnectivityLineOfService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOConnectivityLineOfService.v1_1_2.json#/definitions/IOConnectivityLineOfService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOConnectivityLineOfService.v1_2_1.json#/definitions/IOConnectivityLineOfService"
+                }
+            ],
+            "deletable": true,
+            "description": "A service option within the IO Connectivity line of service.",
+            "insertable": false,
+            "longDescription": "An IO connectivity service option may be used to specify the characteristics of storage connectivity.",
+            "updatable": true,
+            "uris": [
+                "/redfish/v1/StorageServices/{StorageServiceId}/LinesOfService/IOConnectivityLinesOfService/{IOConnectivityLineOfServiceId}",
+                "/redfish/v1/StorageServices/{StorageServiceId}/ClassesOfService/{ClassOfServiceId}/IOConnectivityLinesOfService/{IOConnectivityLineOfServiceId}"
+            ]
+        }
+    },
+    "owningEntity": "SNIA",
+    "title": "#IOConnectivityLineOfService.IOConnectivityLineOfService"
+}

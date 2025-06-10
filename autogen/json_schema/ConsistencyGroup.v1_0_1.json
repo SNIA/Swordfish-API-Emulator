@@ -1,0 +1,558 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/ConsistencyGroup.v1_0_1.json",
+    "$ref": "#/definitions/ConsistencyGroup",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "Actions": {
+            "additionalProperties": false,
+            "description": "The available actions for this resource.",
+            "longDescription": "This property shall contain any actions for this resource.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "#ConsistencyGroup.AssignReplicaTarget": {
+                    "$ref": "#/definitions/AssignReplicaTarget"
+                },
+                "#ConsistencyGroup.CreateReplicaTarget": {
+                    "$ref": "#/definitions/CreateReplicaTarget"
+                },
+                "#ConsistencyGroup.RemoveReplicaRelationship": {
+                    "$ref": "#/definitions/RemoveReplicaRelationship"
+                },
+                "#ConsistencyGroup.ResumeReplication": {
+                    "$ref": "#/definitions/ResumeReplication"
+                },
+                "#ConsistencyGroup.ReverseReplicationRelationship": {
+                    "$ref": "#/definitions/ReverseReplicationRelationship"
+                },
+                "#ConsistencyGroup.SplitReplication": {
+                    "$ref": "#/definitions/SplitReplication"
+                },
+                "#ConsistencyGroup.SuspendReplication": {
+                    "$ref": "#/definitions/SuspendReplication"
+                },
+                "Oem": {
+                    "$ref": "#/definitions/OemActions",
+                    "description": "This property contains the available OEM specific actions for this resource.",
+                    "longDescription": "This property shall contain any additional OEM actions for this resource."
+                }
+            },
+            "type": "object"
+        },
+        "AssignReplicaTarget": {
+            "additionalProperties": false,
+            "description": "This action is used to establish a replication relationship by assigning an existing consistency group to serve as a target replica for an existing source consistency group.",
+            "longDescription": "This action shall be used to establish a replication relationship by assigning an existing consistency group to serve as a target replica for an existing source consistency group.",
+            "parameters": {
+                "ReplicaType": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageReplicaInfo.json#/definitions/ReplicaType",
+                    "description": "The type of replica relationship to be created (e.g., Clone, Mirror, Snap).",
+                    "longDescription": "This parameter shall contain the type of replica relationship to be created.",
+                    "requiredParameter": true
+                },
+                "ReplicaUpdateMode": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageReplicaInfo.json#/definitions/ReplicaUpdateMode",
+                    "description": "The replica update mode (synchronous vs asynchronous).",
+                    "longDescription": "This parameter shall specify the replica update mode.",
+                    "requiredParameter": true
+                },
+                "TargetConsistencyGroup": {
+                    "description": "The Uri to the existing target consistency group.",
+                    "longDescription": "This parameter shall contain the Uri to the existing consistency group.",
+                    "requiredParameter": true,
+                    "type": "string"
+                }
+            },
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "target": {
+                    "description": "Link to invoke action",
+                    "format": "uri-reference",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "ConsistencyGroup": {
+            "additionalProperties": false,
+            "description": "A collection of volumes grouped together to ensure write order consistency across all those volumes.",
+            "longDescription": "A collection of volumes grouped together to ensure write order consistency across all those volumes. A management operation on a consistency group, such as configuring replication properties, applies to all the volumes within the consistency group.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "@odata.context": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/context"
+                },
+                "@odata.etag": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/etag"
+                },
+                "@odata.id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/id"
+                },
+                "@odata.type": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/type"
+                },
+                "Actions": {
+                    "$ref": "#/definitions/Actions",
+                    "description": "The available actions for this resource.",
+                    "longDescription": "The Actions property shall contain the available actions for this resource."
+                },
+                "ConsistencyMethod": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/ConsistencyGroup.json#/definitions/ApplicationConsistencyMethod"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "The consistency method used by this group.",
+                    "longDescription": "The property shall set the consistency method used by this group.",
+                    "readonly": false
+                },
+                "ConsistencyType": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/ConsistencyGroup.json#/definitions/ConsistencyType"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "The consistency type used by this group.",
+                    "longDescription": "This property shall set the consistency type used by this group.",
+                    "readonly": false
+                },
+                "Description": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Description"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "readonly": true
+                },
+                "Id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Id",
+                    "readonly": true
+                },
+                "IsConsistent": {
+                    "description": "This value is true when the consistency group is in a consistent state.",
+                    "longDescription": "The value of this property shall be set to true when the consistency group is in a consistent state.",
+                    "readonly": true,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ]
+                },
+                "Links": {
+                    "$ref": "#/definitions/Links",
+                    "description": "Contains links to other resources that are related to this resource.",
+                    "longDescription": "This property shall contain links to other resources that are related to this resource."
+                },
+                "Name": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Name",
+                    "readonly": true
+                },
+                "Oem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "description": "The OEM extension property.",
+                    "longDescription": "This property shall contain the OEM extensions.  All values for properties that this object contains shall conform to the Redfish Specification-described requirements."
+                },
+                "ReplicaInfo": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageReplicaInfo.v1_4_0.json#/definitions/ReplicaInfo",
+                    "description": "Describes this storage group in its role as a target for replication.",
+                    "longDescription": "This property shall describe the replication relationship between this storage group and a corresponding source storage group."
+                },
+                "ReplicaTargets": {
+                    "description": "The resources that are target replicas of this source.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                    },
+                    "longDescription": "The value shall reference the target replicas that are sourced by this replica.",
+                    "readonly": true,
+                    "type": "array"
+                },
+                "ReplicaTargets@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                },
+                "Status": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Status",
+                    "description": "The property contains the status of the ConsistencyGroup.",
+                    "longDescription": "The property shall contain the status of the ConsistencyGroup."
+                },
+                "Volumes": {
+                    "description": "Volumes in this storage group.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.json#/definitions/Volume"
+                    },
+                    "longDescription": "An array of references to volumes managed by this storage group.",
+                    "readonly": false,
+                    "type": "array"
+                },
+                "Volumes@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                }
+            },
+            "required": [
+                "@odata.id",
+                "@odata.type",
+                "Id",
+                "Name"
+            ],
+            "type": "object"
+        },
+        "CreateReplicaTarget": {
+            "additionalProperties": false,
+            "description": "This action is used to create a new consistency group resource to provide expanded data protection through a replica relationship with the specified source consistency group.",
+            "longDescription": "This action shall be used to create a new consistency group resource to provide expanded data protection through a replica relationship with the specified source consistency group.",
+            "parameters": {
+                "ConsistencyGroupName": {
+                    "description": "The Name for the new target consistency group.",
+                    "longDescription": "This parameter shall contain the Name for the target consistency group.",
+                    "requiredParameter": true,
+                    "type": "string"
+                },
+                "ReplicaType": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageReplicaInfo.json#/definitions/ReplicaType",
+                    "description": "The type of replica relationship to be created (e.g., Clone, Mirror, Snap).",
+                    "longDescription": "This parameter shall contain the type of replica relationship to be created.",
+                    "requiredParameter": true
+                },
+                "ReplicaUpdateMode": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageReplicaInfo.json#/definitions/ReplicaUpdateMode",
+                    "description": "The replica update mode (synchronous vs asynchronous).",
+                    "longDescription": "This parameter shall specify the replica update mode.",
+                    "requiredParameter": true
+                },
+                "TargetStoragePool": {
+                    "description": "The Uri to the existing target Storage Pool.",
+                    "longDescription": "This parameter shall contain the Uri to the existing StoragePool in which to create the target consistency group.",
+                    "requiredParameter": true,
+                    "type": "string"
+                }
+            },
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "target": {
+                    "description": "Link to invoke action",
+                    "format": "uri-reference",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Links": {
+            "additionalProperties": false,
+            "description": "Contains links to other resources that are related to this resource.",
+            "longDescription": "This structure shall contain references to resources that are not contained within this resource.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "Oem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "description": "The OEM extension property.",
+                    "longDescription": "This property shall contain the OEM extensions.  All values for properties contained in this object shall conform to the Redfish Specification-described requirements."
+                }
+            },
+            "type": "object"
+        },
+        "OemActions": {
+            "additionalProperties": true,
+            "description": "The available OEM specific actions for this resource.",
+            "longDescription": "This type shall contain any additional OEM actions for this resource.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {},
+            "type": "object"
+        },
+        "RemoveReplicaRelationship": {
+            "additionalProperties": false,
+            "description": "This action is used to disable data synchronization between a source and target consistency group, remove the replication relationship, and optionally delete the target consistency group.",
+            "longDescription": "This action shall be used to disable data synchronization between a source and target consistency group, remove the replication relationship, and optionally delete the target consistency group.",
+            "parameters": {
+                "DeleteTargetConsistencyGroup": {
+                    "description": "Indicate whether or not to delete the target consistency group as part of the operation.",
+                    "longDescription": "This parameter shall indicate whether or not to delete the target consistency group as part of the operation. If not specified, the system should use its default behavior.",
+                    "type": "boolean"
+                },
+                "TargetConsistencyGroup": {
+                    "description": "The Uri to the existing target consistency group.",
+                    "longDescription": "This parameter shall contain the Uri to the existing target consistency group.",
+                    "requiredParameter": true,
+                    "type": "string"
+                }
+            },
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "target": {
+                    "description": "Link to invoke action",
+                    "format": "uri-reference",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "ResumeReplication": {
+            "additionalProperties": false,
+            "description": "This action is used to resume the active data synchronization between a source and target consistency group, without otherwise altering the replication relationship.",
+            "longDescription": "This action shall be used to resume the active data synchronization between a source and target consistency group, without otherwise altering the replication relationship.",
+            "parameters": {
+                "TargetConsistencyGroup": {
+                    "description": "The Uri to the existing target consistency group.",
+                    "longDescription": "This parameter shall contain the Uri to the existing target consistency group.",
+                    "requiredParameter": true,
+                    "type": "string"
+                }
+            },
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "target": {
+                    "description": "Link to invoke action",
+                    "format": "uri-reference",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "ReverseReplicationRelationship": {
+            "additionalProperties": false,
+            "description": "This action is used to reverse the replication relationship between a source and target consistency group.",
+            "longDescription": "This action shall be used to reverse the replication relationship between a source and target consistency group.",
+            "parameters": {
+                "TargetConsistencyGroup": {
+                    "description": "The Uri to the existing target consistency group.",
+                    "longDescription": "This parameter shall contain the Uri to the existing target consistency group.",
+                    "requiredParameter": true,
+                    "type": "string"
+                }
+            },
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "target": {
+                    "description": "Link to invoke action",
+                    "format": "uri-reference",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "SplitReplication": {
+            "additionalProperties": false,
+            "description": "This action is used to split the replication relationship and suspend data synchronization between a source and target consistency group.",
+            "longDescription": "This action shall be used to split the replication relationship and suspend data synchronization between a source and target consistency group.",
+            "parameters": {
+                "TargetConsistencyGroup": {
+                    "description": "The Uri to the existing target consistency group.",
+                    "longDescription": "This parameter shall contain the Uri to the existing target consistency group.",
+                    "requiredParameter": true,
+                    "type": "string"
+                }
+            },
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "target": {
+                    "description": "Link to invoke action",
+                    "format": "uri-reference",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "SuspendReplication": {
+            "additionalProperties": false,
+            "description": "This action is used to suspend active data synchronization between a source and target consistency group, without otherwise altering the replication relationship.",
+            "longDescription": "This action shall be used to suspend active data synchronization between a source and target consistency group, without otherwise altering the replication relationship.",
+            "parameters": {
+                "TargetConsistencyGroup": {
+                    "description": "The Uri to the existing target consistency group.",
+                    "longDescription": "This parameter shall contain the Uri to the existing target consistency group.",
+                    "requiredParameter": true,
+                    "type": "string"
+                }
+            },
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "target": {
+                    "description": "Link to invoke action",
+                    "format": "uri-reference",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "owningEntity": "SNIA",
+    "release": "1.1.0",
+    "title": "#ConsistencyGroup.v1_0_1.ConsistencyGroup"
+}

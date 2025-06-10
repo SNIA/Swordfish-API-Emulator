@@ -6,7 +6,7 @@ from api_writer_utils import get_function_parameters, get_path_parameters, get_w
 def write_program_header(resource_path, outfile, resource_num):
     """ Writes a program header """
     outfile.write('#\n')
-    outfile.write('# Copyright (c) 2017-2024, The Storage Networking Industry Association.\n')
+    outfile.write('# Copyright (c) 2017-2025, The Storage Networking Industry Association.\n')
     outfile.write('#\n')
     outfile.write('# Redistribution and use in source and binary forms, with or without\n')
     outfile.write('# modification, are permitted provided that the following conditions are met:\n')
@@ -45,7 +45,7 @@ def write_program_header(resource_path, outfile, resource_num):
     outfile.write('from flask import Flask, request\n')
     outfile.write('from flask_restful import Resource\n')
     outfile.write('from .constants import *\n')
-    outfile.write('from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection\n')
+    outfile.write('from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event\n')
     outfile.write('from .templates.{0} import get_{0}_instance\n'.format(resource_num))
     outfile.write("\n")
     outfile.write("members = []\n")
@@ -80,11 +80,11 @@ def write_collection_api(outfile, resource, resource_num, collection_path):
 
     new_collection_path = get_path_parameters(collection_path[1:])
     if collection_path == '':
-        outfile.write("\t\t\tpath = os.path.join(self.root, 'index.json')\n")
+        outfile.write("\t\t\tpath = create_path(self.root, 'index.json')\n")
     elif arg_str == '':
-        outfile.write("\t\t\tpath = os.path.join(self.root, '{0}', 'index.json')\n".format(collection_path[1:]))
+        outfile.write("\t\t\tpath = create_path(self.root, '{0}', 'index.json')\n".format(collection_path[1:]))
     else:
-        outfile.write("\t\t\tpath = os.path.join(self.root, '{0}', 'index.json').format({1})\n".format(new_collection_path, arg_str))
+        outfile.write("\t\t\tpath = create_path(self.root, '{0}', 'index.json').format({1})\n".format(new_collection_path, arg_str))
     outfile.write("\t\t\treturn get_json_data(path)\n")
 
     outfile.write("\t\telse:\n")
@@ -145,31 +145,6 @@ def write_collection_api(outfile, resource, resource_num, collection_path):
     outfile.write("\t\telse:\n")
     outfile.write("\t\t\treturn msg, code\n\n")
 
-    # Write PUT method
-    # outfile.write("\t# HTTP PUT Collection\n")
-    # if(arg_str == ''):
-    #     outfile.write("\tdef put(self):\n")
-    # else:
-    #     outfile.write("\tdef put(self, {0}):\n".format(arg_str))
-
-    # outfile.write("\t\tlogging.info('{0} Collection put called')\n\n".format(resource_num))
-    
-    # if collection_path == '':
-    #     outfile.write("\t\tpath = os.path.join(self.root, 'index.json')\n")
-    # elif arg_str == '':
-    #     outfile.write("\t\tpath = os.path.join(self.root, '{0}', 'index.json')\n".format(collection_path[1:]))
-    # else:
-    #     outfile.write("\t\tpath = os.path.join(self.root, '{0}', 'index.json').format({1})\n".format(new_collection_path, arg_str))
-    # outfile.write("\t\tput_object (path)\n")
-
-    # if(arg_str == ''):
-    #     outfile.write("\t\treturn self.get(self.root)\n\n")
-    # else:
-    #     sub_arg = re.split(', ', arg_str)
-    #     outfile.write("\t\treturn self.get({0})\n\n".format(sub_arg[0]))
-    # return
-
-
 def write_singleton_api(outfile, resource_num, collection_path, instance):
     ''' Write the singleton resource API function '''
     outfile.write("# {0} API\n".format(resource_num))
@@ -221,18 +196,20 @@ def write_singleton_api(outfile, resource_num, collection_path, instance):
     outfile.write("\t\tif code == 200:\n")
     if arg_str == '':
         outfile.write("\t\t\tpath = create_path(self.root)\n")
+        outfile.write("\t\t\tredfish_path = create_path('/redfish/v1/')\n")
     else:
         outfile.write("\t\t\tpath = create_path(self.root, '{0}').format({1})\n".format(new_collection_path, arg_str))
+        outfile.write("\t\t\tredfish_path = create_path('/redfish/v1/', '{0}').format({1})\n".format(new_collection_path, arg_str))
 
     collection_arg_str = get_function_parameters(collection_path[1:])
     post_collection_path = get_path_parameters(collection_path[1:])
 
     if post_collection_path == '':
-        outfile.write("\t\t\tcollection_path = os.path.join(self.root, 'index.json')\n\n")
+        outfile.write("\t\t\tcollection_path = create_path(self.root, 'index.json')\n\n")
     if collection_arg_str == '':
-        outfile.write("\t\t\tcollection_path = os.path.join(self.root, '{0}', 'index.json')\n\n".format(post_collection_path))
+        outfile.write("\t\t\tcollection_path = create_path(self.root, '{0}', 'index.json')\n\n".format(post_collection_path))
     else:
-        outfile.write("\t\t\tcollection_path = os.path.join(self.root, '{0}', 'index.json').format({1})\n\n".format(post_collection_path, collection_arg_str))
+        outfile.write("\t\t\tcollection_path = create_path(self.root, '{0}', 'index.json').format({1})\n\n".format(post_collection_path, collection_arg_str))
     
     outfile.write("\t\t\t# Check if collection exists:\n")
     outfile.write("\t\t\tif not os.path.exists(collection_path):\n")
@@ -263,6 +240,8 @@ def write_singleton_api(outfile, resource_num, collection_path, instance):
         outfile.write("\t\t\t\tconfig=get_{0}_instance(wildcards)\n".format(resource_num))
         outfile.write("\t\t\t\tconfig = create_and_patch_object (config, members, member_ids, path, collection_path)\n")
         outfile.write("\t\t\t\tresp = config, 200\n\n")
+        outfile.write("\t\t\t\t# Send ResourceCreated event with payload\n")
+        outfile.write("\t\t\t\tsend_event(\"ResourceCreated\",\"ResourceEvent.1.4.2.ResourceCreated\", \"The resource was created successfully.\", \"OK\", redfish_path)\n")
     outfile.write("\t\t\texcept Exception:\n")
     outfile.write("\t\t\t\ttraceback.print_exc()\n")
     outfile.write("\t\t\t\tresp = INTERNAL_ERROR\n")
@@ -291,8 +270,52 @@ def write_singleton_api(outfile, resource_num, collection_path, instance):
         sub_arg = re.split(', ', arg_str)
         if(len(sub_arg) == 2):
             outfile.write("\t\t\tpath = create_path(self.root, '{0}', 'index.json').format({1})\n".format(new_collection_path, arg_str))
+            outfile.write("\t\t\tredfish_path = create_path('/redfish/v1', '{0}', 'index.json').format({1})\n".format(
+                new_collection_path, arg_str))
         else:
-            outfile.write("\t\t\tpath = os.path.join(self.root, '{0}', 'index.json').format({1})\n".format(new_collection_path, arg_str))
+            outfile.write("\t\t\tpath = create_path(self.root, '{0}', 'index.json').format({1})\n".format(new_collection_path, arg_str))
+            outfile.write("\t\t\tredfish_path = create_path('/redfish/v1', '{0}', 'index.json').format({1})\n".format(
+                new_collection_path, arg_str))
+        # Add event logic for PUT
+        outfile.write("\t\t\t# Event logic for PUT\n")
+        outfile.write("\t\t\told_version = None\n")
+        outfile.write("\t\t\ttry:\n")
+        outfile.write("\t\t\t\twith open(path, 'r') as data_json:\n")
+        outfile.write("\t\t\t\t\told_version = json.load(data_json)\n")
+        outfile.write("\t\t\texcept Exception:\n")
+        outfile.write("\t\t\t\told_version = {}\n")
+        outfile.write("\t\t\thealth_changed_to = None\n")
+        outfile.write("\t\t\tstate_changed = False\n")
+        outfile.write("\t\t\tnew_state = None\n")
+        outfile.write("\t\t\tif request.data:\n")
+        outfile.write("\t\t\t\tnew_version = json.loads(request.data)\n")
+        outfile.write(
+            "\t\t\t\told_health = old_health = old_version['Status']['Health']\n")
+        outfile.write(
+            "\t\t\t\tnew_health = new_version['Status']['Health']\n")
+        outfile.write("\t\t\t\tif old_health != new_health:\n")
+        outfile.write("\t\t\t\t\thealth_changed_to = new_health\n")
+        outfile.write(
+            "\t\t\t\told_state = old_version['Status']['State']\n")
+        outfile.write(
+            "\t\t\t\tnew_state = new_version['Status']['State']\n")
+        outfile.write("\t\t\t\tif old_state != new_state:\n")
+        outfile.write("\t\t\t\t\tstate_changed = True\n")
+        outfile.write("\t\t\tif old_version != new_version:\n")
+        outfile.write("\t\t\t\tsend_event(\"ResourceChanged\", \"ResourceEvent.1.4.2.ResourceChanged\", \"One or more resource properties have changed.\", \"OK\", redfish_path)\n")
+        outfile.write("\t\t\tif health_changed_to == 'OK':\n")
+        outfile.write(
+            "\t\t\t\tsend_event(\"ResourceStatusChangedOK\", \"ResourceEvent.1.4.2.ResourceStatusChangedOK\", f\"The health of resource '{redfish_path}' has changed to OK.\", \"OK\", redfish_path)\n")
+        outfile.write("\t\t\tif health_changed_to == 'Critical':\n")
+        outfile.write(
+            "\t\t\t\tsend_event(\"ResourceStatusChangedCritical\", \"ResourceEvent.1.4.2.ResourceStatusChangedCritical\", f\"The health of resource '{redfish_path}' has changed to Critical.\", \"Critical\", redfish_path)\n")
+        outfile.write("\t\t\tif health_changed_to == 'Warning':\n")
+        outfile.write(
+            "\t\t\t\tsend_event(\"ResourceStatusChangedWarning\", \"ResourceEvent.1.4.2.ResourceStatusChangedWarning\", f\"The health of resource '{redfish_path}' has changed to Warning.\", \"Warning\", redfish_path)\n")
+        outfile.write("\t\t\tif state_changed:\n")
+        outfile.write(
+            "\t\t\t\tsend_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f\"The state of resource '{redfish_path}' has changed to {new_state}.\", 'OK', redfish_path)\n")
+
         outfile.write("\t\t\tput_object(path)\n")
         outfile.write("\t\t\treturn self.get({0})\n".format(arg_str))
     outfile.write("\t\telse:\n")
@@ -311,13 +334,58 @@ def write_singleton_api(outfile, resource_num, collection_path, instance):
     outfile.write("\t\tif code == 200:\n")
     if arg_str == '':
         outfile.write("\t\t\tpath = create_path(self.root, 'index.json')\n")
+        outfile.write("\t\t\redfish_path = create_path('/redfish/v1/', 'index.json')\n")
         outfile.write("\t\t\tpatch_object(path)\n")
         outfile.write("\t\t\treturn self.get()\n")
     else:
         if(len(sub_arg) == 2):
             outfile.write("\t\t\tpath = create_path(self.root, '{0}', 'index.json').format({1})\n".format(new_collection_path, arg_str))
+            outfile.write("\t\t\tredfish_path = create_path('/redfish/v1/', '{0}', 'index.json').format({1})\n".format(new_collection_path, arg_str))
         else:
-            outfile.write("\t\t\tpath = os.path.join(self.root, '{0}', 'index.json').format({1})\n".format(new_collection_path, arg_str))
+            outfile.write("\t\t\tpath = create_path(self.root, '{0}', 'index.json').format({1})\n".format(new_collection_path, arg_str))
+            outfile.write("\t\t\tredfish_path = create_path('/redfish/v1/', '{0}', 'index.json').format({1})\n".format(new_collection_path, arg_str))
+
+        # Add event logic for PATCH
+        outfile.write("\t\t\t# Event logic for PATCH\n")
+        outfile.write("\t\t\tif request.data:\n")
+        outfile.write("\t\t\t\told_version = None\n")
+        outfile.write("\t\t\t\ttry:\n")
+        outfile.write("\t\t\t\t\twith open(path, 'r') as data_json:\n")
+        outfile.write("\t\t\t\t\t\told_version = json.load(data_json)\n")
+        outfile.write("\t\t\t\texcept Exception:\n")
+        outfile.write("\t\t\t\t\told_version = {}\n")
+        outfile.write("\t\t\t\thealth_changed_to = None\n")
+        outfile.write("\t\t\t\tstate_changed = False\n")
+        outfile.write("\t\t\t\tnew_state = None\n")
+        outfile.write("\t\t\t\tnew_version = json.loads(request.data)\n")
+        outfile.write(
+            "\t\t\t\told_health = old_version['Status']['Health']\n")
+        outfile.write(
+            "\t\t\t\tnew_health = new_version['Status']['Health']\n")
+        outfile.write(
+            "\t\t\t\told_state = old_version['Status']['State']\n")
+        outfile.write(
+            "\t\t\t\tnew_state = new_version['Status']['State']\n")
+        outfile.write("\t\t\t\tif old_version != new_version:\n")
+        outfile.write("\t\t\t\t\tsend_event(\"ResourceChanged\", \"ResourceEvent.1.4.2.ResourceChanged\", \"One or more resource properties have changed.\", \"OK\", redfish_path)\n")
+        outfile.write("\t\t\t\tif old_health != new_health:\n")
+        outfile.write("\t\t\t\t\thealth_changed_to = new_health\n")
+        outfile.write("\t\t\t\tif old_state != new_state:\n")
+        outfile.write("\t\t\t\t\tstate_changed = True\n")
+        outfile.write("\t\t\t\tif health_changed_to == 'OK':\n")
+        outfile.write(
+            "\t\t\t\t\tsend_event(\"ResourceStatusChangedOK\", \"ResourceEvent.1.4.2.ResourceStatusChangedOK\", f\"The health of resource '{redfish_path}' has changed to OK.\", \"OK\", redfish_path)\n")
+        outfile.write("\t\t\t\tif health_changed_to == 'Critical':\n")
+        outfile.write(
+            "\t\t\t\t\tsend_event(\"ResourceStatusChangedCritical\", \"ResourceEvent.1.4.2.ResourceStatusChangedCritical\", f\"The health of resource '{redfish_path}' has changed to Critical.\", \"Critical\", redfish_path)\n")
+        outfile.write("\t\t\t\tif health_changed_to == 'Warning':\n")
+        outfile.write(
+            "\t\t\t\t\tsend_event(\"ResourceStatusChangedWarning\", \"ResourceEvent.1.4.2.ResourceStatusChangedWarning\", f\"The health of resource '{redfish_path}' has changed to Warning.\", \"Warning\", redfish_path)\n")
+        outfile.write("\t\t\t\tif state_changed:\n")
+        outfile.write(
+            "\t\t\t\t\tsend_event(\"ResourceStateChanged\", \"ResourceEvent.1.4.2.ResourceStateChanged\", f\"The state of resource '{redfish_path}' has changed to {new_state}.\", \"OK\", redfish_path)\n")
+
+
         outfile.write("\t\t\tpatch_object(path)\n")
         outfile.write("\t\t\treturn self.get({0})\n".format(arg_str))
     outfile.write("\t\telse:\n")
@@ -337,8 +405,10 @@ def write_singleton_api(outfile, resource_num, collection_path, instance):
     outfile.write("\t\tif code == 200:\n")
     if arg_str == '':
         outfile.write("\t\t\tpath = create_path(self.root)\n")
+        outfile.write("\t\t\tredfish_path = create_path('/redfish/v1/')\n")
     else:
         outfile.write("\t\t\tpath = create_path(self.root, '{0}').format({1})\n".format(new_collection_path, arg_str))
+        outfile.write("\t\t\tredfish_path = create_path('/redfish/v1/', '{0}').format({1})\n".format(new_collection_path, arg_str))
 
     base_collection_path = get_path_parameters(collection_path[1:])
     base_arg_str = get_function_parameters(collection_path[1:])
@@ -348,7 +418,14 @@ def write_singleton_api(outfile, resource_num, collection_path, instance):
         outfile.write("\t\t\tbase_path = create_path(self.root, '{0}')\n".format(base_collection_path))
     else:
         outfile.write("\t\t\tbase_path = create_path(self.root, '{0}').format({1})\n".format(base_collection_path, base_arg_str))
-    outfile.write("\t\t\treturn delete_object(path, base_path)\n")
+    
+      # Add event logic for DELETE
+    outfile.write("\t\t\t# Event logic for DELETE\n")
+    outfile.write("\t\t\tobj = get_json_data(path)\n")
+    outfile.write("\t\t\tdelete_object(path, base_path)\n")
+    outfile.write(
+        "\t\t\tsend_event(\"ResourceRemoved\", \"ResourceEvent.1.4.2.ResourceRemoved\", \"The resource was removed successfully.\", \"OK\", redfish_path)\n")
+    outfile.write("\t\t\treturn '', 204\n")
     outfile.write("\t\telse:\n")
     outfile.write("\t\t\treturn msg, code\n")
     outfile.write('\n')

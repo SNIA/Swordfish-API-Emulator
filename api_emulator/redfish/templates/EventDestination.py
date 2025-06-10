@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2024, The Storage Networking Industry Association.
+# Copyright (c) 2017-2025, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,10 +35,10 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2024 SNIA. All rights reserved.",
+	"@Redfish.Copyright": "Copyright 2014-2025 SNIA. All rights reserved.",
 	"Context": "Oem",
 	"@odata.id": "{rb}EventService/Subscriptions/{EventDestinationId}",
-	"@odata.type": "#EventDestination.v1_14_0.EventDestination",
+	"@odata.type": "#EventDestination.v1_15_1.EventDestination",
 	"Id": "{EventDestinationId}",
 	"Name": "EventDestination",
 	"SubscriptionType": "RedfishEvent",
@@ -52,7 +52,7 @@ def get_EventDestination_instance(wildcards):
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{EventDestinationId}', '-0-')
+		g = d.replace('{EventDestinationId}', '0')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

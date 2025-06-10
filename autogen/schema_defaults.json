@@ -1,0 +1,65 @@
+{
+    "Aggregate": {
+        "Elements": []
+    },
+    "BootOption": {
+        "BootOptionReference": "Boot1"
+    },
+    "Chassis": {
+        "ChassisType": "Other"
+    },
+    "ComponentIntegrity": {
+        "ComponentIntegrityType": "SPDM",
+        "ComponentIntegrityTypeVersion": "1.3",
+        "TargetComponentURI": "https://contoso.com"
+    },
+    "CoolingUnit": {
+        "EquipmentType": "ImmersionUnit"
+    },
+    "EventDestination": {
+        "Context": "Oem",
+        "SubscriptionType": "RedfishEvent"
+    },
+    "JsonSchemaFile": {
+        "Languages": [],
+        "Schema": "#ManagerAccount.v1_12_0.ManagerAccount",
+        "Location": ""
+    },
+    "LogEntry": {
+        "EntryType": "Event"
+    },
+    "Facility": {
+        "FacilityType": "Site"
+    },
+    "ManagerAccount": {
+        "AccountTypes": "Redfish"
+    },
+    "MemoryChunks": {
+        "AddressRangeType": "Block"
+    },
+    "MemoryRegion": {
+        "RegionType": "Static"
+    },
+    "PowerDistribution": {
+        "EquipmentType": "RackPDU"
+    },
+    "RegisteredClient": {
+        "ClientType": "Monitor"
+    },
+    "ResourceBlock": {
+        "CompositionStatus": {
+            "Reserved": false,
+            "CompositionState": "Unused"
+        },
+        "ResourceBlockType": [
+            "Storage",
+            "IndependentResource"
+        ]
+    },
+    "Role": {
+        "RoleId": "Administrator"
+    },
+    "TrustedComponent": {
+        "TrustedComponentType": "Discrete"
+    }
+}

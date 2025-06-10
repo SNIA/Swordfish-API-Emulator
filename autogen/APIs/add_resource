@@ -1579,3 +1579,27 @@ g.api.add_resource(Zone0API, '/redfish/v1/Fabrics/<string:FabricId>/Zones/<strin
 g.api.add_resource(Zone1CollectionAPI, '/redfish/v1/CompositionService/ResourceZones', resource_class_kwargs={'auth': auth})
 g.api.add_resource(Zone1API, '/redfish/v1/CompositionService/ResourceZones/<string:ZoneId>', resource_class_kwargs={'auth': auth})
 
+g.api.add_resource(Memory1CollectionAPI, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/CacheMemory', resource_class_kwargs={'auth': auth})
+g.api.add_resource(Memory1API, '/redfish/v1/Systems/<string:ComputerSystemId>/Processors/<string:ProcessorId>/CacheMemory/<string:MemoryId>', resource_class_kwargs={'auth': auth})
+
+g.api.add_resource(Memory2CollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/Memory', resource_class_kwargs={'auth': auth})
+g.api.add_resource(Memory2API, '/redfish/v1/Chassis/<string:ChassisId>/Memory/<string:MemoryId>', resource_class_kwargs={'auth': auth})
+
+g.api.add_resource(Memory3CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Memory', resource_class_kwargs={'auth': auth})
+g.api.add_resource(Memory3API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Memory/<string:MemoryId>', resource_class_kwargs={'auth': auth})
+
+g.api.add_resource(Memory4CollectionAPI, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Memory', resource_class_kwargs={'auth': auth})
+g.api.add_resource(Memory4API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>', resource_class_kwargs={'auth': auth})
+
+g.api.add_resource(Memory5CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Memory', resource_class_kwargs={'auth': auth})
+g.api.add_resource(Memory5API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Memory/<string:MemoryId>', resource_class_kwargs={'auth': auth})
+
+g.api.add_resource(Memory6CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Memory', resource_class_kwargs={'auth': auth})
+g.api.add_resource(Memory6API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>', resource_class_kwargs={'auth': auth})
+
+g.api.add_resource(Certificate79CollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/PowerSubsystem/PowerSupplies/<string:PowerSupplyId>/Certificates', resource_class_kwargs={'auth': auth})
+g.api.add_resource(Certificate79API, '/redfish/v1/Chassis/<string:ChassisId>/PowerSubsystem/PowerSupplies/<string:PowerSupplyId>/Certificates/<string:CertificateId>', resource_class_kwargs={'auth': auth})
+
+g.api.add_resource(LeakDetector4CollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/LeakDetectors', resource_class_kwargs={'auth': auth})
+g.api.add_resource(LeakDetector4API, '/redfish/v1/Chassis/<string:ChassisId>/LeakDetectors/<string:LeakDetectorId>', resource_class_kwargs={'auth': auth})
+

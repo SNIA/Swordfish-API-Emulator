@@ -1,0 +1,299 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/IOPerformanceLoSCapabilities.v1_0_2.json",
+    "$ref": "#/definitions/IOPerformanceLoSCapabilities",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "IOAccessPattern": {
+            "description": "Typical IO access patterns.",
+            "enum": [
+                "ReadWrite",
+                "SequentialRead",
+                "SequentialWrite",
+                "RandomReadNew",
+                "RandomReadAgain"
+            ],
+            "enumDescriptions": {
+                "RandomReadAgain": "Random Read of cached data.",
+                "RandomReadNew": "Random Read of uncached data.",
+                "ReadWrite": "Uniform distribution of reads and writes.",
+                "SequentialRead": "Sequential read.",
+                "SequentialWrite": "Sequential write."
+            },
+            "enumLongDescriptions": {
+                "RandomReadAgain": "Use of this enumeration literal shall indicate an access pattern of random reads of cached data.",
+                "RandomReadNew": "Use of this enumeration literal shall indicate an access pattern of random reads of uncached data.",
+                "ReadWrite": "Use of this enumeration literal shall indicate a Uniform distribution of reads and writes.",
+                "SequentialRead": "Use of this enumeration literal shall indicate a sequential read pattern of access.",
+                "SequentialWrite": "Use of this enumeration literal shall indicate a sequential write pattern of access."
+            },
+            "longDescription": "The enumeration literals may be used to specify an IO access pattern.",
+            "type": "string"
+        },
+        "IOPerformanceLoSCapabilities": {
+            "additionalProperties": false,
+            "description": "Describe IO performance capabilities.",
+            "longDescription": "Each instance of IOPerformanceLoSCapabilities shall describe the capabilities of the system to support various IO performance service options.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "@odata.context": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/context"
+                },
+                "@odata.etag": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/etag"
+                },
+                "@odata.id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/id"
+                },
+                "@odata.type": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/type"
+                },
+                "Description": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Description"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "readonly": true
+                },
+                "IOLimitingIsSupported": {
+                    "description": "Limiting IOPS is supported.",
+                    "longDescription": "If true, the system should limit IOPS to MaxIOOperationsPerSecondPerTerabyte * (Volume Size in Terabytes). Otherwise, the system shall not inforce a limit. The default value for this property is false.",
+                    "readonly": false,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ]
+                },
+                "Id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Id",
+                    "readonly": true
+                },
+                "Identifier": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Identifier",
+                    "description": "The value identifies this resource.",
+                    "longDescription": "The value shall be unique within the managed ecosystem."
+                },
+                "MaxSamplePeriod": {
+                    "description": "Maximum sampling period over which average values are calculated.",
+                    "longDescription": "The value shall be an ISO 8601 duration specifying the maximum sampling period over which average values are calculated.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "units": "s"
+                },
+                "MinSamplePeriod": {
+                    "description": "Minimum sampling period over which average values are calculated.",
+                    "longDescription": "The value shall be an ISO 8601 duration specifying the minimum sampling period over which average values are calculated.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "units": "s"
+                },
+                "MinSupportedIoOperationLatencyMicroseconds": {
+                    "description": "Minimum supported average IO latency.",
+                    "longDescription": "The value shall be the minimum supported average IO latency in microseconds calculated over the SamplePeriod.",
+                    "readonly": false,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "us"
+                },
+                "Name": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Name",
+                    "readonly": true
+                },
+                "Oem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "description": "The OEM extension property.",
+                    "longDescription": "This property shall contain the OEM extensions.  All values for properties that this object contains shall conform to the Redfish Specification-described requirements."
+                },
+                "SupportedIOWorkloads": {
+                    "description": "A collection of supported workloads.",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/IOWorkload"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "longDescription": "The value shall be a collection of supported workloads.",
+                    "type": "array"
+                },
+                "SupportedLinesOfService": {
+                    "autoExpand": true,
+                    "description": "Collection of known and supported IOPerformanceLinesOfService.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOPerformanceLineOfService.json#/definitions/IOPerformanceLineOfService"
+                    },
+                    "longDescription": "The value shall be a collection supported IO performance service options.",
+                    "readonly": false,
+                    "type": "array"
+                },
+                "SupportedLinesOfService@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                }
+            },
+            "required": [
+                "@odata.id",
+                "@odata.type",
+                "Id",
+                "Name"
+            ],
+            "type": "object"
+        },
+        "IOWorkload": {
+            "additionalProperties": false,
+            "description": "An IO Workload description.",
+            "longDescription": "This structure may be used to describe an IO Workload.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "Components": {
+                    "description": "An array of IO workload component descriptions.",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/IOWorkloadComponent"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "longDescription": "The value shall be an array of IO workload component descriptions.",
+                    "type": "array"
+                },
+                "Name": {
+                    "description": "The workload name.",
+                    "longDescription": "The value shall be a name of the workload. It should be constructed as OrgID:WorkloadID. Examples: ACME:DSS, ACME:DSS-REP, ACME:Exchange, ACME:OLTP, ACME:OLTP-REPA.  An organization may define a set of well known workloads.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "IOWorkloadComponent": {
+            "additionalProperties": false,
+            "description": "Describe a component of a IO workload.",
+            "longDescription": "This structure may be used to describe a component of an IO workload.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "AverageIOBytes": {
+                    "description": "Average I/O Size for this component.",
+                    "longDescription": "The value shall be the expected average I/O size.",
+                    "readonly": false,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "By"
+                },
+                "Duration": {
+                    "description": "Duration that this component is active.",
+                    "longDescription": "The value of each entry shall be an ISO 8601 duration that shall specify the expected length of time that this component is applied to the workload. This attribute shall be specified if a schedule is specified and otherwise shall not be specified.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "units": "s"
+                },
+                "IOAccessPattern": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/IOAccessPattern"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "Expected access pattern for this component.",
+                    "longDescription": "The enumeration literal shall be the expected access pattern.",
+                    "readonly": false
+                },
+                "PercentOfData": {
+                    "description": "Percent of data for this workload component.",
+                    "longDescription": "The value shall be the expected percent of the data referenced by the workload that is covered by this component.",
+                    "readonly": false,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "%"
+                },
+                "PercentOfIOPS": {
+                    "description": "Percent of total IOPS for this workload component.",
+                    "longDescription": "The value shall be the expected percent of the total IOPS for this workload that is covered by this component.",
+                    "readonly": false,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "%"
+                },
+                "Schedule": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Schedule.json#/definitions/Schedule",
+                    "description": "Specifies when to apply this workload component.",
+                    "longDescription": "The value shall specifies when this workload component is applied to the overall workload."
+                }
+            },
+            "type": "object"
+        }
+    },
+    "owningEntity": "SNIA",
+    "release": "1.0.3",
+    "title": "#IOPerformanceLoSCapabilities.v1_0_2.IOPerformanceLoSCapabilities"
+}

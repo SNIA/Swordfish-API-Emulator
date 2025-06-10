@@ -31,23 +31,20 @@
 # Program name - MessageRegistryFile_api.py
 
 import g
-import json
-import os
+import json, os
 import traceback
 import logging
 
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, update_collections_json, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
 INTERNAL_ERROR = 500
 
 # MessageRegistryFile Collection API
-
-
 class MessageRegistryFileCollectionAPI(Resource):
 	def __init__(self, **kwargs):
 		logging.info('MessageRegistryFile Collection init called')
@@ -61,7 +58,7 @@ class MessageRegistryFileCollectionAPI(Resource):
 
 		if code == 200:
 			path = os.path.join(self.root, 'Registries', 'index.json')
-			return get_json_data(path)
+			return get_json_data (path)
 		else:
 			return msg, code
 
@@ -99,13 +96,8 @@ class MessageRegistryFileAPI(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			if '.json' not in MessageRegistryFileId:
-				path = create_path(
-					self.root, 'Registries/{0}', 'index.json').format(MessageRegistryFileId)
-			else:
-				path = create_path(
-					self.root, 'Registries/{0}').format(MessageRegistryFileId)
-			return get_json_data(path)
+			path = create_path(self.root, 'Registries/{0}', 'index.json').format(MessageRegistryFileId)
+			return get_json_data (path)
 		else:
 			return msg, code
 
@@ -128,3 +120,5 @@ class MessageRegistryFileAPI(Resource):
 	def delete(self, MessageRegistryFileId):
 		logging.info('MessageRegistryFile delete called')
 		return 'DELETE is not a supported command for MessageRegistryFileAPI', 405
+
+

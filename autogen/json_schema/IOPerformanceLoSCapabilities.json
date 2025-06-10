@@ -1,0 +1,73 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/IOPerformanceLoSCapabilities.json",
+    "$ref": "#/definitions/IOPerformanceLoSCapabilities",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "IOPerformanceLoSCapabilities": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOPerformanceLoSCapabilities.v1_0_2.json#/definitions/IOPerformanceLoSCapabilities"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOPerformanceLoSCapabilities.v1_1_3.json#/definitions/IOPerformanceLoSCapabilities"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOPerformanceLoSCapabilities.v1_2_0.json#/definitions/IOPerformanceLoSCapabilities"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOPerformanceLoSCapabilities.v1_3_0.json#/definitions/IOPerformanceLoSCapabilities"
+                }
+            ],
+            "deletable": false,
+            "description": "Describe IO performance capabilities.",
+            "insertable": false,
+            "longDescription": "Each instance of IOPerformanceLoSCapabilities shall describe the capabilities of the system to support various IO performance service options.",
+            "updatable": true,
+            "uris": [
+                "/redfish/v1/StorageServices/{StorageServiceId}/IOPerformanceLoSCapabilities"
+            ]
+        },
+        "IOWorkload": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOPerformanceLoSCapabilities.v1_0_2.json#/definitions/IOWorkload"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOPerformanceLoSCapabilities.v1_1_3.json#/definitions/IOWorkload"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOPerformanceLoSCapabilities.v1_2_0.json#/definitions/IOWorkload"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOPerformanceLoSCapabilities.v1_3_0.json#/definitions/IOWorkload"
+                }
+            ],
+            "description": "An IO Workload description.",
+            "longDescription": "This structure may be used to describe an IO Workload."
+        },
+        "IOWorkloadComponent": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOPerformanceLoSCapabilities.v1_0_2.json#/definitions/IOWorkloadComponent"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOPerformanceLoSCapabilities.v1_1_3.json#/definitions/IOWorkloadComponent"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOPerformanceLoSCapabilities.v1_2_0.json#/definitions/IOWorkloadComponent"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOPerformanceLoSCapabilities.v1_3_0.json#/definitions/IOWorkloadComponent"
+                }
+            ],
+            "description": "Describe a component of a IO workload.",
+            "longDescription": "This structure may be used to describe a component of an IO workload."
+        }
+    },
+    "owningEntity": "SNIA",
+    "title": "#IOPerformanceLoSCapabilities.IOPerformanceLoSCapabilities"
+}

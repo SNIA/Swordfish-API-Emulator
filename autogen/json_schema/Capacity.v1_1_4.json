@@ -1,0 +1,275 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/Capacity.v1_1_4.json",
+    "$ref": "#/definitions/CapacitySource",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "Actions": {
+            "additionalProperties": false,
+            "description": "The available actions for this resource.",
+            "longDescription": "The Actions property shall contain the available actions for this resource.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "Oem": {
+                    "$ref": "#/definitions/OemActions",
+                    "description": "This property contains the available OEM specific actions for this resource.",
+                    "longDescription": "This property shall contain any additional OEM actions for this resource.",
+                    "versionAdded": "v1_1_2"
+                }
+            },
+            "type": "object"
+        },
+        "Capacity": {
+            "additionalProperties": false,
+            "description": "This is the schema definition for the Capacity of a device. It represents the properties for capacity for any data store.",
+            "longDescription": "This composition may be used to represent storage capacity.  The sum of the values in Data, Metadata, and Snapshot shall be equal to the total capacity for the data store.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "Data": {
+                    "$ref": "#/definitions/CapacityInfo",
+                    "description": "The capacity information relating to the user data.",
+                    "longDescription": "The value shall be capacity information relating to provisioned user data."
+                },
+                "IsThinProvisioned": {
+                    "description": "Marks that the capacity is not necessarily fully allocated.",
+                    "longDescription": "If the value is false, the capacity shall be fully allocated.  The default value shall be false.",
+                    "readonly": true,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ]
+                },
+                "Metadata": {
+                    "$ref": "#/definitions/CapacityInfo",
+                    "description": "The capacity information relating to  metadata.",
+                    "longDescription": "The value shall be capacity information relating to provisioned system (non-user accessible) data."
+                },
+                "Snapshot": {
+                    "$ref": "#/definitions/CapacityInfo",
+                    "description": "The capacity information relating to snapshot or backup data.",
+                    "longDescription": "The value shall be capacity information relating to provisioned snapshot or backup data."
+                }
+            },
+            "type": "object"
+        },
+        "CapacityInfo": {
+            "additionalProperties": false,
+            "description": "The capacity of specific data type in a data store.",
+            "longDescription": "This composition may be used to represent the utilization of storage capacity.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "AllocatedBytes": {
+                    "description": "The number of bytes currently allocated by the storage system in this data store for this data type.",
+                    "longDescription": "The value shall be the number of bytes currently allocated by the storage system in this data store for this data type.",
+                    "readonly": false,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "By"
+                },
+                "ConsumedBytes": {
+                    "description": "The number of bytes consumed in this data store for this data type.",
+                    "longDescription": "The value shall be the number of logical bytes currently consumed in this data store for this data type.",
+                    "readonly": true,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "By"
+                },
+                "GuaranteedBytes": {
+                    "description": "The number of bytes the storage system guarantees can be allocated in this data store for this data type.",
+                    "longDescription": "The value shall be the number of bytes the storage system guarantees can be allocated in this data store for this data type.",
+                    "readonly": false,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "By"
+                },
+                "ProvisionedBytes": {
+                    "description": "The maximum number of bytes that can be allocated in this data store for this data type.",
+                    "longDescription": "The value shall be the maximum number of bytes that can be allocated in this data store for this data type.",
+                    "readonly": false,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "By"
+                }
+            },
+            "type": "object"
+        },
+        "CapacitySource": {
+            "additionalProperties": false,
+            "description": "A description of the type and source of storage.",
+            "longDescription": "This composition may be used to represent the source and type of storage capacity.  At most one of the ProvidingDrives, ProvidingVolumes, ProvidingMemoryChunks, ProvidingMemory or ProvidingPools properties may have a value.  If any of ProvidingDrives, ProvidingVolumes, ProvidingMemory or ProvidingPools reference more than one resource, allocation of capacity across those resources is implementation dependent.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "@odata.context": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/context"
+                },
+                "@odata.etag": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/etag"
+                },
+                "@odata.id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/id"
+                },
+                "@odata.type": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/type"
+                },
+                "Actions": {
+                    "$ref": "#/definitions/Actions",
+                    "description": "The available actions for this resource.",
+                    "longDescription": "The Actions property shall contain the available actions for this resource.",
+                    "versionAdded": "v1_1_2"
+                },
+                "Description": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Description"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "readonly": true
+                },
+                "Id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Id",
+                    "readonly": true
+                },
+                "Name": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Name",
+                    "readonly": true
+                },
+                "Oem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "description": "The OEM extension property.",
+                    "longDescription": "This property shall contain the OEM extensions.  All values for properties that this object contains shall conform to the Redfish Specification-described requirements."
+                },
+                "ProvidedCapacity": {
+                    "$ref": "#/definitions/Capacity",
+                    "description": "The amount of space that has been provided from the ProvidingDrives, ProvidingVolumes, ProvidingMemory or ProvidingPools.",
+                    "longDescription": "The value shall be the amount of space that has been provided from the ProvidingDrives, ProvidingVolumes, ProvidingMemory or ProvidingPools."
+                },
+                "ProvidedClassOfService": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/ClassOfService.json#/definitions/ClassOfService",
+                    "description": "The ClassOfService provided from the ProvidingDrives, ProvidingVolumes, ProvidingMemoryChunks, ProvidingMemory or ProvidingPools.",
+                    "longDescription": "The value shall reference the provided ClassOfService from the ProvidingDrives, ProvidingVolumes, ProvidingMemoryChunks, ProvidingMemory or ProvidingPools."
+                },
+                "ProvidingDrives": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/DriveCollection.json#/definitions/DriveCollection",
+                    "description": "The drive or drives that provide this space.",
+                    "longDescription": "If present, the value shall be a reference to a contributing drive or drives."
+                },
+                "ProvidingMemory": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MemoryCollection.json#/definitions/MemoryCollection",
+                    "description": "The memory that provides this space.",
+                    "longDescription": "If present, the value shall be a reference to the contributing memory.",
+                    "versionAdded": "v1_1_0"
+                },
+                "ProvidingMemoryChunks": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MemoryChunksCollection.json#/definitions/MemoryChunksCollection",
+                    "description": "The memory chunks that provide this space.",
+                    "longDescription": "If present, the value shall be a reference to the contributing memory chunks.",
+                    "versionAdded": "v1_1_0"
+                },
+                "ProvidingPools": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StoragePoolCollection.json#/definitions/StoragePoolCollection",
+                    "description": "The pool or pools that provide this space.",
+                    "longDescription": "If present, the value shall be a reference to a contributing storage pool or storage pools."
+                },
+                "ProvidingVolumes": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/VolumeCollection.json#/definitions/VolumeCollection",
+                    "description": "The volume or volumes that provide this space.",
+                    "longDescription": "If present, the value shall be a reference to a contributing volume or volumes."
+                }
+            },
+            "required": [
+                "@odata.id",
+                "@odata.type",
+                "Id",
+                "Name"
+            ],
+            "type": "object"
+        },
+        "OemActions": {
+            "additionalProperties": true,
+            "description": "The available OEM specific actions for this resource.",
+            "longDescription": "This type shall contain any additional OEM actions for this resource.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {},
+            "type": "object"
+        }
+    },
+    "owningEntity": "SNIA",
+    "release": "1.0.6",
+    "title": "#Capacity.v1_1_4.CapacitySource"
+}

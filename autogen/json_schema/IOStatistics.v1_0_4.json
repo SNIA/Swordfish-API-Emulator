@@ -1,0 +1,129 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/IOStatistics.v1_0_4.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "IOStatistics": {
+            "additionalProperties": false,
+            "description": "The properties of this type represent IO statistics.",
+            "longDescription": "The properties of this type shall be used to represent the IO statistics of the requested object.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "NonIORequestTime": {
+                    "description": "The time that the resource is busy processing write requests.",
+                    "longDescription": "The value shall be an ISO 8601 conformant duration describing the time that the resource is busy processing non IO requests from the time of last reset or wrap.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "NonIORequests": {
+                    "description": "Count of non IO requests.",
+                    "longDescription": "The value shall represent the total count from the time of last reset or wrap of non IO requests.",
+                    "readonly": false,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "{tot}"
+                },
+                "ReadHitIORequests": {
+                    "description": "Count of read IO requests satisfied from memory.",
+                    "longDescription": "The value shall represent the total count from the time of last reset or wrap of read IO requests satisfied from memory.",
+                    "readonly": false,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "{tot}"
+                },
+                "ReadIOKiBytes": {
+                    "description": "Number of kibibytes read.",
+                    "longDescription": "The value shall represent the total number of kibibytes read from the time of last reset or wrap.",
+                    "readonly": false,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "KiBy"
+                },
+                "ReadIORequestTime": {
+                    "description": "The time that the resource is busy processing read requests.",
+                    "longDescription": "The value shall be an ISO 8601 conformant duration describing the time that the resource is busy processing read requests from the time of last reset or wrap.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "ReadIORequests": {
+                    "description": "Count of read IO requests.",
+                    "longDescription": "The value shall represent the total count from the time of last reset or wrap of read IO requests satisfied from either media or memory (i.e. from a storage device or from a cache).",
+                    "readonly": false,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "{tot}"
+                },
+                "WriteHitIORequests": {
+                    "description": "Count of write IO requests coalesced into memory.",
+                    "longDescription": "The value shall represent the total count from the time of last reset or wrap of write IO requests coalesced into memory.",
+                    "readonly": false,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "{tot}"
+                },
+                "WriteIOKiBytes": {
+                    "description": "Number of kibibytes written.",
+                    "longDescription": "The value shall represent the total number of kibibytes written from the time of last reset or wrap.",
+                    "readonly": false,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "KiBy"
+                },
+                "WriteIORequestTime": {
+                    "description": "The time that the resource is busy processing write requests.",
+                    "longDescription": "The value shall be an ISO 8601 conformant duration describing the time that the resource is busy processing write requests from the time of last reset or wrap.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "WriteIORequests": {
+                    "description": "Count of write IO requests.",
+                    "longDescription": "The value shall represent the total count from the time of last reset or wrap of write IO requests.",
+                    "readonly": false,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "{tot}"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "owningEntity": "SNIA",
+    "release": "1.0.5",
+    "title": "#IOStatistics.v1_0_4"
+}

@@ -1,0 +1,34 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/NVMeDomain.json",
+    "$ref": "#/definitions/NVMeDomain",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "NVMeDomain": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/NVMeDomain.v1_0_0.json#/definitions/NVMeDomain"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/NVMeDomain.v1_1_0.json#/definitions/NVMeDomain"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/NVMeDomain.v1_2_0.json#/definitions/NVMeDomain"
+                }
+            ],
+            "deletable": true,
+            "description": "This is the schema definition for domain.",
+            "insertable": false,
+            "longDescription": "This resource shall be used to represent a domain for a Redfish implementation.",
+            "updatable": true,
+            "uris": [
+                "/redfish/v1/NVMeDomains/{NVMeDomainId}"
+            ]
+        }
+    },
+    "owningEntity": "SNIA",
+    "title": "#NVMeDomain.NVMeDomain"
+}

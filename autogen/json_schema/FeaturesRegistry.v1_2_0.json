@@ -1,0 +1,372 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/FeaturesRegistry.v1_2_0.json",
+    "$ref": "#/definitions/FeaturesRegistry",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "Actions": {
+            "additionalProperties": false,
+            "description": "The available actions for this resource.",
+            "longDescription": "This type shall contain the available actions for this resource.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "Oem": {
+                    "$ref": "#/definitions/OemActions",
+                    "description": "This property contains the available OEM specific actions for this resource.",
+                    "longDescription": "This property shall contain any additional OEM actions for this resource."
+                }
+            },
+            "type": "object"
+        },
+        "FeatureMap": {
+            "additionalProperties": false,
+            "description": "This type shall describe how a feature and set of related resources are defined within the registry.",
+            "longDescription": "Each entity shall contain the defined name of a feature and the corresponding resources for which the feature applies. For globally applied features, implementations should not implement the `Resources` property for the specified feature.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "CorrespondingProfileDefinition": {
+                    "description": "The profile definition that defines the feature.",
+                    "longDescription": "The value shall define a profile definition that contains the named profile declaration.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "versionAdded": "v1_2_0"
+                },
+                "Description": {
+                    "description": "A description of the feature.",
+                    "longDescription": "The value shall be a detailed description of the feature.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "versionAdded": "v1_2_0"
+                },
+                "FeatureName": {
+                    "description": "The Name of the feature.",
+                    "longDescription": "The value shall be the unique name of the feature prefixed by the defining organization separated by a period (e.g. 'vendor.feature').",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "versionAdded": "v1_2_0"
+                },
+                "Resources": {
+                    "description": "An array of resources in the service containing the set that are related to support for the specified feature.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Resource"
+                    },
+                    "longDescription": "The value shall contain an array of resources in the service containing the set that are related to support for the specified feature. For globally applied features, implementations should not implement the `Resources` property for the specified feature.",
+                    "readonly": true,
+                    "type": "array",
+                    "versionAdded": "v1_2_0"
+                },
+                "Resources@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                },
+                "Version": {
+                    "description": "The Version of the feature.",
+                    "longDescription": "The value shall uniquely identify the version of the feature, using the major.minor.errata format.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "versionAdded": "v1_2_0"
+                }
+            },
+            "required": [
+                "FeatureName",
+                "Description",
+                "Version",
+                "CorrespondingProfileDefinition"
+            ],
+            "type": "object"
+        },
+        "FeaturesRegistry": {
+            "additionalProperties": false,
+            "description": "This is the schema definition for all Features Registries.  It represents the properties for the registries themselves.  The FeatureId is formed per the Redfish specification.  It consists of the RegistryPrefix concatenated with the version concatenated with the unique identifier for the feature registry entry.",
+            "longDescription": "This resource shall be used to represent a Feature registry for a Redfish implementation.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "@odata.context": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/context"
+                },
+                "@odata.etag": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/etag"
+                },
+                "@odata.id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/id"
+                },
+                "@odata.type": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/type"
+                },
+                "Actions": {
+                    "$ref": "#/definitions/Actions",
+                    "description": "The available actions for this resource.",
+                    "longDescription": "The Actions property shall contain the available actions for this resource."
+                },
+                "Description": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Description"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "readonly": true
+                },
+                "FeatureMappings": {
+                    "description": "The pattern property indicates that a free-form string is the unique identifier for the feature within the registry.",
+                    "items": {
+                        "$ref": "#/definitions/FeatureMap"
+                    },
+                    "longDescription": "The pattern property shall represent the suffix to be used in the FeatureId and shall be unique within this message registry.  This may contain both standard and OEM-defined features.",
+                    "type": "array",
+                    "versionAdded": "v1_2_0"
+                },
+                "Features": {
+                    "deprecated": "This property is deprecated in favor of the FeatureMappings property.",
+                    "description": "The pattern property indicates that a free-form string is the unique identifier for the feature within the registry.",
+                    "items": {
+                        "$ref": "#/definitions/SupportedFeature"
+                    },
+                    "longDescription": "The pattern property shall represent the suffix to be used in the FeatureId and shall be unique within this message registry.",
+                    "type": "array",
+                    "versionDeprecated": "v1_2_0"
+                },
+                "FeaturesUsed": {
+                    "description": "An array containing all the standard feature names defined in the registry.",
+                    "items": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "longDescription": "The property shall contain an array of all the standard feature names defined in the registry. OEM feature names shall be defined on the OEMFeaturesUsed property.",
+                    "readonly": true,
+                    "type": "array",
+                    "versionAdded": "v1_2_0"
+                },
+                "Id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Id",
+                    "readonly": true
+                },
+                "Language": {
+                    "description": "This is the RFC 5646 compliant language code for the registry.",
+                    "longDescription": "The value of this property shall be a string consisting of an RFC 5646 language code.",
+                    "readonly": true,
+                    "type": "string"
+                },
+                "Name": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Name",
+                    "readonly": true
+                },
+                "OEMFeaturesUsed": {
+                    "description": "An array containing all the OEM feature names defined in the registry.",
+                    "items": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "longDescription": "The property shall contain an array of all the OEM feature names defined in the registry.",
+                    "readonly": true,
+                    "type": "array",
+                    "versionAdded": "v1_2_0"
+                },
+                "Oem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "description": "The OEM extension property.",
+                    "longDescription": "This property shall contain the OEM extensions.  All values for properties that this object contains shall conform to the Redfish Specification-described requirements."
+                },
+                "OwningEntity": {
+                    "description": "This is the organization or company that publishes this registry.",
+                    "longDescription": "The value of this property shall be a string that represents the publisher of this registry.",
+                    "readonly": true,
+                    "type": "string"
+                },
+                "RegistryPrefix": {
+                    "description": "This is the single word prefix used to form a Feature ID structure.",
+                    "longDescription": "The value of this property shall be the prefix used in IDs which uniquely identifies all of the Features in this registry as belonging to this registry.",
+                    "readonly": true,
+                    "type": "string"
+                },
+                "RegistryVersion": {
+                    "description": "This is the feature registry version which is used in the middle portion of a Feature ID.",
+                    "longDescription": "The value of this property shall be the version of this message registry. The format of this string shall be of the format majorversion.minorversion.errata.",
+                    "readonly": true,
+                    "type": "string"
+                }
+            },
+            "required": [
+                "Language",
+                "RegistryPrefix",
+                "RegistryVersion",
+                "OwningEntity",
+                "@odata.id",
+                "@odata.type",
+                "Id",
+                "Name",
+                "FeaturesUsed",
+                "FeatureMappings"
+            ],
+            "type": "object"
+        },
+        "FeaturesRegistryProperty": {
+            "additionalProperties": false,
+            "description": "The pattern type indicates that a free-form string is the unique identifier for the Feature within the registry.",
+            "longDescription": "The pattern type shall represent the suffix to be used in the Feature and shall be unique within this registry.",
+            "patternProperties": {
+                "[A-Za-z0-9]+": {
+                    "$ref": "#/definitions/SupportedFeature"
+                },
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {},
+            "type": "object"
+        },
+        "OemActions": {
+            "additionalProperties": true,
+            "description": "The available OEM specific actions for this resource.",
+            "longDescription": "This type shall contain any additional OEM actions for this resource.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {},
+            "type": "object"
+        },
+        "SupportedFeature": {
+            "additionalProperties": false,
+            "description": "This type shall describe how a supported feature is defined within the registry.",
+            "longDescription": "Each entity shall name a feature.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "CorrespondingProfileDefinition": {
+                    "description": "The profile definition that defines the feature.",
+                    "longDescription": "If present, the value shall define a profile definition that contains the named profile declaration.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "Description": {
+                    "description": "A description of the feature.",
+                    "longDescription": "The value shall be a detailed description of the feature.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "FeatureName": {
+                    "description": "The Name of the feature.",
+                    "longDescription": "The value shall be the unique name of the feature prefixed by the defining organization separated by a period (e.g. 'vendor.feature').",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "Version": {
+                    "description": "The Version of the feature.",
+                    "longDescription": "The value shall uniquely identify the version of the feature, using the major.minor.errata format.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "FeatureName",
+                "Description",
+                "Version",
+                "CorrespondingProfileDefinition"
+            ],
+            "type": "object"
+        }
+    },
+    "owningEntity": "SNIA",
+    "release": "1.2.7",
+    "title": "#FeaturesRegistry.v1_2_0.FeaturesRegistry"
+}

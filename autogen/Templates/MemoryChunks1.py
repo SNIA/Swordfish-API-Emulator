@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2023, The Storage Networking Industry Association.
+# Copyright (c) 2017-2025, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,10 +35,10 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2023 SNIA. All rights reserved.",
-	"AddressRangeType": "0x003",
+	"@Redfish.Copyright": "Copyright 2014-2025 SNIA. All rights reserved.",
+	"AddressRangeType": "Block",
 	"@odata.id": "{rb}Chassis/{ChassisId}/MemoryDomains/{MemoryDomainId}/MemoryChunks/{MemoryChunksId}",
-	"@odata.type": "#MemoryChunks.v1_5_0.MemoryChunks",
+	"@odata.type": "#MemoryChunks.v1_6_2.MemoryChunks",
 	"Id": "{MemoryChunksId}",
 	"Name": "MemoryChunks",
 }

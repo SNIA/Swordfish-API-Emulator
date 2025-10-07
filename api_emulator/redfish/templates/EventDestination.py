@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2025, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,20 +35,20 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
-	"Context": "abc",
+	"@Redfish.Copyright": "Copyright 2014-2025 SNIA. All rights reserved.",
+	"Context": "Oem",
 	"@odata.id": "{rb}EventService/Subscriptions/{EventDestinationId}",
-	"@odata.type": "#EventDestination.v1_12_0.EventDestination",
+	"@odata.type": "#EventDestination.v1_15_1.EventDestination",
 	"Id": "{EventDestinationId}",
 	"Name": "EventDestination",
-	"SubscriptionType": "abc",
+	"SubscriptionType": "RedfishEvent",
 }
 
 def get_EventDestination_instance(wildcards):
 		"""
 		Instantiates and formats the template
 		Arguments:
-			wildcard - A dictionary of wildcards strings and their repalcement values
+			wildcard - A dictionary of wildcards strings and their replacement values
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)

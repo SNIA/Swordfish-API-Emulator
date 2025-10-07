@@ -6,7 +6,7 @@ from api_writer_utils import get_function_parameters, get_path_parameters
 def write_service_program_header(resource_path, outfile, resource):
     """ Writes a program header """
     outfile.write('#\n')
-    outfile.write('# Copyright (c) 2017-2021, The Storage Networking Industry Association.\n')
+    outfile.write('# Copyright (c) 2017-2024, The Storage Networking Industry Association.\n')
     outfile.write('#\n')
     outfile.write('# Redistribution and use in source and binary forms, with or without\n')
     outfile.write('# modification, are permitted provided that the following conditions are met:\n')

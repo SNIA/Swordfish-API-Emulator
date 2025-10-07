@@ -18,17 +18,21 @@
         "FlowControlStatus": "None",
         "WakeOnLANEnabled": false
     },
-    "LinkConfiguration": [{
-      "CapableLinkSpeedGbps": [
-        10000
-      ],
-      "AutoSpeedNegotiationCapable": true,
-      "AutoSpeedNegotiationEnabled": false,
-      "ConfiguredNetworkLinks": [{
-        "ConfiguredLinkSpeedGbps": 100,
-        "ConfiguredWidth": 4
-      }]
-    }],
+    "LinkConfiguration": [
+        {
+            "CapableLinkSpeedGbps": [
+                10000
+            ],
+            "AutoSpeedNegotiationCapable": true,
+            "AutoSpeedNegotiationEnabled": false,
+            "ConfiguredNetworkLinks": [
+                {
+                    "ConfiguredLinkSpeedGbps": 100,
+                    "ConfiguredWidth": 4
+                }
+            ]
+        }
+    ],
     "PortMedium": "Electrical",
     "LinkNetworkTechnology": "Ethernet",
     "InterfaceEnabled": true,
@@ -51,5 +55,5 @@
     },
     "Oem": {},
     "@odata.id": "/redfish/v1/Fabrics/Ethernet/Switches/Switch1/Ports/6",
-    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+    "@Redfish.Copyright": "Copyright 2015-2023 SNIA. All rights reserved."
 }

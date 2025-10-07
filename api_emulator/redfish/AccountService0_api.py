@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -60,7 +60,7 @@ class AccountService0API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'AccountService', 'index.json')
+			path = os.path.join(self.root, 'index.json')
 			return get_json_data (path)
 		else:
 			return msg, code

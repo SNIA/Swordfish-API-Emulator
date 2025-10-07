@@ -42,8 +42,6 @@ _TEMPLATE = \
   "Members@odata.count": 0,
   "Members": [ ]
 }
-
-
 def get_Collection_instance(wildcards):
     """
     Instantiates and formats the template

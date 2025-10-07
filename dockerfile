@@ -1,4 +1,4 @@
-FROM ubuntu:latest AS SetupFiles
+FROM ubuntu:latest AS setupfiles
 
 # For healthcheck
 RUN apt-get update && apt-get install bash git openssl -y
@@ -8,6 +8,7 @@ RUN git clone https://github.com/DMTF/Redfish-Interface-Emulator && git clone ht
 RUN /bin/bash -c 'rm -rf Redfish-Interface-Emulator/api_emulator/redfish/static'
 RUN /bin/bash -c 'rm -rf Redfish-Interface-Emulator/api_emulator/redfish/templates'
 RUN /bin/bash -c 'rm -rf Redfish-Interface-Emulator/api_emulator/redfish/*.py'
+RUN /bin/bash -c 'rm -rf Redfish-Interface-Emulator/Resources'
 
 RUN /bin/bash -c 'cp -r -f Swordfish-API-Emulator/api_emulator Redfish-Interface-Emulator/'
 RUN /bin/bash -c 'cp -r -f Swordfish-API-Emulator/Resources Redfish-Interface-Emulator/'
@@ -32,7 +33,7 @@ FROM python:3-slim
 RUN apt-get update && apt-get install curl -y
 
 # Copy server files
-COPY --from=SetupFiles /Redfish-Interface-Emulator /usr/src/app/.
+COPY --from=setupfiles /Redfish-Interface-Emulator /usr/src/app/.
 
 # Install python requirements
 RUN pip install --upgrade pip && \

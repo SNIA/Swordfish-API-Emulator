@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Memory/{MemoryId}/MemoryMetrics
+# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Processors/{ProcessorId}/MemorySummary/MemoryMetrics
 # Program name - MemoryMetrics8_api.py
 
 import g
@@ -55,33 +55,33 @@ class MemoryMetrics8API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, MemoryId):
+	def get(self, ResourceBlockId, ComputerSystemId, ProcessorId):
 		logging.info('MemoryMetrics8 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Memory/{1}/MemoryMetrics', 'index.json').format(ResourceBlockId, MemoryId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Processors/{2}/MemorySummary/MemoryMetrics', 'index.json').format(ResourceBlockId, ComputerSystemId, ProcessorId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ResourceBlockId, MemoryId):
+	def post(self, ResourceBlockId, ComputerSystemId, ProcessorId):
 		logging.info('MemoryMetrics8 post called')
 		return 'POST is not a supported command for MemoryMetrics8API', 405
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, MemoryId):
+	def put(self, ResourceBlockId, ComputerSystemId, ProcessorId):
 		logging.info('MemoryMetrics8 put called')
 		return 'PUT is not a supported command for MemoryMetrics8API', 405
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, MemoryId):
+	def patch(self, ResourceBlockId, ComputerSystemId, ProcessorId):
 		logging.info('MemoryMetrics8 patch called')
 		return 'PATCH is not a supported command for MemoryMetrics8API', 405
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, MemoryId):
+	def delete(self, ResourceBlockId, ComputerSystemId, ProcessorId):
 		logging.info('MemoryMetrics8 delete called')
 		return 'DELETE is not a supported command for MemoryMetrics8API', 405
 

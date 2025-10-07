@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/MemorySummary/MemoryMetrics
+# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/CacheMemory/{MemoryId}/MemoryMetrics
 # Program name - MemoryMetrics2_api.py
 
 import g
@@ -55,33 +55,33 @@ class MemoryMetrics2API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, ProcessorId):
+	def get(self, ComputerSystemId, ProcessorId, MemoryId):
 		logging.info('MemoryMetrics2 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/Processors/{1}/MemorySummary/MemoryMetrics', 'index.json').format(ComputerSystemId, ProcessorId)
+			path = create_path(self.root, 'Systems/{0}/Processors/{1}/CacheMemory/{2}/MemoryMetrics', 'index.json').format(ComputerSystemId, ProcessorId, MemoryId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ComputerSystemId, ProcessorId):
+	def post(self, ComputerSystemId, ProcessorId, MemoryId):
 		logging.info('MemoryMetrics2 post called')
 		return 'POST is not a supported command for MemoryMetrics2API', 405
 
 	# HTTP PUT
-	def put(self, ComputerSystemId, ProcessorId):
+	def put(self, ComputerSystemId, ProcessorId, MemoryId):
 		logging.info('MemoryMetrics2 put called')
 		return 'PUT is not a supported command for MemoryMetrics2API', 405
 
 	# HTTP PATCH
-	def patch(self, ComputerSystemId, ProcessorId):
+	def patch(self, ComputerSystemId, ProcessorId, MemoryId):
 		logging.info('MemoryMetrics2 patch called')
 		return 'PATCH is not a supported command for MemoryMetrics2API', 405
 
 	# HTTP DELETE
-	def delete(self, ComputerSystemId, ProcessorId):
+	def delete(self, ComputerSystemId, ProcessorId, MemoryId):
 		logging.info('MemoryMetrics2 delete called')
 		return 'DELETE is not a supported command for MemoryMetrics2API', 405
 

@@ -5,7 +5,9 @@
     "CurrentSpeedGbps": 12,
     "Description": "Port in embedded network interface for IP Attached drive.",
     "Ethernet": {
-        "AssociatedMACAddresses": ["AA:BB:CC:DD:EE:FF"],
+        "AssociatedMACAddresses": [
+            "AA:BB:CC:DD:EE:FF"
+        ],
         "EEEEnabled": false,
         "FlowControlStatus": "None",
         "FlowControlConfiguration": "None",
@@ -41,16 +43,16 @@
         "Health": "OK"
     },
     "SFP": {
-      "Type": "SFP",
-      "Status": {
-          "State": "Enabled",
-          "Health": "OK"
-      }
+        "Type": "SFP",
+        "Status": {
+            "State": "Enabled",
+            "Health": "OK"
+        }
     },
     "Width": 4,
     "Links": {
-      "AssociatedEndpoints": []
+        "AssociatedEndpoints": []
     },
     "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a1/Ports/1",
-    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+    "@Redfish.Copyright": "Copyright 2015-2023 SNIA. All rights reserved."
 }

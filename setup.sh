@@ -128,6 +128,7 @@ rm -r "$WORK_DIR"/api_emulator/redfish/static
 # Remove Redfish templates, and .py files.
 rm -rf "$WORK_DIR"/api_emulator/redfish/templates
 rm -rf "$WORK_DIR"/api_emulator/redfish/*.py
+rm -rf "$WORK_DIR"/Resources
 
 # Copy over the Swordfish bits
 echo "Applying Swordfish additions..."
@@ -174,7 +175,7 @@ cat <<EOF
 ---------------------------------------------------------------------
 Starting Swordfish emulator. Access the local instance using the URL:
 
-   http://localhost:$API_PORT
+   https://localhost:$API_PORT
 
 $(tput bold)Press Ctrl-C when done.$(tput sgr0)
 ---------------------------------------------------------------------

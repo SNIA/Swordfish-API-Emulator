@@ -1,0 +1,25 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/SpareResourceSet.json",
+    "$ref": "#/definitions/SpareResourceSet",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "SpareResourceSet": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/SpareResourceSet.v1_0_2.json#/definitions/SpareResourceSet"
+                }
+            ],
+            "deletable": true,
+            "description": "A description of a set of spare resources.",
+            "insertable": false,
+            "longDescription": "The values define a set of spares of a particular type.",
+            "updatable": true
+        }
+    },
+    "owningEntity": "SNIA",
+    "title": "#SpareResourceSet.SpareResourceSet"
+}

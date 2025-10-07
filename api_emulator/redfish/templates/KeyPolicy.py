@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2025, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,9 +35,9 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2021 SNIA. All rights reserved.",
+	"@Redfish.Copyright": "Copyright 2014-2025 SNIA. All rights reserved.",
 	"@odata.id": "{rb}KeyService/NVMeoFKeyPolicies/{KeyPolicyId}",
-	"@odata.type": "#KeyPolicy.v1_0_0.KeyPolicy",
+	"@odata.type": "#KeyPolicy.v1_0_1.KeyPolicy",
 	"Id": "{KeyPolicyId}",
 	"Name": "KeyPolicy",
 }
@@ -46,11 +46,11 @@ def get_KeyPolicy_instance(wildcards):
 		"""
 		Instantiates and formats the template
 		Arguments:
-			wildcard - A dictionary of wildcards strings and their repalcement values
+			wildcard - A dictionary of wildcards strings and their replacement values
 		"""
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
-		g = d.replace('{KeyPolicyId}', '0')
+		g = d.replace('{KeyPolicyId}', '-0-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')

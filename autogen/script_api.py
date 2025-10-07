@@ -82,7 +82,7 @@ if __name__=='__main__':
         print("check command line arguments")
         exit()
     else:
-        directory_path = sys.argv[1]
+        directory_path = os.path.abspath(sys.argv[1])
     
     if not os.path.exists(directory_path):
         print("Directory does not exists")
@@ -96,6 +96,7 @@ if __name__=='__main__':
             print(file)
             xml_file = open(os.path.join(directory_path, file), 'r')
             xml_content= xml_file.read()
+            xml_file.close ()
             resource, resource_paths = get_resource_paths(xml_content)
             num = 0
 

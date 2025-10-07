@@ -9,7 +9,6 @@
     "SerialNumber": "529QB9450R6",
     "PartNumber": "166480-S23",
     "PowerState": "On",
-
     "Status": {
         "State": "Enabled",
         "Health": "OK"
@@ -31,5 +30,5 @@
         ]
     },
     "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure",
-    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+    "@Redfish.Copyright": "Copyright 2015-2023 SNIA. All rights reserved."
 }

@@ -3,7 +3,9 @@
     "Id": "AdvertisedFeatures.v1_0_0",
     "Name": "Swordfish Feature Registry File",
     "Description": "Swordfish Feature Registry File locations",
-    "Languages": ["en"],
+    "Languages": [
+        "en"
+    ],
     "Registry": "SwordfishFeaturesRegistry.1.3.0",
     "Location": [
         {
@@ -14,5 +16,5 @@
     ],
     "Oem": {},
     "@odata.id": "/redfish/v1/Registries/AdvertisedFeatures.v1_0_0",
-    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+    "@Redfish.Copyright": "Copyright 2015-2023 SNIA. All rights reserved."
 }

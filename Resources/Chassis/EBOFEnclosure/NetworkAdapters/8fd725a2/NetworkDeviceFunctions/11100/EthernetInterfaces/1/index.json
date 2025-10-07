@@ -14,7 +14,7 @@
     "HostName": "web483",
     "LinkStatus": "LinkUp",
     "FQDN": "web483.redfishspecification.org",
-    "IPv6DefaultGateway": "fe80::3ed9:2bff:fe34:600",
+    "IPv6DefaultGateway": "fe80::1ec1:deff:fe6f:1e24",
     "NameServers": [
         "names.redfishspecification.org"
     ],
@@ -41,25 +41,25 @@
             "AddressState": "Preferred"
         }
     ],
-    "IPv6StaticAddresses": [{
-      "Address": "fe80::1ec1:deff:fe6f:1e24",
-      "PrefixLength": 64
-    }],
-    "IPv6DefaultGateway": "fe80::1ec1:deff:fe6f:1e24",
-    "IPv6StaticDefaultGateways": [
-      {
-        "Address": "fe80::1ec1:deff:fe6f:1e24",
-        "PrefixLength": 16
-      }
+    "IPv6StaticAddresses": [
+        {
+            "Address": "fe80::1ec1:deff:fe6f:1e24",
+            "PrefixLength": 64
+        }
     ],
-
+    "IPv6StaticDefaultGateways": [
+        {
+            "Address": "fe80::1ec1:deff:fe6f:1e24",
+            "PrefixLength": 16
+        }
+    ],
     "EthernetInterfaceType": "Virtual",
     "Oem": {},
     "Links": {
-      "Chassis": {
-        "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure"
-      }
+        "Chassis": {
+            "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure"
+        }
     },
     "@odata.id": "/redfish/v1/Chassis/EBOFEnclosure/NetworkAdapters/8fd725a2/NetworkDeviceFunctions/11100/EthernetInterfaces/1",
-    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+    "@Redfish.Copyright": "Copyright 2015-2023 SNIA. All rights reserved."
 }

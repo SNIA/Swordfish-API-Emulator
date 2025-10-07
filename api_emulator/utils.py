@@ -48,6 +48,7 @@ import logging
 import jwt
 from api_emulator.account_service import AccountService
 import g
+from api_emulator.redfish.constants import *
 
 from flask import jsonify, make_response, request, session
 from functools import wraps
@@ -203,8 +204,10 @@ def create_and_patch_object (config, members, member_ids, path, collection_path)
 
 def delete_object (path, base_path):
 
+    
     delPath = path.replace('Resources','/redfish/v1').replace("\\","/")
     path2 = create_path(base_path, 'index.json').replace("\\","/")
+
     try:
         with open(path2,"r") as pdata:
             pdata = json.load(pdata)
@@ -212,10 +215,11 @@ def delete_object (path, base_path):
         data = {
         "@odata.id":delPath
         }
-        resp = 200
+        
         jdata = data["@odata.id"].split('/')
 
         path1 = os.path.join(base_path, jdata[len(jdata)-1])
+        resp = get_json_data (path1 + os.sep + 'index.json')
         shutil.rmtree(path1)
         pdata['Members'].remove(data)
         pdata['Members@odata.count'] = int(pdata['Members@odata.count']) - 1
@@ -224,9 +228,9 @@ def delete_object (path, base_path):
             json.dump(pdata,jdata, indent=4, sort_keys=True)
 
     except Exception as e:
-        return {"error": "Unable to read file because of the following error::{}".format(e)}, 404
+        return {"error": "delete_object: Unable to read file because of the following error::{}".format(e)}, 404
 
-    return jsonify(resp)
+    return resp
 
 def delete_collection (path, base_path):
 
@@ -338,8 +342,9 @@ def remove_json_object (config, property_id):
     # Iterate through the objects in the JSON and pop (remove)
     # the obj once we find it.
 
-    if property_id in config:
-        config.pop (property_id, None)
+    if isinstance(config, dict):
+        if property_id in config:
+            config.pop(property_id, None)
     return config
 
 def check_session_authentication():
@@ -371,22 +376,21 @@ def check_authentication(mode):
     elif mode == 'Enable':
         auth = request.authorization
         if auth:
-            print("Autherization data available")
+            print("Authorization data available")
             msg, code = check_basic_authentication(auth)
             if code == 200:
                 pass
             else:
                 print(msg)
-                return msg, code
-        if session.get('UserName'):
+                return msg, code        
+        else:
             msg, code = check_session_authentication()
             if code == 200:
                 pass
             else:
                 print(msg)
                 return msg, code
-        if not auth and session.get('UserName') == None:
-            return get_sessionValidation_error(), 403
+            
     return "Success..", 200
 
 def get_sessionValidation_error():
@@ -422,18 +426,105 @@ def header_handler(data,code,resp):
 
     if code == 405:
         resp.headers['Allow'] = 'GET, HEAD'
+        return
+
+    if '@odata.type' in data:
+        resource_type = data['@odata.type'].lower()
+        # Session collection and session restrictions:
+        if 'sessioncollection' in resource_type:
+            resp.headers['Allow'] = 'GET, POST'
+        elif  'volumecollection'  in resource_type:
+            resp.headers['Allow'] = 'GET, POST'
+        elif  'sessionservice'  in resource_type:
+            resp.headers['Allow'] = 'GET'            
+        elif  'session'  in resource_type:
+            resp.headers['Allow'] = 'GET, DELETE'
+        # Collections:
+        elif 'collection' in resource_type:
+            resp.headers['Allow'] = 'GET'                 
+        # Any other type of service, registry, etc...
+        elif 'serviceroot' in resource_type:
+                resp.headers['Allow'] = 'GET'
+        elif 'registry' in resource_type:
+                resp.headers['Allow'] = 'GET'
+        elif 'protocol'in resource_type:
+                resp.headers['Allow'] = 'GET'
+        elif 'service'in resource_type:
+                resp.headers['Allow'] = 'GET'
+        elif 'thermal'in resource_type:
+                resp.headers['Allow'] = 'GET'               
+        elif 'drive' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'
+        elif 'storage' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'
+        elif 'storagecontroller' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'
+        elif 'fabric' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'
+        elif 'networkdevicefunction' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'
+        elif 'port' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'
+        elif 'switch' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'             
+        elif 'networkadapter' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'
+        elif 'networkadapter' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'
+        elif 'networkadapter' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'
+        elif 'manager' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH'              
+        elif 'volume'  in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH, DELETE'
+        elif 'connection' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH, DELETE'
+        elif 'endpoint'  in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH, DELETE'
+        elif 'endpointgroup' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH, DELETE'
+        elif 'ethernetinterface'  in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH, DELETE'
+        elif 'zone' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH, DELETE'                
+        elif 'chassis' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH, DELETE'
+        elif 'role' in resource_type:
+            resp.headers['Allow'] = 'GET, PUT, PATCH, DELETE'             
+        else:
+            resp.headers['Allow'] = 'GET, POST, PUT, PATCH, DELETE'
+
+def send_event(event_type, message_id, message, severity, origin, extra=None):
+    """
+    Utility to create and store an event in the EventService Events collection.
+    """
+    try:
+        from api_emulator.redfish.EventServiceEvents_api import create_event
+        return create_event(event_type, message_id, message, severity, origin, extra)
+    except Exception as e:
+        logging.error(f"Failed to send event: {e}")
+        return None
+
+def write_event(event_payload, members, member_ids):
+    """
+    Create and store an event in the EventService/Events directory using the provided event_payload.
+    """
+    # event_dir is the directory for the new event (e.g., .../EventService/Events/<event_id>)
+    # collection_path is the path to the Events collection index.json
+    collection_path = create_path(PATHS['Root'], 'EventService', 'Events')
+    if not os.path.exists(collection_path):
+        # If the collection does not exist, create it
+        parent = create_path(PATHS['Root'], 'EventService')
+        create_collection(collection_path, 'EventCollection', PATHS['Root'])
+    config = event_payload.copy()
+    if not os.path.exists(collection_path):
+        os.mkdir(collection_path)
     else:
-        if '@odata.type' in data:
-            resource_type = data['@odata.type'].lower()
-            if 'collection' in resource_type:
-                if 'session' in resource_type:
-                    resp.headers['Allow'] = 'GET, POST'
-                else:
-                    resp.headers['Allow'] = 'GET, POST, PUT'
-            else:
-                if 'session' in resource_type:
-                    resp.headers['Allow'] = 'GET, POST, DELETE'
-                elif ('serviceroot' or 'registry' or 'protocol' or 'service' or 'Thermal') in resource_type:
-                    resp.headers['Allow'] = 'GET'
-                else:
-                    resp.headers['Allow'] = 'GET, POST, PUT, PATCH, DELETE'
+        # This will execute if an event with this ID already exists
+        return config, 409
+    with open(os.path.join(collection_path, "index.json"), "w") as fd:
+        fd.write(json.dumps(config, indent=4, sort_keys=True))
+    members.append(config)
+    member_ids.append({'@odata.id': config['@odata.id']})
+    update_collections_json(path=collection_path, link=config['@odata.id'])
+    return config

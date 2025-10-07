@@ -3,7 +3,7 @@
     "Id": "Switch2",
     "Name": "EBOF Embedded Ethernet Switch 2",
     "Description": "EBOF Embedded Ethernet Switch",
-    "DomainID": 1,    
+    "DomainID": 1,
     "SwitchType": "Ethernet",
     "Status": {
         "State": "Enabled",
@@ -42,5 +42,5 @@
     },
     "Oem": {},
     "@odata.id": "/redfish/v1/Fabrics/Ethernet/Switches/Switch2",
-    "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+    "@Redfish.Copyright": "Copyright 2015-2023 SNIA. All rights reserved."
 }

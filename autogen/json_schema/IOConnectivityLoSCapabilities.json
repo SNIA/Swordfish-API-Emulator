@@ -1,0 +1,34 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/IOConnectivityLoSCapabilities.json",
+    "$ref": "#/definitions/IOConnectivityLoSCapabilities",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "IOConnectivityLoSCapabilities": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOConnectivityLoSCapabilities.v1_0_3.json#/definitions/IOConnectivityLoSCapabilities"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOConnectivityLoSCapabilities.v1_1_3.json#/definitions/IOConnectivityLoSCapabilities"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOConnectivityLoSCapabilities.v1_2_0.json#/definitions/IOConnectivityLoSCapabilities"
+                }
+            ],
+            "deletable": false,
+            "description": "Describe IO connectivity capabilities.",
+            "insertable": false,
+            "longDescription": "This resource shall be used to describe the capabilities to provide IO connectivity.",
+            "updatable": true,
+            "uris": [
+                "/redfish/v1/StorageServices/{StorageServiceId}/IOConnectivityLoSCapabilities"
+            ]
+        }
+    },
+    "owningEntity": "SNIA",
+    "title": "#IOConnectivityLoSCapabilities.IOConnectivityLoSCapabilities"
+}

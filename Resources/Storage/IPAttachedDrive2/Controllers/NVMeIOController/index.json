@@ -1,51 +1,56 @@
 {
-  "@odata.type": "#StorageController.v1_6_0.StorageController",
-  "Id": "NVMeIOController",
-  "Name": "NVMe I/O Controller",
-  "Description": "An NVM IO controller is a general-purpose controller that provides access to logical block data and metadata stored on an NVM subsystem’s non-volatile storage medium. IO Controllers may also support management capabilities.",
-  "Status": {
-    "State": "Enabled",
-    "Health": "OK"
-  },
-  "Manufacturer": "Best NVMe Vendor",
-  "Model": "Simple NVMe Device",
-  "SerialNumber": "NVME123456",
-  "PartNumber": "NVM44",
-  "FirmwareVersion": "1.0.0",
-  "SupportedControllerProtocols": [
-    "NVMeOverFabrics",
-    "RoCEv2"
-  ],
-  "SupportedDeviceProtocols": [
-    "NVMe"
-  ],
-  "NVMeControllerProperties": {
-    "ControllerType": "IO",
-    "NVMeVersion": "1.4",
-    "NVMeControllerAttributes": {
-      "ReportsUUIDList": false,
-      "SupportsSQAssociations": false,
-      "ReportsNamespaceGranularity": false,
-      "SupportsTrafficBasedKeepAlive": false,
-      "SupportsPredictableLatencyMode": false,
-      "SupportsEnduranceGroups": false,
-      "SupportsReadRecoveryLevels": false,
-      "SupportsNVMSets": false,
-      "SupportsExceedingPowerOfNonOperationalState": false,
-      "Supports128BitHostId": false
+    "@odata.type": "#StorageController.v1_6_0.StorageController",
+    "Id": "NVMeIOController",
+    "Name": "NVMe I/O Controller",
+    "Description": "An NVM IO controller is a general-purpose controller that provides access to logical block data and metadata stored on an NVM subsystem’s non-volatile storage medium. IO Controllers may also support management capabilities.",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
     },
-    "NVMeSMARTCriticalWarnings": {
-      "MediaInReadOnly": false,
-      "OverallSubsystemDegraded": false,
-      "SpareCapacityWornOut": false
+    "Manufacturer": "Best NVMe Vendor",
+    "Model": "Simple NVMe Device",
+    "SerialNumber": "NVME123456",
+    "PartNumber": "NVM44",
+    "FirmwareVersion": "1.0.0",
+    "SupportedControllerProtocols": [
+        "NVMeOverFabrics",
+        "RoCEv2"
+    ],
+    "SupportedDeviceProtocols": [
+        "NVMe"
+    ],
+    "SupportedRAIDTypes": [
+        "None"
+    ],
+    "NVMeControllerProperties": {
+        "ControllerType": "IO",
+        "NVMeVersion": "1.4",
+        "NVMeControllerAttributes": {
+            "ReportsUUIDList": false,
+            "SupportsSQAssociations": false,
+            "ReportsNamespaceGranularity": false,
+            "SupportsTrafficBasedKeepAlive": false,
+            "SupportsPredictableLatencyMode": false,
+            "SupportsEnduranceGroups": false,
+            "SupportsReadRecoveryLevels": false,
+            "SupportsNVMSets": false,
+            "SupportsExceedingPowerOfNonOperationalState": false,
+            "Supports128BitHostId": false
+        },
+        "NVMeSMARTCriticalWarnings": {
+            "MediaInReadOnly": false,
+            "OverallSubsystemDegraded": false,
+            "SpareCapacityWornOut": false
+        },
+        "MaxQueueSize": 1
     },
-    "MaxQueueSize": 1
-  },
-  "Links": {
-    "AttachedVolumes": [{
-      "@odata.id": "/redfish/v1/Storage/IPAttachedDrive2/Volumes/SimpleNamespace"
-    }]
-  },
-  "@odata.id": "/redfish/v1/Storage/IPAttachedDrive2/Controllers/NVMeIOController",
-  "@Redfish.Copyright": "Copyright 2015-2022 SNIA. All rights reserved."
+    "Links": {
+        "AttachedVolumes": [
+            {
+                "@odata.id": "/redfish/v1/Storage/IPAttachedDrive2/Volumes/SimpleNamespace"
+            }
+        ]
+    },
+    "@odata.id": "/redfish/v1/Storage/IPAttachedDrive2/Controllers/NVMeIOController",
+    "@Redfish.Copyright": "Copyright 2015-2023 SNIA. All rights reserved."
 }

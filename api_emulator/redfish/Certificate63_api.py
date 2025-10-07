@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2021, The Storage Networking Industry Association.
+# Copyright (c) 2017-2025, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates/{CertificateId}
+# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/VirtualMedia/{VirtualMediaId}/ClientCertificates/{CertificateId}
 # Program name - Certificate63_api.py
 
 import g
@@ -38,7 +38,7 @@ import logging
 from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
-from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection
+from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, create_collection, send_event
 from .templates.Certificate63 import get_Certificate63_instance
 
 members = []
@@ -53,18 +53,18 @@ class Certificate63CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId):
+	def get(self, ResourceBlockId, ComputerSystemId, VirtualMediaId):
 		logging.info('Certificate63 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'Systems/{0}/KeyManagement/KMIPCertificates', 'index.json').format(ComputerSystemId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates', 'index.json').format(ResourceBlockId, ComputerSystemId, VirtualMediaId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ComputerSystemId):
+	def post(self, ResourceBlockId, ComputerSystemId, VirtualMediaId):
 		logging.info('Certificate63 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Certificate63CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if ComputerSystemId in members:
+			if VirtualMediaId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Systems/{0}/KeyManagement/KMIPCertificates').format(ComputerSystemId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates').format(ResourceBlockId, ComputerSystemId, VirtualMediaId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Certificate63CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate63API.post(self, ComputerSystemId, os.path.basename(config['@odata.id']))
+					return Certificate63API.post(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate63API.post(self, ComputerSystemId, str(res))
+					return Certificate63API.post(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, str(res))
 			else:
-				return Certificate63API.post(self, ComputerSystemId, str(res))
+				return Certificate63API.post(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Certificate63API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, CertificateId):
+	def get(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId):
 		logging.info('Certificate63 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/KeyManagement/KMIPCertificates/{1}', 'index.json').format(ComputerSystemId, CertificateId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,28 +119,31 @@ class Certificate63API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ComputerSystemId, CertificateId):
+	def post(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId):
 		logging.info('Certificate63 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/KeyManagement/KMIPCertificates/{1}').format(ComputerSystemId, CertificateId)
-			collection_path = os.path.join(self.root, 'Systems/{0}/KeyManagement/KMIPCertificates', 'index.json').format(ComputerSystemId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates/{3}').format(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates/{3}').format(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
+			collection_path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates', 'index.json').format(ResourceBlockId, ComputerSystemId, VirtualMediaId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate63CollectionAPI.post(self, ComputerSystemId)
+				Certificate63CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, VirtualMediaId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ComputerSystemId':ComputerSystemId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'VirtualMediaId':VirtualMediaId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate63_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
 
+				# Send ResourceCreated event with payload
+				send_event("ResourceCreated","ResourceEvent.1.4.2.ResourceCreated", "The resource was created successfully.", "OK", redfish_path)
 			except Exception:
 				traceback.print_exc()
 				resp = INTERNAL_ERROR
@@ -150,38 +153,105 @@ class Certificate63API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ComputerSystemId, CertificateId):
+	def put(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId):
 		logging.info('Certificate63 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/KeyManagement/KMIPCertificates/{1}', 'index.json').format(ComputerSystemId, CertificateId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
+			redfish_path = create_path('/redfish/v1', 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
+			# Event logic for PUT
+			old_version = None
+			try:
+				with open(path, 'r') as data_json:
+					old_version = json.load(data_json)
+			except Exception:
+				old_version = {}
+			health_changed_to = None
+			state_changed = False
+			new_state = None
+			if request.data:
+				new_version = json.loads(request.data)
+				old_health = old_health = old_version['Status']['Health']
+				new_health = new_version['Status']['Health']
+				if old_health != new_health:
+					health_changed_to = new_health
+				old_state = old_version['Status']['State']
+				new_state = new_version['Status']['State']
+				if old_state != new_state:
+					state_changed = True
+			if old_version != new_version:
+				send_event("ResourceChanged", "ResourceEvent.1.4.2.ResourceChanged", "One or more resource properties have changed.", "OK", redfish_path)
+			if health_changed_to == 'OK':
+				send_event("ResourceStatusChangedOK", "ResourceEvent.1.4.2.ResourceStatusChangedOK", f"The health of resource '{redfish_path}' has changed to OK.", "OK", redfish_path)
+			if health_changed_to == 'Critical':
+				send_event("ResourceStatusChangedCritical", "ResourceEvent.1.4.2.ResourceStatusChangedCritical", f"The health of resource '{redfish_path}' has changed to Critical.", "Critical", redfish_path)
+			if health_changed_to == 'Warning':
+				send_event("ResourceStatusChangedWarning", "ResourceEvent.1.4.2.ResourceStatusChangedWarning", f"The health of resource '{redfish_path}' has changed to Warning.", "Warning", redfish_path)
+			if state_changed:
+				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
 			put_object(path)
-			return self.get(ComputerSystemId, CertificateId)
+			return self.get(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ComputerSystemId, CertificateId):
+	def patch(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId):
 		logging.info('Certificate63 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/KeyManagement/KMIPCertificates/{1}', 'index.json').format(ComputerSystemId, CertificateId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
+			# Event logic for PATCH
+			if request.data:
+				old_version = None
+				try:
+					with open(path, 'r') as data_json:
+						old_version = json.load(data_json)
+				except Exception:
+					old_version = {}
+				health_changed_to = None
+				state_changed = False
+				new_state = None
+				new_version = json.loads(request.data)
+				old_health = old_version['Status']['Health']
+				new_health = new_version['Status']['Health']
+				old_state = old_version['Status']['State']
+				new_state = new_version['Status']['State']
+				if old_version != new_version:
+					send_event("ResourceChanged", "ResourceEvent.1.4.2.ResourceChanged", "One or more resource properties have changed.", "OK", redfish_path)
+				if old_health != new_health:
+					health_changed_to = new_health
+				if old_state != new_state:
+					state_changed = True
+				if health_changed_to == 'OK':
+					send_event("ResourceStatusChangedOK", "ResourceEvent.1.4.2.ResourceStatusChangedOK", f"The health of resource '{redfish_path}' has changed to OK.", "OK", redfish_path)
+				if health_changed_to == 'Critical':
+					send_event("ResourceStatusChangedCritical", "ResourceEvent.1.4.2.ResourceStatusChangedCritical", f"The health of resource '{redfish_path}' has changed to Critical.", "Critical", redfish_path)
+				if health_changed_to == 'Warning':
+					send_event("ResourceStatusChangedWarning", "ResourceEvent.1.4.2.ResourceStatusChangedWarning", f"The health of resource '{redfish_path}' has changed to Warning.", "Warning", redfish_path)
+				if state_changed:
+					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
 			patch_object(path)
-			return self.get(ComputerSystemId, CertificateId)
+			return self.get(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ComputerSystemId, CertificateId):
+	def delete(self, ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId):
 		logging.info('Certificate63 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/KeyManagement/KMIPCertificates/{1}').format(ComputerSystemId, CertificateId)
-			base_path = create_path(self.root, 'Systems/{0}/KeyManagement/KMIPCertificates').format(ComputerSystemId)
-			return delete_object(path, base_path)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates/{3}').format(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates/{3}').format(ResourceBlockId, ComputerSystemId, VirtualMediaId, CertificateId)
+			base_path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/VirtualMedia/{2}/ClientCertificates').format(ResourceBlockId, ComputerSystemId, VirtualMediaId)
+			# Event logic for DELETE
+			obj = get_json_data(path)
+			delete_object(path, base_path)
+			send_event("ResourceRemoved", "ResourceEvent.1.4.2.ResourceRemoved", "The resource was removed successfully.", "OK", redfish_path)
+			return '', 204
 		else:
 			return msg, code
 

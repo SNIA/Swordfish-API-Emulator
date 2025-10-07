@@ -1,0 +1,38 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/DataProtectionLineOfService.json",
+    "$ref": "#/definitions/DataProtectionLineOfService",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "DataProtectionLineOfService": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataProtectionLineOfService.v1_0_2.json#/definitions/DataProtectionLineOfService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataProtectionLineOfService.v1_1_2.json#/definitions/DataProtectionLineOfService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataProtectionLineOfService.v1_2_1.json#/definitions/DataProtectionLineOfService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataProtectionLineOfService.v1_3_0.json#/definitions/DataProtectionLineOfService"
+                }
+            ],
+            "deletable": true,
+            "description": "Describes a data protection service option.",
+            "insertable": false,
+            "longDescription": "This service option describes a replica that protects data from loss. The requirements must be met collectively by the communication path and the replica.",
+            "updatable": true,
+            "uris": [
+                "/redfish/v1/StorageServices/{StorageServiceId}/LinesOfService/DataProtectionLinesOfService/{DataProtectionLineOfServiceId}",
+                "/redfish/v1/StorageServices/{StorageServiceId}/ClassesOfService/{ClassOfServiceId}/DataProtectionLinesOfService/{DataProtectionLineOfServiceId}"
+            ]
+        }
+    },
+    "owningEntity": "SNIA",
+    "title": "#DataProtectionLineOfService.DataProtectionLineOfService"
+}

@@ -1,0 +1,583 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageGroup.v1_6_0.json",
+    "$ref": "#/definitions/StorageGroup",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "Actions": {
+            "additionalProperties": false,
+            "description": "The available actions for this resource.",
+            "longDescription": "This property shall contain any actions for this resource.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "#StorageGroup.ExposeVolumes": {
+                    "$ref": "#/definitions/ExposeVolumes"
+                },
+                "#StorageGroup.HideVolumes": {
+                    "$ref": "#/definitions/HideVolumes"
+                },
+                "Oem": {
+                    "$ref": "#/definitions/OemActions",
+                    "description": "This property contains the available OEM specific actions for this resource.",
+                    "longDescription": "This property shall contain any additional OEM actions for this resource."
+                }
+            },
+            "type": "object"
+        },
+        "AuthenticationMethod": {
+            "enum": [
+                "None",
+                "CHAP",
+                "MutualCHAP",
+                "DHCHAP"
+            ],
+            "enumDescriptions": {
+                "CHAP": "iSCSI Challenge Handshake Authentication Protocol (CHAP) authentication is used.",
+                "DHCHAP": "Diffie-Hellman Challenge Handshake Authentication Protocol (DHCHAP) is an authentication protocol used in Fibre Channel.",
+                "MutualCHAP": "iSCSI Mutual Challenge Handshake Authentication Protocol (CHAP) authentication is used.",
+                "None": "No authentication is used."
+            },
+            "enumLongDescriptions": {
+                "CHAP": "iSCSI Challenge Handshake Authentication Protocol (CHAP) authentication is used. For ChapInfo, the CHAPUser and CHAPPassword properties shall be used when type CHAP is selected.",
+                "DHCHAP": "Diffie-Hellman Challenge Handshake Authentication Protocol (DHCHAP) is an authentication protocol used in Fibre Channel. When MutualCHAP is selected, DHChapInfo shall be used instead of CHAPInfo, and the LocalDHCHAPAuthSecret and PeerDHCHAPAuthSecret properties shall be used.",
+                "MutualCHAP": "iSCSI Mutual Challenge Handshake Authentication Protocol (CHAP) authentication is used. For ChapInfo, the InitiatorCHAPUser, InitiatorCHAPPassword, TargetCHAPUser, and TargetCHAPPassword properties shall be used when type MutualCHAP is selected."
+            },
+            "type": "string"
+        },
+        "CHAPInformation": {
+            "additionalProperties": false,
+            "description": "User name and password for CHAP authentication.",
+            "longDescription": "User name and password values for target and initiators Endpoints when CHAP authentication is used.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "CHAPPassword": {
+                    "description": "The password for CHAP authentication.",
+                    "longDescription": "The value of this property shall be the password when CHAP authentication is specified.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "versionAdded": "v1_3_0",
+                    "writeOnly": true
+                },
+                "CHAPUser": {
+                    "description": "The username for CHAP authentication.",
+                    "longDescription": "The value of this property shall be the username when CHAP authentication is specified.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "versionAdded": "v1_3_0",
+                    "writeOnly": true
+                },
+                "InitiatorCHAPPassword": {
+                    "description": "The shared secret for Mutual (2-way) CHAP authentication by the initiator.",
+                    "longDescription": "The value of this property shall be the shared secret for Mutual (2-way)CHAP authentication.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "versionAdded": "v1_2_0",
+                    "writeOnly": true
+                },
+                "InitiatorCHAPUser": {
+                    "description": "The Initiator username for Mutual (2-way) CHAP authentication by the initiator.",
+                    "longDescription": "If present, this property is the initiator CHAP username for Mutual (2-way) authentication. For example, with an iSCSI scenario, use the initiator iQN.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "versionAdded": "v1_2_0"
+                },
+                "TargetCHAPPassword": {
+                    "description": "The Target CHAP Secret for Mutual (2-way) CHAP authentication by the target.",
+                    "longDescription": "The value of this property shall be the CHAP Secret for 2-way CHAP authentication.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "versionAdded": "v1_3_0",
+                    "writeOnly": true
+                },
+                "TargetCHAPUser": {
+                    "description": "The Target CHAP Username for Mutual (2-way) CHAP authentication by the target.",
+                    "longDescription": "The value of this property shall be the Target CHAP Username for Mutual (2-way) CHAP authentication. For example, with an iSCSI scenario, use the target iQN.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "versionAdded": "v1_2_0"
+                },
+                "TargetPassword": {
+                    "deprecated": "This property is deprecated in favor of TargetCHAPPassword.",
+                    "description": "This property is deprecated in favor of TargetCHAPPassword.",
+                    "longDescription": "The value of this property shall be the CHAP Secret for 2-way CHAP authentication.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "versionAdded": "v1_2_0",
+                    "versionDeprecated": "v1_3_0",
+                    "writeOnly": true
+                }
+            },
+            "type": "object"
+        },
+        "DHCHAPInformation": {
+            "additionalProperties": false,
+            "description": "User name and password for CHAP authentication.",
+            "longDescription": "User name and password values for target and initiator endpoints when CHAP authentication is used.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "LocalDHCHAPAuthSecret": {
+                    "description": "The local DHCHAP auth secret for DHCHAP authentication.",
+                    "longDescription": "This property shall be the  local DHCHAP auth secret for DHCHAP authentication.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "versionAdded": "v1_3_0"
+                },
+                "PeerDHCHAPAuthSecret": {
+                    "description": "The peer DHCHAP auth secret for DHCHAP authentication.",
+                    "longDescription": "The value of this property shall be the peer DHCHAP auth secret for DHCHAP authentication.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "versionAdded": "v1_3_0",
+                    "writeOnly": true
+                }
+            },
+            "type": "object"
+        },
+        "ExposeVolumes": {
+            "additionalProperties": false,
+            "description": "Expose the storage volumes of this group.",
+            "longDescription": "Exposes the storage of this group via the target endpoints named in the ServerEndpointGroups to the initiator endpoints named in the ClientEndpointGroups.  The property VolumesAreExposed shall be set to true when this action is completed.",
+            "parameters": {},
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "target": {
+                    "description": "Link to invoke action",
+                    "format": "uri-reference",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "HideVolumes": {
+            "additionalProperties": false,
+            "description": "Hide the storage volumes of this group.",
+            "longDescription": "Hide the storage of this group from the initiator endpoints named in the ClientEndpointGroups. The property VolumesAreExposed shall be set to false when this action is completed.",
+            "parameters": {},
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "target": {
+                    "description": "Link to invoke action",
+                    "format": "uri-reference",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Links": {
+            "additionalProperties": false,
+            "description": "Contains links to other resources that are related to this resource.",
+            "longDescription": "This structure shall contain references to resources that are not contained within this resource.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "ChildStorageGroups": {
+                    "description": "Child StorageGroups.",
+                    "items": {
+                        "$ref": "#/definitions/StorageGroup"
+                    },
+                    "longDescription": "An array of references to StorageGroups are incorporated into this StorageGroup.",
+                    "readonly": false,
+                    "type": "array"
+                },
+                "ChildStorageGroups@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                },
+                "ClassOfService": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/ClassOfService.json#/definitions/ClassOfService",
+                    "description": "The ClassOfService that all storage in this StorageGroup conforms to.",
+                    "longDescription": "The ClassOfService that all storage in this StorageGroup conforms to.",
+                    "readonly": false
+                },
+                "Oem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "description": "The OEM extension property.",
+                    "longDescription": "This property shall contain the OEM extensions.  All values for properties contained in this object shall conform to the Redfish Specification-described requirements."
+                },
+                "ParentStorageGroups": {
+                    "description": "Parent StorageGroups.",
+                    "items": {
+                        "$ref": "#/definitions/StorageGroup"
+                    },
+                    "longDescription": "An array of references to StorageGroups that incorporate this StorageGroup.",
+                    "readonly": true,
+                    "type": "array"
+                },
+                "ParentStorageGroups@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                }
+            },
+            "type": "object"
+        },
+        "OemActions": {
+            "additionalProperties": true,
+            "description": "The available OEM specific actions for this resource.",
+            "longDescription": "This type shall contain any additional OEM actions for this resource.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {},
+            "type": "object"
+        },
+        "StorageGroup": {
+            "additionalProperties": false,
+            "description": "Collection of resources that are managed and exposed to hosts as a group.",
+            "longDescription": "A storage group collects a set of related storage entities (volumes, file systems...) The collection should be useful for managing the storage of a set of related client applications.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "@odata.context": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/context"
+                },
+                "@odata.etag": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/etag"
+                },
+                "@odata.id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/id"
+                },
+                "@odata.type": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/type"
+                },
+                "AccessState": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/v1/EndpointGroup.json#/definitions/AccessState"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "AccessState for this storage group.",
+                    "longDescription": "The value of this property shall describe the access characteristics of this storage group. All associated logical units through all aggregated ports shall share this access state.",
+                    "readonly": false
+                },
+                "Actions": {
+                    "$ref": "#/definitions/Actions",
+                    "description": "The available actions for this resource.",
+                    "longDescription": "The Actions property shall contain the available actions for this resource."
+                },
+                "AuthenticationMethod": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/AuthenticationMethod"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "The Authentication method used for the Endpoints involved in this StorageGroup.",
+                    "longDescription": "The value of this property must be what kind of authentication that the endpoints in this StorageGroup understands.",
+                    "readonly": false,
+                    "versionAdded": "v1_2_0"
+                },
+                "ChapInfo": {
+                    "description": "The credential information used to authenticate the endpoints in this StorageGroup.",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/CHAPInformation"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "longDescription": "The value of this property must reflect the authentication used by this specific endpoint. If this endpoint represents an initiator, and AuthenticationMethod is CHAP or MutualCHAP, the Credentials fields CHAPUsername and CHAPSecret must be used. If this endpoint represents a target endpoint and AuthenticationMethod is MutualCHAP, then MutualCHAPUsername and MutualCHAPSecret must be used.",
+                    "type": "array",
+                    "versionAdded": "v1_2_0"
+                },
+                "ClientEndpointGroups": {
+                    "description": "Groups of client endpoints in this storage group.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/v1/EndpointGroup.json#/definitions/EndpointGroup"
+                    },
+                    "longDescription": "An array of references to groups of client-side endpoints that may be used to make requests to the storage exposed by this StorageGroup. If null, the implementation may allow access to the storage via any client-side endpoint.  If empty, the implementation shall not allow access to the storage via any client-side endpoint.",
+                    "readonly": false,
+                    "type": "array"
+                },
+                "ClientEndpointGroups@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                },
+                "DHChapInfo": {
+                    "description": "The credential information used to authenticate the endpoints in this StorageGroup for DHCHAP.",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/DHCHAPInformation"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "longDescription": "The value of this property must reflect the authentication used by this specific endpoint when the authentication type is specificed as DHCHAP. If this endpoint represents an initiator, and AuthenticationMethod is DHCHAP, the Credentials fields LocalDHCHAPAuthSecret and PeerDHCHAPAuthSecret must be used.",
+                    "type": "array",
+                    "versionAdded": "v1_3_0"
+                },
+                "Description": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Description"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "readonly": true
+                },
+                "Id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Id",
+                    "readonly": true
+                },
+                "Identifier": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Identifier",
+                    "description": "The value identifies this resource.",
+                    "longDescription": "The value shall be unique within the managed ecosystem."
+                },
+                "Links": {
+                    "$ref": "#/definitions/Links",
+                    "description": "Contains links to other resources that are related to this resource.",
+                    "longDescription": "This property shall contain links to other resources that are related to this resource."
+                },
+                "MappedVolumes": {
+                    "description": "Mapped Volumes in this storage group.",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageGroup.json#/definitions/MappedVolume"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "longDescription": "An array of mapped volumes managed by this storage group.",
+                    "type": "array",
+                    "versionAdded": "v1_1_0"
+                },
+                "MembersAreConsistent": {
+                    "deprecated": "Deprecated in favor of using the ConsistencyGroup for Consistency set management.",
+                    "description": "Members are kept in a consistent state.",
+                    "longDescription": "The value of this property shall be set to true if all members are in a consistent state. The default value for this property is false.",
+                    "readonly": false,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ]
+                },
+                "Name": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Name",
+                    "readonly": true
+                },
+                "Oem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "description": "The OEM extension property.",
+                    "longDescription": "This property shall contain the OEM extensions.  All values for properties that this object contains shall conform to the Redfish Specification-described requirements."
+                },
+                "ReplicaInfo": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageReplicaInfo.json#/definitions/ReplicaInfo",
+                    "deprecated": "Deprecated in favor of using the ConsistencyGroup for Consistency set management.",
+                    "description": "Describes this storage group in its role as a target for replication.",
+                    "longDescription": "This property shall describe the replication relationship between this storage group and a corresponding source storage group."
+                },
+                "ReplicaTargets": {
+                    "deprecated": "Deprecated in favor of using the ConsistencyGroup for Consistency set management.",
+                    "description": "The resources that are target replicas of this source.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                    },
+                    "longDescription": "The value shall reference the target replicas that are sourced by this replica.",
+                    "readonly": true,
+                    "type": "array",
+                    "versionAdded": "v1_1_1"
+                },
+                "ReplicaTargets@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                },
+                "ServerEndpointGroups": {
+                    "description": "Groups of server endpoints in this storage group.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/v1/EndpointGroup.json#/definitions/EndpointGroup"
+                    },
+                    "longDescription": "An array of references to groups of server-side endpoints that may be used to make requests to the storage exposed by this storage group.  If null, the implementation may allow access to the storage via any server-side endpoint.  If empty, the implementation shall not allow access to the storage via any server-side endpoint.",
+                    "readonly": false,
+                    "type": "array"
+                },
+                "ServerEndpointGroups@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                },
+                "Status": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Status",
+                    "description": "The property contains the status of the StorageGroup.",
+                    "longDescription": "The property shall contain the status of the StorageGroup."
+                },
+                "Volumes": {
+                    "deprecated": "These references are replaced by the MappedVolumes array in StorageGroup.",
+                    "description": "Volumes in this storage group.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.json#/definitions/Volume"
+                    },
+                    "longDescription": "An array of references to volumes managed by this storage group.",
+                    "readonly": false,
+                    "type": "array"
+                },
+                "Volumes@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                },
+                "VolumesAreExposed": {
+                    "description": "Storage volumes are exposed to paths defined by the client and server endpoints.",
+                    "longDescription": "The value of this property shall be set to true if storage volumes are exposed to the paths defined by the client and server endpoints.  The default value for this property is false.",
+                    "readonly": false,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "@odata.id",
+                "@odata.type",
+                "Id",
+                "Name"
+            ],
+            "type": "object"
+        }
+    },
+    "owningEntity": "SNIA",
+    "release": "1.2.6",
+    "title": "#StorageGroup.v1_6_0.StorageGroup"
+}

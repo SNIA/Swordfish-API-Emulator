@@ -1,0 +1,29 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageServiceMetrics.json",
+    "$ref": "#/definitions/StorageServiceMetrics",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "StorageServiceMetrics": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageServiceMetrics.v1_0_1.json#/definitions/StorageServiceMetrics"
+                }
+            ],
+            "deletable": false,
+            "description": "The usage and health statistics for a storage service.",
+            "insertable": false,
+            "longDescription": "The StorageServiceMetrics schema shall contain the usage and health statistics for a storage service in a Redfish implementation.",
+            "updatable": false,
+            "uris": [
+                "/redfish/v1/StorageServices/{StorageServiceId}/Metrics",
+                "/redfish/v1/Systems/{ComputerSystemId}/StorageServices/{StorageServiceId}/Metrics"
+            ]
+        }
+    },
+    "owningEntity": "SNIA",
+    "title": "#StorageServiceMetrics.StorageServiceMetrics"
+}

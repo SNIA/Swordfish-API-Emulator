@@ -1,0 +1,86 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/DataProtectionLoSCapabilities.json",
+    "$ref": "#/definitions/DataProtectionLoSCapabilities",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "DataProtectionLoSCapabilities": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataProtectionLoSCapabilities.v1_0_3.json#/definitions/DataProtectionLoSCapabilities"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataProtectionLoSCapabilities.v1_1_3.json#/definitions/DataProtectionLoSCapabilities"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataProtectionLoSCapabilities.v1_2_0.json#/definitions/DataProtectionLoSCapabilities"
+                }
+            ],
+            "deletable": false,
+            "description": "The capabilities to protect data from loss by the use of a replica.",
+            "insertable": false,
+            "longDescription": "The capabilities to protect data from loss by the use of a replica. The requirements must be met collectively by the communication path and the replica. There will be one instance associated to a class of service for each replica. Each replica has its own class of service that describes its characteristics.",
+            "updatable": true,
+            "uris": [
+                "/redfish/v1/StorageServices/{StorageServiceId}/DataProtectionLoSCapabilities"
+            ]
+        },
+        "FailureDomainScope": {
+            "description": "Values of this enumeration represent a geographic scope of a failure domain.",
+            "enum": [
+                "Server",
+                "Rack",
+                "RackGroup",
+                "Row",
+                "Datacenter",
+                "Region"
+            ],
+            "enumDescriptions": {
+                "Datacenter": "A co-located set of servers, including network and storage that share communication, power, or cooling infrastructure.",
+                "Rack": "A container for Servers, Networking, and Storage.",
+                "RackGroup": "A set of Racks that share common infrastructure.",
+                "Region": "A geographical or politically isolated set of resources.",
+                "Row": "An adjacent set of racks.",
+                "Server": "A CPU/memory complex."
+            },
+            "enumLongDescriptions": {
+                "Datacenter": "A facility that provides communication, power, or cooling infrastructure to a co-located set of servers, networking and storage.",
+                "Rack": "A container within a datacenter that provides communication, power, or cooling to a set of components.",
+                "RackGroup": "A set of racks that may share common communication, power, or cooling.",
+                "Region": "A set of resources that are required to be either geographically or politically isolated from resources not in the resources.",
+                "Row": "A set of adjacent racks or rackgroups that may share common communication, power, or cooling.",
+                "Server": "Components of a CPU/memory complex that share the same infrastructure."
+            },
+            "longDescription": "The enumeration literals of this enumeration shall represent a geographic scope in which all components within that scope have similar vulnerabilities.",
+            "type": "string"
+        },
+        "RecoveryAccessScope": {
+            "description": "An enumeration that represents the relative time required to make a replica available as a source.",
+            "enum": [
+                "OnlineActive",
+                "OnlinePassive",
+                "Nearline",
+                "Offline"
+            ],
+            "enumDescriptions": {
+                "Nearline": "Access to replica via a different front-end interconnect. A restore step is required before recovery can commence.",
+                "Offline": "No direct connection to the replica. (i.e. To a bunker containing backup media).",
+                "OnlineActive": "Active access to synchronous replicas.",
+                "OnlinePassive": "Passive access to replicas via the same front-end interconnect."
+            },
+            "enumLongDescriptions": {
+                "Nearline": "Access to a replica shall be consistent with switching access to a different path through a different front-end interconnection infrastructure.  Some inconsistency may occur.  A restore step may be required before recovery can commence.",
+                "Offline": "Access to a replica may take a significant amount of time.  No direct connection to the replica is assumed. Some inconsistency loss may occur.  A restore step is likely to be required.",
+                "OnlineActive": "Access to synchronous replicas shall be instantaneous.",
+                "OnlinePassive": "Access to a synchronous replica shall be consistent with switching access to a different path the same front-end interconnect.  A restore step shall not be required."
+            },
+            "longDescription": "The enumeration literals shall represent the relative time required to make a replica available as a source.",
+            "type": "string"
+        }
+    },
+    "owningEntity": "SNIA",
+    "title": "#DataProtectionLoSCapabilities.DataProtectionLoSCapabilities"
+}

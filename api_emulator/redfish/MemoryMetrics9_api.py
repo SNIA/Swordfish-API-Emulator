@@ -27,23 +27,21 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Processors/{ProcessorId}/MemorySummary/MemoryMetrics
+# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Memory/{MemoryId}/MemoryMetrics
 # Program name - MemoryMetrics9_api.py
 
 import g
 import json, os
 import traceback
-import logging, random, requests, string, jwt
+import logging
 
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
 from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
-members = []
-member_ids = []
 INTERNAL_ERROR = 500
 
 # MemoryMetrics9 does not have a Collection API
@@ -57,33 +55,33 @@ class MemoryMetrics9API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, ProcessorId):
+	def get(self, ResourceBlockId, MemoryId):
 		logging.info('MemoryMetrics9 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Processors/{1}/MemorySummary/MemoryMetrics', 'index.json').format(ResourceBlockId, ProcessorId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Memory/{1}/MemoryMetrics', 'index.json').format(ResourceBlockId, MemoryId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ResourceBlockId, ProcessorId):
+	def post(self, ResourceBlockId, MemoryId):
 		logging.info('MemoryMetrics9 post called')
 		return 'POST is not a supported command for MemoryMetrics9API', 405
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, ProcessorId):
+	def put(self, ResourceBlockId, MemoryId):
 		logging.info('MemoryMetrics9 put called')
 		return 'PUT is not a supported command for MemoryMetrics9API', 405
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, ProcessorId):
+	def patch(self, ResourceBlockId, MemoryId):
 		logging.info('MemoryMetrics9 patch called')
 		return 'PATCH is not a supported command for MemoryMetrics9API', 405
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, ProcessorId):
+	def delete(self, ResourceBlockId, MemoryId):
 		logging.info('MemoryMetrics9 delete called')
 		return 'DELETE is not a supported command for MemoryMetrics9API', 405
 

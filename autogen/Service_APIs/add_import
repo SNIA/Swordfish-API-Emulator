@@ -350,3 +350,10 @@ from api_emulator.redfish.VolumeMetrics16_api import *
 from api_emulator.redfish.VolumeMetrics17_api import *
 from api_emulator.redfish.VolumeMetrics18_api import *
 from api_emulator.redfish.VolumeMetrics19_api import *
+from api_emulator.redfish.MemoryMetrics14_api import *
+from api_emulator.redfish.StorageMetrics0_api import *
+from api_emulator.redfish.StorageMetrics1_api import *
+from api_emulator.redfish.StorageMetrics2_api import *
+from api_emulator.redfish.StorageMetrics3_api import *
+from api_emulator.redfish.StorageMetrics4_api import *
+from api_emulator.redfish.StorageMetrics5_api import *

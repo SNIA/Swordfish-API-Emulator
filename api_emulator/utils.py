@@ -48,6 +48,7 @@ import logging
 import jwt
 from api_emulator.account_service import AccountService
 import g
+from api_emulator.redfish.constants import *
 
 from flask import jsonify, make_response, request, session
 from functools import wraps
@@ -492,3 +493,38 @@ def header_handler(data,code,resp):
             resp.headers['Allow'] = 'GET, PUT, PATCH, DELETE'             
         else:
             resp.headers['Allow'] = 'GET, POST, PUT, PATCH, DELETE'
+
+def send_event(event_type, message_id, message, severity, origin, extra=None):
+    """
+    Utility to create and store an event in the EventService Events collection.
+    """
+    try:
+        from api_emulator.redfish.EventServiceEvents_api import create_event
+        return create_event(event_type, message_id, message, severity, origin, extra)
+    except Exception as e:
+        logging.error(f"Failed to send event: {e}")
+        return None
+
+def write_event(event_payload, members, member_ids):
+    """
+    Create and store an event in the EventService/Events directory using the provided event_payload.
+    """
+    # event_dir is the directory for the new event (e.g., .../EventService/Events/<event_id>)
+    # collection_path is the path to the Events collection index.json
+    collection_path = create_path(PATHS['Root'], 'EventService', 'Events')
+    if not os.path.exists(collection_path):
+        # If the collection does not exist, create it
+        parent = create_path(PATHS['Root'], 'EventService')
+        create_collection(collection_path, 'EventCollection', PATHS['Root'])
+    config = event_payload.copy()
+    if not os.path.exists(collection_path):
+        os.mkdir(collection_path)
+    else:
+        # This will execute if an event with this ID already exists
+        return config, 409
+    with open(os.path.join(collection_path, "index.json"), "w") as fd:
+        fd.write(json.dumps(config, indent=4, sort_keys=True))
+    members.append(config)
+    member_ids.append({'@odata.id': config['@odata.id']})
+    update_collections_json(path=collection_path, link=config['@odata.id'])
+    return config

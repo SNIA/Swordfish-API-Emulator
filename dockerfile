@@ -1,4 +1,4 @@
-FROM ubuntu:latest AS SetupFiles
+FROM ubuntu:latest AS setupfiles
 
 # For healthcheck
 RUN apt-get update && apt-get install bash git openssl -y
@@ -33,7 +33,7 @@ FROM python:3-slim
 RUN apt-get update && apt-get install curl -y
 
 # Copy server files
-COPY --from=SetupFiles /Redfish-Interface-Emulator /usr/src/app/.
+COPY --from=setupfiles /Redfish-Interface-Emulator /usr/src/app/.
 
 # Install python requirements
 RUN pip install --upgrade pip && \

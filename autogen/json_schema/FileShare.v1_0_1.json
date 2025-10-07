@@ -1,0 +1,275 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/FileShare.v1_0_1.json",
+    "$ref": "#/definitions/FileShare",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "FileShare": {
+            "additionalProperties": false,
+            "description": "An instance of a shared set of files with a common directory structure.",
+            "longDescription": "This resource shall be used to represent a shared set of files with a common directory structure.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "@odata.context": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/context"
+                },
+                "@odata.etag": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/etag"
+                },
+                "@odata.id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/id"
+                },
+                "@odata.type": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/type"
+                },
+                "CASupported": {
+                    "description": "Continuous Availability is supported. Client/Server mediated recovery from network and server failure with application transparency.",
+                    "longDescription": "The value of this property shall indicate that Continuous Availability is supported. Client/Server mediated recovery from network and server failure with application transparency. This property shall be NULL unless the FileSharingProtocols property includes SMB.  The default value for this property is false.",
+                    "readonly": false,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ]
+                },
+                "DefaultAccessCapabilities": {
+                    "description": "An array of default access capabilities for the file share. The types of default access can include Read, Write, and/or Execute.",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/DataStorageLoSCapabilities.json#/definitions/StorageAccessCapability"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "longDescription": "The value of this property shall be an array containing entries for the default access capabilities for the file share. Each entry shall specify a default access privilege. The types of default access can include Read, Write, and/or Execute.",
+                    "readonly": true,
+                    "type": "array"
+                },
+                "Description": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Description"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "readonly": true
+                },
+                "EthernetInterfaces": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/EthernetInterfaceCollection.json#/definitions/EthernetInterfaceCollection",
+                    "description": "A link to the collection of Ethernet interfaces that provide access to this file share.",
+                    "longDescription": "The value shall be a link to an EthernetInterfaceCollection with members that provide access to the file share.",
+                    "readonly": true
+                },
+                "ExecuteSupport": {
+                    "description": "Execute access is supported by the file share.",
+                    "longDescription": "The value of this property shall indicate whether Execute access is supported by the file share. The default value for this property is false.",
+                    "readonly": true,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ]
+                },
+                "FileSharePath": {
+                    "description": "A path to an exported file or directory on the file system where this file share is hosted.",
+                    "longDescription": "The value of this property shall be a path (relative to the file system root) to the exported file or directory on the file system where this file share is hosted.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "FileShareQuotaType": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/QuotaType"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "Specifies the type of quota enforcement.",
+                    "longDescription": "If FileShareQuotaType is present, a value of Soft shall specify that quotas are not enforced, and a value of Hard shall specify that writes shall fail if the space consumed would exceed the value of the FileShareTotalQuotaBytes property.",
+                    "readonly": false
+                },
+                "FileShareRemainingQuotaBytes": {
+                    "description": "The number of remaining bytes that may be used by this file share.",
+                    "longDescription": "If present, the value of this property shall indicate the remaining number of bytes that may be consumed by this file share.",
+                    "readonly": true,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "By"
+                },
+                "FileShareTotalQuotaBytes": {
+                    "description": "The maximum number of bytes that may be used by this file share.",
+                    "longDescription": "If present, the value of this property shall indicate the maximum number of bytes that may be consumed by this file share.",
+                    "readonly": false,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "By"
+                },
+                "FileSharingProtocols": {
+                    "description": "An array of file sharing protocols supported by this file share.",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/FileSystem.json#/definitions/FileProtocol"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "longDescription": "This property shall be an array containing entries for the file sharing protocols supported by this file share. Each entry shall specify a file sharing protocol supported by the file system.",
+                    "readonly": true,
+                    "type": "array"
+                },
+                "Id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Id",
+                    "readonly": true
+                },
+                "Links": {
+                    "$ref": "#/definitions/Links",
+                    "description": "The links object contains the links to other resources that are related to this resource.",
+                    "longDescription": "The Links property, as described by the Redfish Specification, shall contain references to resources that are related to, but not contained by (subordinate to), this resource."
+                },
+                "LowSpaceWarningThresholdPercents": {
+                    "description": "An array of low space warning threshold percentages for the file share.",
+                    "items": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "longDescription": "This property shall be an array containing entries for the percentages of file share capacity at which low space warning events are be issued. A LOW_SPACE_THRESHOLD_WARNING event shall be triggered each time the remaining file share capacity value becomes less than one of the values in the array. The following shall be true: Across all CapacitySources entries, percent = (SUM(AllocatedBytes) - SUM(ConsumedBytes))/SUM(AllocatedBytes).",
+                    "maximum": 100,
+                    "minimum": 0,
+                    "readonly": false,
+                    "type": "array",
+                    "units": "%"
+                },
+                "Name": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Name",
+                    "readonly": true
+                },
+                "Oem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "description": "The OEM extension property.",
+                    "longDescription": "This property shall contain the OEM extensions.  All values for properties that this object contains shall conform to the Redfish Specification-described requirements."
+                },
+                "RootAccess": {
+                    "description": "Root access is allowed by the file share.",
+                    "longDescription": "The value of this property shall indicate whether Root access is allowed by the file share. The default value for this property is false.",
+                    "readonly": true,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ]
+                },
+                "Status": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Status",
+                    "description": "Indicates the status of the file share.",
+                    "longDescription": "This value of this property shall indicate the status of the file share."
+                },
+                "WritePolicy": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/StorageReplicaInfo.json#/definitions/ReplicaUpdateMode"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "Defines how writes are replicated to the shared source.",
+                    "longDescription": "The value of this property shall define how writes are replicated to the shared source.",
+                    "readonly": true
+                }
+            },
+            "required": [
+                "@odata.id",
+                "@odata.type",
+                "Id",
+                "Name"
+            ],
+            "type": "object"
+        },
+        "Links": {
+            "additionalProperties": false,
+            "description": "The links object contains the links to other resources that are related to this resource.",
+            "longDescription": "The Links property, as described by the Redfish Specification, shall contain references to resources that are related to, but not contained by (subordinate to), this resource.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "ClassOfService": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/ClassOfService.json#/definitions/ClassOfService",
+                    "description": "A link to the ClassOfService for this file share.",
+                    "longDescription": "This value shall be a link to the ClassOfService for this file share."
+                },
+                "FileSystem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/FileSystem.json#/definitions/FileSystem",
+                    "description": "A link to the file system containing the file share.",
+                    "longDescription": "The value shall be a link to the file system containing the file share.",
+                    "readonly": true
+                },
+                "Oem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "description": "The OEM extension property.",
+                    "longDescription": "This property shall contain the OEM extensions.  All values for properties contained in this object shall conform to the Redfish Specification-described requirements."
+                }
+            },
+            "type": "object"
+        },
+        "QuotaType": {
+            "description": "Indicates whether quotas are enabled and enforced by this file share. A value of Soft means that quotas are enabled but not enforced, and a value of Hard means that quotas are enabled and enforced.",
+            "enum": [
+                "Soft",
+                "Hard"
+            ],
+            "enumDescriptions": {
+                "Hard": "Quotas are enabled and enforced.",
+                "Soft": "Quotas are enabled but not enforced."
+            },
+            "enumLongDescriptions": {
+                "Hard": "This value shall indicate that quotas are enabled and enforced.",
+                "Soft": "This value shall indicate that quotas are enabled but not enforced."
+            },
+            "longDescription": "The value shall indicate whether quotas are enabled and enforced by this file share. If QuotaType is present, a value of Soft shall mean that quotas are enabled but not enforced, and a value of Hard shall mean that quotas are enabled and enforced.",
+            "type": "string"
+        }
+    },
+    "owningEntity": "SNIA",
+    "release": "1.0.3",
+    "title": "#FileShare.v1_0_1.FileShare"
+}

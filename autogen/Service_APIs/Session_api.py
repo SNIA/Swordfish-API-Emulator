@@ -33,17 +33,15 @@
 import g
 import json, os
 import traceback
-import logging, random, requests, string, jwt
+import logging
 
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
 from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
-from api_emulator.account_service import AccountService
+
 config = {}
 
-members = []
-member_ids = []
 INTERNAL_ERROR = 500
 
 # Session Collection API
@@ -60,33 +58,14 @@ class SessionCollectionAPI(Resource):
 
 		if code == 200:
 			path = os.path.join(self.root, 'SessionService/Sessions', 'index.json')
-			return get_json_data(path)
+			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
 	def post(self):
 		logging.info('Session Collection post called')
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.type" in config:
-				if "Collection" in config["@odata.type"]:
-					return "Invalid data in POST body", 400
-		path = create_path(self.root, 'SessionService/Sessions')
-		parent_path = os.path.dirname(path)
-		if not os.path.exists(path):
-			os.mkdir(path)
-			create_collection (path, 'Session', parent_path)
-
-		res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-		if request.data:
-			config = json.loads(request.data)
-			if "@odata.id" in config:
-				print("Session Object : "+config['@odata.id'])
-				return SessionAPI.post(self, os.path.basename(config['@odata.id']))
-			else:
-				print("Session Object : "+str(res))
-				return SessionAPI.post(self, str(res))
+		return 'POST is not a supported command for SessionCollectionAPI', 405
 
 	# HTTP PUT
 	def put(self):
@@ -125,88 +104,8 @@ class SessionAPI(Resource):
 	# HTTP POST
 	def post(self, SessionId):
 		logging.info('Session post called')
+		return 'POST is not a supported command for SessionAPI', 405
 
-		# Check if SessionId == "Members", and reset SessionId for remainder of the post request:
-		if (SessionId == 'Members') or (SessionId == 'members'):
-			SessionId = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-
-		sessionService_path = os.path.join(self.root, 'SessionService', 'index.json')
-		json_data = open(sessionService_path)
-		data = json.load(json_data)
-		sessionTimeout = data['SessionTimeout']
-
-		path = create_path(self.root, 'SessionService/Sessions/{0}').format(SessionId)
-		collection_path = os.path.join(self.root, 'SessionService/Sessions', 'index.json')
-
-		# Check if collection exists:
-		if not os.path.exists(collection_path):
-			# SessionCollectionAPI.post(self)
-			c_path = create_path(self.root, 'SessionService/Sessions')
-			parent_path = os.path.dirname(c_path)
-			os.mkdir(c_path)
-			create_collection (c_path, 'Session', parent_path)
-
-		if SessionId in members:
-			resp = 404
-			return resp
-		try:
-			global config
-			wildcards = {'SessionId':SessionId, 'rb':g.rest_base}
-			config=get_Session_instance(wildcards)
-
-			if request.data:
-				request_data = json.loads(request.data)
-			# Update the keys of payload in json file.
-				for key, value in request_data.items():
-					config[key] = value
-
-			if not config['@odata.type']:
-				config['@odata.type'] = 'Session.1_4_0.Session'
-
-			members.append(config)
-			member_ids.append({'@odata.id': config['@odata.id']})
-
-			config['Name'] = config['UserName'] + " " + "Session"
-
-			username = config['UserName']
-			password = config['Password']
-
-			if not username or not password:
-				return "The authentication credentials are missing", 401
-			else:
-				as_obj = AccountService()
-				actual_password = as_obj.getPassword(username)
-				if actual_password == None:
-					return "Forbidden...Incorrect username, 403", 403
-				elif actual_password != password:
-					return "Forbidden...Incorrect password, 403", 403
-				else:
-					pass
-
-			if not os.path.exists(path):
-				os.mkdir(path)
-			else:
-			# This will execute when POST is called for more than one time for a resource
-				return "A creation request could not be completed because of conflict, 409", 409
-			with open(os.path.join(path, "index.json"), "w") as fd:
-				data = copy.deepcopy(config)
-				del data['Password']
-				fd.write(json.dumps(data, indent=4, sort_keys=True))
-
-			g.app.permanent_session_lifetime = timedelta(seconds=sessionTimeout)
-			session['UserName'] = config['UserName']
-			print(session.get('UserName'))
-			print("Session has been started with timeout : "+str(sessionTimeout))
-
-			# update the collection json file with new added resource
-			update_collections_json(path=collection_path, link=config['@odata.id'])
-			resp = config, 201
-
-		except Exception:
-			traceback.print_exc()
-			resp = INTERNAL_ERROR
-		logging.info('SessionAPI POST exit')
-		return resp
 	# HTTP PUT
 	def put(self, SessionId):
 		logging.info('Session put called')
@@ -220,16 +119,6 @@ class SessionAPI(Resource):
 	# HTTP DELETE
 	def delete(self, SessionId):
 		logging.info('Session delete called')
-		print("Deleting object : "+SessionId)
-		msg, code = check_authentication(self.auth)
+		return 'DELETE is not a supported command for SessionAPI', 405
 
-		if code == 200:
-			if session.get('UserName'):
-				session.pop('UserName', None)
-				print("Session Deleted")
 
-			path = create_path(self.root, 'SessionService/Sessions/{0}').format(SessionId)
-			base_path = create_path(self.root, 'SessionService/Sessions')
-			return delete_object(path, base_path)
-		else:
-			return msg, code

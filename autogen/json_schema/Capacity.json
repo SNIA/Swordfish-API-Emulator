@@ -1,0 +1,73 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/Capacity.json",
+    "$ref": "#/definitions/CapacitySource",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "Capacity": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Capacity.v1_0_4.json#/definitions/Capacity"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Capacity.v1_1_4.json#/definitions/Capacity"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Capacity.v1_2_1.json#/definitions/Capacity"
+                }
+            ],
+            "description": "This is the schema definition for the Capacity of a device. It represents the properties for capacity for any data store.",
+            "longDescription": "This composition may be used to represent storage capacity.  The sum of the values in Data, Metadata, and Snapshot shall be equal to the total capacity for the data store."
+        },
+        "CapacityInfo": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Capacity.v1_0_4.json#/definitions/CapacityInfo"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Capacity.v1_1_4.json#/definitions/CapacityInfo"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Capacity.v1_2_1.json#/definitions/CapacityInfo"
+                }
+            ],
+            "description": "The capacity of specific data type in a data store.",
+            "longDescription": "This composition may be used to represent the utilization of storage capacity."
+        },
+        "CapacitySource": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Capacity.v1_0_4.json#/definitions/CapacitySource"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Capacity.v1_1_4.json#/definitions/CapacitySource"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Capacity.v1_2_1.json#/definitions/CapacitySource"
+                }
+            ],
+            "deletable": true,
+            "description": "A description of the type and source of storage.",
+            "insertable": false,
+            "longDescription": "This type may be used to represent the source and type of storage capacity.  At most one of the ProvidingDrives, ProvidingVolumes or ProvidingPools properties may have a value.  If any of ProvidingDrives, ProvidingVolumes or ProvidingPools reference more than one resource, allocation of capacity across those resources is implementation dependent.",
+            "updatable": true,
+            "uris": [
+                "/redfish/v1/StorageServices/{StorageServiceId}/StoragePools/{StoragePoolId}/CapacitySources/{CapacitySourceId}",
+                "/redfish/v1/StorageServices/{StorageServiceId}/Volumes/{VolumeId}/CapacitySources/{CapacitySourceId}",
+                "/redfish/v1/StorageServices/{StorageServiceId}/FileSystems/{FileSystemId}/CapacitySources/{CapacitySourceId}",
+                "/redfish/v1/Storage/{StorageId}/StoragePools/{StoragePoolId}/CapacitySources/{CapacitySourceId}",
+                "/redfish/v1/Storage/{StorageId}/StoragePools/{StoragePoolId}/AllocatedVolumes/{VolumeId}/CapacitySources/{CapacitySourceId}",
+                "/redfish/v1/Storage/{StorageId}/Volumes/{VolumeId}/CapacitySources/{CapacitySourceId}",
+                "/redfish/v1/Storage/{StorageId}/FileSystems/{FileSystemId}/CapacitySources/{CapacitySourceId}",
+                "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/StoragePools/{StoragePoolId}/CapacitySources/{CapacitySourceId}",
+                "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Volumes/{VolumeId}/CapacitySources/{CapacitySourceId}",
+                "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/FileSystems/{FileSystemId}/CapacitySources/{CapacitySourceId}"
+            ]
+        }
+    },
+    "owningEntity": "SNIA",
+    "title": "#Capacity.CapacitySource"
+}

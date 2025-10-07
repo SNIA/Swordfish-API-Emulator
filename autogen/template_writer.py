@@ -1,10 +1,11 @@
 from template_writer_utils import get_path_variables
-
+import json as jsonlib
+import os
 
 def write_program_header(outfile, base_template_name):
     """ Writes a template program header """
     outfile.write('#\n')
-    outfile.write('# Copyright (c) 2017-2024, The Storage Networking Industry Association.\n')
+    outfile.write('# Copyright (c) 2017-2025, The Storage Networking Industry Association.\n')
     outfile.write('#\n')
     outfile.write('# Redistribution and use in source and binary forms, with or without\n')
     outfile.write('# modification, are permitted provided that the following conditions are met:\n')
@@ -42,10 +43,19 @@ def write_program_header(outfile, base_template_name):
 
 def write_template(outfile, resource_path, json_schema):
     ''' Writes actual template body'''
+    
+    # Load schema defaults
+
+    script_dir = os.path.dirname(__file__)
+    defaults_path = os.path.join(script_dir, "schema_defaults.json")
+
+    with open(defaults_path, "r") as f:
+        schema_defaults = jsonlib.load(f)
+
     outfile.write("_TEMPLATE = \\")
     outfile.write("\n")
     outfile.write("{\n")
-    outfile.write('\t"@Redfish.Copyright": "Copyright 2014-2024 SNIA. All rights reserved.",\n')
+    outfile.write('\t"@Redfish.Copyright": "Copyright 2014-2025 SNIA. All rights reserved.",\n')
 
     # All the template will have required properties -
     #  "@odata.id", "@odata.type", "Id", "Name", etc
@@ -65,21 +75,11 @@ def write_template(outfile, resource_path, json_schema):
             # name = input("Give value to the property 'Name' of {0}:".format(resource_path))
             outfile.write('\t"Name": "{0}",\n'.format(resource))
         else:
-            req_prop_value = input("Enter the string value for required property {0} : ".format(req_prop))
-            outfile.write('\t"{0}": "{1}",\n'.format(req_prop, req_prop_value))
-
-    # Giving option to user to add more properties and its values.
-    # follow = input("Do you want to add more properties to the template file (y/n)?")
-    # if follow == 'y':
-    #     while True:
-    #         added_data = input("Add new property and it's value (to stop, press enter): ")
-    #         if added_data != '':
-    #             outfile.write("\t"+ added_data)
-    #             outfile.write("\n")
-    #         else:
-    #             break
-    # else:
-    #     pass
+            # Use default if available, otherwise prompt
+            default_value = schema_defaults.get(resource, {}).get(req_prop)
+            if default_value is None:
+                default_value = input("Enter the string value for required property {0} : ".format(req_prop))
+            outfile.write('\t"{0}": "{1}",\n'.format(req_prop, default_value))
 
     outfile.write("}\n\n")
     return

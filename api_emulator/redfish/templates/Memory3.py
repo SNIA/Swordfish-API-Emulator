@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2024, The Storage Networking Industry Association.
+# Copyright (c) 2017-2025, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -35,9 +35,9 @@ from flask import json
 
 _TEMPLATE = \
 {
-	"@Redfish.Copyright": "Copyright 2014-2024 SNIA. All rights reserved.",
-	"@odata.id": "{rb}CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Memory/{MemoryId}",
-	"@odata.type": "#Memory.v1_19_0.Memory",
+	"@Redfish.Copyright": "Copyright 2014-2025 SNIA. All rights reserved.",
+	"@odata.id": "{rb}CompositionService/ResourceBlocks/{ResourceBlockId}/Memory/{MemoryId}",
+	"@odata.type": "#Memory.v1_20_0.Memory",
 	"Id": "{MemoryId}",
 	"Name": "Memory",
 }
@@ -51,16 +51,14 @@ def get_Memory3_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{ResourceBlockId}', '-0-')
-		g = g.replace('{ComputerSystemId}', '-1-')
-		g = g.replace('{MemoryId}', '-2-')
+		g = g.replace('{MemoryId}', '-1-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')
 		g = g.replace('{', '~!')
 		g = g.replace('}', '!~')
 		g = g.replace('0', '{ResourceBlockId}')
-		g = g.replace('1', '{ComputerSystemId}')
-		g = g.replace('2', '{MemoryId}')
+		g = g.replace('1', '{MemoryId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)
 		g = g.replace('~~!', '{{')

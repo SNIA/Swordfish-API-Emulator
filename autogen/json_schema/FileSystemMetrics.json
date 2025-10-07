@@ -1,0 +1,29 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/FileSystemMetrics.json",
+    "$ref": "#/definitions/FileSystemMetrics",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "FileSystemMetrics": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/FileSystemMetrics.v1_0_1.json#/definitions/FileSystemMetrics"
+                }
+            ],
+            "deletable": false,
+            "description": "The usage and health statistics for a file system.",
+            "insertable": false,
+            "longDescription": "The FileSystemMetrics schema shall contain the usage and health statistics for a file system in a Redfish implementation.",
+            "updatable": false,
+            "uris": [
+                "/redfish/v1/StorageServices/{StorageServiceId}/FileSystems/{FileSystemId}/Metrics",
+                "/redfish/v1/Storage/{StorageId}/FileSystems/{FileSystemId}/Metrics"
+            ]
+        }
+    },
+    "owningEntity": "SNIA",
+    "title": "#FileSystemMetrics.FileSystemMetrics"
+}

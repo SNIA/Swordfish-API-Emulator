@@ -1,0 +1,149 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/v1/AccountService.json",
+    "$ref": "#/definitions/AccountService",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2014-2025 DMTF. For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "definitions": {
+        "AccountService": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_0_15.json#/definitions/AccountService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_1_12.json#/definitions/AccountService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_2_12.json#/definitions/AccountService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_3_15.json#/definitions/AccountService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_4_13.json#/definitions/AccountService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_5_12.json#/definitions/AccountService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_6_11.json#/definitions/AccountService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_7_11.json#/definitions/AccountService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_8_9.json#/definitions/AccountService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_9_8.json#/definitions/AccountService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_10_9.json#/definitions/AccountService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_11_9.json#/definitions/AccountService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_12_7.json#/definitions/AccountService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_13_6.json#/definitions/AccountService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_14_4.json#/definitions/AccountService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_15_3.json#/definitions/AccountService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_16_2.json#/definitions/AccountService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_17_1.json#/definitions/AccountService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_18_0.json#/definitions/AccountService"
+                }
+            ],
+            "deletable": false,
+            "description": "The `AccountService` schema defines an account service.  The properties are common to, and enable management of, all user accounts.  The properties include the password requirements and control features, such as account lockout.  Properties and actions in this service specify general behavior that should be followed for typical accounts, however implementations might override these behaviors for special accounts or situations to avoid denial of service or other deadlock situations.",
+            "insertable": false,
+            "longDescription": "This resource shall represent an account service for a Redfish implementation.  The properties are common to, and enable management of, all user accounts.  The properties include the password requirements and control features, such as account lockout.  Properties and actions in this service specify general behavior that should be followed for typical accounts, however implementations may override these behaviors for special accounts or situations to avoid denial of service or other deadlock situations.",
+            "updatable": true,
+            "uris": [
+                "/redfish/v1/AccountService",
+                "/redfish/v1/Managers/{ManagerId}/RemoteAccountService"
+            ]
+        },
+        "MFABypass": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_12_7.json#/definitions/MFABypass"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_13_6.json#/definitions/MFABypass"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_14_4.json#/definitions/MFABypass"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_15_3.json#/definitions/MFABypass"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_16_2.json#/definitions/MFABypass"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_17_1.json#/definitions/MFABypass"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_18_0.json#/definitions/MFABypass"
+                }
+            ],
+            "description": "Multi-factor authentication bypass settings.",
+            "longDescription": "This type shall contain multi-factor authentication bypass settings."
+        },
+        "MFABypassType": {
+            "enum": [
+                "All",
+                "SecurID",
+                "GoogleAuthenticator",
+                "MicrosoftAuthenticator",
+                "ClientCertificate",
+                "OneTimePasscode",
+                "TimeBasedOneTimePassword",
+                "OEM"
+            ],
+            "enumDescriptions": {
+                "All": "Bypass all multi-factor authentication types.",
+                "ClientCertificate": "Bypass client certificate authentication.",
+                "GoogleAuthenticator": "Bypass Google Authenticator.",
+                "MicrosoftAuthenticator": "Bypass Microsoft Authenticator.",
+                "OEM": "Bypass OEM-defined multi-factor authentication.",
+                "OneTimePasscode": "Bypass one-time passcode authentication.",
+                "SecurID": "Bypass RSA SecurID.",
+                "TimeBasedOneTimePassword": "Bypass Time-based One-Time Password (TOTP) authentication."
+            },
+            "enumLongDescriptions": {
+                "All": "This value shall indicate an account or role mapping can bypass all multi-factor authentication types including OEM-defined types.",
+                "ClientCertificate": "This value shall indicate an account or role mapping can bypass client certificate authentication.  Authentication with client certificates is configured with the `ClientCertificate` property.",
+                "GoogleAuthenticator": "This value shall indicate an account or role mapping can bypass Google Authenticator.  Authentication with Google Authenticator is configured with the `GoogleAuthenticator` property.",
+                "MicrosoftAuthenticator": "This value shall indicate an account or role mapping can bypass Microsoft Authenticator.  Authentication with Microsoft Authenticator is configured with the `MicrosoftAuthenticator` property.",
+                "OEM": "This value shall indicate an account or role mapping can bypass OEM-defined multi-factor authentication.",
+                "OneTimePasscode": "This value shall indicate an account or role mapping can bypass one-time passcode authentication.  Authentication with a one-time passcode is configured with the `OneTimePasscode` property.",
+                "SecurID": "This value shall indicate an account or role mapping can bypass RSA SecurID.  Authentication with RSA SecurID is configured with the `SecurID` property.",
+                "TimeBasedOneTimePassword": "This value shall indicate an account or role mapping can bypass RFC6238-defined Time-based One-Time Password (TOTP) authentication.  Authentication with a Time-based One-Time Password is configured with the `TimeBasedOneTimePassword` property."
+            },
+            "enumVersionAdded": {
+                "OneTimePasscode": "v1_14_0",
+                "TimeBasedOneTimePassword": "v1_16_0"
+            },
+            "type": "string",
+            "versionAdded": "v1_12_0"
+        }
+    },
+    "language": "en",
+    "owningEntity": "DMTF",
+    "title": "#AccountService.AccountService"
+}

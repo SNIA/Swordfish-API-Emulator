@@ -5,6 +5,8 @@ To auto generate resource implementation for all Redfish/Swordfish resources, ru
 
 This program will generate API implementation code for resources and services.
 
+Note that the update_using_autogen.sh script downloads the latest Redfish and Swordfish schema and runs both script_api and script_template to generate 
+
 Run the following command:
 ``
 python script_api.py [schema_path]
@@ -40,3 +42,4 @@ This tool also generates add_resource/add_service_resource and add_import files.
 - add_resource/add_service_resource: contains "g.api.add_resource" statements for all implemented resource.
 - add_import: contains import statements for generated classes
 You can copy the contains from these files to the emulator's resource_manager.py program.
+The check_imports.sh script will provide a summary of the changes that should be incorporated.

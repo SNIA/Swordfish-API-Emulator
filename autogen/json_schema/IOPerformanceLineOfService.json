@@ -1,0 +1,32 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/IOPerformanceLineOfService.json",
+    "$ref": "#/definitions/IOPerformanceLineOfService",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "IOPerformanceLineOfService": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOPerformanceLineOfService.v1_0_3.json#/definitions/IOPerformanceLineOfService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/IOPerformanceLineOfService.v1_1_1.json#/definitions/IOPerformanceLineOfService"
+                }
+            ],
+            "deletable": true,
+            "description": "Describe service option within the IO performance line of service.",
+            "insertable": false,
+            "longDescription": "This structure may be used to define a service option related to IO performance.",
+            "updatable": true,
+            "uris": [
+                "/redfish/v1/StorageServices/{StorageServiceId}/LinesOfService/IOPerformanceLinesOfService/{IOPerformanceLineOfServiceId}",
+                "/redfish/v1/StorageServices/{StorageServiceId}/ClassesOfService/{ClassOfServiceId}/IOPerformanceLinesOfService/{IOPerformanceLineOfServiceId}"
+            ]
+        }
+    },
+    "owningEntity": "SNIA",
+    "title": "#IOPerformanceLineOfService.IOPerformanceLineOfService"
+}

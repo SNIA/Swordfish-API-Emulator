@@ -1,0 +1,322 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/NVMeDomain.v1_2_0.json",
+    "$ref": "#/definitions/NVMeDomain",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "definitions": {
+        "Actions": {
+            "additionalProperties": false,
+            "description": "The available actions for this resource.",
+            "longDescription": "This type shall contain the available actions for this resource.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "Oem": {
+                    "$ref": "#/definitions/OemActions",
+                    "description": "The available OEM-specific actions for this resource.",
+                    "longDescription": "This property shall contain the available OEM-specific actions for this resource."
+                }
+            },
+            "type": "object"
+        },
+        "DomainContents": {
+            "additionalProperties": false,
+            "description": "This structure contains properties that define the contents of the domain.",
+            "longDescription": "This structure shall contain properties that define the contents of the domain.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "Controllers": {
+                    "description": "Contains the current controllers that are part of this domain. These can be IO, Admin, or discovery controllers.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/v1/StorageController.json#/definitions/StorageController"
+                    },
+                    "longDescription": "Contains the current controllers that are part of this domain. These can be IO, Admin, or discovery controllers.",
+                    "type": "array",
+                    "versionAdded": "v1_2_0"
+                },
+                "Controllers@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                },
+                "Namespaces": {
+                    "description": "Contains the current namespaces that are part of this domain. These can be IO, Admin, or discovery controllers.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.json#/definitions/Volume"
+                    },
+                    "longDescription": "Contains the current namespaces that are part of this domain. These can be IO, Admin, or discovery controllers.",
+                    "type": "array",
+                    "versionAdded": "v1_2_0"
+                },
+                "Namespaces@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                }
+            },
+            "type": "object"
+        },
+        "Links": {
+            "additionalProperties": false,
+            "description": "The links to other resources that are related to this resource.",
+            "longDescription": "This Redfish Specification-described type shall contain links to resources that are related to but are not contained by or subordinate to this resource.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "AssociatedDomains": {
+                    "description": "An array of links to associated domains.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/NVMeDomain.json#/definitions/NVMeDomain"
+                    },
+                    "longDescription": "This property shall contain an array of links to resources of type NVMeDomain that represent associated domains.",
+                    "readonly": true,
+                    "type": "array"
+                },
+                "AssociatedDomains@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                },
+                "Oem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "description": "The OEM extension property.",
+                    "longDescription": "This property shall contain the OEM extensions.  All values for properties contained in this object shall conform to the Redfish Specification-described requirements."
+                }
+            },
+            "type": "object"
+        },
+        "NVMeDomain": {
+            "additionalProperties": false,
+            "description": "Properties for the Domain.",
+            "longDescription": "Properties for the Domain.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "@odata.context": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/context"
+                },
+                "@odata.etag": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/etag"
+                },
+                "@odata.id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/id"
+                },
+                "@odata.type": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/type"
+                },
+                "ANAGroupId": {
+                    "description": "The ANA group id for all namespaces within the domain.",
+                    "longDescription": "This shall contain the ANA group id which applies to all namespaces within the domain.  This corresponds to the value in the ANAGroupId field in volume.",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "versionAdded": "v1_2_0"
+                },
+                "Actions": {
+                    "$ref": "#/definitions/Actions",
+                    "description": "The available actions for this resource.",
+                    "longDescription": "This property shall contain the available actions for this resource."
+                },
+                "AvailableFirmwareImages": {
+                    "description": "A collection of available firmware images.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/NVMeFirmwareImage.json#/definitions/NVMeFirmwareImage"
+                    },
+                    "longDescription": "A collection of available firmware images.",
+                    "type": "array"
+                },
+                "AvailableFirmwareImages@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                },
+                "Description": {
+                    "anyOf": [
+                        {
+                            "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Description"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "readonly": true
+                },
+                "DomainContents": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/DomainContents"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "Contains the members of the domain.",
+                    "longDescription": "This property shall contain the members of the domain.",
+                    "versionAdded": "v1_2_0"
+                },
+                "DomainMembers": {
+                    "description": "The members of the domain.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Resource"
+                    },
+                    "longDescription": "The members of the domain.",
+                    "readonly": false,
+                    "type": "array"
+                },
+                "DomainMembers@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                },
+                "FirmwareImages": {
+                    "description": "Contains an array of pointers to available firmware images.",
+                    "items": {
+                        "$ref": "http://redfish.dmtf.org/schemas/v1/SoftwareInventory.json#/definitions/SoftwareInventory"
+                    },
+                    "longDescription": "This property shall contain an array of pointers to available firmware images.",
+                    "readonly": true,
+                    "type": "array",
+                    "versionAdded": "v1_2_0"
+                },
+                "FirmwareImages@odata.count": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/count"
+                },
+                "Id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Id",
+                    "readonly": true
+                },
+                "Links": {
+                    "$ref": "#/definitions/Links",
+                    "description": "The links to other resources that are related to this resource.",
+                    "longDescription": "This property shall contain links to resources that are related to but are not contained by or subordinate to this resource."
+                },
+                "MaxNamespacesSupportedPerController": {
+                    "description": "The maximum number of namespace attachments of this NVMe Domain.",
+                    "longDescription": "This property shall contain the maximum number of namespace attachments supported in this NVMe Domain. If there are no limits imposed, this property should not be implemented.",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "versionAdded": "v1_2_0"
+                },
+                "MaximumCapacityPerEnduranceGroupBytes": {
+                    "description": "The maximum capacity per endurance group in bytes of this NVMe Domain.",
+                    "longDescription": "This property shall contain the maximum capacity per endurance group in bytes of this NVMe Domain.",
+                    "readonly": true,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "By"
+                },
+                "Name": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Name",
+                    "readonly": true
+                },
+                "Oem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "description": "The OEM extension property.",
+                    "longDescription": "This property shall contain the OEM extensions.  All values for properties that this object contains shall conform to the Redfish Specification-described requirements."
+                },
+                "Status": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Status",
+                    "description": "The status and health of the resource and its subordinate or dependent resources.",
+                    "longDescription": "This property shall contain any status or health properties of the resource."
+                },
+                "TotalDomainCapacityBytes": {
+                    "description": "The total capacity in bytes of this NVMe Domain.",
+                    "longDescription": "This property shall contain the total capacity in bytes of this NVMe Domain.",
+                    "readonly": true,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "By"
+                },
+                "UnallocatedDomainCapacityBytes": {
+                    "description": "The total unallocated capacity in bytes of this NVMe Domain.",
+                    "longDescription": "This property shall contain the total unallocated capacity in bytes of this NVMe Domain.",
+                    "readonly": true,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "units": "By"
+                }
+            },
+            "required": [
+                "@odata.id",
+                "@odata.type",
+                "Id",
+                "Name"
+            ],
+            "type": "object"
+        },
+        "OemActions": {
+            "additionalProperties": true,
+            "description": "The available OEM-specific actions for this resource.",
+            "longDescription": "This type shall contain the available OEM-specific actions for this resource.",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message)\\.[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "integer",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {},
+            "type": "object"
+        }
+    },
+    "owningEntity": "SNIA",
+    "release": "1.2.6",
+    "title": "#NVMeDomain.v1_2_0.NVMeDomain"
+}

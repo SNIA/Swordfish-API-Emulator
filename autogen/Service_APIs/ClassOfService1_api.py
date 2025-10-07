@@ -33,17 +33,15 @@
 import g
 import json, os
 import traceback
-import logging, random, requests, string, jwt
+import logging
 
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
 from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
-members = []
-member_ids = []
 INTERNAL_ERROR = 500
 
 # ClassOfService1 Collection API
@@ -60,7 +58,7 @@ class ClassOfService1CollectionAPI(Resource):
 
 		if code == 200:
 			path = os.path.join(self.root, 'StorageServices/{0}/StoragePools/{1}/ClassesOfService', 'index.json').format(StorageServiceId, StoragePoolId)
-			return get_json_data(path)
+			return get_json_data (path)
 		else:
 			return msg, code
 

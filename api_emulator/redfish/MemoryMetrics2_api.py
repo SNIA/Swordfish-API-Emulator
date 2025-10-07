@@ -27,23 +27,21 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/MemorySummary/MemoryMetrics
+# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/CacheMemory/{MemoryId}/MemoryMetrics
 # Program name - MemoryMetrics2_api.py
 
 import g
 import json, os
 import traceback
-import logging, random, requests, string, jwt
+import logging
 
-from flask import Flask, request, session
+from flask import Flask, request
 from flask_restful import Resource
 from .constants import *
 from api_emulator.utils import check_authentication, create_path, get_json_data, create_and_patch_object, delete_object, patch_object, put_object, delete_collection, create_collection
 
 config = {}
 
-members = []
-member_ids = []
 INTERNAL_ERROR = 500
 
 # MemoryMetrics2 does not have a Collection API
@@ -57,33 +55,33 @@ class MemoryMetrics2API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, ProcessorId):
+	def get(self, ComputerSystemId, ProcessorId, MemoryId):
 		logging.info('MemoryMetrics2 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/Processors/{1}/MemorySummary/MemoryMetrics', 'index.json').format(ComputerSystemId, ProcessorId)
+			path = create_path(self.root, 'Systems/{0}/Processors/{1}/CacheMemory/{2}/MemoryMetrics', 'index.json').format(ComputerSystemId, ProcessorId, MemoryId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ComputerSystemId, ProcessorId):
+	def post(self, ComputerSystemId, ProcessorId, MemoryId):
 		logging.info('MemoryMetrics2 post called')
 		return 'POST is not a supported command for MemoryMetrics2API', 405
 
 	# HTTP PUT
-	def put(self, ComputerSystemId, ProcessorId):
+	def put(self, ComputerSystemId, ProcessorId, MemoryId):
 		logging.info('MemoryMetrics2 put called')
 		return 'PUT is not a supported command for MemoryMetrics2API', 405
 
 	# HTTP PATCH
-	def patch(self, ComputerSystemId, ProcessorId):
+	def patch(self, ComputerSystemId, ProcessorId, MemoryId):
 		logging.info('MemoryMetrics2 patch called')
 		return 'PATCH is not a supported command for MemoryMetrics2API', 405
 
 	# HTTP DELETE
-	def delete(self, ComputerSystemId, ProcessorId):
+	def delete(self, ComputerSystemId, ProcessorId, MemoryId):
 		logging.info('MemoryMetrics2 delete called')
 		return 'DELETE is not a supported command for MemoryMetrics2API', 405
 

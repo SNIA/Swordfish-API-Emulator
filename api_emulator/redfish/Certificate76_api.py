@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/TrustedComponents/{TrustedComponentId}/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/Managers/{ManagerId}/SecurityPolicy/TLS/Client/TrustedCertificates/{CertificateId}
 # Program name - Certificate76_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate76CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, TrustedComponentId):
+	def get(self, ManagerId):
 		logging.info('Certificate76 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/TrustedComponents/{1}/Certificates', 'index.json').format(ChassisId, TrustedComponentId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Client/TrustedCertificates', 'index.json').format(ManagerId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ChassisId, TrustedComponentId):
+	def post(self, ManagerId):
 		logging.info('Certificate76 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Certificate76CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if TrustedComponentId in members:
+			if ManagerId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Chassis/{0}/TrustedComponents/{1}/Certificates').format(ChassisId, TrustedComponentId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Client/TrustedCertificates').format(ManagerId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Certificate76CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate76API.post(self, ChassisId, TrustedComponentId, os.path.basename(config['@odata.id']))
+					return Certificate76API.post(self, ManagerId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate76API.post(self, ChassisId, TrustedComponentId, str(res))
+					return Certificate76API.post(self, ManagerId, str(res))
 			else:
-				return Certificate76API.post(self, ChassisId, TrustedComponentId, str(res))
+				return Certificate76API.post(self, ManagerId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Certificate76API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, TrustedComponentId, CertificateId):
+	def get(self, ManagerId, CertificateId):
 		logging.info('Certificate76 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/TrustedComponents/{1}/Certificates/{2}', 'index.json').format(ChassisId, TrustedComponentId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Client/TrustedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,25 +119,25 @@ class Certificate76API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ChassisId, TrustedComponentId, CertificateId):
+	def post(self, ManagerId, CertificateId):
 		logging.info('Certificate76 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/TrustedComponents/{1}/Certificates/{2}').format(ChassisId, TrustedComponentId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/TrustedComponents/{1}/Certificates/{2}').format(ChassisId, TrustedComponentId, CertificateId)
-			collection_path = create_path(self.root, 'Chassis/{0}/TrustedComponents/{1}/Certificates', 'index.json').format(ChassisId, TrustedComponentId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Client/TrustedCertificates/{1}').format(ManagerId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/SecurityPolicy/TLS/Client/TrustedCertificates/{1}').format(ManagerId, CertificateId)
+			collection_path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Client/TrustedCertificates', 'index.json').format(ManagerId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate76CollectionAPI.post(self, ChassisId, TrustedComponentId)
+				Certificate76CollectionAPI.post(self, ManagerId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ChassisId':ChassisId, 'TrustedComponentId':TrustedComponentId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'ManagerId':ManagerId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate76_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -153,13 +153,13 @@ class Certificate76API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ChassisId, TrustedComponentId, CertificateId):
+	def put(self, ManagerId, CertificateId):
 		logging.info('Certificate76 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/TrustedComponents/{1}/Certificates/{2}', 'index.json').format(ChassisId, TrustedComponentId, CertificateId)
-			redfish_path = create_path('/redfish/v1', 'Chassis/{0}/TrustedComponents/{1}/Certificates/{2}', 'index.json').format(ChassisId, TrustedComponentId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Client/TrustedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			redfish_path = create_path('/redfish/v1', 'Managers/{0}/SecurityPolicy/TLS/Client/TrustedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -191,18 +191,18 @@ class Certificate76API(Resource):
 			if state_changed:
 				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
 			put_object(path)
-			return self.get(ChassisId, TrustedComponentId, CertificateId)
+			return self.get(ManagerId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ChassisId, TrustedComponentId, CertificateId):
+	def patch(self, ManagerId, CertificateId):
 		logging.info('Certificate76 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/TrustedComponents/{1}/Certificates/{2}', 'index.json').format(ChassisId, TrustedComponentId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/TrustedComponents/{1}/Certificates/{2}', 'index.json').format(ChassisId, TrustedComponentId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Client/TrustedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/SecurityPolicy/TLS/Client/TrustedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -234,19 +234,19 @@ class Certificate76API(Resource):
 				if state_changed:
 					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
 			patch_object(path)
-			return self.get(ChassisId, TrustedComponentId, CertificateId)
+			return self.get(ManagerId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ChassisId, TrustedComponentId, CertificateId):
+	def delete(self, ManagerId, CertificateId):
 		logging.info('Certificate76 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/TrustedComponents/{1}/Certificates/{2}').format(ChassisId, TrustedComponentId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/TrustedComponents/{1}/Certificates/{2}').format(ChassisId, TrustedComponentId, CertificateId)
-			base_path = create_path(self.root, 'Chassis/{0}/TrustedComponents/{1}/Certificates').format(ChassisId, TrustedComponentId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Client/TrustedCertificates/{1}').format(ManagerId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/SecurityPolicy/TLS/Client/TrustedCertificates/{1}').format(ManagerId, CertificateId)
+			base_path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Client/TrustedCertificates').format(ManagerId)
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

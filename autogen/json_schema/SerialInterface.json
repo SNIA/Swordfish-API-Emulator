@@ -17,6 +17,9 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/SerialInterface.v1_2_1.json#/definitions/SerialInterface"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/SerialInterface.v1_3_0.json#/definitions/SerialInterface"
                 }
             ],
             "deletable": false,

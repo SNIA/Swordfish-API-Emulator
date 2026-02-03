@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Drives/{DriveId}/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Certificates/{CertificateId}
 # Program name - Certificate54_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate54CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, StorageId, DriveId):
+	def get(self, ResourceBlockId, ComputerSystemId, StorageId, DriveId):
 		logging.info('Certificate54 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates', 'index.json').format(ResourceBlockId, StorageId, DriveId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Drives/{3}/Certificates', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, DriveId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ResourceBlockId, StorageId, DriveId):
+	def post(self, ResourceBlockId, ComputerSystemId, StorageId, DriveId):
 		logging.info('Certificate54 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -78,7 +78,7 @@ class Certificate54CollectionAPI(Resource):
 			if DriveId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates').format(ResourceBlockId, StorageId, DriveId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Drives/{3}/Certificates').format(ResourceBlockId, ComputerSystemId, StorageId, DriveId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Certificate54CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate54API.post(self, ResourceBlockId, StorageId, DriveId, os.path.basename(config['@odata.id']))
+					return Certificate54API.post(self, ResourceBlockId, ComputerSystemId, StorageId, DriveId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate54API.post(self, ResourceBlockId, StorageId, DriveId, str(res))
+					return Certificate54API.post(self, ResourceBlockId, ComputerSystemId, StorageId, DriveId, str(res))
 			else:
-				return Certificate54API.post(self, ResourceBlockId, StorageId, DriveId, str(res))
+				return Certificate54API.post(self, ResourceBlockId, ComputerSystemId, StorageId, DriveId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Certificate54API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, StorageId, DriveId, CertificateId):
+	def get(self, ResourceBlockId, ComputerSystemId, StorageId, DriveId, CertificateId):
 		logging.info('Certificate54 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, StorageId, DriveId, CertificateId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Drives/{3}/Certificates/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, DriveId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,25 +119,25 @@ class Certificate54API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ResourceBlockId, StorageId, DriveId, CertificateId):
+	def post(self, ResourceBlockId, ComputerSystemId, StorageId, DriveId, CertificateId):
 		logging.info('Certificate54 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates/{3}').format(ResourceBlockId, StorageId, DriveId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates/{3}').format(ResourceBlockId, StorageId, DriveId, CertificateId)
-			collection_path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates', 'index.json').format(ResourceBlockId, StorageId, DriveId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Drives/{3}/Certificates/{4}').format(ResourceBlockId, ComputerSystemId, StorageId, DriveId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Drives/{3}/Certificates/{4}').format(ResourceBlockId, ComputerSystemId, StorageId, DriveId, CertificateId)
+			collection_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Drives/{3}/Certificates', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, DriveId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate54CollectionAPI.post(self, ResourceBlockId, StorageId, DriveId)
+				Certificate54CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, StorageId, DriveId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ResourceBlockId':ResourceBlockId, 'StorageId':StorageId, 'DriveId':DriveId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'StorageId':StorageId, 'DriveId':DriveId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate54_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -153,13 +153,13 @@ class Certificate54API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, StorageId, DriveId, CertificateId):
+	def put(self, ResourceBlockId, ComputerSystemId, StorageId, DriveId, CertificateId):
 		logging.info('Certificate54 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, StorageId, DriveId, CertificateId)
-			redfish_path = create_path('/redfish/v1', 'ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, StorageId, DriveId, CertificateId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Drives/{3}/Certificates/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, DriveId, CertificateId)
+			redfish_path = create_path('/redfish/v1', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Drives/{3}/Certificates/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, DriveId, CertificateId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -191,18 +191,18 @@ class Certificate54API(Resource):
 			if state_changed:
 				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
 			put_object(path)
-			return self.get(ResourceBlockId, StorageId, DriveId, CertificateId)
+			return self.get(ResourceBlockId, ComputerSystemId, StorageId, DriveId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, StorageId, DriveId, CertificateId):
+	def patch(self, ResourceBlockId, ComputerSystemId, StorageId, DriveId, CertificateId):
 		logging.info('Certificate54 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, StorageId, DriveId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, StorageId, DriveId, CertificateId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Drives/{3}/Certificates/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, DriveId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Drives/{3}/Certificates/{4}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, DriveId, CertificateId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -234,19 +234,19 @@ class Certificate54API(Resource):
 				if state_changed:
 					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
 			patch_object(path)
-			return self.get(ResourceBlockId, StorageId, DriveId, CertificateId)
+			return self.get(ResourceBlockId, ComputerSystemId, StorageId, DriveId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, StorageId, DriveId, CertificateId):
+	def delete(self, ResourceBlockId, ComputerSystemId, StorageId, DriveId, CertificateId):
 		logging.info('Certificate54 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates/{3}').format(ResourceBlockId, StorageId, DriveId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates/{3}').format(ResourceBlockId, StorageId, DriveId, CertificateId)
-			base_path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Certificates').format(ResourceBlockId, StorageId, DriveId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Drives/{3}/Certificates/{4}').format(ResourceBlockId, ComputerSystemId, StorageId, DriveId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Drives/{3}/Certificates/{4}').format(ResourceBlockId, ComputerSystemId, StorageId, DriveId, CertificateId)
+			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Drives/{3}/Certificates').format(ResourceBlockId, ComputerSystemId, StorageId, DriveId)
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

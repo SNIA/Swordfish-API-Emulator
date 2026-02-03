@@ -2,7 +2,7 @@
     "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_0_4.json",
     "$ref": "#/definitions/Volume",
     "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
-    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "copyright": "Copyright 2015-2025 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
     "definitions": {
         "Actions": {
             "additionalProperties": false,
@@ -317,6 +317,7 @@
             "type": "object"
         }
     },
+    "language": "en",
     "owningEntity": "SNIA",
     "title": "#Volume.v1_0_4.Volume"
 }

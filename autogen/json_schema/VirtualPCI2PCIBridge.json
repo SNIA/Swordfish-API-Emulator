@@ -1,0 +1,28 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/v1/VirtualPCI2PCIBridge.json",
+    "$ref": "#/definitions/VirtualPCI2PCIBridge",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2014-2025 DMTF. For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "definitions": {
+        "VirtualPCI2PCIBridge": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/VirtualPCI2PCIBridge.v1_0_0.json#/definitions/VirtualPCI2PCIBridge"
+                }
+            ],
+            "deletable": false,
+            "description": "The `VirtualPCI2PCIBridge` schema describes Virtual PCI-to-PCI Bridge (vPPB) inside a CXL switch that is owned by the host.",
+            "insertable": false,
+            "longDescription": "This resource shall represent a Virtual PCI-to-PCI Bridge (vPPB) inside a CXL switch that is host-owned.  This can be bound to a port that is either disconnected, connected to a PCIe component, or connected to a CXL component.",
+            "updatable": true,
+            "uris": [
+                "/redfish/v1/Fabrics/{FabricId}/Switches/{SwitchId}/VCSs/{VirtualCXLSwitchId}/VPPBs/{VirtualPCI2PCIBridgeId}"
+            ]
+        }
+    },
+    "owningEntity": "DMTF",
+    "title": "#VirtualPCI2PCIBridge.VirtualPCI2PCIBridge"
+}

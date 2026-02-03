@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2024, The Storage Networking Industry Association.
+# Copyright (c) 2017-2026, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Drives/{DriveId}/Assembly
+# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/Drives/{DriveId}/Assembly
 # Program name - Assembly3_api.py
 
 import g
@@ -55,33 +55,33 @@ class Assembly3API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, StorageId, DriveId):
+	def get(self, ChassisId, DriveId):
 		logging.info('Assembly3 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Assembly', 'index.json').format(ResourceBlockId, StorageId, DriveId)
+			path = create_path(self.root, 'Chassis/{0}/Drives/{1}/Assembly', 'index.json').format(ChassisId, DriveId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ResourceBlockId, StorageId, DriveId):
+	def post(self, ChassisId, DriveId):
 		logging.info('Assembly3 post called')
 		return 'POST is not a supported command for Assembly3API', 405
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, StorageId, DriveId):
+	def put(self, ChassisId, DriveId):
 		logging.info('Assembly3 put called')
 		return 'PUT is not a supported command for Assembly3API', 405
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, StorageId, DriveId):
+	def patch(self, ChassisId, DriveId):
 		logging.info('Assembly3 patch called')
 		return 'PATCH is not a supported command for Assembly3API', 405
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, StorageId, DriveId):
+	def delete(self, ChassisId, DriveId):
 		logging.info('Assembly3 delete called')
 		return 'DELETE is not a supported command for Assembly3API', 405
 

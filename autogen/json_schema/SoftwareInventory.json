@@ -20,6 +20,12 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/SoftwareInventory.v1_11_0.json#/definitions/AdditionalVersions"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/SoftwareInventory.v1_12_0.json#/definitions/AdditionalVersions"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/SoftwareInventory.v1_13_0.json#/definitions/AdditionalVersions"
                 }
             ],
             "description": "Additional versions.",
@@ -50,6 +56,12 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/SoftwareInventory.v1_11_0.json#/definitions/MeasurementBlock"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/SoftwareInventory.v1_12_0.json#/definitions/MeasurementBlock"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/SoftwareInventory.v1_13_0.json#/definitions/MeasurementBlock"
                 }
             ],
             "description": "The DSP0274-defined measurement block information.",
@@ -95,16 +107,23 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/SoftwareInventory.v1_11_0.json#/definitions/SoftwareInventory"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/SoftwareInventory.v1_12_0.json#/definitions/SoftwareInventory"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/SoftwareInventory.v1_13_0.json#/definitions/SoftwareInventory"
                 }
             ],
-            "deletable": false,
+            "deletable": true,
             "description": "The `SoftwareInventory` schema contains an inventory of software components.  This can include software components such as BIOS, BMC firmware, firmware for other devices, system drivers, or provider software.",
             "insertable": false,
             "longDescription": "This resource contains a single software component that this Redfish service manages.",
             "updatable": true,
             "uris": [
                 "/redfish/v1/UpdateService/SoftwareInventory/{SoftwareInventoryId}",
-                "/redfish/v1/UpdateService/FirmwareInventory/{SoftwareInventoryId}"
+                "/redfish/v1/UpdateService/FirmwareInventory/{SoftwareInventoryId}",
+                "/redfish/v1/UpdateService/LocalImageStore/{SoftwareInventoryId}"
             ]
         }
     },

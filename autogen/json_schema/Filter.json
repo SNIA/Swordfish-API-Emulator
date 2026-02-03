@@ -10,7 +10,10 @@
                     "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Filter.v1_0_2.json#/definitions/Filter"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Filter.v1_0_3.json#/definitions/Filter"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Filter.v1_1_0.json#/definitions/Filter"
                 }
             ],
             "deletable": false,
@@ -19,6 +22,7 @@
             "longDescription": "This resource shall represent the management properties for monitoring and management of filters for a Redfish implementation.",
             "updatable": true,
             "uris": [
+                "/redfish/v1/Chassis/{ChassisId}/ThermalSubsystem/Filters/{FilterId}",
                 "/redfish/v1/Chassis/{ChassisId}/ThermalSubsystem/Pumps/{PumpId}/Filters/{FilterId}",
                 "/redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Filters/{FilterId}",
                 "/redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Reservoirs/{ReservoirId}/Filters/{FilterId}",
@@ -28,7 +32,10 @@
                 "/redfish/v1/ThermalEquipment/ImmersionUnits/{CoolingUnitId}/Pumps/{PumpId}/Filters/{FilterId}",
                 "/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Filters/{FilterId}",
                 "/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Reservoirs/{ReservoirId}/Filters/{FilterId}",
-                "/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Pumps/{PumpId}/Filters/{FilterId}"
+                "/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Pumps/{PumpId}/Filters/{FilterId}",
+                "/redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/Filters/{FilterId}",
+                "/redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/Reservoirs/{ReservoirId}/Filters/{FilterId}",
+                "/redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/Pumps/{PumpId}/Filters/{FilterId}"
             ]
         }
     },

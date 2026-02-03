@@ -26,6 +26,9 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Fan.v1_5_2.json#/definitions/Fan"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Fan.v1_6_0.json#/definitions/Fan"
                 }
             ],
             "deletable": false,

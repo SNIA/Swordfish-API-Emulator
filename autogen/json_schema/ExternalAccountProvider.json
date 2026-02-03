@@ -10,31 +10,31 @@
                     "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/ExternalAccountProvider.v1_0_9.json#/definitions/ExternalAccountProvider"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ExternalAccountProvider.v1_0_10.json#/definitions/ExternalAccountProvider"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/ExternalAccountProvider.v1_1_8.json#/definitions/ExternalAccountProvider"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ExternalAccountProvider.v1_1_9.json#/definitions/ExternalAccountProvider"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/ExternalAccountProvider.v1_2_5.json#/definitions/ExternalAccountProvider"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ExternalAccountProvider.v1_2_6.json#/definitions/ExternalAccountProvider"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/ExternalAccountProvider.v1_3_7.json#/definitions/ExternalAccountProvider"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ExternalAccountProvider.v1_3_8.json#/definitions/ExternalAccountProvider"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/ExternalAccountProvider.v1_4_7.json#/definitions/ExternalAccountProvider"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ExternalAccountProvider.v1_4_8.json#/definitions/ExternalAccountProvider"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/ExternalAccountProvider.v1_5_4.json#/definitions/ExternalAccountProvider"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ExternalAccountProvider.v1_5_5.json#/definitions/ExternalAccountProvider"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/ExternalAccountProvider.v1_6_4.json#/definitions/ExternalAccountProvider"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ExternalAccountProvider.v1_6_5.json#/definitions/ExternalAccountProvider"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/ExternalAccountProvider.v1_7_3.json#/definitions/ExternalAccountProvider"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ExternalAccountProvider.v1_7_4.json#/definitions/ExternalAccountProvider"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/ExternalAccountProvider.v1_8_1.json#/definitions/ExternalAccountProvider"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ExternalAccountProvider.v1_8_2.json#/definitions/ExternalAccountProvider"
                 }
             ],
             "deletable": true,

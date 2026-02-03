@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2025, The Storage Networking Industry Association.
+# Copyright (c) 2017-2026, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -37,7 +37,7 @@ _TEMPLATE = \
 {
 	"@Redfish.Copyright": "Copyright 2014-2025 SNIA. All rights reserved.",
 	"@odata.id": "{rb}Managers/{ManagerId}/RemoteAccountService/Accounts/{ManagerAccountId}",
-	"@odata.type": "#ManagerAccount.v1_13_0.ManagerAccount",
+	"@odata.type": "#ManagerAccount.v1_14_1.ManagerAccount",
 	"Id": "{ManagerAccountId}",
 	"Name": "ManagerAccount",
 	"AccountTypes": "Redfish",

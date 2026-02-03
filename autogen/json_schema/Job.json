@@ -10,13 +10,16 @@
                     "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Job.v1_0_12.json#/definitions/Job"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Job.v1_0_13.json#/definitions/Job"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Job.v1_1_6.json#/definitions/Job"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Job.v1_1_7.json#/definitions/Job"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Job.v1_2_4.json#/definitions/Job"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Job.v1_2_5.json#/definitions/Job"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Job.v1_3_0.json#/definitions/Job"
                 }
             ],
             "deletable": true,
@@ -27,6 +30,22 @@
             "uris": [
                 "/redfish/v1/JobService/Jobs/{JobId}",
                 "/redfish/v1/JobService/Jobs/{JobId}/Steps/{JobId2}"
+            ]
+        },
+        "JobExcerpt": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Job.v1_0_13.json#/definitions/JobExcerpt"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Job.v1_1_7.json#/definitions/JobExcerpt"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Job.v1_2_5.json#/definitions/JobExcerpt"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Job.v1_3_0.json#/definitions/JobExcerpt"
+                }
             ]
         }
     },

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2024, The Storage Networking Industry Association.
+# Copyright (c) 2017-2026, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/GraphicsControllers/{ControllerId}/Ports/{PortId}/EnvironmentMetrics
+# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/GraphicsControllers/{GraphicsControllerId}/Ports/{PortId}/EnvironmentMetrics
 # Program name - EnvironmentMetrics51_api.py
 
 import g
@@ -55,33 +55,33 @@ class EnvironmentMetrics51API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
+	def get(self, ResourceBlockId, ComputerSystemId, GraphicsControllerId, PortId):
 		logging.info('EnvironmentMetrics51 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/GraphicsControllers/{2}/Ports/{3}/EnvironmentMetrics', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/GraphicsControllers/{2}/Ports/{3}/EnvironmentMetrics', 'index.json').format(ResourceBlockId, ComputerSystemId, GraphicsControllerId, PortId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
+	def post(self, ResourceBlockId, ComputerSystemId, GraphicsControllerId, PortId):
 		logging.info('EnvironmentMetrics51 post called')
 		return 'POST is not a supported command for EnvironmentMetrics51API', 405
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
+	def put(self, ResourceBlockId, ComputerSystemId, GraphicsControllerId, PortId):
 		logging.info('EnvironmentMetrics51 put called')
 		return 'PUT is not a supported command for EnvironmentMetrics51API', 405
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
+	def patch(self, ResourceBlockId, ComputerSystemId, GraphicsControllerId, PortId):
 		logging.info('EnvironmentMetrics51 patch called')
 		return 'PATCH is not a supported command for EnvironmentMetrics51API', 405
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
+	def delete(self, ResourceBlockId, ComputerSystemId, GraphicsControllerId, PortId):
 		logging.info('EnvironmentMetrics51 delete called')
 		return 'DELETE is not a supported command for EnvironmentMetrics51API', 405
 

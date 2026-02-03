@@ -32,6 +32,9 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/MemoryMetrics.v1_7_3.json#/definitions/MemoryMetrics"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MemoryMetrics.v1_8_0.json#/definitions/MemoryMetrics"
                 }
             ],
             "deletable": false,

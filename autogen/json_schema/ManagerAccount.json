@@ -14,9 +14,11 @@
                 "IPMI",
                 "KVMIP",
                 "VirtualMedia",
-                "WebUI"
+                "WebUI",
+                "ControlPanel"
             ],
             "enumDescriptions": {
+                "ControlPanel": "Allow PIN-based access via an external control panel, such as a keypad, touchscreen, or other human interface.",
                 "HostConsole": "Allow access to the host's console, which could be connected through Telnet, SSH, or another protocol.",
                 "IPMI": "Allow access to the Intelligent Platform Management Interface service.",
                 "KVMIP": "Allow access to a Keyboard-Video-Mouse over IP session.",
@@ -28,6 +30,7 @@
                 "WebUI": "Allow access to a web user interface session, such as a graphical interface or another web-based protocol."
             },
             "enumLongDescriptions": {
+                "ControlPanel": "This value shall indicate the account is used to allow PIN-based access via an external control panel.  If this value is specified, the `AccountTypes` property should not contain other values for the same `ManagerAccount` resource.  If this value is specified, `Password` shall contain the PIN to enable access, and may not follow other password-related rules.  The `ChangePassword` action, if supported, may be used to update the PIN.",
                 "HostConsole": "This value shall indicate the account is allowed to access the host console.",
                 "IPMI": "This value shall indicate the account is allowed to access the Intelligent Platform Management Interface service.",
                 "KVMIP": "This value shall indicate the account is allowed to access the Keyboard-Video-Mouse over IP session service.",
@@ -39,6 +42,7 @@
                 "WebUI": "This value shall indicate the account is allowed to access the web interface."
             },
             "enumVersionAdded": {
+                "ControlPanel": "v1_14_0",
                 "HostConsole": "v1_7_0",
                 "IPMI": "v1_7_0",
                 "KVMIP": "v1_7_0",
@@ -73,28 +77,31 @@
                     "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerAccount.v1_5_9.json#/definitions/ManagerAccount"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerAccount.v1_6_8.json#/definitions/ManagerAccount"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerAccount.v1_6_9.json#/definitions/ManagerAccount"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerAccount.v1_7_6.json#/definitions/ManagerAccount"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerAccount.v1_7_7.json#/definitions/ManagerAccount"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerAccount.v1_8_5.json#/definitions/ManagerAccount"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerAccount.v1_8_6.json#/definitions/ManagerAccount"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerAccount.v1_9_4.json#/definitions/ManagerAccount"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerAccount.v1_9_5.json#/definitions/ManagerAccount"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerAccount.v1_10_3.json#/definitions/ManagerAccount"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerAccount.v1_10_4.json#/definitions/ManagerAccount"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerAccount.v1_11_3.json#/definitions/ManagerAccount"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerAccount.v1_11_4.json#/definitions/ManagerAccount"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerAccount.v1_12_2.json#/definitions/ManagerAccount"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerAccount.v1_12_3.json#/definitions/ManagerAccount"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerAccount.v1_13_0.json#/definitions/ManagerAccount"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerAccount.v1_13_1.json#/definitions/ManagerAccount"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerAccount.v1_14_1.json#/definitions/ManagerAccount"
                 }
             ],
             "deletable": true,

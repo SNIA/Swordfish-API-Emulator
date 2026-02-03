@@ -1,0 +1,47 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/v1/AutomationNode.json",
+    "$ref": "#/definitions/AutomationNode",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2014-2025 DMTF. For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "definitions": {
+        "AutomationNode": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AutomationNode.v1_0_0.json#/definitions/AutomationNode"
+                }
+            ],
+            "deletable": false,
+            "description": "The `AutomationNode` schema describes a node that carries out instructions in industrial automation environments.",
+            "insertable": false,
+            "longDescription": "This resource shall represent an automation node for a Redfish implementation.",
+            "updatable": true,
+            "uris": [
+                "/redfish/v1/AutomationNodes/{AutomationNodeId}"
+            ]
+        },
+        "NodeState": {
+            "enum": [
+                "Idle",
+                "Done",
+                "Waiting",
+                "ConditionStop",
+                "ErrorStop",
+                "Running"
+            ],
+            "enumDescriptions": {
+                "ConditionStop": "The node's controller has stopped due to a condition fault.",
+                "Done": "The node's controller has reached its destination position.",
+                "ErrorStop": "The node's controller has stopped due to an error.",
+                "Idle": "The node's controller is idle.",
+                "Running": "The node's controller is running.",
+                "Waiting": "The node's controller is waiting to start."
+            },
+            "type": "string"
+        }
+    },
+    "owningEntity": "DMTF",
+    "title": "#AutomationNode.AutomationNode"
+}

@@ -11,6 +11,9 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/JobService.v1_0_6.json#/definitions/JobService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/JobService.v1_1_0.json#/definitions/JobService"
                 }
             ],
             "deletable": false,

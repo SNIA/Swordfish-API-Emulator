@@ -2,7 +2,7 @@
     "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_4_1.json",
     "$ref": "#/definitions/Volume",
     "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
-    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "copyright": "Copyright 2015-2025 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
     "definitions": {
         "Actions": {
             "additionalProperties": false,
@@ -658,7 +658,7 @@
                     "units": "By"
                 },
                 "Capacity": {
-                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Capacity.v1_0_0.json#/definitions/Capacity",
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Capacity.json#/definitions/Capacity",
                     "description": "Capacity utilization.",
                     "longDescription": "Information about the utilization of capacity allocated to this storage volume.",
                     "versionAdded": "v1_1_0"
@@ -1038,6 +1038,7 @@
             "type": "object"
         }
     },
+    "language": "en",
     "owningEntity": "SNIA",
     "release": "1.1.0",
     "title": "#Volume.v1_4_1.Volume"

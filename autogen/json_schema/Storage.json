@@ -65,6 +65,15 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Storage.v1_18_0.json#/definitions/Storage"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Storage.v1_19_0.json#/definitions/Storage"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Storage.v1_20_0.json#/definitions/Storage"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Storage.v1_21_0.json#/definitions/Storage"
                 }
             ],
             "deletable": false,
@@ -142,6 +151,15 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Storage.v1_18_0.json#/definitions/StorageController"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Storage.v1_19_0.json#/definitions/StorageController"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Storage.v1_20_0.json#/definitions/StorageController"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Storage.v1_21_0.json#/definitions/StorageController"
                 }
             ],
             "description": "The StorageController schema describes a storage controller and its properties.  A storage controller represents a physical or virtual storage device that produces volumes.",

@@ -11,6 +11,9 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/BatteryMetrics.v1_0_4.json#/definitions/BatteryMetrics"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/BatteryMetrics.v1_1_0.json#/definitions/BatteryMetrics"
                 }
             ],
             "deletable": false,

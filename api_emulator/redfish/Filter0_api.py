@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/ThermalSubsystem/Pumps/{PumpId}/Filters/{FilterId}
+# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/ThermalSubsystem/Filters/{FilterId}
 # Program name - Filter0_api.py
 
 import g
@@ -53,18 +53,18 @@ class Filter0CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, PumpId):
+	def get(self, ChassisId):
 		logging.info('Filter0 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Pumps/{1}/Filters', 'index.json').format(ChassisId, PumpId)
+			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Filters', 'index.json').format(ChassisId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ChassisId, PumpId):
+	def post(self, ChassisId):
 		logging.info('Filter0 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Filter0CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if PumpId in members:
+			if ChassisId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Pumps/{1}/Filters').format(ChassisId, PumpId)
+			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Filters').format(ChassisId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Filter0CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Filter0API.post(self, ChassisId, PumpId, os.path.basename(config['@odata.id']))
+					return Filter0API.post(self, ChassisId, os.path.basename(config['@odata.id']))
 				else:
-					return Filter0API.post(self, ChassisId, PumpId, str(res))
+					return Filter0API.post(self, ChassisId, str(res))
 			else:
-				return Filter0API.post(self, ChassisId, PumpId, str(res))
+				return Filter0API.post(self, ChassisId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Filter0API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, PumpId, FilterId):
+	def get(self, ChassisId, FilterId):
 		logging.info('Filter0 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Pumps/{1}/Filters/{2}', 'index.json').format(ChassisId, PumpId, FilterId)
+			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Filters/{1}', 'index.json').format(ChassisId, FilterId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,25 +119,25 @@ class Filter0API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ChassisId, PumpId, FilterId):
+	def post(self, ChassisId, FilterId):
 		logging.info('Filter0 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Pumps/{1}/Filters/{2}').format(ChassisId, PumpId, FilterId)
-			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/ThermalSubsystem/Pumps/{1}/Filters/{2}').format(ChassisId, PumpId, FilterId)
-			collection_path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Pumps/{1}/Filters', 'index.json').format(ChassisId, PumpId)
+			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Filters/{1}').format(ChassisId, FilterId)
+			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/ThermalSubsystem/Filters/{1}').format(ChassisId, FilterId)
+			collection_path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Filters', 'index.json').format(ChassisId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Filter0CollectionAPI.post(self, ChassisId, PumpId)
+				Filter0CollectionAPI.post(self, ChassisId)
 
 			if FilterId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ChassisId':ChassisId, 'PumpId':PumpId, 'FilterId':FilterId, 'rb':g.rest_base}
+				wildcards = {'ChassisId':ChassisId, 'FilterId':FilterId, 'rb':g.rest_base}
 				config=get_Filter0_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -153,13 +153,13 @@ class Filter0API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ChassisId, PumpId, FilterId):
+	def put(self, ChassisId, FilterId):
 		logging.info('Filter0 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Pumps/{1}/Filters/{2}', 'index.json').format(ChassisId, PumpId, FilterId)
-			redfish_path = create_path('/redfish/v1', 'Chassis/{0}/ThermalSubsystem/Pumps/{1}/Filters/{2}', 'index.json').format(ChassisId, PumpId, FilterId)
+			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Filters/{1}', 'index.json').format(ChassisId, FilterId)
+			redfish_path = create_path('/redfish/v1', 'Chassis/{0}/ThermalSubsystem/Filters/{1}', 'index.json').format(ChassisId, FilterId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -191,18 +191,18 @@ class Filter0API(Resource):
 			if state_changed:
 				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
 			put_object(path)
-			return self.get(ChassisId, PumpId, FilterId)
+			return self.get(ChassisId, FilterId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ChassisId, PumpId, FilterId):
+	def patch(self, ChassisId, FilterId):
 		logging.info('Filter0 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Pumps/{1}/Filters/{2}', 'index.json').format(ChassisId, PumpId, FilterId)
-			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/ThermalSubsystem/Pumps/{1}/Filters/{2}', 'index.json').format(ChassisId, PumpId, FilterId)
+			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Filters/{1}', 'index.json').format(ChassisId, FilterId)
+			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/ThermalSubsystem/Filters/{1}', 'index.json').format(ChassisId, FilterId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -234,19 +234,19 @@ class Filter0API(Resource):
 				if state_changed:
 					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
 			patch_object(path)
-			return self.get(ChassisId, PumpId, FilterId)
+			return self.get(ChassisId, FilterId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ChassisId, PumpId, FilterId):
+	def delete(self, ChassisId, FilterId):
 		logging.info('Filter0 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Pumps/{1}/Filters/{2}').format(ChassisId, PumpId, FilterId)
-			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/ThermalSubsystem/Pumps/{1}/Filters/{2}').format(ChassisId, PumpId, FilterId)
-			base_path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Pumps/{1}/Filters').format(ChassisId, PumpId)
+			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Filters/{1}').format(ChassisId, FilterId)
+			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/ThermalSubsystem/Filters/{1}').format(ChassisId, FilterId)
+			base_path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Filters').format(ChassisId)
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/USBControllers/{ControllerId}/Ports/{PortId}
+# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/USBControllers/{USBControllerId}/Ports/{PortId}
 # Program name - Port17_api.py
 
 import g
@@ -53,18 +53,18 @@ class Port17CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, ControllerId):
+	def get(self, ResourceBlockId, ComputerSystemId, USBControllerId):
 		logging.info('Port17 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports', 'index.json').format(ResourceBlockId, ComputerSystemId, USBControllerId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ResourceBlockId, ComputerSystemId, ControllerId):
+	def post(self, ResourceBlockId, ComputerSystemId, USBControllerId):
 		logging.info('Port17 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Port17CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if ControllerId in members:
+			if USBControllerId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports').format(ResourceBlockId, ComputerSystemId, ControllerId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports').format(ResourceBlockId, ComputerSystemId, USBControllerId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Port17CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Port17API.post(self, ResourceBlockId, ComputerSystemId, ControllerId, os.path.basename(config['@odata.id']))
+					return Port17API.post(self, ResourceBlockId, ComputerSystemId, USBControllerId, os.path.basename(config['@odata.id']))
 				else:
-					return Port17API.post(self, ResourceBlockId, ComputerSystemId, ControllerId, str(res))
+					return Port17API.post(self, ResourceBlockId, ComputerSystemId, USBControllerId, str(res))
 			else:
-				return Port17API.post(self, ResourceBlockId, ComputerSystemId, ControllerId, str(res))
+				return Port17API.post(self, ResourceBlockId, ComputerSystemId, USBControllerId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Port17API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
+	def get(self, ResourceBlockId, ComputerSystemId, USBControllerId, PortId):
 		logging.info('Port17 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, USBControllerId, PortId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,25 +119,25 @@ class Port17API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
+	def post(self, ResourceBlockId, ComputerSystemId, USBControllerId, PortId):
 		logging.info('Port17 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
-			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
-			collection_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}').format(ResourceBlockId, ComputerSystemId, USBControllerId, PortId)
+			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}').format(ResourceBlockId, ComputerSystemId, USBControllerId, PortId)
+			collection_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports', 'index.json').format(ResourceBlockId, ComputerSystemId, USBControllerId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Port17CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, ControllerId)
+				Port17CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, USBControllerId)
 
 			if PortId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'ControllerId':ControllerId, 'PortId':PortId, 'rb':g.rest_base}
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'USBControllerId':USBControllerId, 'PortId':PortId, 'rb':g.rest_base}
 				config=get_Port17_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -153,13 +153,13 @@ class Port17API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
+	def put(self, ResourceBlockId, ComputerSystemId, USBControllerId, PortId):
 		logging.info('Port17 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
-			redfish_path = create_path('/redfish/v1', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, USBControllerId, PortId)
+			redfish_path = create_path('/redfish/v1', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, USBControllerId, PortId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -191,18 +191,18 @@ class Port17API(Resource):
 			if state_changed:
 				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
 			put_object(path)
-			return self.get(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
+			return self.get(ResourceBlockId, ComputerSystemId, USBControllerId, PortId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
+	def patch(self, ResourceBlockId, ComputerSystemId, USBControllerId, PortId):
 		logging.info('Port17 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
-			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, USBControllerId, PortId)
+			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, USBControllerId, PortId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -234,19 +234,19 @@ class Port17API(Resource):
 				if state_changed:
 					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
 			patch_object(path)
-			return self.get(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
+			return self.get(ResourceBlockId, ComputerSystemId, USBControllerId, PortId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
+	def delete(self, ResourceBlockId, ComputerSystemId, USBControllerId, PortId):
 		logging.info('Port17 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
-			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
-			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports').format(ResourceBlockId, ComputerSystemId, ControllerId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}').format(ResourceBlockId, ComputerSystemId, USBControllerId, PortId)
+			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}').format(ResourceBlockId, ComputerSystemId, USBControllerId, PortId)
+			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports').format(ResourceBlockId, ComputerSystemId, USBControllerId)
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

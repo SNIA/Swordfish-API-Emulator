@@ -53,15 +53,23 @@ for FILE in "${FILES[@]}"; do
             if [[ "$FILE" == *add_import ]] && [[ "$line" == from* ]] && ! grep -Fxq "$line" "$RESOURCE_MANAGER"; then
                 awk -v newline="$line" 'NR==1{print; next} /^from api_emulator.redfish.AccelerationFunction0_api import \*/{print; print newline; next} {print}' "$RESOURCE_MANAGER" > "$RESOURCE_MANAGER.tmp" && mv "$RESOURCE_MANAGER.tmp" "$RESOURCE_MANAGER"
                 echo "Added import: $line"
-            elif ([[ "$FILE" == *add_resource ]] || [[ "$FILE" == *add_service_resource ]]) && [[ "$line" == g.api.add_resource* ]] && ! grep -Fxq "$line" "$RESOURCE_MANAGER"; then
-                # Insert inside __init__ method of ResourceManager
-                awk -v newline="$line" '
-                    BEGIN {inserted=0}
-                    /def __init__\(self, rest_base, spec, mode, auth, trays=None\):/ {print; in_init=1; next}
-                    in_init && /^\s*$/ && !inserted {print "        "newline; inserted=1}
-                    {print}
-                ' "$RESOURCE_MANAGER" > "$RESOURCE_MANAGER.tmp" && mv "$RESOURCE_MANAGER.tmp" "$RESOURCE_MANAGER"
-                echo "Added resource to __init__: $line"
+            elif ([[ "$FILE" == *add_resource ]] || [[ "$FILE" == *add_service_resource ]]) && [[ "$line" == g.api.add_resource* ]]; then
+                # Extract endpoint and URL from the line
+                endpoint=$(echo "$line" | awk -F'[,(]' '{print $2}' | xargs)
+                url=$(echo "$line" | awk -F"'" '{print $2}')
+                # Check for existing registration of this endpoint and URL
+                if ! grep -E "g\.api\.add_resource\s*\(\s*$endpoint\s*,\s*'$url'" "$RESOURCE_MANAGER"; then
+                    # Insert inside __init__ method of ResourceManager
+                    awk -v newline="$line" '
+                        BEGIN {inserted=0}
+                        /def __init__\(self, rest_base, spec, mode, auth, trays=None\):/ {print; in_init=1; next}
+                        in_init && /^\s*$/ && !inserted {print "        "newline; inserted=1}
+                        {print}
+                    ' "$RESOURCE_MANAGER" > "$RESOURCE_MANAGER.tmp" && mv "$RESOURCE_MANAGER.tmp" "$RESOURCE_MANAGER"
+                    echo "Added resource to __init__: $line"
+                else
+                    echo "Duplicate resource registration for $endpoint at $url, skipping."
+                fi
             fi
         done < "$FILE"
         echo "Finished processing $FILE."

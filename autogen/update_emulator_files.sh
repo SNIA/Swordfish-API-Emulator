@@ -54,15 +54,20 @@ for FILE in "${FILES[@]}"; do
                 awk -v newline="$line" 'NR==1{print; next} /^from api_emulator.redfish.AccelerationFunction0_api import \*/{print; print newline; next} {print}' "$RESOURCE_MANAGER" > "$RESOURCE_MANAGER.tmp" && mv "$RESOURCE_MANAGER.tmp" "$RESOURCE_MANAGER"
                 echo "Added import: $line"
             elif ([[ "$FILE" == *add_resource ]] || [[ "$FILE" == *add_service_resource ]]) && [[ "$line" == g.api.add_resource* ]] && ! grep -Fxq "$line" "$RESOURCE_MANAGER"; then
-                echo "$line" >> "$RESOURCE_MANAGER"
-                echo "Added resource: $line"
+                # Insert inside __init__ method of ResourceManager
+                awk -v newline="$line" '
+                    BEGIN {inserted=0}
+                    /def __init__\(self, rest_base, spec, mode, auth, trays=None\):/ {print; in_init=1; next}
+                    in_init && /^\s*$/ && !inserted {print "        "newline; inserted=1}
+                    {print}
+                ' "$RESOURCE_MANAGER" > "$RESOURCE_MANAGER.tmp" && mv "$RESOURCE_MANAGER.tmp" "$RESOURCE_MANAGER"
+                echo "Added resource to __init__: $line"
             fi
         done < "$FILE"
         echo "Finished processing $FILE."
     else
         echo "No $FILE found, skipping."
     fi
-    
 done
 
 echo "All import/resource incorporation into resource_manager.py complete."

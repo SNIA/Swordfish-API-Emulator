@@ -29,6 +29,9 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/PCIeFunction.v1_6_0.json#/definitions/PCIeFunction"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/PCIeFunction.v1_7_0.json#/definitions/PCIeFunction"
                 }
             ],
             "deletable": false,

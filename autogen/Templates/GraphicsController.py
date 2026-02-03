@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2025, The Storage Networking Industry Association.
+# Copyright (c) 2017-2026, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -36,9 +36,9 @@ from flask import json
 _TEMPLATE = \
 {
 	"@Redfish.Copyright": "Copyright 2014-2025 SNIA. All rights reserved.",
-	"@odata.id": "{rb}Systems/{ComputerSystemId}/GraphicsControllers/{ControllerId}",
+	"@odata.id": "{rb}Systems/{ComputerSystemId}/GraphicsControllers/{GraphicsControllerId}",
 	"@odata.type": "#GraphicsController.v1_0_2.GraphicsController",
-	"Id": "{ControllerId}",
+	"Id": "{GraphicsControllerId}",
 	"Name": "GraphicsController",
 }
 
@@ -51,14 +51,14 @@ def get_GraphicsController_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{ComputerSystemId}', '-0-')
-		g = g.replace('{ControllerId}', '-1-')
+		g = g.replace('{GraphicsControllerId}', '-1-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')
 		g = g.replace('{', '~!')
 		g = g.replace('}', '!~')
 		g = g.replace('0', '{ComputerSystemId}')
-		g = g.replace('1', '{ControllerId}')
+		g = g.replace('1', '{GraphicsControllerId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)
 		g = g.replace('~~!', '{{')

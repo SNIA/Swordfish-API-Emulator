@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2024, The Storage Networking Industry Association.
+# Copyright (c) 2017-2026, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Pumps/{PumpId}/Assembly
+# Resource implementation for - /redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/Reservoirs/{ReservoirId}/Assembly
 # Program name - Assembly62_api.py
 
 import g
@@ -55,33 +55,33 @@ class Assembly62API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, CoolingUnitId, PumpId):
+	def get(self, CoolingUnitId, ReservoirId):
 		logging.info('Assembly62 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/HeatExchangers/{0}/Pumps/{1}/Assembly', 'index.json').format(CoolingUnitId, PumpId)
+			path = create_path(self.root, 'ThermalEquipment/RPUs/{0}/Reservoirs/{1}/Assembly', 'index.json').format(CoolingUnitId, ReservoirId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, CoolingUnitId, PumpId):
+	def post(self, CoolingUnitId, ReservoirId):
 		logging.info('Assembly62 post called')
 		return 'POST is not a supported command for Assembly62API', 405
 
 	# HTTP PUT
-	def put(self, CoolingUnitId, PumpId):
+	def put(self, CoolingUnitId, ReservoirId):
 		logging.info('Assembly62 put called')
 		return 'PUT is not a supported command for Assembly62API', 405
 
 	# HTTP PATCH
-	def patch(self, CoolingUnitId, PumpId):
+	def patch(self, CoolingUnitId, ReservoirId):
 		logging.info('Assembly62 patch called')
 		return 'PATCH is not a supported command for Assembly62API', 405
 
 	# HTTP DELETE
-	def delete(self, CoolingUnitId, PumpId):
+	def delete(self, CoolingUnitId, ReservoirId):
 		logging.info('Assembly62 delete called')
 		return 'DELETE is not a supported command for Assembly62API', 405
 

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2024, The Storage Networking Industry Association.
+# Copyright (c) 2017-2026, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Memory/{MemoryId}/Assembly
+# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Memory/{MemoryId}/Assembly
 # Program name - Assembly10_api.py
 
 import g
@@ -55,33 +55,33 @@ class Assembly10API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, MemoryId):
+	def get(self, ComputerSystemId, MemoryId):
 		logging.info('Assembly10 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Memory/{1}/Assembly', 'index.json').format(ResourceBlockId, MemoryId)
+			path = create_path(self.root, 'Systems/{0}/Memory/{1}/Assembly', 'index.json').format(ComputerSystemId, MemoryId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ResourceBlockId, MemoryId):
+	def post(self, ComputerSystemId, MemoryId):
 		logging.info('Assembly10 post called')
 		return 'POST is not a supported command for Assembly10API', 405
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, MemoryId):
+	def put(self, ComputerSystemId, MemoryId):
 		logging.info('Assembly10 put called')
 		return 'PUT is not a supported command for Assembly10API', 405
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, MemoryId):
+	def patch(self, ComputerSystemId, MemoryId):
 		logging.info('Assembly10 patch called')
 		return 'PATCH is not a supported command for Assembly10API', 405
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, MemoryId):
+	def delete(self, ComputerSystemId, MemoryId):
 		logging.info('Assembly10 delete called')
 		return 'DELETE is not a supported command for Assembly10API', 405
 

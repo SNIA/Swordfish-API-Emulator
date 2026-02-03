@@ -23,6 +23,12 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/PowerDistribution.v1_4_0.json#/definitions/PowerDistribution"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/PowerDistribution.v1_5_0.json#/definitions/PowerDistribution"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/PowerDistribution.v1_6_0.json#/definitions/PowerDistribution"
                 }
             ],
             "deletable": false,

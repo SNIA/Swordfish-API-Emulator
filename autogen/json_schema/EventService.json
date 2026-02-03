@@ -44,6 +44,9 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/EventService.v1_11_0.json#/definitions/EventService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/EventService.v1_12_0.json#/definitions/EventService"
                 }
             ],
             "deletable": false,

@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/GraphicsControllers/{ControllerId}/Ports/{PortId}
+# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/GraphicsControllers/{GraphicsControllerId}/Ports/{PortId}
 # Program name - Port4_api.py
 
 import g
@@ -53,18 +53,18 @@ class Port4CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, ControllerId):
+	def get(self, ComputerSystemId, GraphicsControllerId):
 		logging.info('Port4 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports', 'index.json').format(ComputerSystemId, ControllerId)
+			path = create_path(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports', 'index.json').format(ComputerSystemId, GraphicsControllerId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ComputerSystemId, ControllerId):
+	def post(self, ComputerSystemId, GraphicsControllerId):
 		logging.info('Port4 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Port4CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if ControllerId in members:
+			if GraphicsControllerId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports').format(ComputerSystemId, ControllerId)
+			path = create_path(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports').format(ComputerSystemId, GraphicsControllerId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Port4CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Port4API.post(self, ComputerSystemId, ControllerId, os.path.basename(config['@odata.id']))
+					return Port4API.post(self, ComputerSystemId, GraphicsControllerId, os.path.basename(config['@odata.id']))
 				else:
-					return Port4API.post(self, ComputerSystemId, ControllerId, str(res))
+					return Port4API.post(self, ComputerSystemId, GraphicsControllerId, str(res))
 			else:
-				return Port4API.post(self, ComputerSystemId, ControllerId, str(res))
+				return Port4API.post(self, ComputerSystemId, GraphicsControllerId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Port4API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, ControllerId, PortId):
+	def get(self, ComputerSystemId, GraphicsControllerId, PortId):
 		logging.info('Port4 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports/{2}', 'index.json').format(ComputerSystemId, ControllerId, PortId)
+			path = create_path(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports/{2}', 'index.json').format(ComputerSystemId, GraphicsControllerId, PortId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,25 +119,25 @@ class Port4API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ComputerSystemId, ControllerId, PortId):
+	def post(self, ComputerSystemId, GraphicsControllerId, PortId):
 		logging.info('Port4 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports/{2}').format(ComputerSystemId, ControllerId, PortId)
-			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/GraphicsControllers/{1}/Ports/{2}').format(ComputerSystemId, ControllerId, PortId)
-			collection_path = create_path(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports', 'index.json').format(ComputerSystemId, ControllerId)
+			path = create_path(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports/{2}').format(ComputerSystemId, GraphicsControllerId, PortId)
+			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/GraphicsControllers/{1}/Ports/{2}').format(ComputerSystemId, GraphicsControllerId, PortId)
+			collection_path = create_path(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports', 'index.json').format(ComputerSystemId, GraphicsControllerId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Port4CollectionAPI.post(self, ComputerSystemId, ControllerId)
+				Port4CollectionAPI.post(self, ComputerSystemId, GraphicsControllerId)
 
 			if PortId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ComputerSystemId':ComputerSystemId, 'ControllerId':ControllerId, 'PortId':PortId, 'rb':g.rest_base}
+				wildcards = {'ComputerSystemId':ComputerSystemId, 'GraphicsControllerId':GraphicsControllerId, 'PortId':PortId, 'rb':g.rest_base}
 				config=get_Port4_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -153,13 +153,13 @@ class Port4API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ComputerSystemId, ControllerId, PortId):
+	def put(self, ComputerSystemId, GraphicsControllerId, PortId):
 		logging.info('Port4 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports/{2}', 'index.json').format(ComputerSystemId, ControllerId, PortId)
-			redfish_path = create_path('/redfish/v1', 'Systems/{0}/GraphicsControllers/{1}/Ports/{2}', 'index.json').format(ComputerSystemId, ControllerId, PortId)
+			path = create_path(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports/{2}', 'index.json').format(ComputerSystemId, GraphicsControllerId, PortId)
+			redfish_path = create_path('/redfish/v1', 'Systems/{0}/GraphicsControllers/{1}/Ports/{2}', 'index.json').format(ComputerSystemId, GraphicsControllerId, PortId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -191,18 +191,18 @@ class Port4API(Resource):
 			if state_changed:
 				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
 			put_object(path)
-			return self.get(ComputerSystemId, ControllerId, PortId)
+			return self.get(ComputerSystemId, GraphicsControllerId, PortId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ComputerSystemId, ControllerId, PortId):
+	def patch(self, ComputerSystemId, GraphicsControllerId, PortId):
 		logging.info('Port4 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports/{2}', 'index.json').format(ComputerSystemId, ControllerId, PortId)
-			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/GraphicsControllers/{1}/Ports/{2}', 'index.json').format(ComputerSystemId, ControllerId, PortId)
+			path = create_path(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports/{2}', 'index.json').format(ComputerSystemId, GraphicsControllerId, PortId)
+			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/GraphicsControllers/{1}/Ports/{2}', 'index.json').format(ComputerSystemId, GraphicsControllerId, PortId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -234,19 +234,19 @@ class Port4API(Resource):
 				if state_changed:
 					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
 			patch_object(path)
-			return self.get(ComputerSystemId, ControllerId, PortId)
+			return self.get(ComputerSystemId, GraphicsControllerId, PortId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ComputerSystemId, ControllerId, PortId):
+	def delete(self, ComputerSystemId, GraphicsControllerId, PortId):
 		logging.info('Port4 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports/{2}').format(ComputerSystemId, ControllerId, PortId)
-			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/GraphicsControllers/{1}/Ports/{2}').format(ComputerSystemId, ControllerId, PortId)
-			base_path = create_path(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports').format(ComputerSystemId, ControllerId)
+			path = create_path(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports/{2}').format(ComputerSystemId, GraphicsControllerId, PortId)
+			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/GraphicsControllers/{1}/Ports/{2}').format(ComputerSystemId, GraphicsControllerId, PortId)
+			base_path = create_path(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports').format(ComputerSystemId, GraphicsControllerId)
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

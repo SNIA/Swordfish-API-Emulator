@@ -14,6 +14,9 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/PowerSupplyMetrics.v1_1_2.json#/definitions/PowerSupplyMetrics"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/PowerSupplyMetrics.v1_2_0.json#/definitions/PowerSupplyMetrics"
                 }
             ],
             "deletable": false,

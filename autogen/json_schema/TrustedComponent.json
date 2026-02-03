@@ -20,6 +20,9 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/TrustedComponent.v1_3_2.json#/definitions/TrustedComponent"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/TrustedComponent.v1_4_0.json#/definitions/TrustedComponent"
                 }
             ],
             "deletable": false,

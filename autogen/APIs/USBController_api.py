@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/USBControllers/{ControllerId}
+# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/USBControllers/{USBControllerId}
 # Program name - USBController_api.py
 
 import g
@@ -104,12 +104,12 @@ class USBControllerAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, ControllerId):
+	def get(self, ComputerSystemId, USBControllerId):
 		logging.info('USBController get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/USBControllers/{1}', 'index.json').format(ComputerSystemId, ControllerId)
+			path = create_path(self.root, 'Systems/{0}/USBControllers/{1}', 'index.json').format(ComputerSystemId, USBControllerId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,25 +119,25 @@ class USBControllerAPI(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ComputerSystemId, ControllerId):
+	def post(self, ComputerSystemId, USBControllerId):
 		logging.info('USBController post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/USBControllers/{1}').format(ComputerSystemId, ControllerId)
-			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/USBControllers/{1}').format(ComputerSystemId, ControllerId)
+			path = create_path(self.root, 'Systems/{0}/USBControllers/{1}').format(ComputerSystemId, USBControllerId)
+			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/USBControllers/{1}').format(ComputerSystemId, USBControllerId)
 			collection_path = create_path(self.root, 'Systems/{0}/USBControllers', 'index.json').format(ComputerSystemId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
 				USBControllerCollectionAPI.post(self, ComputerSystemId)
 
-			if ControllerId in members:
+			if USBControllerId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ComputerSystemId':ComputerSystemId, 'ControllerId':ControllerId, 'rb':g.rest_base}
+				wildcards = {'ComputerSystemId':ComputerSystemId, 'USBControllerId':USBControllerId, 'rb':g.rest_base}
 				config=get_USBController_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -153,13 +153,13 @@ class USBControllerAPI(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ComputerSystemId, ControllerId):
+	def put(self, ComputerSystemId, USBControllerId):
 		logging.info('USBController put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/USBControllers/{1}', 'index.json').format(ComputerSystemId, ControllerId)
-			redfish_path = create_path('/redfish/v1', 'Systems/{0}/USBControllers/{1}', 'index.json').format(ComputerSystemId, ControllerId)
+			path = create_path(self.root, 'Systems/{0}/USBControllers/{1}', 'index.json').format(ComputerSystemId, USBControllerId)
+			redfish_path = create_path('/redfish/v1', 'Systems/{0}/USBControllers/{1}', 'index.json').format(ComputerSystemId, USBControllerId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -191,18 +191,18 @@ class USBControllerAPI(Resource):
 			if state_changed:
 				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
 			put_object(path)
-			return self.get(ComputerSystemId, ControllerId)
+			return self.get(ComputerSystemId, USBControllerId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ComputerSystemId, ControllerId):
+	def patch(self, ComputerSystemId, USBControllerId):
 		logging.info('USBController patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/USBControllers/{1}', 'index.json').format(ComputerSystemId, ControllerId)
-			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/USBControllers/{1}', 'index.json').format(ComputerSystemId, ControllerId)
+			path = create_path(self.root, 'Systems/{0}/USBControllers/{1}', 'index.json').format(ComputerSystemId, USBControllerId)
+			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/USBControllers/{1}', 'index.json').format(ComputerSystemId, USBControllerId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -234,18 +234,18 @@ class USBControllerAPI(Resource):
 				if state_changed:
 					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
 			patch_object(path)
-			return self.get(ComputerSystemId, ControllerId)
+			return self.get(ComputerSystemId, USBControllerId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ComputerSystemId, ControllerId):
+	def delete(self, ComputerSystemId, USBControllerId):
 		logging.info('USBController delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/USBControllers/{1}').format(ComputerSystemId, ControllerId)
-			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/USBControllers/{1}').format(ComputerSystemId, ControllerId)
+			path = create_path(self.root, 'Systems/{0}/USBControllers/{1}').format(ComputerSystemId, USBControllerId)
+			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/USBControllers/{1}').format(ComputerSystemId, USBControllerId)
 			base_path = create_path(self.root, 'Systems/{0}/USBControllers').format(ComputerSystemId)
 			# Event logic for DELETE
 			obj = get_json_data(path)

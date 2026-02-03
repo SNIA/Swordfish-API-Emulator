@@ -10,14 +10,20 @@
                     "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/CertificateService.v1_0_6.json#/definitions/CertificateService"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/CertificateService.v1_0_8.json#/definitions/CertificateService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/CertificateService.v1_1_2.json#/definitions/CertificateService"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/CertificateService.v1_2_1.json#/definitions/CertificateService"
                 }
             ],
             "deletable": false,
             "description": "The `CertificateService` schema describes a certificate service that represents the actions available to manage certificates and links to the certificates.",
             "insertable": false,
             "longDescription": "This resource shall represent the certificate service properties for a Redfish implementation.",
-            "updatable": false,
+            "updatable": true,
             "uris": [
                 "/redfish/v1/CertificateService"
             ]

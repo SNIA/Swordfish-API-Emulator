@@ -20,13 +20,19 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/ThermalSubsystem.v1_3_3.json#/definitions/ThermalSubsystem"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ThermalSubsystem.v1_4_0.json#/definitions/ThermalSubsystem"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ThermalSubsystem.v1_5_0.json#/definitions/ThermalSubsystem"
                 }
             ],
             "deletable": false,
             "description": "The `ThermalSubsystem` schema contains the definition for the thermal subsystem of a chassis.",
             "insertable": false,
             "longDescription": "This resource shall represent a thermal subsystem for a Redfish implementation.",
-            "updatable": false,
+            "updatable": true,
             "uris": [
                 "/redfish/v1/Chassis/{ChassisId}/ThermalSubsystem"
             ]

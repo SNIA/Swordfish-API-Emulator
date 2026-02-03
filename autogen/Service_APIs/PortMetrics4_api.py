@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2024, The Storage Networking Industry Association.
+# Copyright (c) 2017-2026, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/GraphicsControllers/{ControllerId}/Ports/{PortId}/Metrics
+# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/GraphicsControllers/{GraphicsControllerId}/Ports/{PortId}/Metrics
 # Program name - PortMetrics4_api.py
 
 import g
@@ -55,33 +55,33 @@ class PortMetrics4API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, ControllerId, PortId):
+	def get(self, ComputerSystemId, GraphicsControllerId, PortId):
 		logging.info('PortMetrics4 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports/{2}/Metrics', 'index.json').format(ComputerSystemId, ControllerId, PortId)
+			path = create_path(self.root, 'Systems/{0}/GraphicsControllers/{1}/Ports/{2}/Metrics', 'index.json').format(ComputerSystemId, GraphicsControllerId, PortId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ComputerSystemId, ControllerId, PortId):
+	def post(self, ComputerSystemId, GraphicsControllerId, PortId):
 		logging.info('PortMetrics4 post called')
 		return 'POST is not a supported command for PortMetrics4API', 405
 
 	# HTTP PUT
-	def put(self, ComputerSystemId, ControllerId, PortId):
+	def put(self, ComputerSystemId, GraphicsControllerId, PortId):
 		logging.info('PortMetrics4 put called')
 		return 'PUT is not a supported command for PortMetrics4API', 405
 
 	# HTTP PATCH
-	def patch(self, ComputerSystemId, ControllerId, PortId):
+	def patch(self, ComputerSystemId, GraphicsControllerId, PortId):
 		logging.info('PortMetrics4 patch called')
 		return 'PATCH is not a supported command for PortMetrics4API', 405
 
 	# HTTP DELETE
-	def delete(self, ComputerSystemId, ControllerId, PortId):
+	def delete(self, ComputerSystemId, GraphicsControllerId, PortId):
 		logging.info('PortMetrics4 delete called')
 		return 'DELETE is not a supported command for PortMetrics4API', 405
 

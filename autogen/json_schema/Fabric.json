@@ -20,6 +20,9 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Fabric.v1_3_2.json#/definitions/Fabric"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Fabric.v1_4_0.json#/definitions/Fabric"
                 }
             ],
             "deletable": false,

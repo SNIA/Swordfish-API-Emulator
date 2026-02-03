@@ -11,6 +11,9 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/SwitchMetrics.v1_0_2.json#/definitions/SwitchMetrics"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/SwitchMetrics.v1_1_0.json#/definitions/SwitchMetrics"
                 }
             ],
             "deletable": false,

@@ -5,7 +5,7 @@ import os
 def write_program_header(outfile, base_template_name):
     """ Writes a template program header """
     outfile.write('#\n')
-    outfile.write('# Copyright (c) 2017-2025, The Storage Networking Industry Association.\n')
+    outfile.write('# Copyright (c) 2017-2026, The Storage Networking Industry Association.\n')
     outfile.write('#\n')
     outfile.write('# Redistribution and use in source and binary forms, with or without\n')
     outfile.write('# modification, are permitted provided that the following conditions are met:\n')

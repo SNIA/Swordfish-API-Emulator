@@ -63,4 +63,4 @@ echo "Generating all resource template code..."
 python3 script_template.py "$XML_SCHEMA_PATH" "$JSON_SCHEMA_PATH"
 
 echo "autogen actions to update templates and API files completed."
-echo "Check add_resource/add_service_resource and add_import files for generated statements."
+echo "Checking add_resource/add_service_resource and add_import files for generated statements."

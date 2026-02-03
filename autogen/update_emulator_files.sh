@@ -34,9 +34,40 @@ cp  ./tempfiles/Session_api.py ../api_emulator/redfish/
 cp  ./tempfiles/EventDestination_api.py ../api_emulator/redfish/
 cp  ./tempfiles/EventServiceEvents_api.py ../api_emulator/redfish/
 
-echo Remember to manually update the resource_manager file from the add_import and add_resource files in APIs and Service_APIs folders.
+rm -rf ./tempfiles
+echo "Incorporating new import/resource statements into resource_manager.py..."
 
-# Compare add_import entries with resource_manager.py imports
+# Incorporate new import/resource statements from all relevant files into resource_manager.py
+RESOURCE_MANAGER="$(dirname "$0")/../api_emulator/resource_manager.py"
+FILES=(
+    "$(dirname "$0")/APIs/add_import"
+    "$(dirname "$0")/APIs/add_resource"
+    "$(dirname "$0")/Service_APIs/add_import"
+    "$(dirname "$0")/Service_APIs/add_service_resource"
+)
+
+for FILE in "${FILES[@]}"; do
+    if [ -f "$FILE" ]; then
+        echo "Processing $FILE for new statements..."
+        while IFS= read -r line; do
+            if [[ "$FILE" == *add_import ]] && [[ "$line" == from* ]] && ! grep -Fxq "$line" "$RESOURCE_MANAGER"; then
+                awk -v newline="$line" 'NR==1{print; next} /^from api_emulator.redfish.AccelerationFunction0_api import \*/{print; print newline; next} {print}' "$RESOURCE_MANAGER" > "$RESOURCE_MANAGER.tmp" && mv "$RESOURCE_MANAGER.tmp" "$RESOURCE_MANAGER"
+                echo "Added import: $line"
+            elif ([[ "$FILE" == *add_resource ]] || [[ "$FILE" == *add_service_resource ]]) && [[ "$line" == g.api.add_resource* ]] && ! grep -Fxq "$line" "$RESOURCE_MANAGER"; then
+                echo "$line" >> "$RESOURCE_MANAGER"
+                echo "Added resource: $line"
+            fi
+        done < "$FILE"
+        echo "Finished processing $FILE."
+    else
+        echo "No $FILE found, skipping."
+    fi
+    
+done
+
+echo "All import/resource incorporation into resource_manager.py complete."
+
+echo "Comparing add_import entries with resource_manager.py imports..."
 MISSING_IMPORTS=()
 while IFS= read -r import_line; do
     # Escape special characters for grep

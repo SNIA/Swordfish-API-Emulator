@@ -57,7 +57,6 @@
             <String>/redfish/v1/AccountService/Accounts/{ManagerAccountId}/Certificates</String>
             <String>/redfish/v1/AccountService/ActiveDirectory/Certificates</String>
             <String>/redfish/v1/AccountService/LDAP/Certificates</String>
-            <String>/redfish/v1/AccountService/OAuth2/Certificates</String>
             <String>/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}/Certificates</String>
             <String>/redfish/v1/AccountService/MultiFactorAuth/ClientCertificate/Certificates</String>
             <String>/redfish/v1/AccountService/MultiFactorAuth/SecurID/Certificates</String>
@@ -123,11 +122,8 @@
             <String>/redfish/v1/UpdateService/ClientCertificates</String>
             <String>/redfish/v1/Managers/{ManagerId}/Certificates</String>
             <String>/redfish/v1/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates</String>
-            <String>/redfish/v1/Systems/{ComputerSystemId}/KeyManagement/KMIPClientCertificates</String>
             <String>/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates</String>
-            <String>/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/KeyManagement/KMIPClientCertificates</String>
             <String>/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates</String>
-            <String>/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/KeyManagement/KMIPClientCertificates</String>
             <String>/redfish/v1/Managers/{ManagerId}/SecurityPolicy/SPDM/TrustedCertificates</String>
             <String>/redfish/v1/Managers/{ManagerId}/SecurityPolicy/SPDM/RevokedCertificates</String>
             <String>/redfish/v1/Managers/{ManagerId}/SecurityPolicy/TLS/Client/TrustedCertificates</String>
@@ -138,16 +134,6 @@
             <String>/redfish/v1/AccountService/OutboundConnections/{OutboundConnectionId}/Certificates</String>
             <String>/redfish/v1/AccountService/OutboundConnections/{OutboundConnectionId}/ClientCertificates</String>
             <String>/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/PowerSupplies/{PowerSupplyId}/Certificates</String>
-            <String>/redfish/v1/CertificateService/EnrollmentCACertificates</String>
-          </Collection>
-        </Annotation>
-        <Annotation Term="Redfish.DeprecatedUris">
-          <Collection>
-            <String>/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Certificates</String>
-            <String>/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Drives/{DriveId}/Certificates</String>
-            <String>/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Certificates</String>
-            <String>/redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Drives/{DriveId}/Certificates</String>
-            <String>/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Certificates</String>
           </Collection>
         </Annotation>
         <NavigationProperty Name="Members" Type="Collection(Certificate.Certificate)">

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2026, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Assembly
+# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/PCIeDevices/{PCIeDeviceId}/Assembly
 # Program name - Assembly15_api.py
 
 import g
@@ -55,33 +55,33 @@ class Assembly15API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, NetworkAdapterId):
+	def get(self, ChassisId, PCIeDeviceId):
 		logging.info('Assembly15 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Assembly', 'index.json').format(ChassisId, NetworkAdapterId)
+			path = create_path(self.root, 'Chassis/{0}/PCIeDevices/{1}/Assembly', 'index.json').format(ChassisId, PCIeDeviceId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ChassisId, NetworkAdapterId):
+	def post(self, ChassisId, PCIeDeviceId):
 		logging.info('Assembly15 post called')
 		return 'POST is not a supported command for Assembly15API', 405
 
 	# HTTP PUT
-	def put(self, ChassisId, NetworkAdapterId):
+	def put(self, ChassisId, PCIeDeviceId):
 		logging.info('Assembly15 put called')
 		return 'PUT is not a supported command for Assembly15API', 405
 
 	# HTTP PATCH
-	def patch(self, ChassisId, NetworkAdapterId):
+	def patch(self, ChassisId, PCIeDeviceId):
 		logging.info('Assembly15 patch called')
 		return 'PATCH is not a supported command for Assembly15API', 405
 
 	# HTTP DELETE
-	def delete(self, ChassisId, NetworkAdapterId):
+	def delete(self, ChassisId, PCIeDeviceId):
 		logging.info('Assembly15 delete called')
 		return 'DELETE is not a supported command for Assembly15API', 405
 

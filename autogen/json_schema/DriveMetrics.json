@@ -17,9 +17,6 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/DriveMetrics.v1_2_1.json#/definitions/DriveMetrics"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/DriveMetrics.v1_3_0.json#/definitions/DriveMetrics"
                 }
             ],
             "deletable": false,
@@ -35,13 +32,6 @@
                 "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Metrics",
                 "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Drives/{DriveId}/Metrics",
                 "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Drives/{DriveId}/Metrics",
-                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Metrics"
-            ],
-            "urisDeprecated": [
-                "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Metrics",
-                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Drives/{DriveId}/Metrics",
-                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Metrics",
-                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Drives/{DriveId}/Metrics",
                 "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Metrics"
             ]
         }

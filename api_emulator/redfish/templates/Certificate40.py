@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2026, The Storage Networking Industry Association.
+# Copyright (c) 2017-2025, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -36,8 +36,8 @@ from flask import json
 _TEMPLATE = \
 {
 	"@Redfish.Copyright": "Copyright 2014-2025 SNIA. All rights reserved.",
-	"@odata.id": "{rb}ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Certificates/{CertificateId}",
-	"@odata.type": "#Certificate.v1_11_0.Certificate",
+	"@odata.id": "{rb}ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Certificates/{CertificateId}",
+	"@odata.type": "#Certificate.v1_9_0.Certificate",
 	"Id": "{CertificateId}",
 	"Name": "Certificate",
 }
@@ -51,18 +51,20 @@ def get_Certificate40_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{ResourceBlockId}', '-0-')
-		g = g.replace('{StorageId}', '-1-')
-		g = g.replace('{StorageControllerId}', '-2-')
-		g = g.replace('{CertificateId}', '-3-')
+		g = g.replace('{ComputerSystemId}', '-1-')
+		g = g.replace('{StorageId}', '-2-')
+		g = g.replace('{StorageControllerId}', '-3-')
+		g = g.replace('{CertificateId}', '-4-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')
 		g = g.replace('{', '~!')
 		g = g.replace('}', '!~')
 		g = g.replace('0', '{ResourceBlockId}')
-		g = g.replace('1', '{StorageId}')
-		g = g.replace('2', '{StorageControllerId}')
-		g = g.replace('3', '{CertificateId}')
+		g = g.replace('1', '{ComputerSystemId}')
+		g = g.replace('2', '{StorageId}')
+		g = g.replace('3', '{StorageControllerId}')
+		g = g.replace('4', '{CertificateId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)
 		g = g.replace('~~!', '{{')

@@ -25,25 +25,22 @@
                     "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkDeviceFunction.v1_4_5.json#/definitions/NetworkDeviceFunction"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkDeviceFunction.v1_5_5.json#/definitions/NetworkDeviceFunction"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkDeviceFunction.v1_5_4.json#/definitions/NetworkDeviceFunction"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkDeviceFunction.v1_6_3.json#/definitions/NetworkDeviceFunction"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkDeviceFunction.v1_6_2.json#/definitions/NetworkDeviceFunction"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkDeviceFunction.v1_7_4.json#/definitions/NetworkDeviceFunction"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkDeviceFunction.v1_7_3.json#/definitions/NetworkDeviceFunction"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkDeviceFunction.v1_8_4.json#/definitions/NetworkDeviceFunction"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkDeviceFunction.v1_8_3.json#/definitions/NetworkDeviceFunction"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkDeviceFunction.v1_9_4.json#/definitions/NetworkDeviceFunction"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkDeviceFunction.v1_9_3.json#/definitions/NetworkDeviceFunction"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkDeviceFunction.v1_10_1.json#/definitions/NetworkDeviceFunction"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkDeviceFunction.v1_11_1.json#/definitions/NetworkDeviceFunction"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkDeviceFunction.v1_10_0.json#/definitions/NetworkDeviceFunction"
                 }
             ],
             "deletable": false,

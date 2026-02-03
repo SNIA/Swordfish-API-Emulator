@@ -14,9 +14,6 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/LeakDetection.v1_1_0.json#/definitions/LeakDetection"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/LeakDetection.v1_2_0.json#/definitions/LeakDetection"
                 }
             ],
             "deletable": false,
@@ -28,8 +25,7 @@
                 "/redfish/v1/Chassis/{ChassisId}/ThermalSubsystem/LeakDetection",
                 "/redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/LeakDetection",
                 "/redfish/v1/ThermalEquipment/ImmersionUnits/{CoolingUnitId}/LeakDetection",
-                "/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/LeakDetection",
-                "/redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/LeakDetection"
+                "/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/LeakDetection"
             ]
         }
     },

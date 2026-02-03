@@ -16,28 +16,25 @@
                     "$ref": "http://redfish.dmtf.org/schemas/v1/LogService.v1_1_5.json#/definitions/LogService"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogService.v1_2_5.json#/definitions/LogService"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogService.v1_2_4.json#/definitions/LogService"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogService.v1_3_4.json#/definitions/LogService"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogService.v1_3_3.json#/definitions/LogService"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogService.v1_4_3.json#/definitions/LogService"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogService.v1_4_2.json#/definitions/LogService"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogService.v1_5_3.json#/definitions/LogService"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogService.v1_5_2.json#/definitions/LogService"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogService.v1_6_2.json#/definitions/LogService"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogService.v1_6_1.json#/definitions/LogService"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogService.v1_7_1.json#/definitions/LogService"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogService.v1_7_0.json#/definitions/LogService"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogService.v1_8_1.json#/definitions/LogService"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogService.v1_9_0.json#/definitions/LogService"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogService.v1_8_0.json#/definitions/LogService"
                 }
             ],
             "deletable": false,

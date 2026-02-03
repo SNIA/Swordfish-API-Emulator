@@ -74,15 +74,6 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Manager.v1_21_0.json#/definitions/Manager"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Manager.v1_22_0.json#/definitions/Manager"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Manager.v1_23_0.json#/definitions/Manager"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Manager.v1_24_0.json#/definitions/Manager"
                 }
             ],
             "deletable": false,

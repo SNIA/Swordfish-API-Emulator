@@ -89,12 +89,6 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Chassis.v1_26_0.json#/definitions/Chassis"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Chassis.v1_27_0.json#/definitions/Chassis"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Chassis.v1_28_0.json#/definitions/Chassis"
                 }
             ],
             "deletable": true,

@@ -357,14 +357,3 @@ from api_emulator.redfish.StorageMetrics2_api import *
 from api_emulator.redfish.StorageMetrics3_api import *
 from api_emulator.redfish.StorageMetrics4_api import *
 from api_emulator.redfish.StorageMetrics5_api import *
-from api_emulator.redfish.LeakDetection4_api import *
-from api_emulator.redfish.UpdateServiceCapabilities_api import *
-from api_emulator.redfish.Assembly72_api import *
-from api_emulator.redfish.Assembly73_api import *
-from api_emulator.redfish.Assembly74_api import *
-from api_emulator.redfish.Assembly75_api import *
-from api_emulator.redfish.Assembly76_api import *
-from api_emulator.redfish.Assembly77_api import *
-from api_emulator.redfish.Assembly78_api import *
-from api_emulator.redfish.AutomationInstrumentation_api import *
-from api_emulator.redfish.EnvironmentMetrics70_api import *

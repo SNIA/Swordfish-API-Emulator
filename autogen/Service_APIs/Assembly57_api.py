@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2026, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Assembly
+# Resource implementation for - /redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Reservoirs/{ReservoirId}/Assembly
 # Program name - Assembly57_api.py
 
 import g
@@ -55,33 +55,33 @@ class Assembly57API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, CoolingUnitId):
+	def get(self, CoolingUnitId, ReservoirId):
 		logging.info('Assembly57 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/HeatExchangers/{0}/Assembly', 'index.json').format(CoolingUnitId)
+			path = create_path(self.root, 'ThermalEquipment/CDUs/{0}/Reservoirs/{1}/Assembly', 'index.json').format(CoolingUnitId, ReservoirId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, CoolingUnitId):
+	def post(self, CoolingUnitId, ReservoirId):
 		logging.info('Assembly57 post called')
 		return 'POST is not a supported command for Assembly57API', 405
 
 	# HTTP PUT
-	def put(self, CoolingUnitId):
+	def put(self, CoolingUnitId, ReservoirId):
 		logging.info('Assembly57 put called')
 		return 'PUT is not a supported command for Assembly57API', 405
 
 	# HTTP PATCH
-	def patch(self, CoolingUnitId):
+	def patch(self, CoolingUnitId, ReservoirId):
 		logging.info('Assembly57 patch called')
 		return 'PATCH is not a supported command for Assembly57API', 405
 
 	# HTTP DELETE
-	def delete(self, CoolingUnitId):
+	def delete(self, CoolingUnitId, ReservoirId):
 		logging.info('Assembly57 delete called')
 		return 'DELETE is not a supported command for Assembly57API', 405
 

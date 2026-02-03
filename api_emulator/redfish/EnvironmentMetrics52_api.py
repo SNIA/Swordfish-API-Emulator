@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2026, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/USBControllers/{USBControllerId}/Ports/{PortId}/EnvironmentMetrics
+# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/USBControllers/{ControllerId}/Ports/{PortId}/EnvironmentMetrics
 # Program name - EnvironmentMetrics52_api.py
 
 import g
@@ -55,33 +55,33 @@ class EnvironmentMetrics52API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, USBControllerId, PortId):
+	def get(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
 		logging.info('EnvironmentMetrics52 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}/EnvironmentMetrics', 'index.json').format(ResourceBlockId, ComputerSystemId, USBControllerId, PortId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/USBControllers/{2}/Ports/{3}/EnvironmentMetrics', 'index.json').format(ResourceBlockId, ComputerSystemId, ControllerId, PortId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ResourceBlockId, ComputerSystemId, USBControllerId, PortId):
+	def post(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
 		logging.info('EnvironmentMetrics52 post called')
 		return 'POST is not a supported command for EnvironmentMetrics52API', 405
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, ComputerSystemId, USBControllerId, PortId):
+	def put(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
 		logging.info('EnvironmentMetrics52 put called')
 		return 'PUT is not a supported command for EnvironmentMetrics52API', 405
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, ComputerSystemId, USBControllerId, PortId):
+	def patch(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
 		logging.info('EnvironmentMetrics52 patch called')
 		return 'PATCH is not a supported command for EnvironmentMetrics52API', 405
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, ComputerSystemId, USBControllerId, PortId):
+	def delete(self, ResourceBlockId, ComputerSystemId, ControllerId, PortId):
 		logging.info('EnvironmentMetrics52 delete called')
 		return 'DELETE is not a supported command for EnvironmentMetrics52API', 405
 

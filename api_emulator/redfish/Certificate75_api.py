@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Managers/{ManagerId}/SecurityPolicy/SPDM/RevokedCertificates/{CertificateId}
+# Resource implementation for - /redfish/v1/Managers/{ManagerId}/SecurityPolicy/TLS/Server/RevokedCertificates/{CertificateId}
 # Program name - Certificate75_api.py
 
 import g
@@ -58,7 +58,7 @@ class Certificate75CollectionAPI(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/SPDM/RevokedCertificates', 'index.json').format(ManagerId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates', 'index.json').format(ManagerId)
 			return get_json_data(path)
 		else:
 			return msg, code
@@ -78,7 +78,7 @@ class Certificate75CollectionAPI(Resource):
 			if ManagerId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/SPDM/RevokedCertificates').format(ManagerId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates').format(ManagerId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -109,7 +109,7 @@ class Certificate75API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/SPDM/RevokedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -124,9 +124,9 @@ class Certificate75API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/SPDM/RevokedCertificates/{1}').format(ManagerId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/SecurityPolicy/SPDM/RevokedCertificates/{1}').format(ManagerId, CertificateId)
-			collection_path = create_path(self.root, 'Managers/{0}/SecurityPolicy/SPDM/RevokedCertificates', 'index.json').format(ManagerId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates/{1}').format(ManagerId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates/{1}').format(ManagerId, CertificateId)
+			collection_path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates', 'index.json').format(ManagerId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
@@ -158,8 +158,8 @@ class Certificate75API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/SPDM/RevokedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
-			redfish_path = create_path('/redfish/v1', 'Managers/{0}/SecurityPolicy/SPDM/RevokedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			redfish_path = create_path('/redfish/v1', 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -201,8 +201,8 @@ class Certificate75API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/SPDM/RevokedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/SecurityPolicy/SPDM/RevokedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -244,9 +244,9 @@ class Certificate75API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/SPDM/RevokedCertificates/{1}').format(ManagerId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/SecurityPolicy/SPDM/RevokedCertificates/{1}').format(ManagerId, CertificateId)
-			base_path = create_path(self.root, 'Managers/{0}/SecurityPolicy/SPDM/RevokedCertificates').format(ManagerId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates/{1}').format(ManagerId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates/{1}').format(ManagerId, CertificateId)
+			base_path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates').format(ManagerId)
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

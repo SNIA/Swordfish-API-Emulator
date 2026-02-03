@@ -92,8 +92,7 @@
             "uris": [
                 "/redfish/v1/ThermalEquipment/CDUs",
                 "/redfish/v1/ThermalEquipment/ImmersionUnits",
-                "/redfish/v1/ThermalEquipment/HeatExchangers",
-                "/redfish/v1/ThermalEquipment/RPUs"
+                "/redfish/v1/ThermalEquipment/HeatExchangers"
             ]
         }
     },

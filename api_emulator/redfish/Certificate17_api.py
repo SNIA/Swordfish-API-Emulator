@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/SecureBoot/SecureBootDatabases/{DatabaseId}/Certificates/{CertificateId}
 # Program name - Certificate17_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate17CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, DatabaseId):
+	def get(self, ResourceBlockId, ComputerSystemId, DatabaseId):
 		logging.info('Certificate17 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates', 'index.json').format(ComputerSystemId, DatabaseId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/SecureBoot/SecureBootDatabases/{2}/Certificates', 'index.json').format(ResourceBlockId, ComputerSystemId, DatabaseId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ComputerSystemId, DatabaseId):
+	def post(self, ResourceBlockId, ComputerSystemId, DatabaseId):
 		logging.info('Certificate17 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -78,7 +78,7 @@ class Certificate17CollectionAPI(Resource):
 			if DatabaseId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates').format(ComputerSystemId, DatabaseId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/SecureBoot/SecureBootDatabases/{2}/Certificates').format(ResourceBlockId, ComputerSystemId, DatabaseId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Certificate17CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate17API.post(self, ComputerSystemId, DatabaseId, os.path.basename(config['@odata.id']))
+					return Certificate17API.post(self, ResourceBlockId, ComputerSystemId, DatabaseId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate17API.post(self, ComputerSystemId, DatabaseId, str(res))
+					return Certificate17API.post(self, ResourceBlockId, ComputerSystemId, DatabaseId, str(res))
 			else:
-				return Certificate17API.post(self, ComputerSystemId, DatabaseId, str(res))
+				return Certificate17API.post(self, ResourceBlockId, ComputerSystemId, DatabaseId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Certificate17API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, DatabaseId, CertificateId):
+	def get(self, ResourceBlockId, ComputerSystemId, DatabaseId, CertificateId):
 		logging.info('Certificate17 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, DatabaseId, CertificateId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/SecureBoot/SecureBootDatabases/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, DatabaseId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,25 +119,25 @@ class Certificate17API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ComputerSystemId, DatabaseId, CertificateId):
+	def post(self, ResourceBlockId, ComputerSystemId, DatabaseId, CertificateId):
 		logging.info('Certificate17 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates/{2}').format(ComputerSystemId, DatabaseId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates/{2}').format(ComputerSystemId, DatabaseId, CertificateId)
-			collection_path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates', 'index.json').format(ComputerSystemId, DatabaseId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/SecureBoot/SecureBootDatabases/{2}/Certificates/{3}').format(ResourceBlockId, ComputerSystemId, DatabaseId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/SecureBoot/SecureBootDatabases/{2}/Certificates/{3}').format(ResourceBlockId, ComputerSystemId, DatabaseId, CertificateId)
+			collection_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/SecureBoot/SecureBootDatabases/{2}/Certificates', 'index.json').format(ResourceBlockId, ComputerSystemId, DatabaseId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate17CollectionAPI.post(self, ComputerSystemId, DatabaseId)
+				Certificate17CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, DatabaseId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ComputerSystemId':ComputerSystemId, 'DatabaseId':DatabaseId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'DatabaseId':DatabaseId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate17_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -153,13 +153,13 @@ class Certificate17API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ComputerSystemId, DatabaseId, CertificateId):
+	def put(self, ResourceBlockId, ComputerSystemId, DatabaseId, CertificateId):
 		logging.info('Certificate17 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, DatabaseId, CertificateId)
-			redfish_path = create_path('/redfish/v1', 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, DatabaseId, CertificateId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/SecureBoot/SecureBootDatabases/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, DatabaseId, CertificateId)
+			redfish_path = create_path('/redfish/v1', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/SecureBoot/SecureBootDatabases/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, DatabaseId, CertificateId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -191,18 +191,18 @@ class Certificate17API(Resource):
 			if state_changed:
 				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
 			put_object(path)
-			return self.get(ComputerSystemId, DatabaseId, CertificateId)
+			return self.get(ResourceBlockId, ComputerSystemId, DatabaseId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ComputerSystemId, DatabaseId, CertificateId):
+	def patch(self, ResourceBlockId, ComputerSystemId, DatabaseId, CertificateId):
 		logging.info('Certificate17 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, DatabaseId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, DatabaseId, CertificateId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/SecureBoot/SecureBootDatabases/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, DatabaseId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/SecureBoot/SecureBootDatabases/{2}/Certificates/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, DatabaseId, CertificateId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -234,19 +234,19 @@ class Certificate17API(Resource):
 				if state_changed:
 					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
 			patch_object(path)
-			return self.get(ComputerSystemId, DatabaseId, CertificateId)
+			return self.get(ResourceBlockId, ComputerSystemId, DatabaseId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ComputerSystemId, DatabaseId, CertificateId):
+	def delete(self, ResourceBlockId, ComputerSystemId, DatabaseId, CertificateId):
 		logging.info('Certificate17 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates/{2}').format(ComputerSystemId, DatabaseId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates/{2}').format(ComputerSystemId, DatabaseId, CertificateId)
-			base_path = create_path(self.root, 'Systems/{0}/SecureBoot/SecureBootDatabases/{1}/Certificates').format(ComputerSystemId, DatabaseId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/SecureBoot/SecureBootDatabases/{2}/Certificates/{3}').format(ResourceBlockId, ComputerSystemId, DatabaseId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/SecureBoot/SecureBootDatabases/{2}/Certificates/{3}').format(ResourceBlockId, ComputerSystemId, DatabaseId, CertificateId)
+			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/SecureBoot/SecureBootDatabases/{2}/Certificates').format(ResourceBlockId, ComputerSystemId, DatabaseId)
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

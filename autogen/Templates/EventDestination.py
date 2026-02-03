@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2026, The Storage Networking Industry Association.
+# Copyright (c) 2017-2025, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -38,7 +38,7 @@ _TEMPLATE = \
 	"@Redfish.Copyright": "Copyright 2014-2025 SNIA. All rights reserved.",
 	"Context": "Oem",
 	"@odata.id": "{rb}EventService/Subscriptions/{EventDestinationId}",
-	"@odata.type": "#EventDestination.v1_16_0.EventDestination",
+	"@odata.type": "#EventDestination.v1_15_1.EventDestination",
 	"Id": "{EventDestinationId}",
 	"Name": "EventDestination",
 	"SubscriptionType": "RedfishEvent",

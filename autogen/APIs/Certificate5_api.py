@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/AccountService/MultiFactorAuth/ClientCertificate/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/AccountService/MultiFactorAuth/SecurID/Certificates/{CertificateId}
 # Program name - Certificate5_api.py
 
 import g
@@ -58,7 +58,7 @@ class Certificate5CollectionAPI(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'AccountService/MultiFactorAuth/ClientCertificate/Certificates', 'index.json')
+			path = create_path(self.root, 'AccountService/MultiFactorAuth/SecurID/Certificates', 'index.json')
 			return get_json_data(path)
 		else:
 			return msg, code
@@ -75,7 +75,7 @@ class Certificate5CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			path = create_path(self.root, 'AccountService/MultiFactorAuth/ClientCertificate/Certificates')
+			path = create_path(self.root, 'AccountService/MultiFactorAuth/SecurID/Certificates')
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -106,7 +106,7 @@ class Certificate5API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'AccountService/MultiFactorAuth/ClientCertificate/Certificates/{0}', 'index.json').format(CertificateId)
+			path = create_path(self.root, 'AccountService/MultiFactorAuth/SecurID/Certificates/{0}', 'index.json').format(CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -121,9 +121,9 @@ class Certificate5API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'AccountService/MultiFactorAuth/ClientCertificate/Certificates/{0}').format(CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'AccountService/MultiFactorAuth/ClientCertificate/Certificates/{0}').format(CertificateId)
-			collection_path = create_path(self.root, 'AccountService/MultiFactorAuth/ClientCertificate/Certificates', 'index.json')
+			path = create_path(self.root, 'AccountService/MultiFactorAuth/SecurID/Certificates/{0}').format(CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'AccountService/MultiFactorAuth/SecurID/Certificates/{0}').format(CertificateId)
+			collection_path = create_path(self.root, 'AccountService/MultiFactorAuth/SecurID/Certificates', 'index.json')
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
@@ -155,8 +155,8 @@ class Certificate5API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'AccountService/MultiFactorAuth/ClientCertificate/Certificates/{0}', 'index.json').format(CertificateId)
-			redfish_path = create_path('/redfish/v1', 'AccountService/MultiFactorAuth/ClientCertificate/Certificates/{0}', 'index.json').format(CertificateId)
+			path = create_path(self.root, 'AccountService/MultiFactorAuth/SecurID/Certificates/{0}', 'index.json').format(CertificateId)
+			redfish_path = create_path('/redfish/v1', 'AccountService/MultiFactorAuth/SecurID/Certificates/{0}', 'index.json').format(CertificateId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -198,8 +198,8 @@ class Certificate5API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'AccountService/MultiFactorAuth/ClientCertificate/Certificates/{0}', 'index.json').format(CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'AccountService/MultiFactorAuth/ClientCertificate/Certificates/{0}', 'index.json').format(CertificateId)
+			path = create_path(self.root, 'AccountService/MultiFactorAuth/SecurID/Certificates/{0}', 'index.json').format(CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'AccountService/MultiFactorAuth/SecurID/Certificates/{0}', 'index.json').format(CertificateId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -241,9 +241,9 @@ class Certificate5API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'AccountService/MultiFactorAuth/ClientCertificate/Certificates/{0}').format(CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'AccountService/MultiFactorAuth/ClientCertificate/Certificates/{0}').format(CertificateId)
-			base_path = create_path(self.root, 'AccountService/MultiFactorAuth/ClientCertificate/Certificates')
+			path = create_path(self.root, 'AccountService/MultiFactorAuth/SecurID/Certificates/{0}').format(CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'AccountService/MultiFactorAuth/SecurID/Certificates/{0}').format(CertificateId)
+			base_path = create_path(self.root, 'AccountService/MultiFactorAuth/SecurID/Certificates')
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

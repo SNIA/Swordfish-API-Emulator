@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/UpdateService/ClientCertificates/{CertificateId}
+# Resource implementation for - /redfish/v1/Managers/{ManagerId}/Certificates/{CertificateId}
 # Program name - Certificate66_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate66CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self):
+	def get(self, ManagerId):
 		logging.info('Certificate66 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'UpdateService/ClientCertificates', 'index.json')
+			path = create_path(self.root, 'Managers/{0}/Certificates', 'index.json').format(ManagerId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self):
+	def post(self, ManagerId):
 		logging.info('Certificate66 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,7 +75,10 @@ class Certificate66CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			path = create_path(self.root, 'UpdateService/ClientCertificates')
+			if ManagerId in members:
+				resp = 404
+				return resp
+			path = create_path(self.root, 'Managers/{0}/Certificates').format(ManagerId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -85,11 +88,11 @@ class Certificate66CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate66API.post(self, os.path.basename(config['@odata.id']))
+					return Certificate66API.post(self, ManagerId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate66API.post(self, str(res))
+					return Certificate66API.post(self, ManagerId, str(res))
 			else:
-				return Certificate66API.post(self, str(res))
+				return Certificate66API.post(self, ManagerId, str(res))
 		else:
 			return msg, code
 
@@ -101,12 +104,12 @@ class Certificate66API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, CertificateId):
+	def get(self, ManagerId, CertificateId):
 		logging.info('Certificate66 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'UpdateService/ClientCertificates/{0}', 'index.json').format(CertificateId)
+			path = create_path(self.root, 'Managers/{0}/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -116,25 +119,25 @@ class Certificate66API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, CertificateId):
+	def post(self, ManagerId, CertificateId):
 		logging.info('Certificate66 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'UpdateService/ClientCertificates/{0}').format(CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'UpdateService/ClientCertificates/{0}').format(CertificateId)
-			collection_path = create_path(self.root, 'UpdateService/ClientCertificates', 'index.json')
+			path = create_path(self.root, 'Managers/{0}/Certificates/{1}').format(ManagerId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/Certificates/{1}').format(ManagerId, CertificateId)
+			collection_path = create_path(self.root, 'Managers/{0}/Certificates', 'index.json').format(ManagerId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate66CollectionAPI.post(self)
+				Certificate66CollectionAPI.post(self, ManagerId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'ManagerId':ManagerId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate66_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -150,13 +153,13 @@ class Certificate66API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, CertificateId):
+	def put(self, ManagerId, CertificateId):
 		logging.info('Certificate66 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'UpdateService/ClientCertificates/{0}', 'index.json').format(CertificateId)
-			redfish_path = create_path('/redfish/v1', 'UpdateService/ClientCertificates/{0}', 'index.json').format(CertificateId)
+			path = create_path(self.root, 'Managers/{0}/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			redfish_path = create_path('/redfish/v1', 'Managers/{0}/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -188,18 +191,18 @@ class Certificate66API(Resource):
 			if state_changed:
 				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
 			put_object(path)
-			return self.get(CertificateId)
+			return self.get(ManagerId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, CertificateId):
+	def patch(self, ManagerId, CertificateId):
 		logging.info('Certificate66 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'UpdateService/ClientCertificates/{0}', 'index.json').format(CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'UpdateService/ClientCertificates/{0}', 'index.json').format(CertificateId)
+			path = create_path(self.root, 'Managers/{0}/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -231,19 +234,19 @@ class Certificate66API(Resource):
 				if state_changed:
 					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
 			patch_object(path)
-			return self.get(CertificateId)
+			return self.get(ManagerId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, CertificateId):
+	def delete(self, ManagerId, CertificateId):
 		logging.info('Certificate66 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'UpdateService/ClientCertificates/{0}').format(CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'UpdateService/ClientCertificates/{0}').format(CertificateId)
-			base_path = create_path(self.root, 'UpdateService/ClientCertificates')
+			path = create_path(self.root, 'Managers/{0}/Certificates/{1}').format(ManagerId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/Certificates/{1}').format(ManagerId, CertificateId)
+			base_path = create_path(self.root, 'Managers/{0}/Certificates').format(ManagerId)
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

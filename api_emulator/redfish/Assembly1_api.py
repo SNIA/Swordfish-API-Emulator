@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2026, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/Assembly
+# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Assembly
 # Program name - Assembly1_api.py
 
 import g
@@ -55,33 +55,33 @@ class Assembly1API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId):
+	def get(self, ComputerSystemId, StorageId, DriveId):
 		logging.info('Assembly1 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/Assembly', 'index.json').format(ChassisId)
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}/Drives/{2}/Assembly', 'index.json').format(ComputerSystemId, StorageId, DriveId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ChassisId):
+	def post(self, ComputerSystemId, StorageId, DriveId):
 		logging.info('Assembly1 post called')
 		return 'POST is not a supported command for Assembly1API', 405
 
 	# HTTP PUT
-	def put(self, ChassisId):
+	def put(self, ComputerSystemId, StorageId, DriveId):
 		logging.info('Assembly1 put called')
 		return 'PUT is not a supported command for Assembly1API', 405
 
 	# HTTP PATCH
-	def patch(self, ChassisId):
+	def patch(self, ComputerSystemId, StorageId, DriveId):
 		logging.info('Assembly1 patch called')
 		return 'PATCH is not a supported command for Assembly1API', 405
 
 	# HTTP DELETE
-	def delete(self, ChassisId):
+	def delete(self, ComputerSystemId, StorageId, DriveId):
 		logging.info('Assembly1 delete called')
 		return 'DELETE is not a supported command for Assembly1API', 405
 

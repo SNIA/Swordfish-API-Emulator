@@ -22,20 +22,6 @@
                 }
             },
             "properties": {
-                "ConditionType": {
-                    "anyOf": [
-                        {
-                            "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_22_0.json#/definitions/ConditionType"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "description": "The type of condition.",
-                    "longDescription": "This property shall contain the type of condition.",
-                    "readonly": true,
-                    "versionAdded": "v1_22_0"
-                },
                 "LogEntry": {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/LogEntry.json#/definitions/LogEntry",
                     "description": "The link to the log entry created for this condition.",
@@ -162,78 +148,65 @@
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_2_17.json#/definitions/Identifier"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_3_17.json#/definitions/Identifier"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_3_16.json#/definitions/Identifier"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_4_16.json#/definitions/Identifier"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_4_15.json#/definitions/Identifier"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_5_15.json#/definitions/Identifier"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_5_14.json#/definitions/Identifier"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_6_15.json#/definitions/Identifier"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_6_14.json#/definitions/Identifier"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_7_14.json#/definitions/Identifier"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_7_13.json#/definitions/Identifier"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_8_14.json#/definitions/Identifier"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_8_13.json#/definitions/Identifier"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_9_12.json#/definitions/Identifier"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_9_11.json#/definitions/Identifier"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_10_9.json#/definitions/Identifier"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_10_8.json#/definitions/Identifier"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_11_9.json#/definitions/Identifier"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_11_8.json#/definitions/Identifier"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_12_8.json#/definitions/Identifier"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_12_7.json#/definitions/Identifier"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_13_7.json#/definitions/Identifier"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_13_6.json#/definitions/Identifier"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_14_6.json#/definitions/Identifier"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_14_5.json#/definitions/Identifier"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_15_5.json#/definitions/Identifier"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_15_4.json#/definitions/Identifier"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_16_5.json#/definitions/Identifier"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_16_4.json#/definitions/Identifier"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_17_5.json#/definitions/Identifier"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_17_4.json#/definitions/Identifier"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_18_4.json#/definitions/Identifier"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_18_3.json#/definitions/Identifier"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_19_3.json#/definitions/Identifier"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_19_2.json#/definitions/Identifier"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_20_2.json#/definitions/Identifier"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_20_1.json#/definitions/Identifier"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_21_1.json#/definitions/Identifier"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_22_1.json#/definitions/Identifier"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_23_0.json#/definitions/Identifier"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_21_0.json#/definitions/Identifier"
                 }
             ],
             "description": "Any additional identifiers for a resource.",
             "longDescription": "This type shall contain any additional identifiers for a resource."
-        },
-        "ImportParameters": {
-            "anyOf": [
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_23_0.json#/definitions/ImportParameters"
-                }
-            ]
         },
         "IndicatorLED": {
             "enum": [
@@ -314,67 +287,61 @@
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_2_17.json#/definitions/Location"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_3_17.json#/definitions/Location"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_3_16.json#/definitions/Location"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_4_16.json#/definitions/Location"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_4_15.json#/definitions/Location"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_5_15.json#/definitions/Location"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_5_14.json#/definitions/Location"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_6_15.json#/definitions/Location"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_6_14.json#/definitions/Location"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_7_14.json#/definitions/Location"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_7_13.json#/definitions/Location"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_8_14.json#/definitions/Location"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_8_13.json#/definitions/Location"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_9_12.json#/definitions/Location"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_9_11.json#/definitions/Location"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_10_9.json#/definitions/Location"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_10_8.json#/definitions/Location"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_11_9.json#/definitions/Location"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_11_8.json#/definitions/Location"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_12_8.json#/definitions/Location"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_12_7.json#/definitions/Location"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_13_7.json#/definitions/Location"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_13_6.json#/definitions/Location"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_14_6.json#/definitions/Location"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_14_5.json#/definitions/Location"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_15_5.json#/definitions/Location"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_15_4.json#/definitions/Location"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_16_5.json#/definitions/Location"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_16_4.json#/definitions/Location"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_17_5.json#/definitions/Location"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_17_4.json#/definitions/Location"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_18_4.json#/definitions/Location"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_18_3.json#/definitions/Location"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_19_3.json#/definitions/Location"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_19_2.json#/definitions/Location"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_20_2.json#/definitions/Location"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_20_1.json#/definitions/Location"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_21_1.json#/definitions/Location"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_22_1.json#/definitions/Location"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_23_0.json#/definitions/Location"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_21_0.json#/definitions/Location"
                 }
             ],
             "description": "The location of a resource.",
@@ -465,67 +432,61 @@
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_2_17.json#/definitions/ReferenceableMember"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_3_17.json#/definitions/ReferenceableMember"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_3_16.json#/definitions/ReferenceableMember"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_4_16.json#/definitions/ReferenceableMember"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_4_15.json#/definitions/ReferenceableMember"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_5_15.json#/definitions/ReferenceableMember"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_5_14.json#/definitions/ReferenceableMember"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_6_15.json#/definitions/ReferenceableMember"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_6_14.json#/definitions/ReferenceableMember"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_7_14.json#/definitions/ReferenceableMember"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_7_13.json#/definitions/ReferenceableMember"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_8_14.json#/definitions/ReferenceableMember"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_8_13.json#/definitions/ReferenceableMember"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_9_12.json#/definitions/ReferenceableMember"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_9_11.json#/definitions/ReferenceableMember"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_10_9.json#/definitions/ReferenceableMember"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_10_8.json#/definitions/ReferenceableMember"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_11_9.json#/definitions/ReferenceableMember"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_11_8.json#/definitions/ReferenceableMember"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_12_8.json#/definitions/ReferenceableMember"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_12_7.json#/definitions/ReferenceableMember"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_13_7.json#/definitions/ReferenceableMember"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_13_6.json#/definitions/ReferenceableMember"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_14_6.json#/definitions/ReferenceableMember"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_14_5.json#/definitions/ReferenceableMember"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_15_5.json#/definitions/ReferenceableMember"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_15_4.json#/definitions/ReferenceableMember"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_16_5.json#/definitions/ReferenceableMember"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_16_4.json#/definitions/ReferenceableMember"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_17_5.json#/definitions/ReferenceableMember"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_17_4.json#/definitions/ReferenceableMember"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_18_4.json#/definitions/ReferenceableMember"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_18_3.json#/definitions/ReferenceableMember"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_19_3.json#/definitions/ReferenceableMember"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_19_2.json#/definitions/ReferenceableMember"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_20_2.json#/definitions/ReferenceableMember"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_20_1.json#/definitions/ReferenceableMember"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_21_1.json#/definitions/ReferenceableMember"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_22_1.json#/definitions/ReferenceableMember"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_23_0.json#/definitions/ReferenceableMember"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_21_0.json#/definitions/ReferenceableMember"
                 }
             ]
         },
@@ -549,13 +510,13 @@
                 "ForceOff": "Turn off the unit immediately (non-graceful shutdown).",
                 "ForceOn": "Turn on the unit immediately.",
                 "ForceRestart": "Shut down immediately and non-gracefully and restart the unit.",
-                "FullPowerCycle": "Full power cycle the unit immediately (non-graceful).  Behaves like removing utility lines, followed by restoring utility lines to the resource.",
+                "FullPowerCycle": "Full power cycle the unit.  Behaves like removing utility lines, followed by restoring utility lines to the resource.",
                 "GracefulRestart": "Shut down gracefully and restart the unit.",
                 "GracefulShutdown": "Shut down gracefully and power off.",
                 "Nmi": "Generate a diagnostic interrupt, which is usually an NMI on x86 systems, to stop normal operations, complete diagnostic actions, and, typically, halt the system.",
                 "On": "Turn on the unit.",
                 "Pause": "Pause execution on the unit but do not remove power.  This is typically a feature of virtual machine hypervisors.",
-                "PowerCycle": "Power cycle the unit immediately (non-graceful).  Behaves like a power removal, followed by a power restore to the resource.",
+                "PowerCycle": "Power cycle the unit.  Behaves like a power removal, followed by a power restore to the resource.",
                 "PushPowerButton": "Simulate the pressing of the physical power button on this unit.",
                 "Resume": "Resume execution on the paused unit.  This is typically a feature of virtual machine hypervisors.",
                 "Suspend": "Write the state of the unit to disk before powering off.  This allows for the state to be restored when powered back on."
@@ -564,13 +525,13 @@
                 "ForceOff": "This value shall indicate the resource will transition to a power off state.  The transition will start immediately.  Upon successful completion, the `PowerState` property, if supported, shall contain the value `Off`.",
                 "ForceOn": "This value shall indicate the resource will transition to a power on state.  The transition will start immediately.  Upon successful completion, the `PowerState` property shall contain the value `On`.",
                 "ForceRestart": "This value shall indicate the resource will transition to a power on state, after transiting through a restart.  The transition will start immediately.  Upon successful completion, the `PowerState` property, if supported, shall contain the value `On`.",
-                "FullPowerCycle": "This value shall indicate the resource will perform a full power cycle as if utility lines to the resource are removed and restored.  The transition will start immediately.  This is different from `PowerCycle` in that it's as close to a true power cycle as possible.  For example, removing AC power cables from an enclosure and then restoring the AC power cables.  If currently in the power on state, the resource will transition to a power off state, then transition to a power on state.  If currently in the power off state, the resource will transition to a power on state.  Upon successful completion, the `PowerState` property, if supported, shall contain the value `On`.  If a service supports this value but there are no other distinct power cycle flows, the service shall support `PowerCycle` as an alias to `FullPowerCycle`.  This type of reset may cause the manager providing the Redfish service to power cycle.  If the manager providing the Redfish service is affected by this type of reset, the service shall send the action response before resetting to prevent client timeouts.",
+                "FullPowerCycle": "This value shall indicate the resource will perform a full power cycle as if utility lines to the resource are removed and restored.  This is different from `PowerCycle` in that it's as close to a true power cycle as possible.  For example, removing AC power cables from an enclosure and then restoring the AC power cables.  If currently in the power on state, the resource will transition to a power off state, then transition to a power on state.  If currently in the power off state, the resource will transition to a power on state.  Upon successful completion, the `PowerState` property, if supported, shall contain the value `On`.  If a service supports this value but there are no other distinct power cycle flows, the service shall support `PowerCycle` as an alias to `FullPowerCycle`.  This type of reset may cause the manager providing the Redfish service to power cycle.  If the manager providing the Redfish service is affected by this type of reset, the service shall send the action response before resetting to prevent client timeouts.",
                 "GracefulRestart": "This value shall indicate the resource will transition to a power on state, after transiting through a restart.  The transition will start after first performing tasks to safely shut down the resource.  For example, when shutting down a computer system, the host operating system is allowed to safely shut down processes and close connections.  Upon successful completion, the `PowerState` property, if supported, shall contain the value `On`.",
                 "GracefulShutdown": "This value shall indicate the resource will transition to a power off state.  The transition will start after first performing tasks to safely shut down the resource.  For example, when shutting down a computer system, the host operating system is allowed to safely shut down processes and close connections.  Upon successful completion, the `PowerState` property, if supported, shall contain the value `Off`.",
                 "Nmi": "This value shall indicate the resource will generate a diagnostic interrupt.",
                 "On": "This value shall indicate the resource will transition to a power on state.  Upon successful completion, the `PowerState` property, if supported, shall contain the value `On`.",
                 "Pause": "This value shall indicate the resource will transition to a paused state.  Upon successful completion, the `PowerState` property, if supported, shall contain the value `Paused`.",
-                "PowerCycle": "This value shall indicate the resource will perform a power cycle.  The transition will start immediately.  This is different from `FullPowerCycle` in that it typically performs localized power sequencing of the resource while external power is still present.  For example, turning DC voltage regulators off and then turning DC voltage regulators back on.  If currently in the power on state, the resource will transition to a power off state, then transition to a power on state.  If currently in the power off state, the resource will transition to a power on state.  Upon successful completion, the `PowerState` property, if supported, shall contain the value `On`.",
+                "PowerCycle": "This value shall indicate the resource will perform a power cycle.  This is different from `FullPowerCycle` in that it typically performs localized power sequencing of the resource while external power is still present.  For example, turning DC voltage regulators off and then turning DC voltage regulators back on.  If currently in the power on state, the resource will transition to a power off state, then transition to a power on state.  If currently in the power off state, the resource will transition to a power on state.  Upon successful completion, the `PowerState` property, if supported, shall contain the value `On`.",
                 "PushPowerButton": "This value shall indicate the resource will behave as if the physical power button is pressed.  The behavior of pressing the physical power button may be dependent on the state of the unit and the behavior may be configurable.",
                 "Resume": "This value shall indicate the resource will transition to a power on state.  Upon successful completion, the `PowerState` property, if supported, shall contain the value `On`.",
                 "Suspend": "This value shall indicate the resource will have any state information written to persistent memory and then transition to a power off state.  Upon successful completion, the `PowerState` property, if supported, shall contain the value `Off`."
@@ -599,67 +560,61 @@
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_2_17.json#/definitions/Resource"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_3_17.json#/definitions/Resource"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_3_16.json#/definitions/Resource"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_4_16.json#/definitions/Resource"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_4_15.json#/definitions/Resource"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_5_15.json#/definitions/Resource"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_5_14.json#/definitions/Resource"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_6_15.json#/definitions/Resource"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_6_14.json#/definitions/Resource"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_7_14.json#/definitions/Resource"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_7_13.json#/definitions/Resource"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_8_14.json#/definitions/Resource"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_8_13.json#/definitions/Resource"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_9_12.json#/definitions/Resource"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_9_11.json#/definitions/Resource"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_10_9.json#/definitions/Resource"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_10_8.json#/definitions/Resource"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_11_9.json#/definitions/Resource"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_11_8.json#/definitions/Resource"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_12_8.json#/definitions/Resource"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_12_7.json#/definitions/Resource"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_13_7.json#/definitions/Resource"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_13_6.json#/definitions/Resource"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_14_6.json#/definitions/Resource"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_14_5.json#/definitions/Resource"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_15_5.json#/definitions/Resource"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_15_4.json#/definitions/Resource"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_16_5.json#/definitions/Resource"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_16_4.json#/definitions/Resource"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_17_5.json#/definitions/Resource"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_17_4.json#/definitions/Resource"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_18_4.json#/definitions/Resource"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_18_3.json#/definitions/Resource"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_19_3.json#/definitions/Resource"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_19_2.json#/definitions/Resource"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_20_2.json#/definitions/Resource"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_20_1.json#/definitions/Resource"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_21_1.json#/definitions/Resource"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_22_1.json#/definitions/Resource"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_23_0.json#/definitions/Resource"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_21_0.json#/definitions/Resource"
                 }
             ]
         },
@@ -678,67 +633,61 @@
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_2_17.json#/definitions/ResourceCollection"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_3_17.json#/definitions/ResourceCollection"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_3_16.json#/definitions/ResourceCollection"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_4_16.json#/definitions/ResourceCollection"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_4_15.json#/definitions/ResourceCollection"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_5_15.json#/definitions/ResourceCollection"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_5_14.json#/definitions/ResourceCollection"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_6_15.json#/definitions/ResourceCollection"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_6_14.json#/definitions/ResourceCollection"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_7_14.json#/definitions/ResourceCollection"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_7_13.json#/definitions/ResourceCollection"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_8_14.json#/definitions/ResourceCollection"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_8_13.json#/definitions/ResourceCollection"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_9_12.json#/definitions/ResourceCollection"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_9_11.json#/definitions/ResourceCollection"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_10_9.json#/definitions/ResourceCollection"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_10_8.json#/definitions/ResourceCollection"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_11_9.json#/definitions/ResourceCollection"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_11_8.json#/definitions/ResourceCollection"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_12_8.json#/definitions/ResourceCollection"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_12_7.json#/definitions/ResourceCollection"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_13_7.json#/definitions/ResourceCollection"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_13_6.json#/definitions/ResourceCollection"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_14_6.json#/definitions/ResourceCollection"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_14_5.json#/definitions/ResourceCollection"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_15_5.json#/definitions/ResourceCollection"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_15_4.json#/definitions/ResourceCollection"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_16_5.json#/definitions/ResourceCollection"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_16_4.json#/definitions/ResourceCollection"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_17_5.json#/definitions/ResourceCollection"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_17_4.json#/definitions/ResourceCollection"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_18_4.json#/definitions/ResourceCollection"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_18_3.json#/definitions/ResourceCollection"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_19_3.json#/definitions/ResourceCollection"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_19_2.json#/definitions/ResourceCollection"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_20_2.json#/definitions/ResourceCollection"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_20_1.json#/definitions/ResourceCollection"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_21_1.json#/definitions/ResourceCollection"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_22_1.json#/definitions/ResourceCollection"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_23_0.json#/definitions/ResourceCollection"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_21_0.json#/definitions/ResourceCollection"
                 }
             ]
         },

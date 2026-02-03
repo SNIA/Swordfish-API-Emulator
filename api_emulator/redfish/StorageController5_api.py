@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}
+# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{ControllerId}
 # Program name - StorageController5_api.py
 
 import g
@@ -104,12 +104,12 @@ class StorageController5API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId):
+	def get(self, ResourceBlockId, ComputerSystemId, StorageId, ControllerId):
 		logging.info('StorageController5 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, ControllerId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,25 +119,25 @@ class StorageController5API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId):
+	def post(self, ResourceBlockId, ComputerSystemId, StorageId, ControllerId):
 		logging.info('StorageController5 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
-			redfish_path = create_path('/redfish/v1/', 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}').format(ResourceBlockId, ComputerSystemId, StorageId, ControllerId)
+			redfish_path = create_path('/redfish/v1/', 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}').format(ResourceBlockId, ComputerSystemId, StorageId, ControllerId)
 			collection_path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
 				StorageController5CollectionAPI.post(self, ResourceBlockId, ComputerSystemId, StorageId)
 
-			if StorageControllerId in members:
+			if ControllerId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'StorageId':StorageId, 'StorageControllerId':StorageControllerId, 'rb':g.rest_base}
+				wildcards = {'ResourceBlockId':ResourceBlockId, 'ComputerSystemId':ComputerSystemId, 'StorageId':StorageId, 'ControllerId':ControllerId, 'rb':g.rest_base}
 				config=get_StorageController5_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -153,13 +153,13 @@ class StorageController5API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId):
+	def put(self, ResourceBlockId, ComputerSystemId, StorageId, ControllerId):
 		logging.info('StorageController5 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
-			redfish_path = create_path('/redfish/v1', 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, ControllerId)
+			redfish_path = create_path('/redfish/v1', 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, ControllerId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -191,18 +191,18 @@ class StorageController5API(Resource):
 			if state_changed:
 				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
 			put_object(path)
-			return self.get(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
+			return self.get(ResourceBlockId, ComputerSystemId, StorageId, ControllerId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId):
+	def patch(self, ResourceBlockId, ComputerSystemId, StorageId, ControllerId):
 		logging.info('StorageController5 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
-			redfish_path = create_path('/redfish/v1/', 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, ControllerId)
+			redfish_path = create_path('/redfish/v1/', 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, ControllerId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -234,18 +234,18 @@ class StorageController5API(Resource):
 				if state_changed:
 					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
 			patch_object(path)
-			return self.get(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
+			return self.get(ResourceBlockId, ComputerSystemId, StorageId, ControllerId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId):
+	def delete(self, ResourceBlockId, ComputerSystemId, StorageId, ControllerId):
 		logging.info('StorageController5 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
-			redfish_path = create_path('/redfish/v1/', 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}').format(ResourceBlockId, ComputerSystemId, StorageId, ControllerId)
+			redfish_path = create_path('/redfish/v1/', 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}').format(ResourceBlockId, ComputerSystemId, StorageId, ControllerId)
 			base_path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers').format(ResourceBlockId, ComputerSystemId, StorageId)
 			# Event logic for DELETE
 			obj = get_json_data(path)

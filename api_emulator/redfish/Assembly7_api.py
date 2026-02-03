@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2026, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Drives/{DriveId}/Assembly
+# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Drives/{DriveId}/Assembly
 # Program name - Assembly7_api.py
 
 import g
@@ -55,33 +55,33 @@ class Assembly7API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, StorageId, DriveId):
+	def get(self, ResourceBlockId, DriveId):
 		logging.info('Assembly7 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Drives/{2}/Assembly', 'index.json').format(ResourceBlockId, StorageId, DriveId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Drives/{1}/Assembly', 'index.json').format(ResourceBlockId, DriveId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ResourceBlockId, StorageId, DriveId):
+	def post(self, ResourceBlockId, DriveId):
 		logging.info('Assembly7 post called')
 		return 'POST is not a supported command for Assembly7API', 405
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, StorageId, DriveId):
+	def put(self, ResourceBlockId, DriveId):
 		logging.info('Assembly7 put called')
 		return 'PUT is not a supported command for Assembly7API', 405
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, StorageId, DriveId):
+	def patch(self, ResourceBlockId, DriveId):
 		logging.info('Assembly7 patch called')
 		return 'PATCH is not a supported command for Assembly7API', 405
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, StorageId, DriveId):
+	def delete(self, ResourceBlockId, DriveId):
 		logging.info('Assembly7 delete called')
 		return 'DELETE is not a supported command for Assembly7API', 405
 

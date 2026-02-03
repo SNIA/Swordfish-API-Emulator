@@ -65,15 +65,6 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/PCIeDevice.v1_18_0.json#/definitions/PCIeDevice"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PCIeDevice.v1_19_0.json#/definitions/PCIeDevice"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PCIeDevice.v1_20_0.json#/definitions/PCIeDevice"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PCIeDevice.v1_21_0.json#/definitions/PCIeDevice"
                 }
             ],
             "deletable": false,
@@ -122,15 +113,6 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/PCIeDevice.v1_18_0.json#/definitions/PCIeErrors"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PCIeDevice.v1_19_0.json#/definitions/PCIeErrors"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PCIeDevice.v1_20_0.json#/definitions/PCIeErrors"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PCIeDevice.v1_21_0.json#/definitions/PCIeErrors"
                 }
             ],
             "description": "The PCIe errors associated with this device.",
@@ -185,31 +167,10 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/PCIeDevice.v1_18_0.json#/definitions/PCIeInterface"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PCIeDevice.v1_19_0.json#/definitions/PCIeInterface"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PCIeDevice.v1_20_0.json#/definitions/PCIeInterface"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PCIeDevice.v1_21_0.json#/definitions/PCIeInterface"
                 }
             ],
             "description": "This type describes a PCIe Interface.",
             "longDescription": "This type shall describe the PCIe interface characteristics of a PCIe device."
-        },
-        "PCIeMetrics": {
-            "anyOf": [
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PCIeDevice.v1_20_0.json#/definitions/PCIeMetrics"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PCIeDevice.v1_21_0.json#/definitions/PCIeMetrics"
-                }
-            ],
-            "description": "The PCIe metrics associated with this device.",
-            "longDescription": "This property shall contain properties that describe the PCIe metrics associated with this device."
         },
         "PCIeTypes": {
             "enum": [

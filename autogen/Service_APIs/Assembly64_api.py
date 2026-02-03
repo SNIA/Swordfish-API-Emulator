@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2026, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ThermalEquipment/ImmersionUnits/{CoolingUnitId}/Pumps/{PumpId}/Assembly
+# Resource implementation for - /redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Reservoirs/{ReservoirId}/Filters/{FilterId}/Assembly
 # Program name - Assembly64_api.py
 
 import g
@@ -55,33 +55,33 @@ class Assembly64API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, CoolingUnitId, PumpId):
+	def get(self, CoolingUnitId, ReservoirId, FilterId):
 		logging.info('Assembly64 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}/Assembly', 'index.json').format(CoolingUnitId, PumpId)
+			path = create_path(self.root, 'ThermalEquipment/CDUs/{0}/Reservoirs/{1}/Filters/{2}/Assembly', 'index.json').format(CoolingUnitId, ReservoirId, FilterId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, CoolingUnitId, PumpId):
+	def post(self, CoolingUnitId, ReservoirId, FilterId):
 		logging.info('Assembly64 post called')
 		return 'POST is not a supported command for Assembly64API', 405
 
 	# HTTP PUT
-	def put(self, CoolingUnitId, PumpId):
+	def put(self, CoolingUnitId, ReservoirId, FilterId):
 		logging.info('Assembly64 put called')
 		return 'PUT is not a supported command for Assembly64API', 405
 
 	# HTTP PATCH
-	def patch(self, CoolingUnitId, PumpId):
+	def patch(self, CoolingUnitId, ReservoirId, FilterId):
 		logging.info('Assembly64 patch called')
 		return 'PATCH is not a supported command for Assembly64API', 405
 
 	# HTTP DELETE
-	def delete(self, CoolingUnitId, PumpId):
+	def delete(self, CoolingUnitId, ReservoirId, FilterId):
 		logging.info('Assembly64 delete called')
 		return 'DELETE is not a supported command for Assembly64API', 405
 

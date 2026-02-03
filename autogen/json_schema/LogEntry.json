@@ -65,19 +65,10 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/LogEntry.v1_18_0.json#/definitions/LogEntry"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogEntry.v1_19_0.json#/definitions/LogEntry"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogEntry.v1_20_0.json#/definitions/LogEntry"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogEntry.v1_21_0.json#/definitions/LogEntry"
                 }
             ],
             "deletable": true,
-            "description": "The `LogEntry` schema defines the record format for a log.  It is designed for Redfish event logs, which utilize messages defined in a Message Registry and referenced by a `MessageId`.  For standard message definitions, see DSP2065.  Other log formats, including OEM-specific definitions and the IPMI System Event Log (SEL) are also supported.  The `EntryType` field indicates the type of log and the resource includes several additional properties dependent on the `EntryType`.",
+            "description": "The `LogEntry` schema defines the record format for a log.  It is designed for Redfish event logs, OEM-specific log formats, and the IPMI System Event Log (SEL).  The `EntryType` field indicates the type of log and the resource includes several additional properties dependent on the `EntryType`.",
             "insertable": false,
             "longDescription": "This resource shall represent the log format for log services in a Redfish implementation.",
             "updatable": true,

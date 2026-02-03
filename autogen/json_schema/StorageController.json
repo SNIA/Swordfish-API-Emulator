@@ -35,12 +35,6 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/StorageController.v1_9_1.json#/definitions/NVMeSMARTCriticalWarnings"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/StorageController.v1_10_1.json#/definitions/NVMeSMARTCriticalWarnings"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/StorageController.v1_11_0.json#/definitions/NVMeSMARTCriticalWarnings"
                 }
             ],
             "description": "The NVMe SMART Critical Warnings for a storage controller.",
@@ -80,12 +74,6 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/StorageController.v1_9_1.json#/definitions/StorageController"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/StorageController.v1_10_1.json#/definitions/StorageController"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/StorageController.v1_11_0.json#/definitions/StorageController"
                 }
             ],
             "deletable": false,
@@ -94,12 +82,12 @@
             "longDescription": "This resource shall represent a storage controller in the Redfish Specification.",
             "updatable": true,
             "uris": [
-                "/redfish/v1/Storage/{StorageId}/Controllers/{StorageControllerId}",
-                "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}",
-                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{StorageControllerId}",
-                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}",
-                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{StorageControllerId}",
-                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}"
+                "/redfish/v1/Storage/{StorageId}/Controllers/{ControllerId}",
+                "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{ControllerId}",
+                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{ControllerId}",
+                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{ControllerId}",
+                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{ControllerId}",
+                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{ControllerId}"
             ]
         }
     },

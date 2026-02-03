@@ -71,15 +71,6 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Memory.v1_20_0.json#/definitions/Memory"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Memory.v1_21_0.json#/definitions/Memory"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Memory.v1_22_0.json#/definitions/Memory"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Memory.v1_23_0.json#/definitions/Memory"
                 }
             ],
             "deletable": false,

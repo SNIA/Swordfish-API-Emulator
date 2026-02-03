@@ -93,7 +93,6 @@
                 "/redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Pumps",
                 "/redfish/v1/ThermalEquipment/ImmersionUnits/{CoolingUnitId}/Pumps",
                 "/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Pumps",
-                "/redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/Pumps",
                 "/redfish/v1/Chassis/{ChassisId}/ThermalSubsystem/Pumps"
             ]
         }

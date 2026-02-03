@@ -44,16 +44,10 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Event.v1_11_1.json#/definitions/Event"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Event.v1_12_0.json#/definitions/Event"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Event.v1_13_0.json#/definitions/Event"
                 }
             ],
             "deletable": false,
-            "description": "The `Event` schema describes the JSON payload received by an event destination, which has subscribed to event notification, when events occur.  This resource contains data about events, including descriptions, severity, and a `MessageId` reference to a message registry that can be accessed for further information.  For standard message definitions, see DSP2065.",
+            "description": "The `Event` schema describes the JSON payload received by an event destination, which has subscribed to event notification, when events occur.  This resource contains data about events, including descriptions, severity, and a message identifier to a message registry that can be accessed for further information.",
             "insertable": false,
             "longDescription": "This resource contains an event for a Redfish implementation.",
             "updatable": false

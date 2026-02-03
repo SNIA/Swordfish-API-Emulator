@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2026, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -54,14 +54,24 @@ class EventServiceAPI(Resource):
 		self.root = PATHS['Root']
 		self.auth = kwargs['auth']
 
-	# HTTP GET
+    # HTTP GET
 	def get(self):
 		logging.info('EventService get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = os.path.join(self.root, 'index.json')
-			return get_json_data (path)
+			path = create_path(self.root, 'EventService', 'index.json')
+			if not os.path.exists(path):
+				# fallback to old path for compatibility
+				path = create_path(self.root, 'index.json')
+			data = get_json_data(path)
+			# Ensure Subscriptions property is present and correct
+			if "Subscriptions" not in data or not isinstance(
+					data["Subscriptions"], dict):
+				data["Subscriptions"] = {
+					"@odata.id": "/redfish/v1/EventService/Subscriptions"
+				}
+			return data
 		else:
 			return msg, code
 

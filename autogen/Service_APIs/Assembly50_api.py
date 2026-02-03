@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2026, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/ThermalSubsystem/Fans/{FanId}/Assembly
+# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/PowerSubsystem/PowerSupplies/{PowerSupplyId}/Assembly
 # Program name - Assembly50_api.py
 
 import g
@@ -55,33 +55,33 @@ class Assembly50API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, FanId):
+	def get(self, ChassisId, PowerSupplyId):
 		logging.info('Assembly50 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Fans/{1}/Assembly', 'index.json').format(ChassisId, FanId)
+			path = create_path(self.root, 'Chassis/{0}/PowerSubsystem/PowerSupplies/{1}/Assembly', 'index.json').format(ChassisId, PowerSupplyId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ChassisId, FanId):
+	def post(self, ChassisId, PowerSupplyId):
 		logging.info('Assembly50 post called')
 		return 'POST is not a supported command for Assembly50API', 405
 
 	# HTTP PUT
-	def put(self, ChassisId, FanId):
+	def put(self, ChassisId, PowerSupplyId):
 		logging.info('Assembly50 put called')
 		return 'PUT is not a supported command for Assembly50API', 405
 
 	# HTTP PATCH
-	def patch(self, ChassisId, FanId):
+	def patch(self, ChassisId, PowerSupplyId):
 		logging.info('Assembly50 patch called')
 		return 'PATCH is not a supported command for Assembly50API', 405
 
 	# HTTP DELETE
-	def delete(self, ChassisId, FanId):
+	def delete(self, ChassisId, PowerSupplyId):
 		logging.info('Assembly50 delete called')
 		return 'DELETE is not a supported command for Assembly50API', 405
 

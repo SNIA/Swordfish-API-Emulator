@@ -14,12 +14,6 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/CoolantConnector.v1_1_0.json#/definitions/CoolantConnector"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/CoolantConnector.v1_2_0.json#/definitions/CoolantConnector"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/CoolantConnector.v1_3_0.json#/definitions/CoolantConnector"
                 }
             ],
             "deletable": false,
@@ -36,8 +30,7 @@
                 "/redfish/v1/ThermalEquipment/ImmersionUnits/{CoolingUnitId}/PrimaryCoolantConnectors/{CoolantConnectorId}",
                 "/redfish/v1/ThermalEquipment/ImmersionUnits/{CoolingUnitId}/SecondaryCoolantConnectors/{CoolantConnectorId}",
                 "/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/PrimaryCoolantConnectors/{CoolantConnectorId}",
-                "/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/SecondaryCoolantConnectors/{CoolantConnectorId}",
-                "/redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/PrimaryCoolantConnectors/{CoolantConnectorId}"
+                "/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/SecondaryCoolantConnectors/{CoolantConnectorId}"
             ]
         }
     },

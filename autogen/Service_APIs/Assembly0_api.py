@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2026, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Cables/{CableId}/Assembly
+# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/Assembly
 # Program name - Assembly0_api.py
 
 import g
@@ -55,33 +55,33 @@ class Assembly0API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, CableId):
+	def get(self, ChassisId):
 		logging.info('Assembly0 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Cables/{0}/Assembly', 'index.json').format(CableId)
+			path = create_path(self.root, 'Chassis/{0}/Assembly', 'index.json').format(ChassisId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, CableId):
+	def post(self, ChassisId):
 		logging.info('Assembly0 post called')
 		return 'POST is not a supported command for Assembly0API', 405
 
 	# HTTP PUT
-	def put(self, CableId):
+	def put(self, ChassisId):
 		logging.info('Assembly0 put called')
 		return 'PUT is not a supported command for Assembly0API', 405
 
 	# HTTP PATCH
-	def patch(self, CableId):
+	def patch(self, ChassisId):
 		logging.info('Assembly0 patch called')
 		return 'PATCH is not a supported command for Assembly0API', 405
 
 	# HTTP DELETE
-	def delete(self, CableId):
+	def delete(self, ChassisId):
 		logging.info('Assembly0 delete called')
 		return 'DELETE is not a supported command for Assembly0API', 405
 

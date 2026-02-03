@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2026, The Storage Networking Industry Association.
+# Copyright (c) 2017-2025, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -36,8 +36,8 @@ from flask import json
 _TEMPLATE = \
 {
 	"@Redfish.Copyright": "Copyright 2014-2025 SNIA. All rights reserved.",
-	"@odata.id": "{rb}ThermalEquipment/HeatExchangers/{CoolingUnitId}/Reservoirs/{ReservoirId}/Filters/{FilterId}",
-	"@odata.type": "#Filter.v1_1_0.Filter",
+	"@odata.id": "{rb}ThermalEquipment/HeatExchangers/{CoolingUnitId}/Pumps/{PumpId}/Filters/{FilterId}",
+	"@odata.type": "#Filter.v1_0_2.Filter",
 	"Id": "{FilterId}",
 	"Name": "Filter",
 }
@@ -51,7 +51,7 @@ def get_Filter9_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{CoolingUnitId}', '-0-')
-		g = g.replace('{ReservoirId}', '-1-')
+		g = g.replace('{PumpId}', '-1-')
 		g = g.replace('{FilterId}', '-2-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
@@ -59,7 +59,7 @@ def get_Filter9_instance(wildcards):
 		g = g.replace('{', '~!')
 		g = g.replace('}', '!~')
 		g = g.replace('0', '{CoolingUnitId}')
-		g = g.replace('1', '{ReservoirId}')
+		g = g.replace('1', '{PumpId}')
 		g = g.replace('2', '{FilterId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)

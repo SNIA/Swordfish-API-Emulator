@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2026, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Processors/{ProcessorId}/SubProcessors/{ProcessorId2}/SubProcessors/{ProcessorId3}/Assembly
+# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Assembly
 # Program name - Assembly36_api.py
 
 import g
@@ -55,33 +55,33 @@ class Assembly36API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2, ProcessorId3):
+	def get(self, ComputerSystemId, StorageId, StorageControllerId):
 		logging.info('Assembly36 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Processors/{2}/SubProcessors/{22}/SubProcessors/{23}/Assembly', 'index.json').format(ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2, ProcessorId3)
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}/StorageControllers/{2}/Assembly', 'index.json').format(ComputerSystemId, StorageId, StorageControllerId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2, ProcessorId3):
+	def post(self, ComputerSystemId, StorageId, StorageControllerId):
 		logging.info('Assembly36 post called')
 		return 'POST is not a supported command for Assembly36API', 405
 
 	# HTTP PUT
-	def put(self, ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2, ProcessorId3):
+	def put(self, ComputerSystemId, StorageId, StorageControllerId):
 		logging.info('Assembly36 put called')
 		return 'PUT is not a supported command for Assembly36API', 405
 
 	# HTTP PATCH
-	def patch(self, ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2, ProcessorId3):
+	def patch(self, ComputerSystemId, StorageId, StorageControllerId):
 		logging.info('Assembly36 patch called')
 		return 'PATCH is not a supported command for Assembly36API', 405
 
 	# HTTP DELETE
-	def delete(self, ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2, ProcessorId3):
+	def delete(self, ComputerSystemId, StorageId, StorageControllerId):
 		logging.info('Assembly36 delete called')
 		return 'DELETE is not a supported command for Assembly36API', 405
 

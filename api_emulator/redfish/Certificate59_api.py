@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/VirtualMedia/{VirtualMediaId}/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/VirtualMedia/{VirtualMediaId}/ClientCertificates/{CertificateId}
 # Program name - Certificate59_api.py
 
 import g
@@ -58,7 +58,7 @@ class Certificate59CollectionAPI(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates', 'index.json').format(ComputerSystemId, VirtualMediaId)
+			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/ClientCertificates', 'index.json').format(ComputerSystemId, VirtualMediaId)
 			return get_json_data(path)
 		else:
 			return msg, code
@@ -78,7 +78,7 @@ class Certificate59CollectionAPI(Resource):
 			if VirtualMediaId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates').format(ComputerSystemId, VirtualMediaId)
+			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/ClientCertificates').format(ComputerSystemId, VirtualMediaId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -109,7 +109,7 @@ class Certificate59API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, VirtualMediaId, CertificateId)
+			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/ClientCertificates/{2}', 'index.json').format(ComputerSystemId, VirtualMediaId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -124,9 +124,9 @@ class Certificate59API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}').format(ComputerSystemId, VirtualMediaId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}').format(ComputerSystemId, VirtualMediaId, CertificateId)
-			collection_path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates', 'index.json').format(ComputerSystemId, VirtualMediaId)
+			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/ClientCertificates/{2}').format(ComputerSystemId, VirtualMediaId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/VirtualMedia/{1}/ClientCertificates/{2}').format(ComputerSystemId, VirtualMediaId, CertificateId)
+			collection_path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/ClientCertificates', 'index.json').format(ComputerSystemId, VirtualMediaId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
@@ -158,8 +158,8 @@ class Certificate59API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, VirtualMediaId, CertificateId)
-			redfish_path = create_path('/redfish/v1', 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, VirtualMediaId, CertificateId)
+			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/ClientCertificates/{2}', 'index.json').format(ComputerSystemId, VirtualMediaId, CertificateId)
+			redfish_path = create_path('/redfish/v1', 'Systems/{0}/VirtualMedia/{1}/ClientCertificates/{2}', 'index.json').format(ComputerSystemId, VirtualMediaId, CertificateId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -201,8 +201,8 @@ class Certificate59API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, VirtualMediaId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, VirtualMediaId, CertificateId)
+			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/ClientCertificates/{2}', 'index.json').format(ComputerSystemId, VirtualMediaId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/VirtualMedia/{1}/ClientCertificates/{2}', 'index.json').format(ComputerSystemId, VirtualMediaId, CertificateId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -244,9 +244,9 @@ class Certificate59API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}').format(ComputerSystemId, VirtualMediaId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}').format(ComputerSystemId, VirtualMediaId, CertificateId)
-			base_path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates').format(ComputerSystemId, VirtualMediaId)
+			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/ClientCertificates/{2}').format(ComputerSystemId, VirtualMediaId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/VirtualMedia/{1}/ClientCertificates/{2}').format(ComputerSystemId, VirtualMediaId, CertificateId)
+			base_path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/ClientCertificates').format(ComputerSystemId, VirtualMediaId)
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

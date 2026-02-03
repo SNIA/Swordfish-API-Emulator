@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!---->
 <!--################################################################################       -->
-<!--# Redfish Schema:  Sensor v1.12.0                                                      -->
+<!--# Redfish Schema:  Sensor v1.10.1                                                      -->
 <!--#                                                                                      -->
 <!--# For a detailed change log, see the README file contained in the DSP8010 bundle,      -->
 <!--# available at http://www.dmtf.org/standards/redfish                                   -->
@@ -220,13 +220,13 @@
           <Annotation Term="OData.LongDescription" String="This property shall contain the units of the sensor's reading, thresholds, and other reading-related properties.  The value shall follow the case-sensitive symbol format defined by the Unified Code for Units of Measure (UCUM), as specified by the 'Units of measure annotation' clause of the Redfish Specification."/>
         </Property>
         <Property Name="PhysicalContext" Type="PhysicalContext.PhysicalContext">
-          <Annotation Term="OData.Permissions" EnumMember="OData.Permission/ReadWrite"/>
+          <Annotation Term="OData.Permissions" EnumMember="OData.Permission/Read"/>
           <Annotation Term="OData.Description" String="The area or device to which this sensor measurement applies."/>
           <Annotation Term="OData.LongDescription" String="This property shall contain a description of the affected component or region within the equipment to which this sensor measurement applies."/>
           <Annotation Term="Redfish.Excerpt" String="Array,FanArray,PowerArray"/>
         </Property>
         <Property Name="PhysicalSubContext" Type="PhysicalContext.PhysicalSubContext">
-          <Annotation Term="OData.Permissions" EnumMember="OData.Permission/ReadWrite"/>
+          <Annotation Term="OData.Permissions" EnumMember="OData.Permission/Read"/>
           <Annotation Term="OData.Description" String="The usage or location within a device to which this sensor measurement applies."/>
           <Annotation Term="OData.LongDescription" String="This property shall contain a description of the usage or sub-region within the equipment to which this sensor measurement applies.  This property generally differentiates multiple sensors within the same `PhysicalContext` instance."/>
           <Annotation Term="Redfish.Excerpt" String="Array,FanArray,PowerArray"/>
@@ -572,7 +572,7 @@
         </Member>
         <Member Name="Rotational">
           <Annotation Term="OData.Description" String="Rotational (RPM)."/>
-          <Annotation Term="OData.LongDescription" String="This value shall indicate a measurement of rotational frequency, in revolutions per minute units.  The `ReadingUnits` property shall contain either `{rev}/min`, which is preferred, or `RPM`, which is a deprecated value.  Services should represent fan speed and pump speed sensors with the `ReadingType` value `Percent`."/>
+          <Annotation Term="OData.LongDescription" String="This value shall indicate a measurement of rotational frequency, in revolutions per minute units.  The `ReadingUnits` property shall contain either `{rev}/min`, which is preferred, or `RPM`, which is a deprecated value."/>
         </Member>
         <Member Name="AirFlow">
           <Annotation Term="OData.Description" String="Air flow (cu ft/min)."/>
@@ -668,90 +668,6 @@
             </Collection>
           </Annotation>
         </Member>
-        <Member Name="LinearPosition">
-          <Annotation Term="OData.Description" String="Linear position or distance (m)."/>
-          <Annotation Term="OData.LongDescription" String="This value shall indicate a linear position or distance, in meter units.  The `ReadingUnits` property shall contain `m`."/>
-          <Annotation Term="Redfish.Revisions">
-            <Collection>
-              <Record>
-                <PropertyValue Property="Kind" EnumMember="Redfish.RevisionKind/Added"/>
-                <PropertyValue Property="Version" String="v1_11_0"/>
-              </Record>
-            </Collection>
-          </Annotation>
-        </Member>
-        <Member Name="LinearVelocity">
-          <Annotation Term="OData.Description" String="Linear velocity (m/s)."/>
-          <Annotation Term="OData.LongDescription" String="This value shall indicate a linear velocity, in meters per second units.  The `ReadingUnits` property shall contain `m/s`."/>
-          <Annotation Term="Redfish.Revisions">
-            <Collection>
-              <Record>
-                <PropertyValue Property="Kind" EnumMember="Redfish.RevisionKind/Added"/>
-                <PropertyValue Property="Version" String="v1_11_0"/>
-              </Record>
-            </Collection>
-          </Annotation>
-        </Member>
-        <Member Name="LinearAcceleration">
-          <Annotation Term="OData.Description" String="Linear acceleration (m/s^2)."/>
-          <Annotation Term="OData.LongDescription" String="This value shall indicate a linear acceleration, in meters per square second units.  The `ReadingUnits` property shall contain `m/s2`."/>
-          <Annotation Term="Redfish.Revisions">
-            <Collection>
-              <Record>
-                <PropertyValue Property="Kind" EnumMember="Redfish.RevisionKind/Added"/>
-                <PropertyValue Property="Version" String="v1_11_0"/>
-              </Record>
-            </Collection>
-          </Annotation>
-        </Member>
-        <Member Name="RotationalPosition">
-          <Annotation Term="OData.Description" String="Rotational position (rad)."/>
-          <Annotation Term="OData.LongDescription" String="This value shall indicate a rotational position, in radian units.  The `ReadingUnits` property shall contain `rad`."/>
-          <Annotation Term="Redfish.Revisions">
-            <Collection>
-              <Record>
-                <PropertyValue Property="Kind" EnumMember="Redfish.RevisionKind/Added"/>
-                <PropertyValue Property="Version" String="v1_11_0"/>
-              </Record>
-            </Collection>
-          </Annotation>
-        </Member>
-        <Member Name="RotationalVelocity">
-          <Annotation Term="OData.Description" String="Rotational velocity (rad/s)."/>
-          <Annotation Term="OData.LongDescription" String="This value shall indicate a rotational velocity, in radians per second units.  The `ReadingUnits` property shall contain `rad/s`."/>
-          <Annotation Term="Redfish.Revisions">
-            <Collection>
-              <Record>
-                <PropertyValue Property="Kind" EnumMember="Redfish.RevisionKind/Added"/>
-                <PropertyValue Property="Version" String="v1_11_0"/>
-              </Record>
-            </Collection>
-          </Annotation>
-        </Member>
-        <Member Name="RotationalAcceleration">
-          <Annotation Term="OData.Description" String="Rotational acceleration (rad/s^2)."/>
-          <Annotation Term="OData.LongDescription" String="This value shall indicate a rotational acceleration, in radians per square second units.  The `ReadingUnits` property shall contain `rad/s2`."/>
-          <Annotation Term="Redfish.Revisions">
-            <Collection>
-              <Record>
-                <PropertyValue Property="Kind" EnumMember="Redfish.RevisionKind/Added"/>
-                <PropertyValue Property="Version" String="v1_11_0"/>
-              </Record>
-            </Collection>
-          </Annotation>
-        </Member>
-        <Member Name="Valve">
-          <Annotation Term="OData.Description" String="Valve (% open)."/>
-          <Annotation Term="OData.LongDescription" String="This value shall indicate a valve position, in percent units.  The `ReadingUnits` property shall contain `%`.  A value of `100` shall indicate the valve is completely open, and a value of `0` shall indicate the valve is completely closed."/>
-          <Annotation Term="Redfish.Revisions">
-            <Collection>
-              <Record>
-                <PropertyValue Property="Kind" EnumMember="Redfish.RevisionKind/Added"/>
-                <PropertyValue Property="Version" String="v1_11_0"/>
-              </Record>
-            </Collection>
-          </Annotation>
-        </Member>
       </EnumType>
     </Schema>
 
@@ -825,18 +741,6 @@
       <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
       <Annotation Term="OData.Description" String="This version was created to add references to formats defined by the UCUM specification in the description of `ReadingUnits`."/>
       <EntityType Name="Sensor" BaseType="Sensor.v1_0_11.Sensor"/>
-    </Schema>
-
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_0_13">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to change the permissions for `RelatedItem`, `PhysicalContext`, and `PhysicalSubContext` to read-write."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_0_12.Sensor"/>
-    </Schema>
-
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_0_14">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to clarify that fan speed and pump speed sensors should use `Percent` for `ReadingType` instead of `Rotational`."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_0_13.Sensor"/>
     </Schema>
 
     <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_1_0">
@@ -943,18 +847,6 @@
       <EntityType Name="Sensor" BaseType="Sensor.v1_1_7.Sensor"/>
     </Schema>
 
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_1_9">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to change the permissions for `RelatedItem`, `PhysicalContext`, and `PhysicalSubContext` to read-write."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_1_8.Sensor"/>
-    </Schema>
-
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_1_10">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to clarify that fan speed and pump speed sensors should use `Percent` for `ReadingType` instead of `Rotational`."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_1_9.Sensor"/>
-    </Schema>
-
     <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_2_0">
       <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
       <Annotation Term="Redfish.Release" String="2020.4"/>
@@ -962,7 +854,7 @@
 
       <EntityType Name="Sensor" BaseType="Sensor.v1_1_1.Sensor">
         <NavigationProperty Name="RelatedItem" Type="Collection(Resource.Item)">
-          <Annotation Term="OData.Permissions" EnumMember="OData.Permission/ReadWrite"/>
+          <Annotation Term="OData.Permissions" EnumMember="OData.Permission/Read"/>
           <Annotation Term="OData.Description" String="An array of links to resources or objects that this sensor services."/>
           <Annotation Term="OData.LongDescription" String="This property shall contain an array of links to resources or objects that this sensor services."/>
           <Annotation Term="OData.AutoExpandReferences"/>
@@ -1039,18 +931,6 @@
       <EntityType Name="Sensor" BaseType="Sensor.v1_2_5.Sensor"/>
     </Schema>
 
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_2_7">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to change the permissions for `RelatedItem`, `PhysicalContext`, and `PhysicalSubContext` to read-write."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_2_6.Sensor"/>
-    </Schema>
-
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_2_8">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to clarify that fan speed and pump speed sensors should use `Percent` for `ReadingType` instead of `Rotational`."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_2_7.Sensor"/>
-    </Schema>
-
     <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_3_0">
       <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
       <Annotation Term="Redfish.Release" String="2021.1"/>
@@ -1102,18 +982,6 @@
       <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
       <Annotation Term="OData.Description" String="This version was created to add references to formats defined by the UCUM specification in the description of `ReadingUnits`."/>
       <EntityType Name="Sensor" BaseType="Sensor.v1_3_5.Sensor"/>
-    </Schema>
-
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_3_7">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to change the permissions for `RelatedItem`, `PhysicalContext`, and `PhysicalSubContext` to read-write."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_3_6.Sensor"/>
-    </Schema>
-
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_3_8">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to clarify that fan speed and pump speed sensors should use `Percent` for `ReadingType` instead of `Rotational`."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_3_7.Sensor"/>
     </Schema>
 
     <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_4_0">
@@ -1202,18 +1070,6 @@
       <EntityType Name="Sensor" BaseType="Sensor.v1_4_4.Sensor"/>
     </Schema>
 
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_4_6">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to change the permissions for `RelatedItem`, `PhysicalContext`, and `PhysicalSubContext` to read-write."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_4_5.Sensor"/>
-    </Schema>
-
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_4_7">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to clarify that fan speed and pump speed sensors should use `Percent` for `ReadingType` instead of `Rotational`."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_4_6.Sensor"/>
-    </Schema>
-
     <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_5_0">
       <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
       <Annotation Term="Redfish.Release" String="2021.4"/>
@@ -1269,18 +1125,6 @@
       <EntityType Name="Sensor" BaseType="Sensor.v1_5_3.Sensor"/>
     </Schema>
 
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_5_5">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to change the permissions for `RelatedItem`, `PhysicalContext`, and `PhysicalSubContext` to read-write."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_5_4.Sensor"/>
-    </Schema>
-
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_5_6">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to clarify that fan speed and pump speed sensors should use `Percent` for `ReadingType` instead of `Rotational`."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_5_5.Sensor"/>
-    </Schema>
-
     <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_6_0">
       <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
       <Annotation Term="Redfish.Release" String="2022.2"/>
@@ -1311,18 +1155,6 @@
       <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
       <Annotation Term="OData.Description" String="This version was created to add references to formats defined by the UCUM specification in the description of `ReadingUnits`."/>
       <EntityType Name="Sensor" BaseType="Sensor.v1_6_3.Sensor"/>
-    </Schema>
-
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_6_5">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to change the permissions for `RelatedItem`, `PhysicalContext`, and `PhysicalSubContext` to read-write."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_6_4.Sensor"/>
-    </Schema>
-
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_6_6">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to clarify that fan speed and pump speed sensors should use `Percent` for `ReadingType` instead of `Rotational`."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_6_5.Sensor"/>
     </Schema>
 
     <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_7_0">
@@ -1385,18 +1217,6 @@
       <EntityType Name="Sensor" BaseType="Sensor.v1_7_2.Sensor"/>
     </Schema>
 
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_7_4">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to change the permissions for `RelatedItem`, `PhysicalContext`, and `PhysicalSubContext` to read-write."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_7_3.Sensor"/>
-    </Schema>
-
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_7_5">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to clarify that fan speed and pump speed sensors should use `Percent` for `ReadingType` instead of `Rotational`."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_7_4.Sensor"/>
-    </Schema>
-
     <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_8_0">
       <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
       <Annotation Term="Redfish.Release" String="2023.2"/>
@@ -1427,18 +1247,6 @@
       <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
       <Annotation Term="OData.Description" String="This version was created to add references to formats defined by the UCUM specification in the description of `ReadingUnits`."/>
       <EntityType Name="Sensor" BaseType="Sensor.v1_8_2.Sensor"/>
-    </Schema>
-
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_8_4">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to change the permissions for `RelatedItem`, `PhysicalContext`, and `PhysicalSubContext` to read-write."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_8_3.Sensor"/>
-    </Schema>
-
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_8_5">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to clarify that fan speed and pump speed sensors should use `Percent` for `ReadingType` instead of `Rotational`."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_8_4.Sensor"/>
     </Schema>
 
     <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_9_0">
@@ -1495,18 +1303,6 @@
       <EntityType Name="Sensor" BaseType="Sensor.v1_9_0.Sensor"/>
     </Schema>
 
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_9_2">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to change the permissions for `RelatedItem`, `PhysicalContext`, and `PhysicalSubContext` to read-write."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_9_1.Sensor"/>
-    </Schema>
-
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_9_3">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to clarify that fan speed and pump speed sensors should use `Percent` for `ReadingType` instead of `Rotational`."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_9_2.Sensor"/>
-    </Schema>
-
     <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_10_0">
       <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
       <Annotation Term="Redfish.Release" String="2024.2"/>
@@ -1524,50 +1320,6 @@
       <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
       <Annotation Term="OData.Description" String="This version was created to add references to formats defined by the UCUM specification in the description of `ReadingUnits`.  It was also created to improve the description of the `Enabled` property."/>
       <EntityType Name="Sensor" BaseType="Sensor.v1_10_0.Sensor"/>
-    </Schema>
-
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_10_2">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to change the permissions for `RelatedItem`, `PhysicalContext`, and `PhysicalSubContext` to read-write."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_10_1.Sensor"/>
-    </Schema>
-
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_10_3">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to clarify that fan speed and pump speed sensors should use `Percent` for `ReadingType` instead of `Rotational`."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_10_2.Sensor"/>
-    </Schema>
-
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_11_0">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="Redfish.Release" String="2025.2"/>
-      <Annotation Term="OData.Description" String="This version was created to add `LinearPosition`, `LinearVelocity`, `LinearAcceleration`, `RotationalPosition`, `RotationalVelocity`, `RotationalAcceleration`, and `Valve` to `ReadingType`."/>
-
-      <EntityType Name="Sensor" BaseType="Sensor.v1_10_2.Sensor"/>
-    </Schema>
-
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_11_1">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="OData.Description" String="This version was created to clarify that fan speed and pump speed sensors should use `Percent` for `ReadingType` instead of `Rotational`."/>
-      <EntityType Name="Sensor" BaseType="Sensor.v1_11_0.Sensor"/>
-    </Schema>
-
-    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Sensor.v1_12_0">
-      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
-      <Annotation Term="Redfish.Release" String="2025.4"/>
-
-      <EntityType Name="Sensor" BaseType="Sensor.v1_11_1.Sensor">
-        <Property Name="PeakIntervalReading" Type="Edm.Decimal">
-          <Annotation Term="OData.Permissions" EnumMember="OData.Permission/Read"/>
-          <Annotation Term="OData.Description" String="The peak sensor value over a time interval."/>
-          <Annotation Term="OData.LongDescription" String="This property shall contain the peak sensor value over the time specified by the value of the `AveragingInterval` property.  The value shall be reset by the `ResetMetrics` action or by a service reset of time-based property values."/>
-        </Property>
-        <Property Name="LowestIntervalReading" Type="Edm.Decimal">
-          <Annotation Term="OData.Permissions" EnumMember="OData.Permission/Read"/>
-          <Annotation Term="OData.Description" String="The lowest sensor value over a time interval."/>
-          <Annotation Term="OData.LongDescription" String="This property shall contain the lowest sensor value over the time specified by the value of the `AveragingInterval` property.  The value shall be reset by the `ResetMetrics` action or by a service reset of time-based property values."/>
-        </Property>
-      </EntityType>
     </Schema>
 
   </edmx:DataServices>

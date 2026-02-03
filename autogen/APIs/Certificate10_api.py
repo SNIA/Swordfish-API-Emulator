@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Managers/{ManagerId}/RemoteAccountService/ExternalAccountProviders/{ExternalAccountProviderId}/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/Managers/{ManagerId}/RemoteAccountService/MultiFactorAuth/ClientCertificate/Certificates/{CertificateId}
 # Program name - Certificate10_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate10CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ManagerId, ExternalAccountProviderId):
+	def get(self, ManagerId):
 		logging.info('Certificate10 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates', 'index.json').format(ManagerId, ExternalAccountProviderId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/MultiFactorAuth/ClientCertificate/Certificates', 'index.json').format(ManagerId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ManagerId, ExternalAccountProviderId):
+	def post(self, ManagerId):
 		logging.info('Certificate10 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Certificate10CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if ExternalAccountProviderId in members:
+			if ManagerId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates').format(ManagerId, ExternalAccountProviderId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/MultiFactorAuth/ClientCertificate/Certificates').format(ManagerId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Certificate10CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate10API.post(self, ManagerId, ExternalAccountProviderId, os.path.basename(config['@odata.id']))
+					return Certificate10API.post(self, ManagerId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate10API.post(self, ManagerId, ExternalAccountProviderId, str(res))
+					return Certificate10API.post(self, ManagerId, str(res))
 			else:
-				return Certificate10API.post(self, ManagerId, ExternalAccountProviderId, str(res))
+				return Certificate10API.post(self, ManagerId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Certificate10API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ManagerId, ExternalAccountProviderId, CertificateId):
+	def get(self, ManagerId, CertificateId):
 		logging.info('Certificate10 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates/{2}', 'index.json').format(ManagerId, ExternalAccountProviderId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/MultiFactorAuth/ClientCertificate/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,25 +119,25 @@ class Certificate10API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ManagerId, ExternalAccountProviderId, CertificateId):
+	def post(self, ManagerId, CertificateId):
 		logging.info('Certificate10 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates/{2}').format(ManagerId, ExternalAccountProviderId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates/{2}').format(ManagerId, ExternalAccountProviderId, CertificateId)
-			collection_path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates', 'index.json').format(ManagerId, ExternalAccountProviderId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/MultiFactorAuth/ClientCertificate/Certificates/{1}').format(ManagerId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/RemoteAccountService/MultiFactorAuth/ClientCertificate/Certificates/{1}').format(ManagerId, CertificateId)
+			collection_path = create_path(self.root, 'Managers/{0}/RemoteAccountService/MultiFactorAuth/ClientCertificate/Certificates', 'index.json').format(ManagerId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate10CollectionAPI.post(self, ManagerId, ExternalAccountProviderId)
+				Certificate10CollectionAPI.post(self, ManagerId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ManagerId':ManagerId, 'ExternalAccountProviderId':ExternalAccountProviderId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'ManagerId':ManagerId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate10_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -153,13 +153,13 @@ class Certificate10API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ManagerId, ExternalAccountProviderId, CertificateId):
+	def put(self, ManagerId, CertificateId):
 		logging.info('Certificate10 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates/{2}', 'index.json').format(ManagerId, ExternalAccountProviderId, CertificateId)
-			redfish_path = create_path('/redfish/v1', 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates/{2}', 'index.json').format(ManagerId, ExternalAccountProviderId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/MultiFactorAuth/ClientCertificate/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			redfish_path = create_path('/redfish/v1', 'Managers/{0}/RemoteAccountService/MultiFactorAuth/ClientCertificate/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -191,18 +191,18 @@ class Certificate10API(Resource):
 			if state_changed:
 				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
 			put_object(path)
-			return self.get(ManagerId, ExternalAccountProviderId, CertificateId)
+			return self.get(ManagerId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ManagerId, ExternalAccountProviderId, CertificateId):
+	def patch(self, ManagerId, CertificateId):
 		logging.info('Certificate10 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates/{2}', 'index.json').format(ManagerId, ExternalAccountProviderId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates/{2}', 'index.json').format(ManagerId, ExternalAccountProviderId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/MultiFactorAuth/ClientCertificate/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/RemoteAccountService/MultiFactorAuth/ClientCertificate/Certificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -234,19 +234,19 @@ class Certificate10API(Resource):
 				if state_changed:
 					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
 			patch_object(path)
-			return self.get(ManagerId, ExternalAccountProviderId, CertificateId)
+			return self.get(ManagerId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ManagerId, ExternalAccountProviderId, CertificateId):
+	def delete(self, ManagerId, CertificateId):
 		logging.info('Certificate10 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates/{2}').format(ManagerId, ExternalAccountProviderId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates/{2}').format(ManagerId, ExternalAccountProviderId, CertificateId)
-			base_path = create_path(self.root, 'Managers/{0}/RemoteAccountService/ExternalAccountProviders/{1}/Certificates').format(ManagerId, ExternalAccountProviderId)
+			path = create_path(self.root, 'Managers/{0}/RemoteAccountService/MultiFactorAuth/ClientCertificate/Certificates/{1}').format(ManagerId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/RemoteAccountService/MultiFactorAuth/ClientCertificate/Certificates/{1}').format(ManagerId, CertificateId)
+			base_path = create_path(self.root, 'Managers/{0}/RemoteAccountService/MultiFactorAuth/ClientCertificate/Certificates').format(ManagerId)
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

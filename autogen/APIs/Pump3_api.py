@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/Pumps/{PumpId}
+# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/ThermalSubsystem/Pumps/{PumpId}
 # Program name - Pump3_api.py
 
 import g
@@ -53,18 +53,18 @@ class Pump3CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, CoolingUnitId):
+	def get(self, ChassisId):
 		logging.info('Pump3 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/RPUs/{0}/Pumps', 'index.json').format(CoolingUnitId)
+			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Pumps', 'index.json').format(ChassisId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, CoolingUnitId):
+	def post(self, ChassisId):
 		logging.info('Pump3 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Pump3CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if CoolingUnitId in members:
+			if ChassisId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'ThermalEquipment/RPUs/{0}/Pumps').format(CoolingUnitId)
+			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Pumps').format(ChassisId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Pump3CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Pump3API.post(self, CoolingUnitId, os.path.basename(config['@odata.id']))
+					return Pump3API.post(self, ChassisId, os.path.basename(config['@odata.id']))
 				else:
-					return Pump3API.post(self, CoolingUnitId, str(res))
+					return Pump3API.post(self, ChassisId, str(res))
 			else:
-				return Pump3API.post(self, CoolingUnitId, str(res))
+				return Pump3API.post(self, ChassisId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Pump3API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, CoolingUnitId, PumpId):
+	def get(self, ChassisId, PumpId):
 		logging.info('Pump3 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/RPUs/{0}/Pumps/{1}', 'index.json').format(CoolingUnitId, PumpId)
+			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Pumps/{1}', 'index.json').format(ChassisId, PumpId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,25 +119,25 @@ class Pump3API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, CoolingUnitId, PumpId):
+	def post(self, ChassisId, PumpId):
 		logging.info('Pump3 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/RPUs/{0}/Pumps/{1}').format(CoolingUnitId, PumpId)
-			redfish_path = create_path('/redfish/v1/', 'ThermalEquipment/RPUs/{0}/Pumps/{1}').format(CoolingUnitId, PumpId)
-			collection_path = create_path(self.root, 'ThermalEquipment/RPUs/{0}/Pumps', 'index.json').format(CoolingUnitId)
+			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Pumps/{1}').format(ChassisId, PumpId)
+			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/ThermalSubsystem/Pumps/{1}').format(ChassisId, PumpId)
+			collection_path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Pumps', 'index.json').format(ChassisId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Pump3CollectionAPI.post(self, CoolingUnitId)
+				Pump3CollectionAPI.post(self, ChassisId)
 
 			if PumpId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'CoolingUnitId':CoolingUnitId, 'PumpId':PumpId, 'rb':g.rest_base}
+				wildcards = {'ChassisId':ChassisId, 'PumpId':PumpId, 'rb':g.rest_base}
 				config=get_Pump3_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -153,13 +153,13 @@ class Pump3API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, CoolingUnitId, PumpId):
+	def put(self, ChassisId, PumpId):
 		logging.info('Pump3 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/RPUs/{0}/Pumps/{1}', 'index.json').format(CoolingUnitId, PumpId)
-			redfish_path = create_path('/redfish/v1', 'ThermalEquipment/RPUs/{0}/Pumps/{1}', 'index.json').format(CoolingUnitId, PumpId)
+			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Pumps/{1}', 'index.json').format(ChassisId, PumpId)
+			redfish_path = create_path('/redfish/v1', 'Chassis/{0}/ThermalSubsystem/Pumps/{1}', 'index.json').format(ChassisId, PumpId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -191,18 +191,18 @@ class Pump3API(Resource):
 			if state_changed:
 				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
 			put_object(path)
-			return self.get(CoolingUnitId, PumpId)
+			return self.get(ChassisId, PumpId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, CoolingUnitId, PumpId):
+	def patch(self, ChassisId, PumpId):
 		logging.info('Pump3 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/RPUs/{0}/Pumps/{1}', 'index.json').format(CoolingUnitId, PumpId)
-			redfish_path = create_path('/redfish/v1/', 'ThermalEquipment/RPUs/{0}/Pumps/{1}', 'index.json').format(CoolingUnitId, PumpId)
+			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Pumps/{1}', 'index.json').format(ChassisId, PumpId)
+			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/ThermalSubsystem/Pumps/{1}', 'index.json').format(ChassisId, PumpId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -234,19 +234,19 @@ class Pump3API(Resource):
 				if state_changed:
 					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
 			patch_object(path)
-			return self.get(CoolingUnitId, PumpId)
+			return self.get(ChassisId, PumpId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, CoolingUnitId, PumpId):
+	def delete(self, ChassisId, PumpId):
 		logging.info('Pump3 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/RPUs/{0}/Pumps/{1}').format(CoolingUnitId, PumpId)
-			redfish_path = create_path('/redfish/v1/', 'ThermalEquipment/RPUs/{0}/Pumps/{1}').format(CoolingUnitId, PumpId)
-			base_path = create_path(self.root, 'ThermalEquipment/RPUs/{0}/Pumps').format(CoolingUnitId)
+			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Pumps/{1}').format(ChassisId, PumpId)
+			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/ThermalSubsystem/Pumps/{1}').format(ChassisId, PumpId)
+			base_path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Pumps').format(ChassisId)
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

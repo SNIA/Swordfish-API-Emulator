@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Managers/{ManagerId}/SecurityPolicy/TLS/Server/RevokedCertificates/{CertificateId}
+# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/PowerSubsystem/PowerSupplies/{PowerSupplyId}/Certificates/{CertificateId}
 # Program name - Certificate79_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate79CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ManagerId):
+	def get(self, ChassisId, PowerSupplyId):
 		logging.info('Certificate79 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates', 'index.json').format(ManagerId)
+			path = create_path(self.root, 'Chassis/{0}/PowerSubsystem/PowerSupplies/{1}/Certificates', 'index.json').format(ChassisId, PowerSupplyId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ManagerId):
+	def post(self, ChassisId, PowerSupplyId):
 		logging.info('Certificate79 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Certificate79CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if ManagerId in members:
+			if PowerSupplyId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates').format(ManagerId)
+			path = create_path(self.root, 'Chassis/{0}/PowerSubsystem/PowerSupplies/{1}/Certificates').format(ChassisId, PowerSupplyId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Certificate79CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate79API.post(self, ManagerId, os.path.basename(config['@odata.id']))
+					return Certificate79API.post(self, ChassisId, PowerSupplyId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate79API.post(self, ManagerId, str(res))
+					return Certificate79API.post(self, ChassisId, PowerSupplyId, str(res))
 			else:
-				return Certificate79API.post(self, ManagerId, str(res))
+				return Certificate79API.post(self, ChassisId, PowerSupplyId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Certificate79API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ManagerId, CertificateId):
+	def get(self, ChassisId, PowerSupplyId, CertificateId):
 		logging.info('Certificate79 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			path = create_path(self.root, 'Chassis/{0}/PowerSubsystem/PowerSupplies/{1}/Certificates/{2}', 'index.json').format(ChassisId, PowerSupplyId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,25 +119,25 @@ class Certificate79API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ManagerId, CertificateId):
+	def post(self, ChassisId, PowerSupplyId, CertificateId):
 		logging.info('Certificate79 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates/{1}').format(ManagerId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates/{1}').format(ManagerId, CertificateId)
-			collection_path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates', 'index.json').format(ManagerId)
+			path = create_path(self.root, 'Chassis/{0}/PowerSubsystem/PowerSupplies/{1}/Certificates/{2}').format(ChassisId, PowerSupplyId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/PowerSubsystem/PowerSupplies/{1}/Certificates/{2}').format(ChassisId, PowerSupplyId, CertificateId)
+			collection_path = create_path(self.root, 'Chassis/{0}/PowerSubsystem/PowerSupplies/{1}/Certificates', 'index.json').format(ChassisId, PowerSupplyId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate79CollectionAPI.post(self, ManagerId)
+				Certificate79CollectionAPI.post(self, ChassisId, PowerSupplyId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ManagerId':ManagerId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'ChassisId':ChassisId, 'PowerSupplyId':PowerSupplyId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate79_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -153,13 +153,13 @@ class Certificate79API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ManagerId, CertificateId):
+	def put(self, ChassisId, PowerSupplyId, CertificateId):
 		logging.info('Certificate79 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
-			redfish_path = create_path('/redfish/v1', 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			path = create_path(self.root, 'Chassis/{0}/PowerSubsystem/PowerSupplies/{1}/Certificates/{2}', 'index.json').format(ChassisId, PowerSupplyId, CertificateId)
+			redfish_path = create_path('/redfish/v1', 'Chassis/{0}/PowerSubsystem/PowerSupplies/{1}/Certificates/{2}', 'index.json').format(ChassisId, PowerSupplyId, CertificateId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -191,18 +191,18 @@ class Certificate79API(Resource):
 			if state_changed:
 				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
 			put_object(path)
-			return self.get(ManagerId, CertificateId)
+			return self.get(ChassisId, PowerSupplyId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ManagerId, CertificateId):
+	def patch(self, ChassisId, PowerSupplyId, CertificateId):
 		logging.info('Certificate79 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			path = create_path(self.root, 'Chassis/{0}/PowerSubsystem/PowerSupplies/{1}/Certificates/{2}', 'index.json').format(ChassisId, PowerSupplyId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/PowerSubsystem/PowerSupplies/{1}/Certificates/{2}', 'index.json').format(ChassisId, PowerSupplyId, CertificateId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -234,19 +234,19 @@ class Certificate79API(Resource):
 				if state_changed:
 					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
 			patch_object(path)
-			return self.get(ManagerId, CertificateId)
+			return self.get(ChassisId, PowerSupplyId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ManagerId, CertificateId):
+	def delete(self, ChassisId, PowerSupplyId, CertificateId):
 		logging.info('Certificate79 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates/{1}').format(ManagerId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates/{1}').format(ManagerId, CertificateId)
-			base_path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Server/RevokedCertificates').format(ManagerId)
+			path = create_path(self.root, 'Chassis/{0}/PowerSubsystem/PowerSupplies/{1}/Certificates/{2}').format(ChassisId, PowerSupplyId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/PowerSubsystem/PowerSupplies/{1}/Certificates/{2}').format(ChassisId, PowerSupplyId, CertificateId)
+			base_path = create_path(self.root, 'Chassis/{0}/PowerSubsystem/PowerSupplies/{1}/Certificates').format(ChassisId, PowerSupplyId)
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

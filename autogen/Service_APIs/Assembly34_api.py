@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2026, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Processors/{ProcessorId}/Assembly
+# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Processors/{ProcessorId}/SubProcessors/{ProcessorId2}/Assembly
 # Program name - Assembly34_api.py
 
 import g
@@ -55,33 +55,33 @@ class Assembly34API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, NetworkAdapterId, ProcessorId):
+	def get(self, ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2):
 		logging.info('Assembly34 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Processors/{2}/Assembly', 'index.json').format(ChassisId, NetworkAdapterId, ProcessorId)
+			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Processors/{2}/SubProcessors/{22}/Assembly', 'index.json').format(ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ChassisId, NetworkAdapterId, ProcessorId):
+	def post(self, ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2):
 		logging.info('Assembly34 post called')
 		return 'POST is not a supported command for Assembly34API', 405
 
 	# HTTP PUT
-	def put(self, ChassisId, NetworkAdapterId, ProcessorId):
+	def put(self, ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2):
 		logging.info('Assembly34 put called')
 		return 'PUT is not a supported command for Assembly34API', 405
 
 	# HTTP PATCH
-	def patch(self, ChassisId, NetworkAdapterId, ProcessorId):
+	def patch(self, ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2):
 		logging.info('Assembly34 patch called')
 		return 'PATCH is not a supported command for Assembly34API', 405
 
 	# HTTP DELETE
-	def delete(self, ChassisId, NetworkAdapterId, ProcessorId):
+	def delete(self, ChassisId, NetworkAdapterId, ProcessorId, ProcessorId2):
 		logging.info('Assembly34 delete called')
 		return 'DELETE is not a supported command for Assembly34API', 405
 

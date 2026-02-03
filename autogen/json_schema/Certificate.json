@@ -13,37 +13,31 @@
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_0_8.json#/definitions/Certificate"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_1_8.json#/definitions/Certificate"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_1_7.json#/definitions/Certificate"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_2_8.json#/definitions/Certificate"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_2_7.json#/definitions/Certificate"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_3_5.json#/definitions/Certificate"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_3_4.json#/definitions/Certificate"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_4_6.json#/definitions/Certificate"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_4_4.json#/definitions/Certificate"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_5_6.json#/definitions/Certificate"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_5_4.json#/definitions/Certificate"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_6_5.json#/definitions/Certificate"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_6_3.json#/definitions/Certificate"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_7_5.json#/definitions/Certificate"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_7_3.json#/definitions/Certificate"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_8_5.json#/definitions/Certificate"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_8_3.json#/definitions/Certificate"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_9_2.json#/definitions/Certificate"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_10_1.json#/definitions/Certificate"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_11_0.json#/definitions/Certificate"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Certificate.v1_9_0.json#/definitions/Certificate"
                 }
             ],
             "deletable": true,
@@ -55,7 +49,6 @@
                 "/redfish/v1/AccountService/Accounts/{ManagerAccountId}/Certificates/{CertificateId}",
                 "/redfish/v1/AccountService/ActiveDirectory/Certificates/{CertificateId}",
                 "/redfish/v1/AccountService/LDAP/Certificates/{CertificateId}",
-                "/redfish/v1/AccountService/OAuth2/Certificates/{CertificateId}",
                 "/redfish/v1/AccountService/ExternalAccountProviders/{ExternalAccountProviderId}/Certificates/{CertificateId}",
                 "/redfish/v1/AccountService/MultiFactorAuth/ClientCertificate/Certificates/{CertificateId}",
                 "/redfish/v1/AccountService/MultiFactorAuth/SecurID/Certificates/{CertificateId}",
@@ -121,11 +114,8 @@
                 "/redfish/v1/UpdateService/ClientCertificates/{CertificateId}",
                 "/redfish/v1/Managers/{ManagerId}/Certificates/{CertificateId}",
                 "/redfish/v1/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates/{CertificateId}",
-                "/redfish/v1/Systems/{ComputerSystemId}/KeyManagement/KMIPClientCertificates/{CertificateId}",
                 "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates/{CertificateId}",
-                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/KeyManagement/KMIPClientCertificates/{CertificateId}",
                 "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/KeyManagement/KMIPCertificates/{CertificateId}",
-                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/KeyManagement/KMIPClientCertificates/{CertificateId}",
                 "/redfish/v1/Managers/{ManagerId}/SecurityPolicy/SPDM/TrustedCertificates/{CertificateId}",
                 "/redfish/v1/Managers/{ManagerId}/SecurityPolicy/SPDM/RevokedCertificates/{CertificateId}",
                 "/redfish/v1/Managers/{ManagerId}/SecurityPolicy/TLS/Client/TrustedCertificates/{CertificateId}",
@@ -135,78 +125,29 @@
                 "/redfish/v1/Chassis/{ChassisId}/TrustedComponents/{TrustedComponentId}/Certificates/{CertificateId}",
                 "/redfish/v1/AccountService/OutboundConnections/{OutboundConnectionId}/Certificates/{CertificateId}",
                 "/redfish/v1/AccountService/OutboundConnections/{OutboundConnectionId}/ClientCertificates/{CertificateId}",
-                "/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/PowerSupplies/{PowerSupplyId}/Certificates/{CertificateId}",
-                "/redfish/v1/CertificateService/EnrollmentCACertificates/{CertificateId}"
-            ],
-            "urisDeprecated": [
-                "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Certificates/{CertificateId}",
-                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Drives/{DriveId}/Certificates/{CertificateId}",
-                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Certificates/{CertificateId}",
-                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Drives/{DriveId}/Certificates/{CertificateId}",
-                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Certificates/{CertificateId}"
+                "/redfish/v1/Chassis/{ChassisId}/PowerSubsystem/PowerSupplies/{PowerSupplyId}/Certificates/{CertificateId}"
             ]
         },
         "CertificateType": {
             "enum": [
                 "PEM",
                 "PEMchain",
-                "PKCS7",
-                "PKCS12"
+                "PKCS7"
             ],
             "enumDescriptions": {
                 "PEM": "A Privacy Enhanced Mail (PEM)-encoded single certificate.",
                 "PEMchain": "A Privacy Enhanced Mail (PEM)-encoded certificate chain.",
-                "PKCS12": "A Base64-encoded PKCS12 certificate bundle.",
                 "PKCS7": "A Privacy Enhanced Mail (PEM)-encoded PKCS7 certificate."
             },
             "enumLongDescriptions": {
                 "PEM": "This value shall indicate the format of the certificate shall contain a Privacy Enhanced Mail (PEM)-encoded string, containing RFC5280-defined structures, representing a single certificate.",
-                "PEMchain": "This value shall indicate the format of the certificate shall contain a Privacy Enhanced Mail (PEM)-encoded string, containing RFC5280-defined structures, representing a certificate chain.  When this value is specified, the properties of the resource, except for `CertificateString`, shall contain the information from the leaf certificate.  When this value is specified, `CertificateString` shall contain the entire PEM chain.",
-                "PKCS12": "This value shall indicate the format of the certificate shall contain a Base64-encoded string, with padding characters, containing RFC7292-defined structures, representing a PKCS12 archive of one or more certificates, keys, or other cryptographic data.  The service may discard additional certificates or other data in the structure.",
-                "PKCS7": "The format of the certificate shall contain a Privacy Enhanced Mail (PEM)-encoded string, containing RFC5280-defined and RFC2315-defined structures.  The service may discard additional certificates or other data in the structure."
+                "PEMchain": "This value shall indicate the format of the certificate shall contain a Privacy Enhanced Mail (PEM)-encoded string, containing RFC5280-defined structures, representing a certificate chain.",
+                "PKCS7": "The format of the certificate shall contain a Privacy Enhanced Mail (PEM)-encoded string, containing RFC5280-defined and RFC2315-defined structures.  The service can discard additional certificates or other data in the structure."
             },
             "enumVersionAdded": {
-                "PEMchain": "v1_4_0",
-                "PKCS12": "v1_10_0"
+                "PEMchain": "v1_4_0"
             },
             "type": "string"
-        },
-        "CertificateUsageType": {
-            "enum": [
-                "User",
-                "Web",
-                "SSH",
-                "Device",
-                "Platform",
-                "BIOS",
-                "IDevID",
-                "LDevID",
-                "IAK",
-                "LAK",
-                "EK"
-            ],
-            "enumDescriptions": {
-                "BIOS": "This certificate is a BIOS certificate like those associated with UEFI.",
-                "Device": "This certificate is a device type certificate like those associated with SPDM and other standards.",
-                "EK": "This certificate is an EK certificate like those associated with TCG TPMs.",
-                "IAK": "This certificate is an IAK certificate like those associated with TCG TPMs.",
-                "IDevID": "This certificate is an IDevID certificate like those associated with TCG TPMs.",
-                "LAK": "This certificate is an LAK certificate like those associated with TCG TPMs.",
-                "LDevID": "This certificate is an LDevID certificate like those associated with TCG TPMs.",
-                "Platform": "This certificate is a platform type certificate like those associated with SPDM and other standards.",
-                "SSH": "This certificate is used for SSH.",
-                "User": "This certificate is a user certificate like those associated with a manager account.",
-                "Web": "This certificate is a web or HTTPS certificate like those used for event destinations."
-            },
-            "enumVersionAdded": {
-                "EK": "v1_9_0",
-                "IAK": "v1_8_0",
-                "IDevID": "v1_8_0",
-                "LAK": "v1_8_0",
-                "LDevID": "v1_8_0"
-            },
-            "type": "string",
-            "versionAdded": "v1_4_0"
         },
         "KeyUsage": {
             "description": "The usages of a key contained within a certificate.",

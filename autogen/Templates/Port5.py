@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2026, The Storage Networking Industry Association.
+# Copyright (c) 2017-2025, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -36,8 +36,8 @@ from flask import json
 _TEMPLATE = \
 {
 	"@Redfish.Copyright": "Copyright 2014-2025 SNIA. All rights reserved.",
-	"@odata.id": "{rb}Systems/{ComputerSystemId}/USBControllers/{USBControllerId}/Ports/{PortId}",
-	"@odata.type": "#Port.v1_18_0.Port",
+	"@odata.id": "{rb}Systems/{ComputerSystemId}/USBControllers/{ControllerId}/Ports/{PortId}",
+	"@odata.type": "#Port.v1_16_0.Port",
 	"Id": "{PortId}",
 	"Name": "Port",
 }
@@ -51,7 +51,7 @@ def get_Port5_instance(wildcards):
 		c = copy.deepcopy(_TEMPLATE)
 		d = json.dumps(c)
 		g = d.replace('{ComputerSystemId}', '-0-')
-		g = g.replace('{USBControllerId}', '-1-')
+		g = g.replace('{ControllerId}', '-1-')
 		g = g.replace('{PortId}', '-2-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
@@ -59,7 +59,7 @@ def get_Port5_instance(wildcards):
 		g = g.replace('{', '~!')
 		g = g.replace('}', '!~')
 		g = g.replace('0', '{ComputerSystemId}')
-		g = g.replace('1', '{USBControllerId}')
+		g = g.replace('1', '{ControllerId}')
 		g = g.replace('2', '{PortId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)

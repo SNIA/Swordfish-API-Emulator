@@ -8,9 +8,6 @@
             "anyOf": [
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/StorageControllerMetrics.v1_0_3.json#/definitions/NVMeSMARTMetrics"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/StorageControllerMetrics.v1_1_0.json#/definitions/NVMeSMARTMetrics"
                 }
             ],
             "description": "The NVMe SMART metrics.",
@@ -23,9 +20,6 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/StorageControllerMetrics.v1_0_3.json#/definitions/StorageControllerMetrics"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/StorageControllerMetrics.v1_1_0.json#/definitions/StorageControllerMetrics"
                 }
             ],
             "deletable": false,
@@ -34,12 +28,12 @@
             "longDescription": "The `StorageControllerMetrics` schema shall contain the usage and health statistics for a storage controller in a Redfish implementation.",
             "updatable": false,
             "uris": [
-                "/redfish/v1/Storage/{StorageId}/Controllers/{StorageControllerId}/Metrics",
-                "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Metrics",
-                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Metrics",
-                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Metrics",
-                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Metrics",
-                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Metrics"
+                "/redfish/v1/Storage/{StorageId}/Controllers/{ControllerId}/Metrics",
+                "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{ControllerId}/Metrics",
+                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{ControllerId}/Metrics",
+                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{ControllerId}/Metrics",
+                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{ControllerId}/Metrics",
+                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{ControllerId}/Metrics"
             ]
         }
     },

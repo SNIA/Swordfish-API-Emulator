@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2026, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Metrics
+# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{ControllerId}/Metrics
 # Program name - StorageControllerMetrics4_api.py
 
 import g
@@ -55,33 +55,33 @@ class StorageControllerMetrics4API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, StorageId, StorageControllerId):
+	def get(self, ResourceBlockId, StorageId, ControllerId):
 		logging.info('StorageControllerMetrics4 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Metrics', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Metrics', 'index.json').format(ResourceBlockId, StorageId, ControllerId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ResourceBlockId, StorageId, StorageControllerId):
+	def post(self, ResourceBlockId, StorageId, ControllerId):
 		logging.info('StorageControllerMetrics4 post called')
 		return 'POST is not a supported command for StorageControllerMetrics4API', 405
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, StorageId, StorageControllerId):
+	def put(self, ResourceBlockId, StorageId, ControllerId):
 		logging.info('StorageControllerMetrics4 put called')
 		return 'PUT is not a supported command for StorageControllerMetrics4API', 405
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, StorageId, StorageControllerId):
+	def patch(self, ResourceBlockId, StorageId, ControllerId):
 		logging.info('StorageControllerMetrics4 patch called')
 		return 'PATCH is not a supported command for StorageControllerMetrics4API', 405
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, StorageId, StorageControllerId):
+	def delete(self, ResourceBlockId, StorageId, ControllerId):
 		logging.info('StorageControllerMetrics4 delete called')
 		return 'DELETE is not a supported command for StorageControllerMetrics4API', 405
 

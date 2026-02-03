@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/EventService/Subscriptions/{EventDestinationId}/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/EventService/Subscriptions/{EventDestinationId}/ClientCertificates/{CertificateId}
 # Program name - Certificate20_api.py
 
 import g
@@ -58,7 +58,7 @@ class Certificate20CollectionAPI(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'EventService/Subscriptions/{0}/Certificates', 'index.json').format(EventDestinationId)
+			path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates', 'index.json').format(EventDestinationId)
 			return get_json_data(path)
 		else:
 			return msg, code
@@ -78,7 +78,7 @@ class Certificate20CollectionAPI(Resource):
 			if EventDestinationId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'EventService/Subscriptions/{0}/Certificates').format(EventDestinationId)
+			path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates').format(EventDestinationId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -109,7 +109,7 @@ class Certificate20API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'EventService/Subscriptions/{0}/Certificates/{1}', 'index.json').format(EventDestinationId, CertificateId)
+			path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates/{1}', 'index.json').format(EventDestinationId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -124,9 +124,9 @@ class Certificate20API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'EventService/Subscriptions/{0}/Certificates/{1}').format(EventDestinationId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'EventService/Subscriptions/{0}/Certificates/{1}').format(EventDestinationId, CertificateId)
-			collection_path = create_path(self.root, 'EventService/Subscriptions/{0}/Certificates', 'index.json').format(EventDestinationId)
+			path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates/{1}').format(EventDestinationId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'EventService/Subscriptions/{0}/ClientCertificates/{1}').format(EventDestinationId, CertificateId)
+			collection_path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates', 'index.json').format(EventDestinationId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
@@ -158,8 +158,8 @@ class Certificate20API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'EventService/Subscriptions/{0}/Certificates/{1}', 'index.json').format(EventDestinationId, CertificateId)
-			redfish_path = create_path('/redfish/v1', 'EventService/Subscriptions/{0}/Certificates/{1}', 'index.json').format(EventDestinationId, CertificateId)
+			path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates/{1}', 'index.json').format(EventDestinationId, CertificateId)
+			redfish_path = create_path('/redfish/v1', 'EventService/Subscriptions/{0}/ClientCertificates/{1}', 'index.json').format(EventDestinationId, CertificateId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -201,8 +201,8 @@ class Certificate20API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'EventService/Subscriptions/{0}/Certificates/{1}', 'index.json').format(EventDestinationId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'EventService/Subscriptions/{0}/Certificates/{1}', 'index.json').format(EventDestinationId, CertificateId)
+			path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates/{1}', 'index.json').format(EventDestinationId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'EventService/Subscriptions/{0}/ClientCertificates/{1}', 'index.json').format(EventDestinationId, CertificateId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -244,9 +244,9 @@ class Certificate20API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'EventService/Subscriptions/{0}/Certificates/{1}').format(EventDestinationId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'EventService/Subscriptions/{0}/Certificates/{1}').format(EventDestinationId, CertificateId)
-			base_path = create_path(self.root, 'EventService/Subscriptions/{0}/Certificates').format(EventDestinationId)
+			path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates/{1}').format(EventDestinationId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'EventService/Subscriptions/{0}/ClientCertificates/{1}').format(EventDestinationId, CertificateId)
+			base_path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates').format(EventDestinationId)
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Certificates/{CertificateId}
 # Program name - Certificate23_api.py
 
 import g
@@ -58,7 +58,7 @@ class Certificate23CollectionAPI(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Certificates', 'index.json').format(ResourceBlockId, ComputerSystemId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Certificates', 'index.json').format(ResourceBlockId, ComputerSystemId)
 			return get_json_data(path)
 		else:
 			return msg, code
@@ -78,7 +78,7 @@ class Certificate23CollectionAPI(Resource):
 			if ComputerSystemId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Certificates').format(ResourceBlockId, ComputerSystemId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Certificates').format(ResourceBlockId, ComputerSystemId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -109,7 +109,7 @@ class Certificate23API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Certificates/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, CertificateId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Certificates/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -124,9 +124,9 @@ class Certificate23API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Certificates/{2}').format(ResourceBlockId, ComputerSystemId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Certificates/{2}').format(ResourceBlockId, ComputerSystemId, CertificateId)
-			collection_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Certificates', 'index.json').format(ResourceBlockId, ComputerSystemId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Certificates/{2}').format(ResourceBlockId, ComputerSystemId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'ResourceBlocks/{0}/Systems/{1}/Certificates/{2}').format(ResourceBlockId, ComputerSystemId, CertificateId)
+			collection_path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Certificates', 'index.json').format(ResourceBlockId, ComputerSystemId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
@@ -158,8 +158,8 @@ class Certificate23API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Certificates/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, CertificateId)
-			redfish_path = create_path('/redfish/v1', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Certificates/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, CertificateId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Certificates/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, CertificateId)
+			redfish_path = create_path('/redfish/v1', 'ResourceBlocks/{0}/Systems/{1}/Certificates/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, CertificateId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -201,8 +201,8 @@ class Certificate23API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Certificates/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Certificates/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, CertificateId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Certificates/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'ResourceBlocks/{0}/Systems/{1}/Certificates/{2}', 'index.json').format(ResourceBlockId, ComputerSystemId, CertificateId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -244,9 +244,9 @@ class Certificate23API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Certificates/{2}').format(ResourceBlockId, ComputerSystemId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Certificates/{2}').format(ResourceBlockId, ComputerSystemId, CertificateId)
-			base_path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Systems/{1}/Certificates').format(ResourceBlockId, ComputerSystemId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Certificates/{2}').format(ResourceBlockId, ComputerSystemId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'ResourceBlocks/{0}/Systems/{1}/Certificates/{2}').format(ResourceBlockId, ComputerSystemId, CertificateId)
+			base_path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Certificates').format(ResourceBlockId, ComputerSystemId)
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

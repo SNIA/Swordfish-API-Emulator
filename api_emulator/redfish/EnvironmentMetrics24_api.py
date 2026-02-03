@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2026, The Storage Networking Industry Association.
+# Copyright (c) 2017-2024, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/EnvironmentMetrics
+# Resource implementation for - /redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{ControllerId}/EnvironmentMetrics
 # Program name - EnvironmentMetrics24_api.py
 
 import g
@@ -55,33 +55,33 @@ class EnvironmentMetrics24API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId):
+	def get(self, ResourceBlockId, ComputerSystemId, StorageId, ControllerId):
 		logging.info('EnvironmentMetrics24 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}/EnvironmentMetrics', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId)
+			path = create_path(self.root, 'ResourceBlocks/{0}/Systems/{1}/Storage/{2}/Controllers/{3}/EnvironmentMetrics', 'index.json').format(ResourceBlockId, ComputerSystemId, StorageId, ControllerId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId):
+	def post(self, ResourceBlockId, ComputerSystemId, StorageId, ControllerId):
 		logging.info('EnvironmentMetrics24 post called')
 		return 'POST is not a supported command for EnvironmentMetrics24API', 405
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId):
+	def put(self, ResourceBlockId, ComputerSystemId, StorageId, ControllerId):
 		logging.info('EnvironmentMetrics24 put called')
 		return 'PUT is not a supported command for EnvironmentMetrics24API', 405
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId):
+	def patch(self, ResourceBlockId, ComputerSystemId, StorageId, ControllerId):
 		logging.info('EnvironmentMetrics24 patch called')
 		return 'PATCH is not a supported command for EnvironmentMetrics24API', 405
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, ComputerSystemId, StorageId, StorageControllerId):
+	def delete(self, ResourceBlockId, ComputerSystemId, StorageId, ControllerId):
 		logging.info('EnvironmentMetrics24 delete called')
 		return 'DELETE is not a supported command for EnvironmentMetrics24API', 405
 

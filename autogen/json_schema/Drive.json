@@ -74,9 +74,6 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Drive.v1_21_0.json#/definitions/Drive"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Drive.v1_22_0.json#/definitions/Drive"
                 }
             ],
             "deletable": false,
@@ -92,13 +89,6 @@
                 "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}",
                 "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Drives/{DriveId}",
                 "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Drives/{DriveId}",
-                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}"
-            ],
-            "urisDeprecated": [
-                "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}",
-                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Drives/{DriveId}",
-                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}",
-                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Drives/{DriveId}",
                 "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}"
             ]
         }

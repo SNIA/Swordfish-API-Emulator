@@ -35,12 +35,6 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/UpdateService.v1_15_0.json#/definitions/UpdateParameters"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/UpdateService.v1_16_0.json#/definitions/UpdateParameters"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/UpdateService.v1_17_0.json#/definitions/UpdateParameters"
                 }
             ]
         },
@@ -96,12 +90,6 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/UpdateService.v1_15_0.json#/definitions/UpdateService"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/UpdateService.v1_16_0.json#/definitions/UpdateService"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/UpdateService.v1_17_0.json#/definitions/UpdateService"
                 }
             ],
             "deletable": false,

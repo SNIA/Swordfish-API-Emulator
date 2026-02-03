@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Reservoirs/{ReservoirId}/Filters/{FilterId}
+# Resource implementation for - /redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Pumps/{PumpId}/Filters/{FilterId}
 # Program name - Filter9_api.py
 
 import g
@@ -53,18 +53,18 @@ class Filter9CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, CoolingUnitId, ReservoirId):
+	def get(self, CoolingUnitId, PumpId):
 		logging.info('Filter9 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/HeatExchangers/{0}/Reservoirs/{1}/Filters', 'index.json').format(CoolingUnitId, ReservoirId)
+			path = create_path(self.root, 'ThermalEquipment/HeatExchangers/{0}/Pumps/{1}/Filters', 'index.json').format(CoolingUnitId, PumpId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, CoolingUnitId, ReservoirId):
+	def post(self, CoolingUnitId, PumpId):
 		logging.info('Filter9 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Filter9CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if ReservoirId in members:
+			if PumpId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'ThermalEquipment/HeatExchangers/{0}/Reservoirs/{1}/Filters').format(CoolingUnitId, ReservoirId)
+			path = create_path(self.root, 'ThermalEquipment/HeatExchangers/{0}/Pumps/{1}/Filters').format(CoolingUnitId, PumpId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Filter9CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Filter9API.post(self, CoolingUnitId, ReservoirId, os.path.basename(config['@odata.id']))
+					return Filter9API.post(self, CoolingUnitId, PumpId, os.path.basename(config['@odata.id']))
 				else:
-					return Filter9API.post(self, CoolingUnitId, ReservoirId, str(res))
+					return Filter9API.post(self, CoolingUnitId, PumpId, str(res))
 			else:
-				return Filter9API.post(self, CoolingUnitId, ReservoirId, str(res))
+				return Filter9API.post(self, CoolingUnitId, PumpId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Filter9API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, CoolingUnitId, ReservoirId, FilterId):
+	def get(self, CoolingUnitId, PumpId, FilterId):
 		logging.info('Filter9 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/HeatExchangers/{0}/Reservoirs/{1}/Filters/{2}', 'index.json').format(CoolingUnitId, ReservoirId, FilterId)
+			path = create_path(self.root, 'ThermalEquipment/HeatExchangers/{0}/Pumps/{1}/Filters/{2}', 'index.json').format(CoolingUnitId, PumpId, FilterId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,25 +119,25 @@ class Filter9API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, CoolingUnitId, ReservoirId, FilterId):
+	def post(self, CoolingUnitId, PumpId, FilterId):
 		logging.info('Filter9 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/HeatExchangers/{0}/Reservoirs/{1}/Filters/{2}').format(CoolingUnitId, ReservoirId, FilterId)
-			redfish_path = create_path('/redfish/v1/', 'ThermalEquipment/HeatExchangers/{0}/Reservoirs/{1}/Filters/{2}').format(CoolingUnitId, ReservoirId, FilterId)
-			collection_path = create_path(self.root, 'ThermalEquipment/HeatExchangers/{0}/Reservoirs/{1}/Filters', 'index.json').format(CoolingUnitId, ReservoirId)
+			path = create_path(self.root, 'ThermalEquipment/HeatExchangers/{0}/Pumps/{1}/Filters/{2}').format(CoolingUnitId, PumpId, FilterId)
+			redfish_path = create_path('/redfish/v1/', 'ThermalEquipment/HeatExchangers/{0}/Pumps/{1}/Filters/{2}').format(CoolingUnitId, PumpId, FilterId)
+			collection_path = create_path(self.root, 'ThermalEquipment/HeatExchangers/{0}/Pumps/{1}/Filters', 'index.json').format(CoolingUnitId, PumpId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Filter9CollectionAPI.post(self, CoolingUnitId, ReservoirId)
+				Filter9CollectionAPI.post(self, CoolingUnitId, PumpId)
 
 			if FilterId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'CoolingUnitId':CoolingUnitId, 'ReservoirId':ReservoirId, 'FilterId':FilterId, 'rb':g.rest_base}
+				wildcards = {'CoolingUnitId':CoolingUnitId, 'PumpId':PumpId, 'FilterId':FilterId, 'rb':g.rest_base}
 				config=get_Filter9_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -153,13 +153,13 @@ class Filter9API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, CoolingUnitId, ReservoirId, FilterId):
+	def put(self, CoolingUnitId, PumpId, FilterId):
 		logging.info('Filter9 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/HeatExchangers/{0}/Reservoirs/{1}/Filters/{2}', 'index.json').format(CoolingUnitId, ReservoirId, FilterId)
-			redfish_path = create_path('/redfish/v1', 'ThermalEquipment/HeatExchangers/{0}/Reservoirs/{1}/Filters/{2}', 'index.json').format(CoolingUnitId, ReservoirId, FilterId)
+			path = create_path(self.root, 'ThermalEquipment/HeatExchangers/{0}/Pumps/{1}/Filters/{2}', 'index.json').format(CoolingUnitId, PumpId, FilterId)
+			redfish_path = create_path('/redfish/v1', 'ThermalEquipment/HeatExchangers/{0}/Pumps/{1}/Filters/{2}', 'index.json').format(CoolingUnitId, PumpId, FilterId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -191,18 +191,18 @@ class Filter9API(Resource):
 			if state_changed:
 				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
 			put_object(path)
-			return self.get(CoolingUnitId, ReservoirId, FilterId)
+			return self.get(CoolingUnitId, PumpId, FilterId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, CoolingUnitId, ReservoirId, FilterId):
+	def patch(self, CoolingUnitId, PumpId, FilterId):
 		logging.info('Filter9 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/HeatExchangers/{0}/Reservoirs/{1}/Filters/{2}', 'index.json').format(CoolingUnitId, ReservoirId, FilterId)
-			redfish_path = create_path('/redfish/v1/', 'ThermalEquipment/HeatExchangers/{0}/Reservoirs/{1}/Filters/{2}', 'index.json').format(CoolingUnitId, ReservoirId, FilterId)
+			path = create_path(self.root, 'ThermalEquipment/HeatExchangers/{0}/Pumps/{1}/Filters/{2}', 'index.json').format(CoolingUnitId, PumpId, FilterId)
+			redfish_path = create_path('/redfish/v1/', 'ThermalEquipment/HeatExchangers/{0}/Pumps/{1}/Filters/{2}', 'index.json').format(CoolingUnitId, PumpId, FilterId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -234,19 +234,19 @@ class Filter9API(Resource):
 				if state_changed:
 					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
 			patch_object(path)
-			return self.get(CoolingUnitId, ReservoirId, FilterId)
+			return self.get(CoolingUnitId, PumpId, FilterId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, CoolingUnitId, ReservoirId, FilterId):
+	def delete(self, CoolingUnitId, PumpId, FilterId):
 		logging.info('Filter9 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/HeatExchangers/{0}/Reservoirs/{1}/Filters/{2}').format(CoolingUnitId, ReservoirId, FilterId)
-			redfish_path = create_path('/redfish/v1/', 'ThermalEquipment/HeatExchangers/{0}/Reservoirs/{1}/Filters/{2}').format(CoolingUnitId, ReservoirId, FilterId)
-			base_path = create_path(self.root, 'ThermalEquipment/HeatExchangers/{0}/Reservoirs/{1}/Filters').format(CoolingUnitId, ReservoirId)
+			path = create_path(self.root, 'ThermalEquipment/HeatExchangers/{0}/Pumps/{1}/Filters/{2}').format(CoolingUnitId, PumpId, FilterId)
+			redfish_path = create_path('/redfish/v1/', 'ThermalEquipment/HeatExchangers/{0}/Pumps/{1}/Filters/{2}').format(CoolingUnitId, PumpId, FilterId)
+			base_path = create_path(self.root, 'ThermalEquipment/HeatExchangers/{0}/Pumps/{1}/Filters').format(CoolingUnitId, PumpId)
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

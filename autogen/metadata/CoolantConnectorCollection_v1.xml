@@ -62,7 +62,6 @@
             <String>/redfish/v1/ThermalEquipment/ImmersionUnits/{CoolingUnitId}/SecondaryCoolantConnectors</String>
             <String>/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/PrimaryCoolantConnectors</String>
             <String>/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/SecondaryCoolantConnectors</String>
-            <String>/redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/PrimaryCoolantConnectors</String>
           </Collection>
         </Annotation>
         <NavigationProperty Name="Members" Type="Collection(CoolantConnector.CoolantConnector)">

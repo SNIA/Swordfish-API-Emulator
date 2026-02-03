@@ -56,9 +56,6 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/EventDestination.v1_15_1.json#/definitions/EventDestination"
-                },
-                {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/EventDestination.v1_16_0.json#/definitions/EventDestination"
                 }
             ],
             "deletable": true,

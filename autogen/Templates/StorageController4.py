@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2025, The Storage Networking Industry Association.
+# Copyright (c) 2017-2026, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -36,9 +36,9 @@ from flask import json
 _TEMPLATE = \
 {
 	"@Redfish.Copyright": "Copyright 2014-2025 SNIA. All rights reserved.",
-	"@odata.id": "{rb}ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{ControllerId}",
-	"@odata.type": "#StorageController.v1_9_1.StorageController",
-	"Id": "{ControllerId}",
+	"@odata.id": "{rb}ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{StorageControllerId}",
+	"@odata.type": "#StorageController.v1_11_0.StorageController",
+	"Id": "{StorageControllerId}",
 	"Name": "StorageController",
 }
 
@@ -52,7 +52,7 @@ def get_StorageController4_instance(wildcards):
 		d = json.dumps(c)
 		g = d.replace('{ResourceBlockId}', '-0-')
 		g = g.replace('{StorageId}', '-1-')
-		g = g.replace('{ControllerId}', '-2-')
+		g = g.replace('{StorageControllerId}', '-2-')
 		g = g.replace('{rb}', 'NUb')
 		g = g.replace('{{', '~~!')
 		g = g.replace('}}', '!!~')
@@ -60,7 +60,7 @@ def get_StorageController4_instance(wildcards):
 		g = g.replace('}', '!~')
 		g = g.replace('0', '{ResourceBlockId}')
 		g = g.replace('1', '{StorageId}')
-		g = g.replace('2', '{ControllerId}')
+		g = g.replace('2', '{StorageControllerId}')
 		g = g.replace('NUb', '{rb}')
 		g = g.format(**wildcards)
 		g = g.replace('~~!', '{{')

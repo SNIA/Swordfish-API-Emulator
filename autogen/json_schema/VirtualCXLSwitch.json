@@ -1,0 +1,28 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/v1/VirtualCXLSwitch.json",
+    "$ref": "#/definitions/VirtualCXLSwitch",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2014-2025 DMTF. For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "definitions": {
+        "VirtualCXLSwitch": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/VirtualCXLSwitch.v1_0_0.json#/definitions/VirtualCXLSwitch"
+                }
+            ],
+            "deletable": false,
+            "description": "The Virtual CXL Switch describes the virtual component with the CXL switch that is governed by a list of rules as prescribed in the CXL specification.",
+            "insertable": false,
+            "longDescription": "This resource shall represent a VCS entity within a CXL switch.  The CXL Specification contains the complete definition of a Virtual CXL Switch.",
+            "updatable": false,
+            "uris": [
+                "/redfish/v1/Fabrics/{FabricId}/Switches/{SwitchId}/VCSs/{VirtualCXLSwitchId}"
+            ]
+        }
+    },
+    "owningEntity": "DMTF",
+    "title": "#VirtualCXLSwitch.VirtualCXLSwitch"
+}

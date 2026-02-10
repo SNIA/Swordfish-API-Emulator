@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2024, The Storage Networking Industry Association.
+# Copyright (c) 2017-2026, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/SubProcessors/{ProcessorId2}/SubProcessors/{ProcessorId3}/Assembly
+# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/SubProcessors/{ProcessorId2}/Assembly
 # Program name - Assembly20_api.py
 
 import g
@@ -55,33 +55,33 @@ class Assembly20API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, ProcessorId, ProcessorId2, ProcessorId3):
+	def get(self, ComputerSystemId, ProcessorId, ProcessorId2):
 		logging.info('Assembly20 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/Processors/{1}/SubProcessors/{12}/SubProcessors/{13}/Assembly', 'index.json').format(ComputerSystemId, ProcessorId, ProcessorId2, ProcessorId3)
+			path = create_path(self.root, 'Systems/{0}/Processors/{1}/SubProcessors/{12}/Assembly', 'index.json').format(ComputerSystemId, ProcessorId, ProcessorId2)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ComputerSystemId, ProcessorId, ProcessorId2, ProcessorId3):
+	def post(self, ComputerSystemId, ProcessorId, ProcessorId2):
 		logging.info('Assembly20 post called')
 		return 'POST is not a supported command for Assembly20API', 405
 
 	# HTTP PUT
-	def put(self, ComputerSystemId, ProcessorId, ProcessorId2, ProcessorId3):
+	def put(self, ComputerSystemId, ProcessorId, ProcessorId2):
 		logging.info('Assembly20 put called')
 		return 'PUT is not a supported command for Assembly20API', 405
 
 	# HTTP PATCH
-	def patch(self, ComputerSystemId, ProcessorId, ProcessorId2, ProcessorId3):
+	def patch(self, ComputerSystemId, ProcessorId, ProcessorId2):
 		logging.info('Assembly20 patch called')
 		return 'PATCH is not a supported command for Assembly20API', 405
 
 	# HTTP DELETE
-	def delete(self, ComputerSystemId, ProcessorId, ProcessorId2, ProcessorId3):
+	def delete(self, ComputerSystemId, ProcessorId, ProcessorId2):
 		logging.info('Assembly20 delete called')
 		return 'DELETE is not a supported command for Assembly20API', 405
 

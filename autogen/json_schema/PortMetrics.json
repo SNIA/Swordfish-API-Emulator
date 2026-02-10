@@ -13,25 +13,28 @@
                     "$ref": "http://redfish.dmtf.org/schemas/v1/PortMetrics.v1_0_4.json#/definitions/PortMetrics"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PortMetrics.v1_1_3.json#/definitions/PortMetrics"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/PortMetrics.v1_1_4.json#/definitions/PortMetrics"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PortMetrics.v1_2_2.json#/definitions/PortMetrics"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/PortMetrics.v1_2_3.json#/definitions/PortMetrics"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PortMetrics.v1_3_2.json#/definitions/PortMetrics"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/PortMetrics.v1_3_3.json#/definitions/PortMetrics"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PortMetrics.v1_4_3.json#/definitions/PortMetrics"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/PortMetrics.v1_4_4.json#/definitions/PortMetrics"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PortMetrics.v1_5_2.json#/definitions/PortMetrics"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/PortMetrics.v1_5_3.json#/definitions/PortMetrics"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PortMetrics.v1_6_1.json#/definitions/PortMetrics"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/PortMetrics.v1_6_2.json#/definitions/PortMetrics"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PortMetrics.v1_7_0.json#/definitions/PortMetrics"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/PortMetrics.v1_7_1.json#/definitions/PortMetrics"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/PortMetrics.v1_8_1.json#/definitions/PortMetrics"
                 }
             ],
             "deletable": false,
@@ -44,8 +47,8 @@
                 "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Ports/{PortId}/Metrics",
                 "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Ports/{PortId}/Metrics",
                 "/redfish/v1/Systems/{ComputerSystemId}/FabricAdapters/{FabricAdapterId}/Ports/{PortId}/Metrics",
-                "/redfish/v1/Systems/{ComputerSystemId}/GraphicsControllers/{ControllerId}/Ports/{PortId}/Metrics",
-                "/redfish/v1/Systems/{ComputerSystemId}/USBControllers/{ControllerId}/Ports/{PortId}/Metrics",
+                "/redfish/v1/Systems/{ComputerSystemId}/GraphicsControllers/{GraphicsControllerId}/Ports/{PortId}/Metrics",
+                "/redfish/v1/Systems/{ComputerSystemId}/USBControllers/{USBControllerId}/Ports/{PortId}/Metrics",
                 "/redfish/v1/Systems/{ComputerSystemId}/Processors/{ProcessorId}/Ports/{PortId}/Metrics",
                 "/redfish/v1/Chassis/{ChassisId}/MediaControllers/{MediaControllerId}/Ports/{PortId}/Metrics",
                 "/redfish/v1/Chassis/{ChassisId}/FabricAdapters/{FabricAdapterId}/Ports/{PortId}/Metrics",
@@ -56,8 +59,8 @@
                 "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Ports/{PortId}/Metrics",
                 "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Ports/{PortId}/Metrics",
                 "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/FabricAdapters/{FabricAdapterId}/Ports/{PortId}/Metrics",
-                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/GraphicsControllers/{ControllerId}/Ports/{PortId}/Metrics",
-                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/USBControllers/{ControllerId}/Ports/{PortId}/Metrics",
+                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/GraphicsControllers/{GraphicsControllerId}/Ports/{PortId}/Metrics",
+                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/USBControllers/{USBControllerId}/Ports/{PortId}/Metrics",
                 "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Processors/{ProcessorId}/Ports/{PortId}/Metrics",
                 "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Ports/{PortId}/Metrics",
                 "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Ports/{PortId}/Metrics",
@@ -65,8 +68,8 @@
                 "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Ports/{PortId}/Metrics",
                 "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Ports/{PortId}/Metrics",
                 "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/FabricAdapters/{FabricAdapterId}/Ports/{PortId}/Metrics",
-                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/GraphicsControllers/{ControllerId}/Ports/{PortId}/Metrics",
-                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/USBControllers/{ControllerId}/Ports/{PortId}/Metrics",
+                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/GraphicsControllers/{GraphicsControllerId}/Ports/{PortId}/Metrics",
+                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/USBControllers/{USBControllerId}/Ports/{PortId}/Metrics",
                 "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Processors/{ProcessorId}/Ports/{PortId}/Metrics",
                 "/redfish/v1/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Ports/{PortId}/Metrics",
                 "/redfish/v1/Storage/{StorageId}/Controllers/{StorageControllerId}/Ports/{PortId}/Metrics",

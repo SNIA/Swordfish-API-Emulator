@@ -2,7 +2,7 @@
     "$id": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.json",
     "$ref": "#/definitions/Volume",
     "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
-    "copyright": "Copyright 2015-2024 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
+    "copyright": "Copyright 2015-2025 Storage Networking Industry Association (SNIA), USA. All rights reserved.",
     "definitions": {
         "EncryptionTypes": {
             "enum": [
@@ -240,31 +240,31 @@
                     "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_1_5.json#/definitions/Volume"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_2_6.json#/definitions/Volume"
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_2_7.json#/definitions/Volume"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_3_5.json#/definitions/Volume"
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_3_6.json#/definitions/Volume"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_4_4.json#/definitions/Volume"
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_4_5.json#/definitions/Volume"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_5_2.json#/definitions/Volume"
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_5_3.json#/definitions/Volume"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_6_3.json#/definitions/Volume"
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_6_4.json#/definitions/Volume"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_7_1.json#/definitions/Volume"
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_7_2.json#/definitions/Volume"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_8_1.json#/definitions/Volume"
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_8_2.json#/definitions/Volume"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_9_1.json#/definitions/Volume"
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_9_2.json#/definitions/Volume"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_10_1.json#/definitions/Volume"
+                    "$ref": "http://redfish.dmtf.org/schemas/swordfish/v1/Volume.v1_10_2.json#/definitions/Volume"
                 }
             ],
             "deletable": true,
@@ -402,6 +402,7 @@
             "type": "string"
         }
     },
+    "language": "en",
     "owningEntity": "SNIA",
     "title": "#Volume.Volume"
 }

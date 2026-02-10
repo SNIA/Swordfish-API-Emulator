@@ -19,7 +19,7 @@
             "longDescription": "This resource shall represent a graphics output device in a Redfish implementation.",
             "updatable": true,
             "uris": [
-                "/redfish/v1/Systems/{ComputerSystemId}/GraphicsControllers/{ControllerId}"
+                "/redfish/v1/Systems/{ComputerSystemId}/GraphicsControllers/{GraphicsControllerId}"
             ]
         }
     },

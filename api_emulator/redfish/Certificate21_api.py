@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/EventService/Subscriptions/{EventDestinationId}/ClientCertificates/{CertificateId}
 # Program name - Certificate21_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate21CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId):
+	def get(self, EventDestinationId):
 		logging.info('Certificate21 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/Certificates', 'index.json').format(ComputerSystemId)
+			path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates', 'index.json').format(EventDestinationId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ComputerSystemId):
+	def post(self, EventDestinationId):
 		logging.info('Certificate21 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Certificate21CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if ComputerSystemId in members:
+			if EventDestinationId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Systems/{0}/Certificates').format(ComputerSystemId)
+			path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates').format(EventDestinationId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Certificate21CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate21API.post(self, ComputerSystemId, os.path.basename(config['@odata.id']))
+					return Certificate21API.post(self, EventDestinationId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate21API.post(self, ComputerSystemId, str(res))
+					return Certificate21API.post(self, EventDestinationId, str(res))
 			else:
-				return Certificate21API.post(self, ComputerSystemId, str(res))
+				return Certificate21API.post(self, EventDestinationId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Certificate21API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, CertificateId):
+	def get(self, EventDestinationId, CertificateId):
 		logging.info('Certificate21 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/Certificates/{1}', 'index.json').format(ComputerSystemId, CertificateId)
+			path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates/{1}', 'index.json').format(EventDestinationId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,25 +119,25 @@ class Certificate21API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ComputerSystemId, CertificateId):
+	def post(self, EventDestinationId, CertificateId):
 		logging.info('Certificate21 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/Certificates/{1}').format(ComputerSystemId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/Certificates/{1}').format(ComputerSystemId, CertificateId)
-			collection_path = create_path(self.root, 'Systems/{0}/Certificates', 'index.json').format(ComputerSystemId)
+			path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates/{1}').format(EventDestinationId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'EventService/Subscriptions/{0}/ClientCertificates/{1}').format(EventDestinationId, CertificateId)
+			collection_path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates', 'index.json').format(EventDestinationId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate21CollectionAPI.post(self, ComputerSystemId)
+				Certificate21CollectionAPI.post(self, EventDestinationId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ComputerSystemId':ComputerSystemId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'EventDestinationId':EventDestinationId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate21_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -153,13 +153,13 @@ class Certificate21API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ComputerSystemId, CertificateId):
+	def put(self, EventDestinationId, CertificateId):
 		logging.info('Certificate21 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/Certificates/{1}', 'index.json').format(ComputerSystemId, CertificateId)
-			redfish_path = create_path('/redfish/v1', 'Systems/{0}/Certificates/{1}', 'index.json').format(ComputerSystemId, CertificateId)
+			path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates/{1}', 'index.json').format(EventDestinationId, CertificateId)
+			redfish_path = create_path('/redfish/v1', 'EventService/Subscriptions/{0}/ClientCertificates/{1}', 'index.json').format(EventDestinationId, CertificateId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -191,18 +191,18 @@ class Certificate21API(Resource):
 			if state_changed:
 				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
 			put_object(path)
-			return self.get(ComputerSystemId, CertificateId)
+			return self.get(EventDestinationId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ComputerSystemId, CertificateId):
+	def patch(self, EventDestinationId, CertificateId):
 		logging.info('Certificate21 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/Certificates/{1}', 'index.json').format(ComputerSystemId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/Certificates/{1}', 'index.json').format(ComputerSystemId, CertificateId)
+			path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates/{1}', 'index.json').format(EventDestinationId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'EventService/Subscriptions/{0}/ClientCertificates/{1}', 'index.json').format(EventDestinationId, CertificateId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -234,19 +234,19 @@ class Certificate21API(Resource):
 				if state_changed:
 					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
 			patch_object(path)
-			return self.get(ComputerSystemId, CertificateId)
+			return self.get(EventDestinationId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ComputerSystemId, CertificateId):
+	def delete(self, EventDestinationId, CertificateId):
 		logging.info('Certificate21 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/Certificates/{1}').format(ComputerSystemId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/Certificates/{1}').format(ComputerSystemId, CertificateId)
-			base_path = create_path(self.root, 'Systems/{0}/Certificates').format(ComputerSystemId)
+			path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates/{1}').format(EventDestinationId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'EventService/Subscriptions/{0}/ClientCertificates/{1}').format(EventDestinationId, CertificateId)
+			base_path = create_path(self.root, 'EventService/Subscriptions/{0}/ClientCertificates').format(EventDestinationId)
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

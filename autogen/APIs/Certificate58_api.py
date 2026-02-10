@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/VirtualMedia/{VirtualMediaId}/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/NetworkAdapters/{NetworkAdapterId}/Certificates/{CertificateId}
 # Program name - Certificate58_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate58CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, VirtualMediaId):
+	def get(self, ChassisId, NetworkAdapterId):
 		logging.info('Certificate58 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates', 'index.json').format(ComputerSystemId, VirtualMediaId)
+			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Certificates', 'index.json').format(ChassisId, NetworkAdapterId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ComputerSystemId, VirtualMediaId):
+	def post(self, ChassisId, NetworkAdapterId):
 		logging.info('Certificate58 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Certificate58CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if VirtualMediaId in members:
+			if NetworkAdapterId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates').format(ComputerSystemId, VirtualMediaId)
+			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Certificates').format(ChassisId, NetworkAdapterId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Certificate58CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate58API.post(self, ComputerSystemId, VirtualMediaId, os.path.basename(config['@odata.id']))
+					return Certificate58API.post(self, ChassisId, NetworkAdapterId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate58API.post(self, ComputerSystemId, VirtualMediaId, str(res))
+					return Certificate58API.post(self, ChassisId, NetworkAdapterId, str(res))
 			else:
-				return Certificate58API.post(self, ComputerSystemId, VirtualMediaId, str(res))
+				return Certificate58API.post(self, ChassisId, NetworkAdapterId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Certificate58API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, VirtualMediaId, CertificateId):
+	def get(self, ChassisId, NetworkAdapterId, CertificateId):
 		logging.info('Certificate58 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, VirtualMediaId, CertificateId)
+			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Certificates/{2}', 'index.json').format(ChassisId, NetworkAdapterId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,25 +119,25 @@ class Certificate58API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ComputerSystemId, VirtualMediaId, CertificateId):
+	def post(self, ChassisId, NetworkAdapterId, CertificateId):
 		logging.info('Certificate58 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}').format(ComputerSystemId, VirtualMediaId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}').format(ComputerSystemId, VirtualMediaId, CertificateId)
-			collection_path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates', 'index.json').format(ComputerSystemId, VirtualMediaId)
+			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Certificates/{2}').format(ChassisId, NetworkAdapterId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/NetworkAdapters/{1}/Certificates/{2}').format(ChassisId, NetworkAdapterId, CertificateId)
+			collection_path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Certificates', 'index.json').format(ChassisId, NetworkAdapterId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate58CollectionAPI.post(self, ComputerSystemId, VirtualMediaId)
+				Certificate58CollectionAPI.post(self, ChassisId, NetworkAdapterId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ComputerSystemId':ComputerSystemId, 'VirtualMediaId':VirtualMediaId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'ChassisId':ChassisId, 'NetworkAdapterId':NetworkAdapterId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate58_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -153,13 +153,13 @@ class Certificate58API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ComputerSystemId, VirtualMediaId, CertificateId):
+	def put(self, ChassisId, NetworkAdapterId, CertificateId):
 		logging.info('Certificate58 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, VirtualMediaId, CertificateId)
-			redfish_path = create_path('/redfish/v1', 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, VirtualMediaId, CertificateId)
+			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Certificates/{2}', 'index.json').format(ChassisId, NetworkAdapterId, CertificateId)
+			redfish_path = create_path('/redfish/v1', 'Chassis/{0}/NetworkAdapters/{1}/Certificates/{2}', 'index.json').format(ChassisId, NetworkAdapterId, CertificateId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -191,18 +191,18 @@ class Certificate58API(Resource):
 			if state_changed:
 				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
 			put_object(path)
-			return self.get(ComputerSystemId, VirtualMediaId, CertificateId)
+			return self.get(ChassisId, NetworkAdapterId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ComputerSystemId, VirtualMediaId, CertificateId):
+	def patch(self, ChassisId, NetworkAdapterId, CertificateId):
 		logging.info('Certificate58 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, VirtualMediaId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}', 'index.json').format(ComputerSystemId, VirtualMediaId, CertificateId)
+			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Certificates/{2}', 'index.json').format(ChassisId, NetworkAdapterId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/NetworkAdapters/{1}/Certificates/{2}', 'index.json').format(ChassisId, NetworkAdapterId, CertificateId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -234,19 +234,19 @@ class Certificate58API(Resource):
 				if state_changed:
 					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
 			patch_object(path)
-			return self.get(ComputerSystemId, VirtualMediaId, CertificateId)
+			return self.get(ChassisId, NetworkAdapterId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ComputerSystemId, VirtualMediaId, CertificateId):
+	def delete(self, ChassisId, NetworkAdapterId, CertificateId):
 		logging.info('Certificate58 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}').format(ComputerSystemId, VirtualMediaId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Systems/{0}/VirtualMedia/{1}/Certificates/{2}').format(ComputerSystemId, VirtualMediaId, CertificateId)
-			base_path = create_path(self.root, 'Systems/{0}/VirtualMedia/{1}/Certificates').format(ComputerSystemId, VirtualMediaId)
+			path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Certificates/{2}').format(ChassisId, NetworkAdapterId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/NetworkAdapters/{1}/Certificates/{2}').format(ChassisId, NetworkAdapterId, CertificateId)
+			base_path = create_path(self.root, 'Chassis/{0}/NetworkAdapters/{1}/Certificates').format(ChassisId, NetworkAdapterId)
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

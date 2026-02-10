@@ -29,6 +29,9 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/MessageRegistry.v1_6_3.json#/definitions/MessageRegistry"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MessageRegistry.v1_7_0.json#/definitions/MessageRegistry"
                 }
             ],
             "deletable": false,

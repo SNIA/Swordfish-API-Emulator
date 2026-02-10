@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2024, The Storage Networking Industry Association.
+# Copyright (c) 2017-2026, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Storage/{StorageId}/Controllers/{ControllerId}/Metrics
+# Resource implementation for - /redfish/v1/Storage/{StorageId}/Controllers/{StorageControllerId}/Metrics
 # Program name - StorageControllerMetrics0_api.py
 
 import g
@@ -55,33 +55,33 @@ class StorageControllerMetrics0API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, StorageId, ControllerId):
+	def get(self, StorageId, StorageControllerId):
 		logging.info('StorageControllerMetrics0 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Storage/{0}/Controllers/{1}/Metrics', 'index.json').format(StorageId, ControllerId)
+			path = create_path(self.root, 'Storage/{0}/Controllers/{1}/Metrics', 'index.json').format(StorageId, StorageControllerId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, StorageId, ControllerId):
+	def post(self, StorageId, StorageControllerId):
 		logging.info('StorageControllerMetrics0 post called')
 		return 'POST is not a supported command for StorageControllerMetrics0API', 405
 
 	# HTTP PUT
-	def put(self, StorageId, ControllerId):
+	def put(self, StorageId, StorageControllerId):
 		logging.info('StorageControllerMetrics0 put called')
 		return 'PUT is not a supported command for StorageControllerMetrics0API', 405
 
 	# HTTP PATCH
-	def patch(self, StorageId, ControllerId):
+	def patch(self, StorageId, StorageControllerId):
 		logging.info('StorageControllerMetrics0 patch called')
 		return 'PATCH is not a supported command for StorageControllerMetrics0API', 405
 
 	# HTTP DELETE
-	def delete(self, StorageId, ControllerId):
+	def delete(self, StorageId, StorageControllerId):
 		logging.info('StorageControllerMetrics0 delete called')
 		return 'DELETE is not a supported command for StorageControllerMetrics0API', 405
 

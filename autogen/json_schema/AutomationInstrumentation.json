@@ -1,0 +1,28 @@
+{
+    "$id": "http://redfish.dmtf.org/schemas/v1/AutomationInstrumentation.json",
+    "$ref": "#/definitions/AutomationInstrumentation",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema-v1.json",
+    "copyright": "Copyright 2014-2025 DMTF. For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "definitions": {
+        "AutomationInstrumentation": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AutomationInstrumentation.v1_0_0.json#/definitions/AutomationInstrumentation"
+                }
+            ],
+            "deletable": false,
+            "description": "The `AutomationInstrumentation` schema contains measurements and set points for an automation node.",
+            "insertable": false,
+            "longDescription": "This resource shall represent automation node instrumentation for a Redfish implementation.",
+            "updatable": true,
+            "uris": [
+                "/redfish/v1/AutomationNodes/{AutomationNodeId}/AutomationInstrumentation"
+            ]
+        }
+    },
+    "owningEntity": "DMTF",
+    "title": "#AutomationInstrumentation.AutomationInstrumentation"
+}

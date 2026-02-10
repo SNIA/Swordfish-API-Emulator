@@ -38,6 +38,45 @@
 # External imports
 
 from api_emulator.redfish.AccelerationFunction0_api import *
+from api_emulator.redfish.EnvironmentMetrics70_api import *
+from api_emulator.redfish.AutomationInstrumentation_api import *
+from api_emulator.redfish.Assembly78_api import *
+from api_emulator.redfish.Assembly77_api import *
+from api_emulator.redfish.Assembly76_api import *
+from api_emulator.redfish.Assembly75_api import *
+from api_emulator.redfish.Assembly74_api import *
+from api_emulator.redfish.Assembly73_api import *
+from api_emulator.redfish.Assembly72_api import *
+from api_emulator.redfish.UpdateServiceCapabilities_api import *
+from api_emulator.redfish.LeakDetection4_api import *
+from api_emulator.redfish.StorageMetrics5_api import *
+from api_emulator.redfish.StorageMetrics4_api import *
+from api_emulator.redfish.StorageMetrics3_api import *
+from api_emulator.redfish.StorageMetrics2_api import *
+from api_emulator.redfish.StorageMetrics1_api import *
+from api_emulator.redfish.StorageMetrics0_api import *
+from api_emulator.redfish.MemoryMetrics14_api import *
+from api_emulator.redfish.CoolantConnector9_api import *
+from api_emulator.redfish.VirtualCXLSwitch_api import *
+from api_emulator.redfish.SoftwareInventory2_api import *
+from api_emulator.redfish.Pump4_api import *
+from api_emulator.redfish.CertificateEnrollment_api import *
+from api_emulator.redfish.CoolingUnit3_api import *
+from api_emulator.redfish.Reservoir3_api import *
+from api_emulator.redfish.AutomationNode_api import *
+from api_emulator.redfish.TelemetryData_api import *
+from api_emulator.redfish.Certificate84_api import *
+from api_emulator.redfish.Certificate83_api import *
+from api_emulator.redfish.Certificate82_api import *
+from api_emulator.redfish.Certificate81_api import *
+from api_emulator.redfish.Certificate80_api import *
+from api_emulator.redfish.VirtualPCI2PCIBridge_api import *
+from api_emulator.redfish.JobDocument_api import *
+from api_emulator.redfish.JobExecutor_api import *
+from api_emulator.redfish.Filter13_api import *
+from api_emulator.redfish.Filter12_api import *
+from api_emulator.redfish.Filter11_api import *
+from api_emulator.redfish.Filter10_api import *
 from api_emulator.redfish.AccelerationFunction1_api import *
 from api_emulator.redfish.AccelerationFunction2_api import *
 from api_emulator.redfish.AccelerationFunction3_api import *
@@ -994,6 +1033,72 @@ class ResourceManager(object):
         1. Dynamic resource for specific URI
         2. Static resource dictionary
         """
+        g.api.add_resource(Memory6CollectionAPI, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Memory', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Memory6API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Memory/<string:MemoryId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Certificate79CollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/PowerSubsystem/PowerSupplies/<string:PowerSupplyId>/Certificates', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Certificate79API, '/redfish/v1/Chassis/<string:ChassisId>/PowerSubsystem/PowerSupplies/<string:PowerSupplyId>/Certificates/<string:CertificateId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(LeakDetector4CollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/LeakDetectors', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(LeakDetector4API, '/redfish/v1/Chassis/<string:ChassisId>/LeakDetectors/<string:LeakDetectorId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Filter10CollectionAPI, '/redfish/v1/ThermalEquipment/HeatExchangers/<string:CoolingUnitId>/Pumps/<string:PumpId>/Filters', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Filter10API, '/redfish/v1/ThermalEquipment/HeatExchangers/<string:CoolingUnitId>/Pumps/<string:PumpId>/Filters/<string:FilterId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Filter11CollectionAPI, '/redfish/v1/ThermalEquipment/RPUs/<string:CoolingUnitId>/Filters', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Filter11API, '/redfish/v1/ThermalEquipment/RPUs/<string:CoolingUnitId>/Filters/<string:FilterId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Filter12CollectionAPI, '/redfish/v1/ThermalEquipment/RPUs/<string:CoolingUnitId>/Reservoirs/<string:ReservoirId>/Filters', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Filter12API, '/redfish/v1/ThermalEquipment/RPUs/<string:CoolingUnitId>/Reservoirs/<string:ReservoirId>/Filters/<string:FilterId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Filter13CollectionAPI, '/redfish/v1/ThermalEquipment/RPUs/<string:CoolingUnitId>/Pumps/<string:PumpId>/Filters', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Filter13API, '/redfish/v1/ThermalEquipment/RPUs/<string:CoolingUnitId>/Pumps/<string:PumpId>/Filters/<string:FilterId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(JobExecutorCollectionAPI, '/redfish/v1/JobService/Executors', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(JobExecutorAPI, '/redfish/v1/JobService/Executors/<string:JobExecutorId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(JobDocumentCollectionAPI, '/redfish/v1/JobService/Documents', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(JobDocumentAPI, '/redfish/v1/JobService/Documents/<string:JobDocumentId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(VirtualPCI2PCIBridgeCollectionAPI, '/redfish/v1/Fabrics/<string:FabricId>/Switches/<string:SwitchId>/VCSs/<string:VirtualCXLSwitchId>/VPPBs', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(VirtualPCI2PCIBridgeAPI, '/redfish/v1/Fabrics/<string:FabricId>/Switches/<string:SwitchId>/VCSs/<string:VirtualCXLSwitchId>/VPPBs/<string:VirtualPCI2PCIBridgeId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Certificate80CollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/TrustedComponents/<string:TrustedComponentId>/Certificates', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Certificate80API, '/redfish/v1/Chassis/<string:ChassisId>/TrustedComponents/<string:TrustedComponentId>/Certificates/<string:CertificateId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Certificate81CollectionAPI, '/redfish/v1/AccountService/OutboundConnections/<string:OutboundConnectionId>/Certificates', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Certificate81API, '/redfish/v1/AccountService/OutboundConnections/<string:OutboundConnectionId>/Certificates/<string:CertificateId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Certificate82CollectionAPI, '/redfish/v1/AccountService/OutboundConnections/<string:OutboundConnectionId>/ClientCertificates', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Certificate82API, '/redfish/v1/AccountService/OutboundConnections/<string:OutboundConnectionId>/ClientCertificates/<string:CertificateId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Certificate83CollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/PowerSubsystem/PowerSupplies/<string:PowerSupplyId>/Certificates', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Certificate83API, '/redfish/v1/Chassis/<string:ChassisId>/PowerSubsystem/PowerSupplies/<string:PowerSupplyId>/Certificates/<string:CertificateId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Certificate84CollectionAPI, '/redfish/v1/CertificateService/EnrollmentCACertificates', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Certificate84API, '/redfish/v1/CertificateService/EnrollmentCACertificates/<string:CertificateId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(TelemetryDataCollectionAPI, '/redfish/v1/TelemetryService/TelemetryData', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(TelemetryDataAPI, '/redfish/v1/TelemetryService/TelemetryData/<string:TelemetryDataId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(AutomationNodeCollectionAPI, '/redfish/v1/AutomationNodes', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(AutomationNodeAPI, '/redfish/v1/AutomationNodes/<string:AutomationNodeId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Reservoir3CollectionAPI, '/redfish/v1/ThermalEquipment/RPUs/<string:CoolingUnitId>/Reservoirs', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Reservoir3API, '/redfish/v1/ThermalEquipment/RPUs/<string:CoolingUnitId>/Reservoirs/<string:ReservoirId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(CoolingUnit3CollectionAPI, '/redfish/v1/ThermalEquipment/RPUs', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(CoolingUnit3API, '/redfish/v1/ThermalEquipment/RPUs/<string:CoolingUnitId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(CertificateEnrollmentCollectionAPI, '/redfish/v1/CertificateService/CertificateEnrollments', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(CertificateEnrollmentAPI, '/redfish/v1/CertificateService/CertificateEnrollments/<string:CertificateEnrollmentId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Pump4CollectionAPI, '/redfish/v1/Chassis/<string:ChassisId>/ThermalSubsystem/Pumps', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Pump4API, '/redfish/v1/Chassis/<string:ChassisId>/ThermalSubsystem/Pumps/<string:PumpId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(SoftwareInventory2CollectionAPI, '/redfish/v1/UpdateService/LocalImageStore', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(SoftwareInventory2API, '/redfish/v1/UpdateService/LocalImageStore/<string:SoftwareInventoryId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(VirtualCXLSwitchCollectionAPI, '/redfish/v1/Fabrics/<string:FabricId>/Switches/<string:SwitchId>/VCSs', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(VirtualCXLSwitchAPI, '/redfish/v1/Fabrics/<string:FabricId>/Switches/<string:SwitchId>/VCSs/<string:VirtualCXLSwitchId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(CoolantConnector9CollectionAPI, '/redfish/v1/ThermalEquipment/RPUs/<string:CoolingUnitId>/PrimaryCoolantConnectors', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(CoolantConnector9API, '/redfish/v1/ThermalEquipment/RPUs/<string:CoolingUnitId>/PrimaryCoolantConnectors/<string:CoolantConnectorId>', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(MemoryMetrics14API, '/redfish/v1/Chassis/<string:ChassisId>/Memory/<string:MemoryId>/MemoryMetrics', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(StorageMetrics0API, '/redfish/v1/Storage/<string:StorageId>/Metrics', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(StorageMetrics1API, '/redfish/v1/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Metrics', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(StorageMetrics2API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Metrics', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(StorageMetrics3API, '/redfish/v1/CompositionService/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Metrics', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(StorageMetrics4API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Storage/<string:StorageId>/Metrics', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(StorageMetrics5API, '/redfish/v1/ResourceBlocks/<string:ResourceBlockId>/Systems/<string:ComputerSystemId>/Storage/<string:StorageId>/Metrics', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(LeakDetection4API, '/redfish/v1/ThermalEquipment/RPUs/<string:CoolingUnitId>/LeakDetection', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(UpdateServiceCapabilitiesAPI, '/redfish/v1/UpdateService/UpdateServiceCapabilities', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Assembly72API, '/redfish/v1/ThermalEquipment/ImmersionUnits/<string:CoolingUnitId>/Pumps/<string:PumpId>/Filters/<string:FilterId>/Assembly', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Assembly73API, '/redfish/v1/ThermalEquipment/HeatExchangers/<string:CoolingUnitId>/Filters/<string:FilterId>/Assembly', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Assembly74API, '/redfish/v1/ThermalEquipment/HeatExchangers/<string:CoolingUnitId>/Reservoirs/<string:ReservoirId>/Filters/<string:FilterId>/Assembly', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Assembly75API, '/redfish/v1/ThermalEquipment/HeatExchangers/<string:CoolingUnitId>/Pumps/<string:PumpId>/Filters/<string:FilterId>/Assembly', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Assembly76API, '/redfish/v1/ThermalEquipment/RPUs/<string:CoolingUnitId>/Filters/<string:FilterId>/Assembly', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Assembly77API, '/redfish/v1/ThermalEquipment/RPUs/<string:CoolingUnitId>/Reservoirs/<string:ReservoirId>/Filters/<string:FilterId>/Assembly', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(Assembly78API, '/redfish/v1/ThermalEquipment/RPUs/<string:CoolingUnitId>/Pumps/<string:PumpId>/Filters/<string:FilterId>/Assembly', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(AutomationInstrumentationAPI, '/redfish/v1/AutomationNodes/<string:AutomationNodeId>/AutomationInstrumentation', resource_class_kwargs={'auth': auth})
+        g.api.add_resource(EnvironmentMetrics70API, '/redfish/v1/ThermalEquipment/RPUs/<string:CoolingUnitId>/EnvironmentMetrics', resource_class_kwargs={'auth': auth})
 
         self.rest_base = rest_base
 

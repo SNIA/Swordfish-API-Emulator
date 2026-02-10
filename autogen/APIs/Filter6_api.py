@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ThermalEquipment/ImmersionUnits/{CoolingUnitId}/Pumps/{PumpId}/Filters/{FilterId}
+# Resource implementation for - /redfish/v1/ThermalEquipment/ImmersionUnits/{CoolingUnitId}/Reservoirs/{ReservoirId}/Filters/{FilterId}
 # Program name - Filter6_api.py
 
 import g
@@ -53,18 +53,18 @@ class Filter6CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, CoolingUnitId, PumpId):
+	def get(self, CoolingUnitId, ReservoirId):
 		logging.info('Filter6 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}/Filters', 'index.json').format(CoolingUnitId, PumpId)
+			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Reservoirs/{1}/Filters', 'index.json').format(CoolingUnitId, ReservoirId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, CoolingUnitId, PumpId):
+	def post(self, CoolingUnitId, ReservoirId):
 		logging.info('Filter6 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Filter6CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if PumpId in members:
+			if ReservoirId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}/Filters').format(CoolingUnitId, PumpId)
+			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Reservoirs/{1}/Filters').format(CoolingUnitId, ReservoirId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Filter6CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Filter6API.post(self, CoolingUnitId, PumpId, os.path.basename(config['@odata.id']))
+					return Filter6API.post(self, CoolingUnitId, ReservoirId, os.path.basename(config['@odata.id']))
 				else:
-					return Filter6API.post(self, CoolingUnitId, PumpId, str(res))
+					return Filter6API.post(self, CoolingUnitId, ReservoirId, str(res))
 			else:
-				return Filter6API.post(self, CoolingUnitId, PumpId, str(res))
+				return Filter6API.post(self, CoolingUnitId, ReservoirId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Filter6API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, CoolingUnitId, PumpId, FilterId):
+	def get(self, CoolingUnitId, ReservoirId, FilterId):
 		logging.info('Filter6 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}/Filters/{2}', 'index.json').format(CoolingUnitId, PumpId, FilterId)
+			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Reservoirs/{1}/Filters/{2}', 'index.json').format(CoolingUnitId, ReservoirId, FilterId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,25 +119,25 @@ class Filter6API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, CoolingUnitId, PumpId, FilterId):
+	def post(self, CoolingUnitId, ReservoirId, FilterId):
 		logging.info('Filter6 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}/Filters/{2}').format(CoolingUnitId, PumpId, FilterId)
-			redfish_path = create_path('/redfish/v1/', 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}/Filters/{2}').format(CoolingUnitId, PumpId, FilterId)
-			collection_path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}/Filters', 'index.json').format(CoolingUnitId, PumpId)
+			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Reservoirs/{1}/Filters/{2}').format(CoolingUnitId, ReservoirId, FilterId)
+			redfish_path = create_path('/redfish/v1/', 'ThermalEquipment/ImmersionUnits/{0}/Reservoirs/{1}/Filters/{2}').format(CoolingUnitId, ReservoirId, FilterId)
+			collection_path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Reservoirs/{1}/Filters', 'index.json').format(CoolingUnitId, ReservoirId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Filter6CollectionAPI.post(self, CoolingUnitId, PumpId)
+				Filter6CollectionAPI.post(self, CoolingUnitId, ReservoirId)
 
 			if FilterId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'CoolingUnitId':CoolingUnitId, 'PumpId':PumpId, 'FilterId':FilterId, 'rb':g.rest_base}
+				wildcards = {'CoolingUnitId':CoolingUnitId, 'ReservoirId':ReservoirId, 'FilterId':FilterId, 'rb':g.rest_base}
 				config=get_Filter6_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -153,13 +153,13 @@ class Filter6API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, CoolingUnitId, PumpId, FilterId):
+	def put(self, CoolingUnitId, ReservoirId, FilterId):
 		logging.info('Filter6 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}/Filters/{2}', 'index.json').format(CoolingUnitId, PumpId, FilterId)
-			redfish_path = create_path('/redfish/v1', 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}/Filters/{2}', 'index.json').format(CoolingUnitId, PumpId, FilterId)
+			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Reservoirs/{1}/Filters/{2}', 'index.json').format(CoolingUnitId, ReservoirId, FilterId)
+			redfish_path = create_path('/redfish/v1', 'ThermalEquipment/ImmersionUnits/{0}/Reservoirs/{1}/Filters/{2}', 'index.json').format(CoolingUnitId, ReservoirId, FilterId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -191,18 +191,18 @@ class Filter6API(Resource):
 			if state_changed:
 				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
 			put_object(path)
-			return self.get(CoolingUnitId, PumpId, FilterId)
+			return self.get(CoolingUnitId, ReservoirId, FilterId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, CoolingUnitId, PumpId, FilterId):
+	def patch(self, CoolingUnitId, ReservoirId, FilterId):
 		logging.info('Filter6 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}/Filters/{2}', 'index.json').format(CoolingUnitId, PumpId, FilterId)
-			redfish_path = create_path('/redfish/v1/', 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}/Filters/{2}', 'index.json').format(CoolingUnitId, PumpId, FilterId)
+			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Reservoirs/{1}/Filters/{2}', 'index.json').format(CoolingUnitId, ReservoirId, FilterId)
+			redfish_path = create_path('/redfish/v1/', 'ThermalEquipment/ImmersionUnits/{0}/Reservoirs/{1}/Filters/{2}', 'index.json').format(CoolingUnitId, ReservoirId, FilterId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -234,19 +234,19 @@ class Filter6API(Resource):
 				if state_changed:
 					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
 			patch_object(path)
-			return self.get(CoolingUnitId, PumpId, FilterId)
+			return self.get(CoolingUnitId, ReservoirId, FilterId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, CoolingUnitId, PumpId, FilterId):
+	def delete(self, CoolingUnitId, ReservoirId, FilterId):
 		logging.info('Filter6 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}/Filters/{2}').format(CoolingUnitId, PumpId, FilterId)
-			redfish_path = create_path('/redfish/v1/', 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}/Filters/{2}').format(CoolingUnitId, PumpId, FilterId)
-			base_path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Pumps/{1}/Filters').format(CoolingUnitId, PumpId)
+			path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Reservoirs/{1}/Filters/{2}').format(CoolingUnitId, ReservoirId, FilterId)
+			redfish_path = create_path('/redfish/v1/', 'ThermalEquipment/ImmersionUnits/{0}/Reservoirs/{1}/Filters/{2}').format(CoolingUnitId, ReservoirId, FilterId)
+			base_path = create_path(self.root, 'ThermalEquipment/ImmersionUnits/{0}/Reservoirs/{1}/Filters').format(CoolingUnitId, ReservoirId)
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

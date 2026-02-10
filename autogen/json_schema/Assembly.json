@@ -10,30 +10,34 @@
                     "$ref": "http://redfish.dmtf.org/schemas/v1/odata-v4.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Assembly.v1_0_6.json#/definitions/Assembly"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Assembly.v1_0_7.json#/definitions/Assembly"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Assembly.v1_1_6.json#/definitions/Assembly"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Assembly.v1_1_7.json#/definitions/Assembly"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Assembly.v1_2_5.json#/definitions/Assembly"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Assembly.v1_2_6.json#/definitions/Assembly"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Assembly.v1_3_2.json#/definitions/Assembly"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Assembly.v1_3_3.json#/definitions/Assembly"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Assembly.v1_4_2.json#/definitions/Assembly"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Assembly.v1_4_3.json#/definitions/Assembly"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Assembly.v1_5_1.json#/definitions/Assembly"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Assembly.v1_5_2.json#/definitions/Assembly"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Assembly.v1_6_1.json#/definitions/Assembly"
                 }
             ],
             "deletable": false,
-            "description": "The `Assembly` schema defines an assembly.  Assembly information contains details about a device, such as part number, serial number, manufacturer, and production date.  It also provides access to the original data for the assembly.",
+            "description": "The `Assembly` schema defines an assembly.  Assembly information contains details about a device, such as part number, serial number, producer, vendor, and production date.  It also provides access to the original data for the assembly.",
             "insertable": false,
-            "longDescription": "This resource shall represent an assembly for a Redfish implementation.  Assembly information contains details about a device, such as part number, serial number, manufacturer, and production date.  It also provides access to the original data for the assembly.",
+            "longDescription": "This resource shall represent an assembly for a Redfish implementation.  Assembly information contains details about a device, such as part number, serial number, producer, vendor, and production date.  It also provides access to the original data for the assembly.",
             "updatable": true,
             "uris": [
+                "/redfish/v1/Cables/{CableId}/Assembly",
                 "/redfish/v1/Chassis/{ChassisId}/Assembly",
                 "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Assembly",
                 "/redfish/v1/Chassis/{ChassisId}/Drives/{DriveId}/Assembly",
@@ -91,12 +95,15 @@
                 "/redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Assembly",
                 "/redfish/v1/ThermalEquipment/ImmersionUnits/{CoolingUnitId}/Assembly",
                 "/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Assembly",
+                "/redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/Assembly",
                 "/redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Reservoirs/{ReservoirId}/Assembly",
                 "/redfish/v1/ThermalEquipment/ImmersionUnits/{CoolingUnitId}/Reservoirs/{ReservoirId}/Assembly",
                 "/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Reservoirs/{ReservoirId}/Assembly",
+                "/redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/Reservoirs/{ReservoirId}/Assembly",
                 "/redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Pumps/{PumpId}/Assembly",
                 "/redfish/v1/ThermalEquipment/ImmersionUnits/{CoolingUnitId}/Pumps/{PumpId}/Assembly",
                 "/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Pumps/{PumpId}/Assembly",
+                "/redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/Pumps/{PumpId}/Assembly",
                 "/redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Filters/{FilterId}/Assembly",
                 "/redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Reservoirs/{ReservoirId}/Filters/{FilterId}/Assembly",
                 "/redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Pumps/{PumpId}/Filters/{FilterId}/Assembly",
@@ -105,7 +112,17 @@
                 "/redfish/v1/ThermalEquipment/ImmersionUnits/{CoolingUnitId}/Pumps/{PumpId}/Filters/{FilterId}/Assembly",
                 "/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Filters/{FilterId}/Assembly",
                 "/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Reservoirs/{ReservoirId}/Filters/{FilterId}/Assembly",
-                "/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Pumps/{PumpId}/Filters/{FilterId}/Assembly"
+                "/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Pumps/{PumpId}/Filters/{FilterId}/Assembly",
+                "/redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/Filters/{FilterId}/Assembly",
+                "/redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/Reservoirs/{ReservoirId}/Filters/{FilterId}/Assembly",
+                "/redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/Pumps/{PumpId}/Filters/{FilterId}/Assembly"
+            ],
+            "urisDeprecated": [
+                "/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Assembly",
+                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Drives/{DriveId}/Assembly",
+                "/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Assembly",
+                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Drives/{DriveId}/Assembly",
+                "/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Assembly"
             ]
         }
     },

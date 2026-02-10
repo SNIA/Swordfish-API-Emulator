@@ -44,6 +44,9 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerNetworkProtocol.v1_11_0.json#/definitions/ManagerNetworkProtocol"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerNetworkProtocol.v1_12_0.json#/definitions/ManagerNetworkProtocol"
                 }
             ],
             "deletable": false,

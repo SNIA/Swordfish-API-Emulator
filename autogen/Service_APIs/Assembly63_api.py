@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2024, The Storage Networking Industry Association.
+# Copyright (c) 2017-2026, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Filters/{FilterId}/Assembly
+# Resource implementation for - /redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Pumps/{PumpId}/Assembly
 # Program name - Assembly63_api.py
 
 import g
@@ -55,33 +55,33 @@ class Assembly63API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, CoolingUnitId, FilterId):
+	def get(self, CoolingUnitId, PumpId):
 		logging.info('Assembly63 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'ThermalEquipment/CDUs/{0}/Filters/{1}/Assembly', 'index.json').format(CoolingUnitId, FilterId)
+			path = create_path(self.root, 'ThermalEquipment/CDUs/{0}/Pumps/{1}/Assembly', 'index.json').format(CoolingUnitId, PumpId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, CoolingUnitId, FilterId):
+	def post(self, CoolingUnitId, PumpId):
 		logging.info('Assembly63 post called')
 		return 'POST is not a supported command for Assembly63API', 405
 
 	# HTTP PUT
-	def put(self, CoolingUnitId, FilterId):
+	def put(self, CoolingUnitId, PumpId):
 		logging.info('Assembly63 put called')
 		return 'PUT is not a supported command for Assembly63API', 405
 
 	# HTTP PATCH
-	def patch(self, CoolingUnitId, FilterId):
+	def patch(self, CoolingUnitId, PumpId):
 		logging.info('Assembly63 patch called')
 		return 'PATCH is not a supported command for Assembly63API', 405
 
 	# HTTP DELETE
-	def delete(self, CoolingUnitId, FilterId):
+	def delete(self, CoolingUnitId, PumpId):
 		logging.info('Assembly63 delete called')
 		return 'DELETE is not a supported command for Assembly63API', 405
 

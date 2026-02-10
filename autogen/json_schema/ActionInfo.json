@@ -23,6 +23,9 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/ActionInfo.v1_4_2.json#/definitions/ActionInfo"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ActionInfo.v1_5_0.json#/definitions/ActionInfo"
                 }
             ],
             "deletable": false,
@@ -47,6 +50,9 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/ActionInfo.v1_4_2.json#/definitions/Parameters"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ActionInfo.v1_5_0.json#/definitions/Parameters"
                 }
             ],
             "description": "The information about a parameter included in a Redfish action for this resource.",

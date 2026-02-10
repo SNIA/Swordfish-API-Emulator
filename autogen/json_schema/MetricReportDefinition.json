@@ -13,16 +13,16 @@
                     "$ref": "http://redfish.dmtf.org/schemas/v1/MetricReportDefinition.v1_0_13.json#/definitions/MetricReportDefinition"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/MetricReportDefinition.v1_1_12.json#/definitions/MetricReportDefinition"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MetricReportDefinition.v1_1_13.json#/definitions/MetricReportDefinition"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/MetricReportDefinition.v1_2_11.json#/definitions/MetricReportDefinition"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MetricReportDefinition.v1_2_12.json#/definitions/MetricReportDefinition"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/MetricReportDefinition.v1_3_10.json#/definitions/MetricReportDefinition"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MetricReportDefinition.v1_3_11.json#/definitions/MetricReportDefinition"
                 },
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/MetricReportDefinition.v1_4_6.json#/definitions/MetricReportDefinition"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MetricReportDefinition.v1_4_7.json#/definitions/MetricReportDefinition"
                 }
             ],
             "deletable": true,

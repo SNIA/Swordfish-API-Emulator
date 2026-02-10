@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!---->
 <!--################################################################################       -->
-<!--# Redfish Schema:  Assembly v1.5.1                                                     -->
+<!--# Redfish Schema:  Assembly v1.6.0                                                     -->
 <!--#                                                                                      -->
 <!--# For a detailed change log, see the README file contained in the DSP8010 bundle,      -->
 <!--# available at http://www.dmtf.org/standards/redfish                                   -->
@@ -36,8 +36,8 @@
       <Annotation Term="Redfish.Language" String="en"/>
 
       <EntityType Name="Assembly" BaseType="Resource.v1_0_0.Resource" Abstract="true">
-        <Annotation Term="OData.Description" String="The `Assembly` schema defines an assembly.  Assembly information contains details about a device, such as part number, serial number, manufacturer, and production date.  It also provides access to the original data for the assembly."/>
-        <Annotation Term="OData.LongDescription" String="This resource shall represent an assembly for a Redfish implementation.  Assembly information contains details about a device, such as part number, serial number, manufacturer, and production date.  It also provides access to the original data for the assembly."/>
+        <Annotation Term="OData.Description" String="The `Assembly` schema defines an assembly.  Assembly information contains details about a device, such as part number, serial number, producer, vendor, and production date.  It also provides access to the original data for the assembly."/>
+        <Annotation Term="OData.LongDescription" String="This resource shall represent an assembly for a Redfish implementation.  Assembly information contains details about a device, such as part number, serial number, producer, vendor, and production date.  It also provides access to the original data for the assembly."/>
         <Annotation Term="Capabilities.InsertRestrictions">
           <Record>
             <PropertyValue Property="Insertable" Bool="false"/>
@@ -56,6 +56,7 @@
         </Annotation>
         <Annotation Term="Redfish.Uris">
           <Collection>
+            <String>/redfish/v1/Cables/{CableId}/Assembly</String>
             <String>/redfish/v1/Chassis/{ChassisId}/Assembly</String>
             <String>/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Assembly</String>
             <String>/redfish/v1/Chassis/{ChassisId}/Drives/{DriveId}/Assembly</String>
@@ -113,12 +114,15 @@
             <String>/redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Assembly</String>
             <String>/redfish/v1/ThermalEquipment/ImmersionUnits/{CoolingUnitId}/Assembly</String>
             <String>/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Assembly</String>
+            <String>/redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/Assembly</String>
             <String>/redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Reservoirs/{ReservoirId}/Assembly</String>
             <String>/redfish/v1/ThermalEquipment/ImmersionUnits/{CoolingUnitId}/Reservoirs/{ReservoirId}/Assembly</String>
             <String>/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Reservoirs/{ReservoirId}/Assembly</String>
+            <String>/redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/Reservoirs/{ReservoirId}/Assembly</String>
             <String>/redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Pumps/{PumpId}/Assembly</String>
             <String>/redfish/v1/ThermalEquipment/ImmersionUnits/{CoolingUnitId}/Pumps/{PumpId}/Assembly</String>
             <String>/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Pumps/{PumpId}/Assembly</String>
+            <String>/redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/Pumps/{PumpId}/Assembly</String>
             <String>/redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Filters/{FilterId}/Assembly</String>
             <String>/redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Reservoirs/{ReservoirId}/Filters/{FilterId}/Assembly</String>
             <String>/redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Pumps/{PumpId}/Filters/{FilterId}/Assembly</String>
@@ -128,6 +132,18 @@
             <String>/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Filters/{FilterId}/Assembly</String>
             <String>/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Reservoirs/{ReservoirId}/Filters/{FilterId}/Assembly</String>
             <String>/redfish/v1/ThermalEquipment/HeatExchangers/{CoolingUnitId}/Pumps/{PumpId}/Filters/{FilterId}/Assembly</String>
+            <String>/redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/Filters/{FilterId}/Assembly</String>
+            <String>/redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/Reservoirs/{ReservoirId}/Filters/{FilterId}/Assembly</String>
+            <String>/redfish/v1/ThermalEquipment/RPUs/{CoolingUnitId}/Pumps/{PumpId}/Filters/{FilterId}/Assembly</String>
+          </Collection>
+        </Annotation>
+        <Annotation Term="Redfish.DeprecatedUris">
+          <Collection>
+            <String>/redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Assembly</String>
+            <String>/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Drives/{DriveId}/Assembly</String>
+            <String>/redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Assembly</String>
+            <String>/redfish/v1/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Drives/{DriveId}/Assembly</String>
+            <String>/redfish/v1/ResourceBlocks/{ResourceBlockId}/Systems/{ComputerSystemId}/Storage/{StorageId}/Drives/{DriveId}/Assembly</String>
           </Collection>
         </Annotation>
       </EntityType>
@@ -164,7 +180,7 @@
         <Property Name="Model" Type="Edm.String">
           <Annotation Term="OData.Permissions" EnumMember="OData.Permission/Read"/>
           <Annotation Term="OData.Description" String="The model number of the assembly."/>
-          <Annotation Term="OData.LongDescription" String="This property shall contain the name by which the manufacturer generally refers to the assembly."/>
+          <Annotation Term="OData.LongDescription" String="This property shall contain the name by which the vendor generally refers to the assembly."/>
         </Property>
         <Property Name="PartNumber" Type="Edm.String">
           <Annotation Term="OData.Permissions" EnumMember="OData.Permission/Read"/>
@@ -293,6 +309,13 @@
       <EntityType Name="AssemblyData" BaseType="Assembly.v1_0_5.AssemblyData"/>
     </Schema>
 
+    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Assembly.v1_0_7">
+      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
+      <Annotation Term="OData.Description" String="This version was created to clarify the distinction between manufacturer and producer."/>
+      <EntityType Name="Assembly" BaseType="Assembly.v1_0_6.Assembly"/>
+      <EntityType Name="AssemblyData" BaseType="Assembly.v1_0_6.AssemblyData"/>
+    </Schema>
+
     <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Assembly.v1_1_0">
       <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
       <Annotation Term="Redfish.Release" String="2018.1"/>
@@ -347,6 +370,13 @@
       <Annotation Term="OData.Description" String="This version was created to force the regeneration of OpenAPI schemas to properly express nullable properties with external references.  It was also created to correct various typographical errors."/>
       <EntityType Name="Assembly" BaseType="Assembly.v1_1_5.Assembly"/>
       <EntityType Name="AssemblyData" BaseType="Assembly.v1_1_5.AssemblyData"/>
+    </Schema>
+
+    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Assembly.v1_1_7">
+      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
+      <Annotation Term="OData.Description" String="This version was created to clarify the distinction between manufacturer and producer."/>
+      <EntityType Name="Assembly" BaseType="Assembly.v1_1_6.Assembly"/>
+      <EntityType Name="AssemblyData" BaseType="Assembly.v1_1_6.AssemblyData"/>
     </Schema>
 
     <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Assembly.v1_2_0">
@@ -404,6 +434,13 @@
       <EntityType Name="AssemblyData" BaseType="Assembly.v1_2_4.AssemblyData"/>
     </Schema>
 
+    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Assembly.v1_2_6">
+      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
+      <Annotation Term="OData.Description" String="This version was created to clarify the distinction between manufacturer and producer."/>
+      <EntityType Name="Assembly" BaseType="Assembly.v1_2_5.Assembly"/>
+      <EntityType Name="AssemblyData" BaseType="Assembly.v1_2_5.AssemblyData"/>
+    </Schema>
+
     <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Assembly.v1_3_0">
       <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
       <Annotation Term="Redfish.Release" String="2020.3"/>
@@ -437,6 +474,13 @@
       <EntityType Name="AssemblyData" BaseType="Assembly.v1_3_1.AssemblyData"/>
     </Schema>
 
+    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Assembly.v1_3_3">
+      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
+      <Annotation Term="OData.Description" String="This version was created to clarify the distinction between manufacturer and producer."/>
+      <EntityType Name="Assembly" BaseType="Assembly.v1_3_2.Assembly"/>
+      <EntityType Name="AssemblyData" BaseType="Assembly.v1_3_2.AssemblyData"/>
+    </Schema>
+
     <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Assembly.v1_4_0">
       <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
       <Annotation Term="Redfish.Release" String="2022.2"/>
@@ -466,6 +510,13 @@
       <EntityType Name="AssemblyData" BaseType="Assembly.v1_4_1.AssemblyData"/>
     </Schema>
 
+    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Assembly.v1_4_3">
+      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
+      <Annotation Term="OData.Description" String="This version was created to clarify the distinction between manufacturer and producer."/>
+      <EntityType Name="Assembly" BaseType="Assembly.v1_4_2.Assembly"/>
+      <EntityType Name="AssemblyData" BaseType="Assembly.v1_4_2.AssemblyData"/>
+    </Schema>
+
     <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Assembly.v1_5_0">
       <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
       <Annotation Term="Redfish.Release" String="2022.3"/>
@@ -487,6 +538,35 @@
       <Annotation Term="OData.Description" String="This version was created to force the regeneration of OpenAPI schemas to properly express nullable properties with external references.  It was also created to correct various typographical errors."/>
       <EntityType Name="Assembly" BaseType="Assembly.v1_5_0.Assembly"/>
       <EntityType Name="AssemblyData" BaseType="Assembly.v1_5_0.AssemblyData"/>
+    </Schema>
+
+    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Assembly.v1_5_2">
+      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
+      <Annotation Term="OData.Description" String="This version was created to clarify the distinction between manufacturer and producer."/>
+      <EntityType Name="Assembly" BaseType="Assembly.v1_5_1.Assembly"/>
+      <EntityType Name="AssemblyData" BaseType="Assembly.v1_5_1.AssemblyData"/>
+    </Schema>
+
+    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Assembly.v1_6_0">
+      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
+      <Annotation Term="Redfish.Release" String="2025.3"/>
+
+      <EntityType Name="Assembly" BaseType="Assembly.v1_5_1.Assembly"/>
+
+      <EntityType Name="AssemblyData" BaseType="Assembly.v1_5_1.AssemblyData">
+        <Property Name="ReadyToRemove" Type="Edm.Boolean">
+          <Annotation Term="OData.Permissions" EnumMember="OData.Permission/ReadWrite"/>
+          <Annotation Term="OData.Description" String="An indication of whether the assembly is prepared by the system for removal."/>
+          <Annotation Term="OData.LongDescription" String="This property shall indicate whether the assembly is ready for removal.  Setting the value to `true` shall cause the service to perform appropriate actions to quiesce the device.  A task may spawn while the device is quiescing."/>
+        </Property>
+      </EntityType>
+    </Schema>
+
+    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Assembly.v1_6_1">
+      <Annotation Term="Redfish.OwningEntity" String="DMTF"/>
+      <Annotation Term="OData.Description" String="This version was created to clarify the distinction between manufacturer and producer."/>
+      <EntityType Name="Assembly" BaseType="Assembly.v1_6_0.Assembly"/>
+      <EntityType Name="AssemblyData" BaseType="Assembly.v1_6_0.AssemblyData"/>
     </Schema>
 
   </edmx:DataServices>

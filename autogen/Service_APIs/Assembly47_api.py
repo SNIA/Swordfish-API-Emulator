@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2024, The Storage Networking Industry Association.
+# Copyright (c) 2017-2026, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Storage/{StorageId}/Controllers/{StorageControllerId}/Assembly
+# Resource implementation for - /redfish/v1/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Assembly
 # Program name - Assembly47_api.py
 
 import g
@@ -60,7 +60,7 @@ class Assembly47API(Resource):
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Storage/{0}/Controllers/{1}/Assembly', 'index.json').format(StorageId, StorageControllerId)
+			path = create_path(self.root, 'Storage/{0}/StorageControllers/{1}/Assembly', 'index.json').format(StorageId, StorageControllerId)
 			return get_json_data (path)
 		else:
 			return msg, code

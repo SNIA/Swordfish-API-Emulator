@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/Fabrics/{FabricId}/Switches/{SwitchId}/Certificates/{CertificateId}
 # Program name - Certificate48_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate48CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId):
+	def get(self, FabricId, SwitchId):
 		logging.info('Certificate48 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/Certificates', 'index.json').format(ChassisId)
+			path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Certificates', 'index.json').format(FabricId, SwitchId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, ChassisId):
+	def post(self, FabricId, SwitchId):
 		logging.info('Certificate48 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Certificate48CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if ChassisId in members:
+			if SwitchId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'Chassis/{0}/Certificates').format(ChassisId)
+			path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Certificates').format(FabricId, SwitchId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Certificate48CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate48API.post(self, ChassisId, os.path.basename(config['@odata.id']))
+					return Certificate48API.post(self, FabricId, SwitchId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate48API.post(self, ChassisId, str(res))
+					return Certificate48API.post(self, FabricId, SwitchId, str(res))
 			else:
-				return Certificate48API.post(self, ChassisId, str(res))
+				return Certificate48API.post(self, FabricId, SwitchId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Certificate48API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, CertificateId):
+	def get(self, FabricId, SwitchId, CertificateId):
 		logging.info('Certificate48 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/Certificates/{1}', 'index.json').format(ChassisId, CertificateId)
+			path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Certificates/{2}', 'index.json').format(FabricId, SwitchId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,25 +119,25 @@ class Certificate48API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, ChassisId, CertificateId):
+	def post(self, FabricId, SwitchId, CertificateId):
 		logging.info('Certificate48 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/Certificates/{1}').format(ChassisId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/Certificates/{1}').format(ChassisId, CertificateId)
-			collection_path = create_path(self.root, 'Chassis/{0}/Certificates', 'index.json').format(ChassisId)
+			path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Certificates/{2}').format(FabricId, SwitchId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Fabrics/{0}/Switches/{1}/Certificates/{2}').format(FabricId, SwitchId, CertificateId)
+			collection_path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Certificates', 'index.json').format(FabricId, SwitchId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate48CollectionAPI.post(self, ChassisId)
+				Certificate48CollectionAPI.post(self, FabricId, SwitchId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'ChassisId':ChassisId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'FabricId':FabricId, 'SwitchId':SwitchId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate48_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -153,13 +153,13 @@ class Certificate48API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, ChassisId, CertificateId):
+	def put(self, FabricId, SwitchId, CertificateId):
 		logging.info('Certificate48 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/Certificates/{1}', 'index.json').format(ChassisId, CertificateId)
-			redfish_path = create_path('/redfish/v1', 'Chassis/{0}/Certificates/{1}', 'index.json').format(ChassisId, CertificateId)
+			path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Certificates/{2}', 'index.json').format(FabricId, SwitchId, CertificateId)
+			redfish_path = create_path('/redfish/v1', 'Fabrics/{0}/Switches/{1}/Certificates/{2}', 'index.json').format(FabricId, SwitchId, CertificateId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -191,18 +191,18 @@ class Certificate48API(Resource):
 			if state_changed:
 				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
 			put_object(path)
-			return self.get(ChassisId, CertificateId)
+			return self.get(FabricId, SwitchId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, ChassisId, CertificateId):
+	def patch(self, FabricId, SwitchId, CertificateId):
 		logging.info('Certificate48 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/Certificates/{1}', 'index.json').format(ChassisId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/Certificates/{1}', 'index.json').format(ChassisId, CertificateId)
+			path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Certificates/{2}', 'index.json').format(FabricId, SwitchId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Fabrics/{0}/Switches/{1}/Certificates/{2}', 'index.json').format(FabricId, SwitchId, CertificateId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -234,19 +234,19 @@ class Certificate48API(Resource):
 				if state_changed:
 					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
 			patch_object(path)
-			return self.get(ChassisId, CertificateId)
+			return self.get(FabricId, SwitchId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, ChassisId, CertificateId):
+	def delete(self, FabricId, SwitchId, CertificateId):
 		logging.info('Certificate48 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/Certificates/{1}').format(ChassisId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'Chassis/{0}/Certificates/{1}').format(ChassisId, CertificateId)
-			base_path = create_path(self.root, 'Chassis/{0}/Certificates').format(ChassisId)
+			path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Certificates/{2}').format(FabricId, SwitchId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Fabrics/{0}/Switches/{1}/Certificates/{2}').format(FabricId, SwitchId, CertificateId)
+			base_path = create_path(self.root, 'Fabrics/{0}/Switches/{1}/Certificates').format(FabricId, SwitchId)
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

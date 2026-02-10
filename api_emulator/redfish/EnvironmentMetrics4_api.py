@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2024, The Storage Networking Industry Association.
+# Copyright (c) 2017-2026, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{ControllerId}/EnvironmentMetrics
+# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/EnvironmentMetrics
 # Program name - EnvironmentMetrics4_api.py
 
 import g
@@ -55,33 +55,33 @@ class EnvironmentMetrics4API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ComputerSystemId, StorageId, ControllerId):
+	def get(self, ComputerSystemId, StorageId, StorageControllerId):
 		logging.info('EnvironmentMetrics4 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}/EnvironmentMetrics', 'index.json').format(ComputerSystemId, StorageId, ControllerId)
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}/EnvironmentMetrics', 'index.json').format(ComputerSystemId, StorageId, StorageControllerId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ComputerSystemId, StorageId, ControllerId):
+	def post(self, ComputerSystemId, StorageId, StorageControllerId):
 		logging.info('EnvironmentMetrics4 post called')
 		return 'POST is not a supported command for EnvironmentMetrics4API', 405
 
 	# HTTP PUT
-	def put(self, ComputerSystemId, StorageId, ControllerId):
+	def put(self, ComputerSystemId, StorageId, StorageControllerId):
 		logging.info('EnvironmentMetrics4 put called')
 		return 'PUT is not a supported command for EnvironmentMetrics4API', 405
 
 	# HTTP PATCH
-	def patch(self, ComputerSystemId, StorageId, ControllerId):
+	def patch(self, ComputerSystemId, StorageId, StorageControllerId):
 		logging.info('EnvironmentMetrics4 patch called')
 		return 'PATCH is not a supported command for EnvironmentMetrics4API', 405
 
 	# HTTP DELETE
-	def delete(self, ComputerSystemId, StorageId, ControllerId):
+	def delete(self, ComputerSystemId, StorageId, StorageControllerId):
 		logging.info('EnvironmentMetrics4 delete called')
 		return 'DELETE is not a supported command for EnvironmentMetrics4API', 405
 

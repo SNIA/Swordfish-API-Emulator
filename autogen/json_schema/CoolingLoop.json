@@ -8,6 +8,9 @@
             "anyOf": [
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/CoolingLoop.v1_0_3.json#/definitions/Coolant"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/CoolingLoop.v1_1_0.json#/definitions/Coolant"
                 }
             ],
             "description": "This type describes coolant.",
@@ -20,6 +23,9 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/CoolingLoop.v1_0_3.json#/definitions/CoolingLoop"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/CoolingLoop.v1_1_0.json#/definitions/CoolingLoop"
                 }
             ],
             "deletable": false,

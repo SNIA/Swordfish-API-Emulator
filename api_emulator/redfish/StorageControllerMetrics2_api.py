@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2024, The Storage Networking Industry Association.
+# Copyright (c) 2017-2026, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{ControllerId}/Metrics
+# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Metrics
 # Program name - StorageControllerMetrics2_api.py
 
 import g
@@ -55,33 +55,33 @@ class StorageControllerMetrics2API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, StorageId, ControllerId):
+	def get(self, ResourceBlockId, StorageId, StorageControllerId):
 		logging.info('StorageControllerMetrics2 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Metrics', 'index.json').format(ResourceBlockId, StorageId, ControllerId)
+			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/Controllers/{2}/Metrics', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ResourceBlockId, StorageId, ControllerId):
+	def post(self, ResourceBlockId, StorageId, StorageControllerId):
 		logging.info('StorageControllerMetrics2 post called')
 		return 'POST is not a supported command for StorageControllerMetrics2API', 405
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, StorageId, ControllerId):
+	def put(self, ResourceBlockId, StorageId, StorageControllerId):
 		logging.info('StorageControllerMetrics2 put called')
 		return 'PUT is not a supported command for StorageControllerMetrics2API', 405
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, StorageId, ControllerId):
+	def patch(self, ResourceBlockId, StorageId, StorageControllerId):
 		logging.info('StorageControllerMetrics2 patch called')
 		return 'PATCH is not a supported command for StorageControllerMetrics2API', 405
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, StorageId, ControllerId):
+	def delete(self, ResourceBlockId, StorageId, StorageControllerId):
 		logging.info('StorageControllerMetrics2 delete called')
 		return 'DELETE is not a supported command for StorageControllerMetrics2API', 405
 

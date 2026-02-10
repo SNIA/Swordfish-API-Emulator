@@ -23,6 +23,9 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/AggregationSource.v1_4_3.json#/definitions/AggregationSource"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AggregationSource.v1_5_0.json#/definitions/AggregationSource"
                 }
             ],
             "deletable": true,

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2025, The Storage Networking Industry Association.
+# Copyright (c) 2017-2026, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -40,7 +40,7 @@ _TEMPLATE = \
 	"ComponentIntegrityTypeVersion": "1.3",
 	"TargetComponentURI": "https://contoso.com",
 	"@odata.id": "{rb}ComponentIntegrity/{ComponentIntegrityId}",
-	"@odata.type": "#ComponentIntegrity.v1_3_1.ComponentIntegrity",
+	"@odata.type": "#ComponentIntegrity.v1_3_2.ComponentIntegrity",
 	"Id": "{ComponentIntegrityId}",
 	"Name": "ComponentIntegrity",
 }

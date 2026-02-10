@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/AccountService/OutboundConnections/{OutboundConnectionId}/Certificates/{CertificateId}
+# Resource implementation for - /redfish/v1/Managers/{ManagerId}/SecurityPolicy/TLS/Client/RevokedCertificates/{CertificateId}
 # Program name - Certificate77_api.py
 
 import g
@@ -53,18 +53,18 @@ class Certificate77CollectionAPI(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, OutboundConnectionId):
+	def get(self, ManagerId):
 		logging.info('Certificate77 Collection get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates', 'index.json').format(OutboundConnectionId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Client/RevokedCertificates', 'index.json').format(ManagerId)
 			return get_json_data(path)
 		else:
 			return msg, code
 
 	# HTTP POST Collection
-	def post(self, OutboundConnectionId):
+	def post(self, ManagerId):
 		logging.info('Certificate77 Collection post called')
 		msg, code = check_authentication(self.auth)
 
@@ -75,10 +75,10 @@ class Certificate77CollectionAPI(Resource):
 					if "Collection" in config["@odata.type"]:
 						return "Invalid data in POST body", 400
 
-			if OutboundConnectionId in members:
+			if ManagerId in members:
 				resp = 404
 				return resp
-			path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates').format(OutboundConnectionId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Client/RevokedCertificates').format(ManagerId)
 			parent_path = os.path.dirname(path)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -88,11 +88,11 @@ class Certificate77CollectionAPI(Resource):
 			if request.data:
 				config = json.loads(request.data)
 				if "@odata.id" in config:
-					return Certificate77API.post(self, OutboundConnectionId, os.path.basename(config['@odata.id']))
+					return Certificate77API.post(self, ManagerId, os.path.basename(config['@odata.id']))
 				else:
-					return Certificate77API.post(self, OutboundConnectionId, str(res))
+					return Certificate77API.post(self, ManagerId, str(res))
 			else:
-				return Certificate77API.post(self, OutboundConnectionId, str(res))
+				return Certificate77API.post(self, ManagerId, str(res))
 		else:
 			return msg, code
 
@@ -104,12 +104,12 @@ class Certificate77API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, OutboundConnectionId, CertificateId):
+	def get(self, ManagerId, CertificateId):
 		logging.info('Certificate77 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates/{1}', 'index.json').format(OutboundConnectionId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Client/RevokedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			return get_json_data (path)
 		else:
 			return msg, code
@@ -119,25 +119,25 @@ class Certificate77API(Resource):
 	# - Update the members and members.id lists
 	# - Attach the APIs of subordinate resources (do this only once)
 	# - Finally, create an instance of the subordiante resources
-	def post(self, OutboundConnectionId, CertificateId):
+	def post(self, ManagerId, CertificateId):
 		logging.info('Certificate77 post called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates/{1}').format(OutboundConnectionId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'AccountService/OutboundConnections/{0}/Certificates/{1}').format(OutboundConnectionId, CertificateId)
-			collection_path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates', 'index.json').format(OutboundConnectionId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Client/RevokedCertificates/{1}').format(ManagerId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/SecurityPolicy/TLS/Client/RevokedCertificates/{1}').format(ManagerId, CertificateId)
+			collection_path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Client/RevokedCertificates', 'index.json').format(ManagerId)
 
 			# Check if collection exists:
 			if not os.path.exists(collection_path):
-				Certificate77CollectionAPI.post(self, OutboundConnectionId)
+				Certificate77CollectionAPI.post(self, ManagerId)
 
 			if CertificateId in members:
 				resp = 404
 				return resp
 			try:
 				global config
-				wildcards = {'OutboundConnectionId':OutboundConnectionId, 'CertificateId':CertificateId, 'rb':g.rest_base}
+				wildcards = {'ManagerId':ManagerId, 'CertificateId':CertificateId, 'rb':g.rest_base}
 				config=get_Certificate77_instance(wildcards)
 				config = create_and_patch_object (config, members, member_ids, path, collection_path)
 				resp = config, 200
@@ -153,13 +153,13 @@ class Certificate77API(Resource):
 			return msg, code
 
 	# HTTP PUT
-	def put(self, OutboundConnectionId, CertificateId):
+	def put(self, ManagerId, CertificateId):
 		logging.info('Certificate77 put called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates/{1}', 'index.json').format(OutboundConnectionId, CertificateId)
-			redfish_path = create_path('/redfish/v1', 'AccountService/OutboundConnections/{0}/Certificates/{1}', 'index.json').format(OutboundConnectionId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Client/RevokedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			redfish_path = create_path('/redfish/v1', 'Managers/{0}/SecurityPolicy/TLS/Client/RevokedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			# Event logic for PUT
 			old_version = None
 			try:
@@ -191,18 +191,18 @@ class Certificate77API(Resource):
 			if state_changed:
 				send_event('ResourceStateChanged', 'ResourceEvent.1.4.2.ResourceStateChanged', f"The state of resource '{redfish_path}' has changed to {new_state}.", 'OK', redfish_path)
 			put_object(path)
-			return self.get(OutboundConnectionId, CertificateId)
+			return self.get(ManagerId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP PATCH
-	def patch(self, OutboundConnectionId, CertificateId):
+	def patch(self, ManagerId, CertificateId):
 		logging.info('Certificate77 patch called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates/{1}', 'index.json').format(OutboundConnectionId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'AccountService/OutboundConnections/{0}/Certificates/{1}', 'index.json').format(OutboundConnectionId, CertificateId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Client/RevokedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/SecurityPolicy/TLS/Client/RevokedCertificates/{1}', 'index.json').format(ManagerId, CertificateId)
 			# Event logic for PATCH
 			if request.data:
 				old_version = None
@@ -234,19 +234,19 @@ class Certificate77API(Resource):
 				if state_changed:
 					send_event("ResourceStateChanged", "ResourceEvent.1.4.2.ResourceStateChanged", f"The state of resource '{redfish_path}' has changed to {new_state}.", "OK", redfish_path)
 			patch_object(path)
-			return self.get(OutboundConnectionId, CertificateId)
+			return self.get(ManagerId, CertificateId)
 		else:
 			return msg, code
 
 	# HTTP DELETE
-	def delete(self, OutboundConnectionId, CertificateId):
+	def delete(self, ManagerId, CertificateId):
 		logging.info('Certificate77 delete called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates/{1}').format(OutboundConnectionId, CertificateId)
-			redfish_path = create_path('/redfish/v1/', 'AccountService/OutboundConnections/{0}/Certificates/{1}').format(OutboundConnectionId, CertificateId)
-			base_path = create_path(self.root, 'AccountService/OutboundConnections/{0}/Certificates').format(OutboundConnectionId)
+			path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Client/RevokedCertificates/{1}').format(ManagerId, CertificateId)
+			redfish_path = create_path('/redfish/v1/', 'Managers/{0}/SecurityPolicy/TLS/Client/RevokedCertificates/{1}').format(ManagerId, CertificateId)
+			base_path = create_path(self.root, 'Managers/{0}/SecurityPolicy/TLS/Client/RevokedCertificates').format(ManagerId)
 			# Event logic for DELETE
 			obj = get_json_data(path)
 			delete_object(path, base_path)

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2024, The Storage Networking Industry Association.
+# Copyright (c) 2017-2026, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/PowerEquipment/PowerShelves/{PowerDistributionId}/PowerSupplies/{PowerSupplyId}/Assembly
+# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/PowerSubsystem/PowerSupplies/{PowerSupplyId}/Assembly
 # Program name - Assembly51_api.py
 
 import g
@@ -55,33 +55,33 @@ class Assembly51API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, PowerDistributionId, PowerSupplyId):
+	def get(self, ChassisId, PowerSupplyId):
 		logging.info('Assembly51 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'PowerEquipment/PowerShelves/{0}/PowerSupplies/{1}/Assembly', 'index.json').format(PowerDistributionId, PowerSupplyId)
+			path = create_path(self.root, 'Chassis/{0}/PowerSubsystem/PowerSupplies/{1}/Assembly', 'index.json').format(ChassisId, PowerSupplyId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, PowerDistributionId, PowerSupplyId):
+	def post(self, ChassisId, PowerSupplyId):
 		logging.info('Assembly51 post called')
 		return 'POST is not a supported command for Assembly51API', 405
 
 	# HTTP PUT
-	def put(self, PowerDistributionId, PowerSupplyId):
+	def put(self, ChassisId, PowerSupplyId):
 		logging.info('Assembly51 put called')
 		return 'PUT is not a supported command for Assembly51API', 405
 
 	# HTTP PATCH
-	def patch(self, PowerDistributionId, PowerSupplyId):
+	def patch(self, ChassisId, PowerSupplyId):
 		logging.info('Assembly51 patch called')
 		return 'PATCH is not a supported command for Assembly51API', 405
 
 	# HTTP DELETE
-	def delete(self, PowerDistributionId, PowerSupplyId):
+	def delete(self, ChassisId, PowerSupplyId):
 		logging.info('Assembly51 delete called')
 		return 'DELETE is not a supported command for Assembly51API', 405
 

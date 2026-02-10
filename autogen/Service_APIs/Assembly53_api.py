@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2024, The Storage Networking Industry Association.
+# Copyright (c) 2017-2026, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/ThermalSubsystem/Heaters/{HeaderId}/Assembly
+# Resource implementation for - /redfish/v1/Chassis/{ChassisId}/PowerSubsystem/Batteries/{BatteryId}/Assembly
 # Program name - Assembly53_api.py
 
 import g
@@ -55,33 +55,33 @@ class Assembly53API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ChassisId, HeaderId):
+	def get(self, ChassisId, BatteryId):
 		logging.info('Assembly53 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'Chassis/{0}/ThermalSubsystem/Heaters/{1}/Assembly', 'index.json').format(ChassisId, HeaderId)
+			path = create_path(self.root, 'Chassis/{0}/PowerSubsystem/Batteries/{1}/Assembly', 'index.json').format(ChassisId, BatteryId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ChassisId, HeaderId):
+	def post(self, ChassisId, BatteryId):
 		logging.info('Assembly53 post called')
 		return 'POST is not a supported command for Assembly53API', 405
 
 	# HTTP PUT
-	def put(self, ChassisId, HeaderId):
+	def put(self, ChassisId, BatteryId):
 		logging.info('Assembly53 put called')
 		return 'PUT is not a supported command for Assembly53API', 405
 
 	# HTTP PATCH
-	def patch(self, ChassisId, HeaderId):
+	def patch(self, ChassisId, BatteryId):
 		logging.info('Assembly53 patch called')
 		return 'PATCH is not a supported command for Assembly53API', 405
 
 	# HTTP DELETE
-	def delete(self, ChassisId, HeaderId):
+	def delete(self, ChassisId, BatteryId):
 		logging.info('Assembly53 delete called')
 		return 'DELETE is not a supported command for Assembly53API', 405
 

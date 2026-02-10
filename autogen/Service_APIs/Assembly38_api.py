@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2024, The Storage Networking Industry Association.
+# Copyright (c) 2017-2026, The Storage Networking Industry Association.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@
 #  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 #  THE POSSIBILITY OF SUCH DAMAGE.
 
-# Resource implementation for - /redfish/v1/CompositionService/ResourceBlocks/{ResourceBlockId}/Storage/{StorageId}/StorageControllers/{StorageControllerId}/Assembly
+# Resource implementation for - /redfish/v1/Systems/{ComputerSystemId}/Storage/{StorageId}/Controllers/{StorageControllerId}/Assembly
 # Program name - Assembly38_api.py
 
 import g
@@ -55,33 +55,33 @@ class Assembly38API(Resource):
 		self.auth = kwargs['auth']
 
 	# HTTP GET
-	def get(self, ResourceBlockId, StorageId, StorageControllerId):
+	def get(self, ComputerSystemId, StorageId, StorageControllerId):
 		logging.info('Assembly38 get called')
 		msg, code = check_authentication(self.auth)
 
 		if code == 200:
-			path = create_path(self.root, 'CompositionService/ResourceBlocks/{0}/Storage/{1}/StorageControllers/{2}/Assembly', 'index.json').format(ResourceBlockId, StorageId, StorageControllerId)
+			path = create_path(self.root, 'Systems/{0}/Storage/{1}/Controllers/{2}/Assembly', 'index.json').format(ComputerSystemId, StorageId, StorageControllerId)
 			return get_json_data (path)
 		else:
 			return msg, code
 
 	# HTTP POST
-	def post(self, ResourceBlockId, StorageId, StorageControllerId):
+	def post(self, ComputerSystemId, StorageId, StorageControllerId):
 		logging.info('Assembly38 post called')
 		return 'POST is not a supported command for Assembly38API', 405
 
 	# HTTP PUT
-	def put(self, ResourceBlockId, StorageId, StorageControllerId):
+	def put(self, ComputerSystemId, StorageId, StorageControllerId):
 		logging.info('Assembly38 put called')
 		return 'PUT is not a supported command for Assembly38API', 405
 
 	# HTTP PATCH
-	def patch(self, ResourceBlockId, StorageId, StorageControllerId):
+	def patch(self, ComputerSystemId, StorageId, StorageControllerId):
 		logging.info('Assembly38 patch called')
 		return 'PATCH is not a supported command for Assembly38API', 405
 
 	# HTTP DELETE
-	def delete(self, ResourceBlockId, StorageId, StorageControllerId):
+	def delete(self, ComputerSystemId, StorageId, StorageControllerId):
 		logging.info('Assembly38 delete called')
 		return 'DELETE is not a supported command for Assembly38API', 405
 

@@ -48,6 +48,9 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Circuit.v1_8_1.json#/definitions/Circuit"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Circuit.v1_9_0.json#/definitions/Circuit"
                 }
             ],
             "deletable": false,
@@ -93,6 +96,8 @@
                 "DC48V",
                 "DC240V",
                 "DC380V",
+                "DC400V",
+                "DC800V",
                 "DCNeg48V",
                 "DC16V",
                 "DC12V",
@@ -120,10 +125,12 @@
                 "DC16V": "DC 16V nominal.",
                 "DC1_8V": "DC 1.8V nominal.",
                 "DC240V": "DC 240V nominal.",
-                "DC380V": "High-voltage DC (380V).",
+                "DC380V": "DC 380V nominal.",
                 "DC3_3V": "DC 3.3V nominal.",
+                "DC400V": "DC 400V nominal.",
                 "DC48V": "DC 48V nominal.",
                 "DC5V": "DC 5V nominal.",
+                "DC800V": "DC 800V nominal.",
                 "DC9V": "DC 9V nominal.",
                 "DCNeg48V": "-48V DC."
             },
@@ -148,8 +155,10 @@
                 "DC240V": "This value shall indicate the device supports a nominal voltage of 240VDC.",
                 "DC380V": "This value shall indicate the device supports a nominal voltage of 380VDC.",
                 "DC3_3V": "This value shall indicate the device supports a nominal voltage of 3.3VDC.",
+                "DC400V": "This value shall indicate the device supports a nominal voltage of 400VDC.",
                 "DC48V": "This value shall indicate the device supports a nominal voltage of 48VDC.",
                 "DC5V": "This value shall indicate the device supports a nominal voltage of 5VDC.",
+                "DC800V": "This value shall indicate the device supports a nominal voltage of 800VDC.",
                 "DC9V": "This value shall indicate the device supports a nominal voltage of 9VDC.",
                 "DCNeg48V": "This value shall indicate the device supports a nominal voltage of -48VDC."
             },
@@ -159,8 +168,10 @@
                 "DC16V": "v1_7_0",
                 "DC1_8V": "v1_7_0",
                 "DC3_3V": "v1_7_0",
+                "DC400V": "v1_9_0",
                 "DC48V": "v1_2_0",
                 "DC5V": "v1_7_0",
+                "DC800V": "v1_9_0",
                 "DC9V": "v1_7_0"
             },
             "type": "string"

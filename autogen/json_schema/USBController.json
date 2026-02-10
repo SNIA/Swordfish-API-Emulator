@@ -19,7 +19,7 @@
             "longDescription": "This resource shall represent a USB controller in a Redfish implementation.",
             "updatable": false,
             "uris": [
-                "/redfish/v1/Systems/{ComputerSystemId}/USBControllers/{ControllerId}"
+                "/redfish/v1/Systems/{ComputerSystemId}/USBControllers/{USBControllerId}"
             ]
         }
     },

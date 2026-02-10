@@ -15,10 +15,13 @@ SCHEMA_PATH="./metadata"
 JSON_SCHEMA_PATH="./json_schema"
 
 echo "Downloading Swordfish profile bundle..."
-curl -L -o "$TMPDIR/swordfish-schema-bundle.zip" "https://snia.org/swordfish-schema-bundle/release/latest"
+wget --header="User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+    --header="Referer: https://www.snia.org/" \
+    -O "$TMPDIR/swordfish-schema-bundle.zip" \
+    "https://www.snia.org/sites/default/files/technical-work/swordfish/draft/v1.2.9/zip/Swordfish_v1.2.9.zip"
 
 echo "Downloading Redfish CSDL/JSON schema bundle..."
-curl -L -o "$TMPDIR/DSP8010.zip" "https://www.dmtf.org/sites/default/files/standards/documents/DSP8010.zip"
+curl -L -o "$TMPDIR/DSP8010.zip" "https://www.dmtf.org/sites/default/files/standards/documents/DSP8010_2025.4.zip"
 
 echo "Extracting Swordfish bundle..."
 unzip -o "$TMPDIR/swordfish-schema-bundle.zip" -d "$TMPDIR/swordfish"
@@ -60,4 +63,4 @@ echo "Generating all resource template code..."
 python3 script_template.py "$XML_SCHEMA_PATH" "$JSON_SCHEMA_PATH"
 
 echo "autogen actions to update templates and API files completed."
-echo "Check add_resource/add_service_resource and add_import files for generated statements."
+echo "Checking add_resource/add_service_resource and add_import files for generated statements."
